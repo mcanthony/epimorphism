@@ -3,7 +3,7 @@
 
 __device__ float4 seed_wca(float2 z){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE
+  // FULL
 
   float4 res;
   float ep = nextafterf(0.0f, -1.0f);
@@ -32,7 +32,7 @@ __device__ float4 seed_wca(float2 z){
 
 __device__ float4 seed_adv(float2 z){
   // new seed function
-  // DEV
+  // DEV, LIVE
 
   float2 z_t_circle = grid_reduce(z + vec2(2.0f * _SEED_CIRCLE_X - 1.0f, 2.0f *  _SEED_CIRCLE_Y - 1.0f));
   float r_circle = len(z_t_circle);

@@ -38,18 +38,20 @@ if(len(sys.argv[1:]) != 0):
 # parse command line arguments
 args={"application":"default", "app":{}, "env":{}, "context":{}, "profile":{}, "state":{}}
 for arg in sys.argv[1:]:
-    
+
     # application
     split = re.compile("=").split(arg)
-    if(len(split) == 1): 
+    if(len(split) == 1):
         args["application"] = arg
         continue
 
     # parse val
     val = split[1]
-    if(val[0] == '$'): val = eval(val[1:])
-    if(val == "True"): val = True
-    if(val == "False"): val = False
+
+    try:
+        val = eval(val)
+    except:
+        pass
 
     # create vars
     split = re.compile("\.").split(split[0])
