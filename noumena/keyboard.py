@@ -192,12 +192,6 @@ class KeyboardHandler(object):
         elif(key == "2"):
             self.cmdcenter.eventmanager.switch_component("T_SEED", multiplier)
         elif(key == "3"):
-            self.cmdcenter.eventmanager.switch_component("SEED_W", multiplier)
-        elif(key == "4"):
-            self.cmdcenter.eventmanager.switch_component("SEED_WT", multiplier)
-        elif(key == "5"):
-            self.cmdcenter.eventmanager.switch_component("SEED_A", multiplier)
-        elif(key == "6"):
             self.cmdcenter.eventmanager.switch_component("REDUCE", multiplier)
 
         elif(key == "q"):

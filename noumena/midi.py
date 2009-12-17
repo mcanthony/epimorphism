@@ -157,15 +157,16 @@ class MidiHandler(threading.Thread):
 
             # change bindings - HACK: buttons switch bindings
 
-            elif(self.context.midi_controller[1] == 'BCF_FULL'):
-                if(channel >= 65 and channel <= 72):
+            elif(channel >= 65 and channel <= 72):
 
-                    self.binding_idx = channel - 65
-                    if val == 0 : self.binding_idx = 0
-                    self.send_bindings()
+                self.binding_idx = (channel - 65) % len(self.bindings)
+                if val == 0 : self.binding_idx = 0
+                self.send_bindings()
 
-                elif(channel >= 33 and channel <= 40):
+            elif(channel >= 33 and channel <= 40):
 
-                    self.binding_idx = channel - 33
-                    self.send_bindings()
+                self.binding_idx = (channel - 33) % len(self.bindings)
+
+                if val == 0 : self.binding_idx = 0
+                self.send_bindings()
 
