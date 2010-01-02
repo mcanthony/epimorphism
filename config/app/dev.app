@@ -3,6 +3,6 @@
 
  'env': 'dev',
  'context': 'default',
- 'profile': 'std',
+ 'profile': 'default',
  'state': 'dev'
 }

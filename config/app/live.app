@@ -3,6 +3,6 @@
 
  'env': 'live',
  'context': 'live',
- 'profile': 'std',
+ 'profile': 'default',
  'state': 'live'
 }

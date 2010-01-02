@@ -131,7 +131,7 @@ class CmdCenter(Animator):
         ''' Start main loop '''
         debug("Start main loop")
 
-        self.t_start = time.clock()
+        self.t_start = time.time()
         self.state.frame_cnt = 0
 
         if(self.initial_script):
@@ -150,7 +150,7 @@ class CmdCenter(Animator):
             if(self.env.fps_sync):
                 self.state.time = self.state.frame_cnt / float(self.env.fps_sync) + self.t_phase
             else:
-                self.state.time = time.clock() - self.t_start + self.t_phase
+                self.state.time = time.time() - self.t_start # + self.t_phase
 
 
             #print str(self.state.time), str(self.t_phase)
@@ -177,15 +177,16 @@ class CmdCenter(Animator):
             self.interface.renderer.stop()
 
 
-        #if(self.time() - self.last_event_time > 10):
-        #    print "EVENT!!!"
-        #    self.last_event_time = self.time()
+        if(False and self.time() - self.last_event_time > 10):
+            self.last_event_time = self.time()
 
-            #i = randint(0,2)
-#            if(i == 0):
- #               async(lambda :self.componentmanager.inc_data('T', 1))
-  #          elif(i == 1):
-   #             async(lambda :self.componentmanager.inc_data('SEED_W', 1))
+            i = randint(0,3)
+            if(i == 0):
+                async(lambda :self.componentmanager.inc_data('T', 1))
+            elif(i == 1):
+               async(lambda :self.componentmanager.inc_data('T_SEED', 1))
+            elif(i == 2):
+               async(lambda :self.componentmanager.inc_data('SEED_W', 1))
 
 
     def send_frame(self):
@@ -348,7 +349,7 @@ class CmdCenter(Animator):
 
         info("Loading state: %s" % name)
 
-        new_state = configmanager.load_dict("state", name)
+        new_state = configmanager.merge_with_default("state", name)
 
         updates = {}
 

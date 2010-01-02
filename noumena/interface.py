@@ -28,7 +28,7 @@ class Interface(object):
             self.server.__del___()
 
 
-    def sync_cmd(self, cmdcenter):
+    def sync(self, cmdcenter):
         debug("Syncing with CmdCenter")
 
         self.cmdcenter = cmdcenter
@@ -46,7 +46,7 @@ class Interface(object):
 
         # register cmdcenter with renderer
         self.renderer.cmdcenter = cmdcenter
-        
+
         # start server
         if(self.context.server):
             self.server = Server(self.cmdcenter)

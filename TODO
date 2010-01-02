@@ -1,9 +1,5 @@
 
 
-rewrite seed framework
-
-large T function
-better T_SEED
 
 
 smarter randomization
@@ -11,13 +7,14 @@ remove event paths
 stepped animation events
 better keyboard multipliers
 
-touchscreen/better interface
+
 installer
 
 
-state modularization
-live state
-
+LATER:
+rewrite seed framework
+rewirte color func
+think about T
 
 ###################################
 #

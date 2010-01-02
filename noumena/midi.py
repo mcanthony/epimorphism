@@ -167,6 +167,5 @@ class MidiHandler(threading.Thread):
 
                 self.binding_idx = (channel - 33) % len(self.bindings)
 
-                if val == 0 : self.binding_idx = 0
                 self.send_bindings()
 

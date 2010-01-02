@@ -80,6 +80,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   // compute rotation theta
   float th =  2.0f * PI * (a + l + _clock * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
 
+
   // compute rotation 1
   float3 tmp = vec3(v.x, v.y, v.z);
   tmp = rotate3D(tmp, axis, th);
@@ -87,16 +88,18 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE;
   axis = vec3(axis.y, axis.z, axis.x);
-  tmp = rotate3D(tmp, axis, th);
+  //tmp = rotate3D(tmp, axis, th);
 
   //
   float s = sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
   phi = 2.0f * PI * _COLOR_BASE_PHI;
   psi = 2.0f * PI * _COLOR_BASE_PSI;
   float3 base = _COLOR_BASE_R * vec3(cosf(psi) * cosf(phi), cosf(psi) * sinf(phi), sinf(psi));
-  tmp = s * tmp + (1.0f - s) * base;
+  //tmp = s * tmp + (1.0f - s) * base;
 
-  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
+  //tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
+
+
 
   //s = tmp.x;
   //tmp.x = sinf(PI * tmp.z);

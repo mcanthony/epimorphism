@@ -16,7 +16,19 @@ class MidiList(list):
             self.midi.mirror(self, key)
 
 
-class State(object):
+class DictObj(object):
+    ''' A Dictionary Object is simply an object used solely as a
+        dictionary for ease of use '''
+
+    def __init__(self, **vars):
+        # init
+        self.__dict__.update(vars)
+
+    def merge(self, dict_obj):
+        self.__dict__.update(dict_obj.__dict__)
+
+
+class State(DictObj):
     ''' Configuration parameters for generating Frames. '''
 
     def __init__(self, **vars):
@@ -28,33 +40,18 @@ class State(object):
         self.par = MidiList(self.par)
 
 
-class Profile(object):
+class Profile(DictObj):
     ''' Configuration settings for the Engine. '''
 
-    def __init__(self, **vars):
-        # init
-        self.__dict__.update(vars)
 
-
-class Context(object):
+class Context(DictObj):
     ''' Configuration settings for the Interface. '''
 
-    def __init__(self, **vars):
-        # init
-        self.__dict__.update(vars)
 
-
-class Environment(object):
+class Environment(DictObj):
     ''' Configuration settings for the application. '''
 
-    def __init__(self, **vars):
-        # init
-        self.__dict__.update(vars)
 
-
-class App(object):
+class App(DictObj):
     ''' Encapsulates one of each other struct. '''
 
-    def __init__(self, **vars):
-        # init
-        self.__dict__.update(vars)

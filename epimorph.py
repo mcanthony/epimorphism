@@ -31,7 +31,6 @@ os.system("unclutter -idle 0.25 -jitter 1 -root&")
 
 # initialize env/state/profile/context/env
 debug("Initializing state/profile/context/env")
-
 if(len(sys.argv[1:]) != 0):
     debug("with args %s" % (str(sys.argv[1:])))
 
@@ -47,7 +46,6 @@ for arg in sys.argv[1:]:
 
     # parse val
     val = split[1]
-
     try:
         val = eval(val)
     except:
@@ -59,11 +57,11 @@ for arg in sys.argv[1:]:
     else : args[split[0]][split[1]] = val
 
 # create structures
-app     = configmanager.load_dict("app", args["application"], **args["app"])
-env     = configmanager.load_dict("environment", app.env, **args["env"])
-context = configmanager.load_dict("context", app.context, **args["context"])
-profile = configmanager.load_dict("profile", app.profile, **args["profile"])
-state   = configmanager.load_dict("state", app.state, **args["state"])
+app     = configmanager.merge_with_default("app", args["application"], **args["app"])
+env     = configmanager.merge_with_default("environment", app.env, **args["env"])
+context = configmanager.merge_with_default("context", app.context, **args["context"])
+profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
+state   = configmanager.merge_with_default("state", app.state, **args["state"])
 
 # encapsulated for asynchronous execution
 def main():
@@ -78,7 +76,7 @@ def main():
     cmdcenter = CmdCenter(env, state, interface, engine)
 
     debug("Syncing modules")
-    interface.sync_cmd(cmdcenter)
+    interface.sync(cmdcenter)
     engine.sync(interface.renderer)
 
     # compile engine - CLEAN THIS
@@ -88,7 +86,6 @@ def main():
     # start main loop
     debug("Starting")
     cmdcenter.start()
-
     info("Main loop completed")
 
     # clean objects
