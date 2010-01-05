@@ -3,7 +3,7 @@
 
 __device__ float trans_w(float w){
   // EXCLUDE
-  if(w < _SEED_W_THRESH && w > 0.0f)
+  if(w < _SEED_W_MIN && w > 0.0f)
     w = 1.0f;
   if(_SEED_W_BASE != 0.0f && w < 0.0f)
     w = _SEED_W_BASE / 20.0;

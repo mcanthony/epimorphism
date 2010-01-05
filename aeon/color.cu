@@ -73,31 +73,32 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   }
 
   // compute rotation axis
-  float phi = 2.0f * PI * _COLOR_PHI / 2.0f;
-  float psi = 2.0f * PI * _COLOR_PSI / 2.0f;
+  float phi = 2.0f * PI * _COLOR_PHI1 / 2.0f;
+  float psi = 2.0f * PI * _COLOR_PSI1 / 2.0f;
   float3 axis = vec3(cosf(psi) * cosf(phi), cosf(psi) * sinf(phi), sinf(psi));
-
-  // compute rotation theta
-  float th =  2.0f * PI * (a + l + _clock * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
 
 
   // compute rotation 1
+  float th =  2.0f * PI * (a + l + _clock * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
   float3 tmp = vec3(v.x, v.y, v.z);
   tmp = rotate3D(tmp, axis, th);
 
   // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE;
-  axis = vec3(axis.y, axis.z, axis.x);
-  //tmp = rotate3D(tmp, axis, th);
+  phi += 2.0f * PI * _COLOR_PHI2 / 2.0f;
+  psi += 2.0f * PI * _COLOR_PSI2 / 2.0f;
+  axis = vec3(cosf(psi) * cosf(phi), cosf(psi) * sinf(phi), sinf(psi));
+  tmp = rotate3D(tmp, axis, th);
 
-  //
+
   float s = sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
+  s  = s * (1.0f - _COLOR_BASE_I) + _COLOR_BASE_I;
   phi = 2.0f * PI * _COLOR_BASE_PHI;
   psi = 2.0f * PI * _COLOR_BASE_PSI;
   float3 base = _COLOR_BASE_R * vec3(cosf(psi) * cosf(phi), cosf(psi) * sinf(phi), sinf(psi));
-  //tmp = s * tmp + (1.0f - s) * base;
+  tmp = s * tmp + (1.0f - s) * base;
 
-  //tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
+  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
 
 
 
