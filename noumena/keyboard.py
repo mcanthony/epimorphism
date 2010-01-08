@@ -178,14 +178,15 @@ class KeyboardHandler(object):
 
         # switch_midi
         if(key == GLUT_KEY_F10):
-            if(self.context.midi_controller[1] == "BCF_LIVE"):
-                info("Switch to BCF_FULL bindings")
-                self.context.midi_controller[1] = "BCF_FULL"
-                self.cmdcenter.interface.midi.load_bindings()
-            elif(self.context.midi_controller[1] == "BCF_FULL"):
-                info("Switch to BCF_LIVE bindings")
-                self.context.midi_controller[1] = "BCF_LIVE"
-                self.cmdcenter.interface.midi.load_bindings()
+            self.cmdcenter.env.automate_components = not self.cmdcenter.env.automate_components
+            #if(self.context.midi_controller[1] == "BCF_LIVE"):
+            #    info("Switch to BCF_FULL bindings")
+            #    self.context.midi_controller[1] = "BCF_FULL"
+            #    self.cmdcenter.interface.midi.load_bindings()
+            #elif(self.context.midi_controller[1] == "BCF_FULL"):
+            #    info("Switch to BCF_LIVE bindings")
+            #    self.context.midi_controller[1] = "BCF_LIVE"
+            #    self.cmdcenter.interface.midi.load_bindings()
 
         elif(key == "1"):
             self.cmdcenter.eventmanager.switch_component("T", multiplier)
@@ -195,6 +196,8 @@ class KeyboardHandler(object):
             self.cmdcenter.eventmanager.switch_component("SEED_W", multiplier)
         elif(key == "4"):
             self.cmdcenter.eventmanager.switch_component("SEED_WT", multiplier)
+        elif(key == "5"):
+            self.cmdcenter.eventmanager.switch_component("SEED_A", multiplier)
 
         elif(key == "q"):
             self.cmdcenter.eventmanager.rotate90(0, multiplier)

@@ -34,12 +34,16 @@ __device__ float4 rgb_swizzle(float4 v, float2 z_z){
 
 __device__ float4 rotate_hsv(float4 v, float2 z_z){
   // hsv rotation
-  // FULL
+  // FULL, LIVE
 
   v = RGBtoHSV(v);
 
   float l = len(z_z);
-  l = (4.0f * _COLOR_LEN_SC + 1.0f) * l / (l + 4.0f * _COLOR_LEN_SC);
+
+  l = logf(l);
+  l = 0.4f * l;
+
+  //l = (4.0f * _COLOR_LEN_SC + 1.0f) * l / (l + 4.0f * _COLOR_LEN_SC);
 
   float a = 0.0f;
   if(_COLOR_TH_EFF != 0.0f && (z_z.y != 0.0f || z_z.x != 0.0f)){
@@ -49,6 +53,12 @@ __device__ float4 rotate_hsv(float4 v, float2 z_z){
   float th =  (_COLOR_DHUE + l + a + _clock * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
 
   v.x += th;
+
+  if(_COLOR_18 < 0.99f){
+    v.x = fmodf(v.x, 1.0f);
+    v.x = (v.x > 0.5f) ? 2.0f * _COLOR_18 * (1.0f - v.x) : 2.0f * v.x * _COLOR_18;
+    v.x += _COLOR_19;
+  }
 
   return HSVtoRGB(v);
 }
@@ -65,6 +75,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   // compute l
   float l = len(z_z);
   l = (4.0f * _COLOR_LEN_SC + 1.0f) * l / (l + 4.0f * _COLOR_LEN_SC);
+  l = logf(l + 1.0f);
 
   // compute a
   float a = 0.0f;
@@ -83,6 +94,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   float3 tmp = vec3(v.x, v.y, v.z);
   tmp = rotate3D(tmp, axis, th);
 
+  /*
   // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE;
   phi += 2.0f * PI * _COLOR_PHI2 / 2.0f;
@@ -99,7 +111,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   tmp = s * tmp + (1.0f - s) * base;
 
   tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
-
+  */
 
 
   //s = tmp.x;
@@ -108,6 +120,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   //tmp.y = cosf(PI * s);
 
   // get result
+
   v = vec4(0.99999f * tmp.x, 0.99999f * tmp.y, 0.99999f * tmp.z, v.w);
   return HSLstoRGB(v);
 }

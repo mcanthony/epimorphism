@@ -13,7 +13,7 @@ __device__ float trans_w(float w){
 
 __device__ float2 fade(float2 z){
   // linear l-r gradient
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = (z.x + 1.0f) / 2.0f;
@@ -23,7 +23,7 @@ __device__ float2 fade(float2 z){
 
 __device__ float2 wave(float2 z){
   // sinousoid
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = (2.0f + sinf(2.0f * PI * (z.y + _clock * _GLOBAL_SPEED / 10.0f))) / 4.0f;
@@ -33,7 +33,7 @@ __device__ float2 wave(float2 z){
 
 __device__ float2 circle(float2 z){
   // circle
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float r = len(z);
@@ -46,7 +46,7 @@ __device__ float2 circle(float2 z){
 
 __device__ float2 lines_lr(float2 z){
   // parallel vertical lines
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);
@@ -57,10 +57,27 @@ __device__ float2 lines_lr(float2 z){
   return vec2(trans_w(w), 1.0f);
 }
 
+__device__ float2 square(float2 z){
+  // central square
+  // FULL, LIVE, DEV
+
+  z = grid_reduce(z);
+  float w = nextafterf(0.0f, -1.0f);
+
+  if(z.x < _SEED_W && z.x > -1.0f * _SEED_W && z.y < _SEED_W && z.y > -1.0f * _SEED_W){
+    w = fminf((1.0f - fabsf(z.x) / _SEED_W), (1.0f - fabsf(z.y) / _SEED_W));
+  }
+
+  return vec2(trans_w(w), 1.0f);
+}
+
+
+
+
 
 __device__ float2 lines_box(float2 z){
   // 4 lines in a box
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);
@@ -128,7 +145,7 @@ device__ float hex_lattice(float2 z){
 
 __device__ float2 lines_box_stag(float2 z){
   // 4 lines in a box, staggered
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);
@@ -146,7 +163,7 @@ __device__ float2 lines_box_stag(float2 z){
 
 __device__ float2 lines_inner(float2 z){
   // lines in a cross
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);
@@ -160,7 +177,7 @@ __device__ float2 lines_inner(float2 z){
 
 __device__ float2 anti_grid_fade(float2 z){
   // inverse grid, radially shaded
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);
@@ -173,7 +190,7 @@ __device__ float2 anti_grid_fade(float2 z){
 
 __device__ float2 grid_fade(float2 z){
   // grid, radially shaded
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = nextafterf(0.0f, -1.0f);

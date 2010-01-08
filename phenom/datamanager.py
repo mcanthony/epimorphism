@@ -42,13 +42,6 @@ class DataManager(object):
                 # get component
                 component[0] = component[0].strip()
 
-                # HACK for certain types of components
-                if(self.env.auto_param_T):
-                    if(component_name == "t"):
-                        component[0] = "zn[0] * (%s) + zn[1]" % component[0].replace("(z)", "(zn[2] * z + zn[3])")
-                    elif(component_name == "t_seed"):
-                        component[0] = "zn[8] * (%s) + zn[9]" % component[0].replace("(z)", "(zn[10] * z + zn[11])")
-
                 # print component_name, component[0]
 
                 # get defaults

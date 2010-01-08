@@ -16,11 +16,6 @@ __constant__ float switch_time;
 #include "math.cu"
 #include "colorspace.cu"
 
-__device__ float2 grid_reduce(float2 z){
-  // standard reduction based on the cartesian grid
-  return rem(z + vec2(1.0f, 1.0f), 2.0f) - vec2(1.0f, 1.0f);
-}
-
 #include "reset.cu"
 #include "color.cu"
 #include "reduce.cu"
@@ -70,23 +65,29 @@ extern "C" {
 
         float2 z_c = z;
 
+        // compute z[0] * T(z[2] * z + z[3]) + z[1]
+        z = zn[2] * z + zn[3];
+        %REDUCE%
+        z = reduce;
         %T%
         z = t;
+        z = zn[0] * z + zn[1];
         %REDUCE%
         z = recover(reduce);
 
         float4 frame = tex2D(input_texture, 0.5f * z + vec2(0.5f, 0.5f));
 
-
+        // compute z[8] * T_SEED(z[10] * z + z[11]) + z[19
+        z = zn[10] * z + zn[11];
+        %REDUCE%
+        z = reduce;
         %T_SEED%
-        z = t_seed;
-
+        z = t;
+        z = zn[8] * z + zn[9];
         %REDUCE%
         z = recover(reduce);
 
         %SEED%
-
-        seed = _gamma3(seed, 2.2f);
 
         #ifdef CULL_ENABLED
 

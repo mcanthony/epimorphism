@@ -177,7 +177,7 @@ class CmdCenter(Animator):
             self.interface.renderer.stop()
 
 
-        if(False and self.time() - self.last_event_time > 10):
+        if(self.env.automate_components and self.time() - self.last_event_time > 10):
             self.last_event_time = self.time()
 
             i = randint(0,3)
