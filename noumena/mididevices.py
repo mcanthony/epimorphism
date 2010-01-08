@@ -31,7 +31,7 @@ BCF_LIVE = [{(0, 83): ["state.zn",  '0',  "radius", (1.0, 1.0)],
              (0, 4) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_18")',  "val",    (1.0, 0.0)],
              (0, 5) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_19")',  "val",    (1.0, 0.0)],
              (0, 6) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_A")',  "val",    (0.6, 0.4)],
-             (0, 7) : ["state.par", 'self.cmdcenter.state.par_names.index("_SEED_W_MIN")', "val",    (0.6, 0.0)],
+             (0, 7) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_GAMMA")', "val",    (3.0, 0.0)],
              (0, 8) : ["state.zn",  '8',  "th",     (3.14, 0.0)]
              },
             {(0, 83): ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_DHUE")',  "val",    (1.0, 0.0)],

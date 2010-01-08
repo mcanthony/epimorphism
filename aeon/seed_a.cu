@@ -4,7 +4,7 @@
 
 __device__ float solid_alpha(float w){
   // solid
-  // FULL
+  // FULL, LIVE, DEV
 
   return _COLOR_A;
 }
@@ -12,7 +12,7 @@ __device__ float solid_alpha(float w){
 
 __device__ float linear_alpha(float w){
   // linear with w
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   return w * _COLOR_A;
 }
@@ -20,7 +20,7 @@ __device__ float linear_alpha(float w){
 
 __device__ float circular_alpha(float w){
   // circular with w
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   return sqrtf(1.0f - (1.0f - w) * (1.0f - w)) * _COLOR_A;
 }

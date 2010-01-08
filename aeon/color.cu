@@ -3,7 +3,7 @@
 
 __device__ float4 rgb_id(float4 v, float2 z_z){
   // identity
-  // FULL, DEV
+  // FULL, LIVE, DEV
   return v;
 }
 
@@ -34,7 +34,7 @@ __device__ float4 rgb_swizzle(float4 v, float2 z_z){
 
 __device__ float4 rotate_hsv(float4 v, float2 z_z){
   // hsv rotation
-  // FULL, LIVE
+  // FULL, LIVE, DEV
 
   v = RGBtoHSV(v);
 
@@ -94,7 +94,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   float3 tmp = vec3(v.x, v.y, v.z);
   tmp = rotate3D(tmp, axis, th);
 
-  /*
+
   // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE;
   phi += 2.0f * PI * _COLOR_PHI2 / 2.0f;
@@ -111,7 +111,7 @@ __device__ float4 rotate_hsls(float4 v, float2 z_z){
   tmp = s * tmp + (1.0f - s) * base;
 
   tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * vec3(v.x, v.y, v.z);
-  */
+
 
 
   //s = tmp.x;

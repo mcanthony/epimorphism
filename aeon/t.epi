@@ -1,5 +1,5 @@
-(z)                                     :
-1.0 / (z)                               :
+z                                       :
+1.0 / z                                 :
 exp(z)                                  :
 sin(z)                                  :
 cos(z)                                  :
@@ -10,5 +10,5 @@ tanh(z)                                 :
 tanh(tanh(z))                           :
 sq(z)                                   :
 1.0 - sq(z)                             :
-sq(1.0 - (z))                           :
+sq(1.0 - z)                             :
 tanh(1.0 + sq(z))                       :

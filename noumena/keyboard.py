@@ -198,6 +198,10 @@ class KeyboardHandler(object):
             self.cmdcenter.eventmanager.switch_component("SEED_WT", multiplier)
         elif(key == "5"):
             self.cmdcenter.eventmanager.switch_component("SEED_A", multiplier)
+        elif(key == "6"):
+            self.cmdcenter.eventmanager.switch_component("COLOR", multiplier)
+        elif(key == "7"):
+            self.cmdcenter.eventmanager.switch_component("REDUCE", multiplier)
 
         elif(key == "q"):
             self.cmdcenter.eventmanager.rotate90(0, multiplier)

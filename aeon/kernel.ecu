@@ -77,17 +77,18 @@ extern "C" {
 
         float4 frame = tex2D(input_texture, 0.5f * z + vec2(0.5f, 0.5f));
 
-        // compute z[8] * T_SEED(z[10] * z + z[11]) + z[19
+        // compute z[8] * T_SEED(z[10] * z + z[11]) + z[9]
         z = zn[10] * z + zn[11];
-        %REDUCE%
-        z = reduce;
+
         %T_SEED%
-        z = t;
+        z = t_seed;
         z = zn[8] * z + zn[9];
         %REDUCE%
         z = recover(reduce);
 
         %SEED%
+
+        seed = _gamma3(seed, _COLOR_GAMMA);
 
         #ifdef CULL_ENABLED
 
