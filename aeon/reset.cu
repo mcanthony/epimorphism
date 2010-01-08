@@ -10,7 +10,7 @@ __device__ float4 reset_black(int x, int y){
 
 __device__ float4 reset_hsls(int x, int y){
   // hsls reset function
-  // FULL
+  // FULL, LIVE, DEV
 
   float phi = 2.0f * PI * _COLOR_PHI1;
   float psi = 2.0f * PI * _COLOR_PSI1;
