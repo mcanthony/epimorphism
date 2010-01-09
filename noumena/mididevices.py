@@ -19,8 +19,10 @@ BCF_TEST = [{(0, 81): ["state.zn",  '0',  "radius", (1.0, 1.0)],
 
 
 # create device bindings for BCF2000
-BCF_LIVE = [{(0, 83): ["state.zn",  '0',  "radius", (1.0, 1.0)],
-             (0, 84): ["state.zn",  '2',  "radius", (1.0, 1.0)],
+BCF_LIVE = [{(0, 81): ["state.zn",  '0',  "radius", (1.0, 1.0)],
+             (0, 82): ["state.zn",  '1',  "radius", (1.0, 0.0)],
+             (0, 83): ["state.zn",  '2',  "radius", (1.0, 1.0)],
+             (0, 84): ["state.zn",  '3',  "radius", (1.0, 0.0)],
              (0, 85): ["state.zn",  '8',  "radius", (1.0, 1.0)],
              (0, 86): ["state.zn",  '9',  "radius", (1.0, 0.0)],
              (0, 87): ["state.zn",  '10', "radius", (1.0, 1.0)],
