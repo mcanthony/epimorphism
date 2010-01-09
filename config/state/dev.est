@@ -6,11 +6,11 @@
 
  'components': {
  'SEED': 'seed_wca(z)',
- 'SEED_W': 'square(z)',
+ 'SEED_W': 'lines_box(z)',
  'SEED_WT': 'wt_id(w)',
  'SEED_C': 'simple_color(z, w)',
  'SEED_A': 'solid_alpha(w)',
- 'T': 'z',
+ 'T': 'cosh(z) * (1.0f - exp(zn[5] - 1.0f))',
  'T_SEED': 'z',
  'COLOR': 'rotate_hsls(v, z_z)',
  'REDUCE': 'torus_reduce(z)',

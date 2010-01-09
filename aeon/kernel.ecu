@@ -66,23 +66,23 @@ extern "C" {
         float2 z_c = z;
 
         // compute z[0] * T(z[2] * z + z[3]) + z[1]
-        z = (z - zn[3]) / zn[2];
+        z = zn[2] * (z - zn[3]);
         %REDUCE%
         z = reduce;
         %T%
         z = t;
-        z = (z - zn[1]) / zn[0];
+        z = zn[0] * (z - zn[1]);
         %REDUCE%
         z = recover(reduce);
 
         float4 frame = tex2D(input_texture, 0.5f * z + vec2(0.5f, 0.5f));
 
         // compute z[8] * T_SEED(z[10] * z + z[11]) + z[9]
-        z = (z - zn[11]) / zn[10];
+        z = zn[10] * (z - zn[11]);
 
         %T_SEED%
         z = t_seed;
-        z = (z - zn[9]) / zn[8];
+        z = zn[8] * (z - zn[9]);
         %REDUCE%
         z = recover(reduce);
 

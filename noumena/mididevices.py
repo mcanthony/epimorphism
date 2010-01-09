@@ -19,13 +19,13 @@ BCF_TEST = [{(0, 81): ["state.zn",  '0',  "radius", (1.0, 1.0)],
 
 
 # create device bindings for BCF2000
-BCF_LIVE = [{(0, 81): ["state.zn",  '0',  "radius", (0.5, 0.5)],
+BCF_LIVE = [{(0, 81): ["state.zn",  '0',  "radius", (1.0, 1.0)],
              (0, 82): ["state.zn",  '1',  "radius", (1.0, 0.0)],
-             (0, 83): ["state.zn",  '2',  "radius", (0.5, 0.5)],
+             (0, 83): ["state.zn",  '2',  "radius", (1.0, 1.0)],
              (0, 84): ["state.zn",  '3',  "radius", (1.0, 0.0)],
-             (0, 85): ["state.zn",  '8',  "radius", (0.5, 0.5)],
+             (0, 85): ["state.zn",  '5',  "radius", (1.0, 1.0)],
              (0, 86): ["state.zn",  '9',  "radius", (1.0, 0.0)],
-             (0, 87): ["state.zn",  '10', "radius", (0.5, 0.5)],
+             (0, 87): ["state.zn",  '10', "radius", (1.0, 1.0)],
              (0, 88): ["state.zn",  '11', "radius", (1.0, 0.0)],
              (0, 1) : ["state.par", 'self.cmdcenter.state.par_names.index("_SEED_W")',  "val",    (1.0, 0.02)],
              (0, 2) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_PHI1")',  "val",    (1.0, 0.0)],
@@ -33,7 +33,7 @@ BCF_LIVE = [{(0, 81): ["state.zn",  '0',  "radius", (0.5, 0.5)],
 
              (0, 6) : ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_A")',  "val",    (0.6, 0.4)],
              (0, 7) : ["state.zn",  '8',  "th",     (3.14, 0.0)],
-             (0, 8) : ["state.zn",  '10',  "th",     (3.14, 0.0)]
+             (0, 8) : ["state.zn",  '5',  "th",     (3.14, 0.0)]
              },
             {(0, 83): ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_DHUE")',  "val",    (1.0, 0.0)],
              (0, 84): ["state.par", 'self.cmdcenter.state.par_names.index("_COLOR_I")',  "val",    (1.0, 0.0)],
