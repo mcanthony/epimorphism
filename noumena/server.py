@@ -1,63 +1,47 @@
-import threading
-import socket
+#!/usr/bin/env python
+
+# geneServer.py
+#
+# mvr adapted from http://twistedmatrix.com/documents/current/core/examples/echoserv.py
+#              and geneServer.original.py
+
+from twisted.internet.protocol import Protocol, Factory
+from twisted.internet import reactor
 
 from common.runner import *
-
 from common.log import *
 set_log("SERVER")
 
-class Server(threading.Thread):
-    ''' The Server object is responsible for creating and maintaining
-        connects to outside clients, and relaying messages to the
-        Cmdcenter '''
+global cmdcenter
 
-    def __init__(self, cmdcenter):
-
-        self.cmdcenter = cmdcenter
-
-        # create & start socket
-        self.com = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.com.bind(('', 8563))
-        self.com.listen(1)
-
-        # init thread
-        threading.Thread.__init__(self)
+class Echo(Protocol):
+    def dataReceived(self, data):
+        """
+        As soon as any data is received, write it back.
+        """
+        #self.transport.write(data)
+        # execute command
+        info("executing: %s" % data.strip())
+        res = cmdcenter.cmd(data.strip(), True)
+        # send response
+        self.transport.write(str(res) + "\r\n")
 
 
-    def __del__(self):
-        debug("Closeing server")
-        self.com.close()
+class Server(object):
+    def __init__(self, cmd):
+        global cmdcenter
+        cmdcenter = cmd
+
+        f = Factory()
+        f.protocol = Echo
+        reactor.listenTCP(8563, f)
+#        reactor.callLater(1,testExit)
+
+    def go(self):
+        global cmdcenter
+        while(not cmdcenter.env.exit):
+            reactor.iterate()
 
 
-    def handle_connection(self, channel):
-        ''' Receive & parse data from connection '''
-
-        # get packets
-        while(not self.cmdcenter.env.exit):
-
-            # receive data
-            cmd = channel.recv ( 100 )
-
-            # execute command
-            info("executing: %s" % cmd)
-            res = self.cmdcenter.cmd(cmd, True)
-
-            # send response
-            channel.send (str(res))
-
-        # close channel
-        channel.close()
-
-
-    def run(self):
-        ''' Async wait for a connection '''
-
-        # accept connections
-        while(not self.cmdcenter.env.exit):
-
-            # accept connection
-            channel, details = self.com.accept()
-            info("connected to: %s" % details)
-
-            # spawn thread to handle connection
-            async(self.handle_connection(channel))
+    def start(self):
+        async(self.go)

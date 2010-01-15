@@ -176,17 +176,29 @@ class KeyboardHandler(object):
         if((modifiers & GLUT_ACTIVE_CTRL) == GLUT_ACTIVE_CTRL):
             multiplier = 0
 
+        # switch midi speed
+        if(key == GLUT_KEY_F9):
+            if(self.context.midi_speed >= 0.5):
+                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.01")
+                self.context.midi_speed = 0.01
+            else:
+                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
+                self.context.midi_speed = 0.5
+
         # switch_midi
         if(key == GLUT_KEY_F10):
-            self.cmdcenter.env.automate_components = not self.cmdcenter.env.automate_components
-            #if(self.context.midi_controller[1] == "BCF_LIVE"):
-            #    info("Switch to BCF_FULL bindings")
-            #    self.context.midi_controller[1] = "BCF_FULL"
-            #    self.cmdcenter.interface.midi.load_bindings()
-            #elif(self.context.midi_controller[1] == "BCF_FULL"):
-            #    info("Switch to BCF_LIVE bindings")
-            #    self.context.midi_controller[1] = "BCF_LIVE"
-            #    self.cmdcenter.interface.midi.load_bindings()
+            if(self.context.midi_controller[1] == "BCF_LIVE"):
+                self.cmdcenter.interface.renderer.flash_message("Switching to VJ bindings")
+                info("Switch to BCF_VJ bindings")
+                self.context.midi_controller[1] = "BCF_VJ"
+                self.cmdcenter.interface.midi.load_bindings()
+                self.cmdcenter.env.automate_components = False
+            elif(self.context.midi_controller[1] == "BCF_VJ"):
+                self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
+                info("Switch to BCF_LIVE bindings")
+                self.context.midi_controller[1] = "BCF_LIVE"
+                self.cmdcenter.interface.midi.load_bindings()
+                self.cmdcenter.env.automate_components = True
 
         elif(key == "1"):
             self.cmdcenter.eventmanager.switch_component("T", multiplier)

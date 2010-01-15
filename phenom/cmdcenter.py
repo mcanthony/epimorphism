@@ -187,6 +187,10 @@ class CmdCenter(Animator):
                async(lambda :self.componentmanager.inc_data('T_SEED', 1))
             elif(i == 2):
                async(lambda :self.componentmanager.inc_data('SEED_W', 1))
+            elif(i == 3):
+               async(lambda :self.componentmanager.inc_data('SEED_WT', 1))
+            elif(i == 4):
+               async(lambda :self.componentmanager.inc_data('SEED_A', 1))
 
 
     def send_frame(self):
@@ -219,7 +223,7 @@ class CmdCenter(Animator):
             if(not self.recorded_events): self.recorded_events = Script(self)
             self.recorded_events.push(self.time(), code)
 
-        # debug("Executing cmd: %s", code)
+        #debug("Executing cmd: %s", code)
 
         # hijack stdout, if requested
         out = StringIO.StringIO()
