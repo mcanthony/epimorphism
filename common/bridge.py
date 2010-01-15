@@ -27,9 +27,8 @@ class EchoClient(LineReceiver):
             data = parse(data)
         print data
 
-
-if line==self.end:
-    self.transport.loseConnection()
+        if line==self.end:
+            self.transport.loseConnection()
 
 ################################################################################
 
