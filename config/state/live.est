@@ -1,5 +1,5 @@
 {'VERSION': 0.94,
- 'component_switch_time' : 2.0,
+ 'component_switch_time' : 4.0,
  'time': 0.0,
  'frame_cnt': 0,
  'bpm': 120,
@@ -16,8 +16,8 @@
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y)'
  },
- 'zn': [(0.0+1.0j),
- (1.0+0.0j),
+ 'zn': [(1.0+0.0j),
+ (0.0+0.0j),
  (1.0+0j),
  0j,
  0j,
