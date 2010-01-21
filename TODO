@@ -1,7 +1,5 @@
 Release -
-  cuda environment variable
-  bundle python opengl
-  create script
+  create installer script
   figure out pyportmidi
   windows & mac compatible
   compile to binaries
@@ -13,7 +11,9 @@ Public -
   add argument lists to help
 
 Contents - 
-  migrations & archiving
+  migrations
+  archiving
+  high render archiving
   color function
   seed function
   transformations - state machine?

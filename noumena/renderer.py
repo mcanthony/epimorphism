@@ -1,7 +1,7 @@
 from ctypes import *
-from OpenGL.GL import *
-from OpenGL.GLUT import *
-from OpenGL.GLU import *
+from sources.OpenGL.GL import *
+from sources.OpenGL.GLUT import *
+from sources.OpenGL.GLU import *
 
 import time
 

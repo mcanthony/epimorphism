@@ -14,3 +14,7 @@ ptx
 est
 *.log
 sources/pypm/build/*
+config/state/*
+images/*
+video/*
+archive/images/*

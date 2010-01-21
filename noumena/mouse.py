@@ -1,5 +1,5 @@
-from OpenGL.GL import *
-from OpenGL.GLUT import *
+from sources.OpenGL.GL import *
+from sources.OpenGL.GLUT import *
 
 
 class MouseHandler(object):

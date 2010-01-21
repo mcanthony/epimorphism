@@ -1,8 +1,8 @@
 from ctypes import *
 from cuda.cuda_defs import *
 
-from OpenGL.GL import *
-from OpenGL.GLUT import *
+from sources.OpenGL.GL import *
+from sources.OpenGL.GLUT import *
 
 from common.complex import *
 from common.runner import *
