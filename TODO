@@ -1,143 +1,50 @@
-
-
-
-
-smarter randomization
-remove event paths
-stepped animation events
-better keyboard multipliers
-
-documentation
-website
-installer
-
-
-LATER:
-rewrite seed framework
-rewirte color func
-think about T
-
-###################################
-#
-#  v 1.0
-#
-#
-
-
-fix glGetIntegerv bug
-
-
-###################################
-#
-#  v 1.1
-#
-#
-
-opengl squares
-
-cmd options hash
-
-populate/upgrade seed database
-
-populate animation database
-
-populate T & T_SEED databasees
-
-
-video stuff/write ffmpeg script
-
-MAKE VIDEO
-MAKE WEBSITE
-
-
-remove aeon/.#* files
-
-compiler - intellegently load function from kernel.so
-
-load state.time
-
-manual iteration fps_time
-save image fps_time
-
-screenshots while manual iteration
-
-configmanager dump object newline issues(only really relevant for scripts)
-
-
-###################################
-#
-#  v 1.2
-#
-#
-
-kernel optimization
-
-build state machine for T
-
-generalize w=-1 response
-
-maintain phase in speed changes
-
-
-clean up states
-autorun all migrations option
-
-
-deal with state dumps that occur while blending
-when loading state, upload image too?
-
-add argument lists to help
-
-force fps
-
-
-###################################
-#
-#  Additional Features
-#
-#
-
-integrate ipython into console
-
-post processing - possible multi-gpu
-
-t_surface / interesting way to explore t's
-
-quantize angles, etc
-
-
-smooth repeat switching of same func - is this possible?
-
-camera input
-
-seed impulses
-
-? state recording
-
-
-click point, get value, etc
-
-
-
-###################################
-#
-#  Sometime in the future
-#
-#
-
-
-fix HSV interpolation
-
-lace?
-
-cull mode glitches
-
-unit tests
-
-windows & mac compatible
-
-compile to binaries
-
-device emulation mode
-
-website / youtube video demo
+Release -
+  bundle python opengl
+  create script
+  figure out pyportmidi
+  windows & mac compatible
+  compile to binaries
+
+Public - 
+  readme
+  finish website
+  configure keyboard for public use
+  add argument lists to help
+
+Contents - 
+  migrations & archiving
+  color function
+  seed function
+  transformations - state machine?
+  seed transformations
+  animations
+  kernel optimization  
+
+Ideas - 
+  opengl effects
+  smarter randomization
+  stepped animation events
+  better keyboard multipliers
+  when loading state, upload image too?
+  integrate ipython into console
+  post processing multiple gpu
+  quantize angles?
+  different reductions?
+  camera input
+  seed impulses
+  deal with state dumps that occur while blending
+  force fps
+
+Misc Tasks - 
+  remove internal from states
+  compiler - intellegently load function from kernel.so
+  clean compiler options
+  load state.time
+  intelligently deal with color speeds & phases
+  manual iteration fps_time
+  ?? save image fps_time
+  screenshots while manual iteration
+
+Bugs - 
+  glGetIntegerv fails
+  configmanager dump object newline issues(only really relevant for scripts)
