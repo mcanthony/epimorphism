@@ -1,4 +1,5 @@
 Release -
+  cuda environment variable
   bundle python opengl
   create script
   figure out pyportmidi
