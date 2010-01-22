@@ -1,16 +1,30 @@
 require 'RMagick'
+require 'rubygems'
+require 'json'
 
-files = []
+data = []
 
-d = Dir.open('./')
+image_d = Dir.open('../image')
 
-d.each do |f|
-  files << f if f =~ /.png/
+
+
+image_d.each do |f|
+  match = /(\d)+/.match(f)
+  if match
+    num = match[0].to_s
+    data << ["../image/" + f, ] 
+  end
 end
 
-files.each_with_index do |f, i|
-  img = Magick::ImageList.new(f)
+data.sort!
+
+data.each_with_index do |d, i|
+  img = Magick::ImageList.new(d[0])
   img.resize_to_fit(900,900)
-  img.write("small/fractal#{i}.jpg")
-  `cp ./#{f} full/fractal#{i}.png`
+  img.write("../archive/image/small/fractal#{i.to_s.rjust(5,'0')}.jpg")
+  `cp ./#{d[0]} ../archive/image/full/fractal#{i.to_s.rjust(5,'0')}.png`
+
+  puts "done img " + i.to_s
+
 end
+

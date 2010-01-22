@@ -1,4 +1,4 @@
-import noumena
+import phenom
 import common.default
 
 import copy
@@ -14,7 +14,7 @@ def migrate(vars):
 
     # test if update necessary
     old_version = vars["VERSION"]
-    if(old_version < noumena.VERSION):
+    if(old_version < phenom.VERSION):
 
 
         # get necessary migrations

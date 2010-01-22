@@ -10,18 +10,26 @@ Public -
   configure keyboard for public use
   add argument lists to help
 
+Archiving - 
+  finish current archive
+  load/save state time
+  transition dumps
+  archive application for adding to archive
+  high fidelity rerendering archiving
+  state names
+
 Contents - 
-  migrations
-  archiving
-  high render archiving
+  paths
   color function
   seed function
   transformations - state machine?
   seed transformations
   animations
+  w=-1 response
   kernel optimization  
 
-Ideas - 
+Ideas -
+  metapaths 
   opengl effects
   smarter randomization
   stepped animation events
@@ -40,7 +48,6 @@ Misc Tasks -
   remove internal from states
   compiler - intellegently load function from kernel.so
   clean compiler options
-  load state.time
   intelligently deal with color speeds & phases
   manual iteration fps_time
   ?? save image fps_time
@@ -49,3 +56,6 @@ Misc Tasks -
 Bugs - 
   glGetIntegerv fails
   configmanager dump object newline issues(only really relevant for scripts)
+  fix console window
+  component switch discontinuities
+  

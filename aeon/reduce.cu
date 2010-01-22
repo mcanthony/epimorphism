@@ -70,7 +70,7 @@ device__ float2 hex_reduce(float2 z){
 
 __device__ float2 awesome(float2 z){
   // hex reduce
-  // FULL
+  // NA
 
   z = z * 2.0;
 

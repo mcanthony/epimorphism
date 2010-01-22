@@ -84,6 +84,19 @@ class KeyboardHandler(object):
         elif(key == "\040"): # space
             self.cmdcenter.cmd("next()")
 
+        # increment archive
+        elif(key == '='):
+            self.cmdcenter.cmd("inc_archive(1)")
+
+        # decrement archive
+        elif(key == ']'):
+            self.cmdcenter.cmd("inc_archive(-1)")
+
+        # randomize archive
+        elif(key == '+'):
+            self.cmdcenter.cmd("inc_archive(0)")
+
+            
 
     def full(self, key, modifiers):
 

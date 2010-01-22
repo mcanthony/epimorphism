@@ -1,7 +1,5 @@
 {
  'name': 'live',
 
- 'keyboard':'live',
- 'midi_controller' : ['BCF2000', 'BCF_LIVE'],
  'screen' : [1024, 768, True],
 }

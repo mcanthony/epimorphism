@@ -7,9 +7,11 @@
  'server': False,
  'kbd_switch_spd' : 0.2,
  'echo' : True,
- 'midi_controller' : ['BCF2000', 'BCF_VJ'],
+
+ 'midi_controller' : ['BCF2000', 'BCF_LIVE'],
  'midi_speed': 0.5,
  'screen' : [900, 900, False],
+
  'fps_frames' : 10,
  'viewport' : [0.0, 0.0, 1.0],
 }

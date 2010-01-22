@@ -9,7 +9,9 @@ from common.complex import *
 from config import configmanager
 
 import StringIO
+import os
 import sys
+import random
 import traceback
 
 import Image
@@ -116,6 +118,9 @@ class CmdCenter(Animator):
             self.initial_script = Script(self, self.env.initial_script)
         else:
             self.initial_script = None
+
+        # archive index
+        self.archive_idx = None
 
 
     def __del__(self):
@@ -392,6 +397,12 @@ class CmdCenter(Animator):
 
         self.load("state_%d" % idx)
 
+    def arc(self, idx):
+        ''' Loads a state from the archive '''
+        debug("loading archive %d" % idx)
+        idx = ("%5d" % int(idx)).replace(" ", "0")
+        print idx
+        self.load("archive/fractal%s" % idx)
 
     def manual(self):
         ''' Toggles manual iteration. '''
@@ -430,3 +441,19 @@ class CmdCenter(Animator):
             lst = [self.tempo_events[i + 1] - self.tempo_events[i] for i in xrange(len(self.tempo_events) - 1)]
             self.state.bmp = 1.0 / (sum(lst) / (len(self.tempo_events) - 1)) * 60
             info("Tempo: %s bmp" % self.state.bmp)
+
+    
+    def inc_archive(self, idx):
+        ''' Increments the archive index and loads the state '''
+
+        # randomly chose an index
+        if(idx == 0):
+            self.archive_idx = random.randint(0, len(os.listdir('archive/')))
+        else:
+            if(self.archive_idx != None):
+                self.archive_idx += idx
+            else:
+                self.archive_idx = 0
+
+        self.arc(self.archive_idx)
+            
