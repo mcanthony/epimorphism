@@ -79,10 +79,13 @@ class Compiler(threading.Thread):
                     clause2 += "case %d: %s1 = %s;break;\n" % (component_list.index(component), component_name.lower(), name)
                 clause2 += "}\n"
 
-                interp = "if(internal[%d] != 0){" % idx
-                sub = "min((_clock - internal[%d]) / switch_time, 1.0f)" % (idx)
+                interp = "if(internal[%d] != 0){\n" % idx
+                interp += "intrp_t = min((_clock - internal[%d]) / switch_time, 1.0f);\n" % (idx)
+#                interp += "intrp_t = 1.0f / (1.0f + expf(-1.0f * (12.0f * intrp_t - 6.0f)));\n"
+                interp += "intrp_t = (1.0 + erff(4.0f * intrp_t - 2.0f)) / 2.0;\n"
+                sub = "intrp_t"
                 interp += "%s\n%s = ((1.0f - %s) * (%s0) + %s * (%s1));" % (clause2,  component_name.lower(), sub, component_name.lower(), sub, component_name.lower())
-                interp += "}else{\n%s = %s0;\n}" % (component_name.lower(), component_name.lower())
+                interp += "\n}else{\n%s = %s0;\n}" % (component_name.lower(), component_name.lower())
 
                 self.substitutions[component_name] = clause1 + interp
 

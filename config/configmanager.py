@@ -19,6 +19,8 @@ def merge_with_default(type, name, **additional_vars):
 
     default = load_dict(type, "default")
     obj = load_dict(type, name, **additional_vars)
+    if(not obj):
+        return False
     default.merge(obj)
 
     return default
@@ -28,6 +30,8 @@ def load_dict(type, name, **additional_vars):
     ''' Loads a dictionary into a dictionarized object '''
 
     vars = load_obj(type, name)
+    if(not vars):
+        return False
     vars.update(additional_vars)
 
     # hack for states
@@ -54,7 +58,7 @@ def load_obj(type, name):
 
     except:
         critical("couldn't read %s - %s" % (type, name))
-        return None
+        return False
 
     # create & return object
     return eval(contents.replace("\n", ""))

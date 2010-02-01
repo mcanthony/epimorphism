@@ -1,4 +1,4 @@
 {
- 'keyboard':'lcd1',
+ 'name':'lcd1',
  'screen' : [1680, 1050, True],
 }

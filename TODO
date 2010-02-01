@@ -11,10 +11,9 @@ Public -
   add argument lists to help
 
 Archiving - 
-  finish current archive
   load/save state time
-  transition dumps
   archive application for adding to archive
+  archive current_data
   high fidelity rerendering archiving
   state names
 
@@ -43,8 +42,10 @@ Ideas -
   seed impulses
   deal with state dumps that occur while blending
   force fps
+  transition dumps??
 
 Misc Tasks - 
+  add paths to states
   remove internal from states
   compiler - intellegently load function from kernel.so
   clean compiler options

@@ -31,6 +31,7 @@ texture<float4, 2, cudaReadModeElementType> aux_texture;
 extern "C" {
 
   __global__ void reset(float4* out, ulong out_pitch){
+    float intrp_t;
     unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
     float4 reset, reset0, reset1;
@@ -41,6 +42,10 @@ extern "C" {
   __global__ void kernel_fb(float4* out, ulong out_pitch, uchar4* pbo, int kernel_dim,
                             float i_kernel_dim, float m_i_kernel_dim, float i_n_sq, float inc)
   {
+
+    // HACK?
+    float intrp_t;
+
     unsigned int x = blockIdx.x * blockDim.x + threadIdx.x;
     unsigned int y = blockIdx.y * blockDim.y + threadIdx.y;
 

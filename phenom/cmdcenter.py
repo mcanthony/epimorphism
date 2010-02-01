@@ -1,6 +1,7 @@
 from phenom.video import *
 
 from phenom.animator import *
+from phenom.archiver import *
 from phenom.componentmanager import *
 from phenom.script import *
 from phenom.eventmanager import *
@@ -11,7 +12,6 @@ from config import configmanager
 import StringIO
 import os
 import sys
-import random
 import traceback
 
 import Image
@@ -48,7 +48,7 @@ class CmdEnv(dict):
                 d[key] = value
 
 
-class CmdCenter(Animator):
+class CmdCenter(Animator, Archiver):
     ''' The CmdCenter is the central control center for the engine and
         renderer.  All systems generating signals live here, and the object
         provides an interface for executing code int the appropriate environment. '''
@@ -61,6 +61,9 @@ class CmdCenter(Animator):
 
         # init animator
         Animator.__init__(self)
+
+        # init archiver
+        Archiver.__init__(self)
 
         # init componentmanager
         self.componentmanager = ComponentManager(self, self.state)
@@ -119,8 +122,16 @@ class CmdCenter(Animator):
         else:
             self.initial_script = None
 
-        # archive index
-        self.archive_idx = None
+
+        self.animate_var('rose', self.state.zn, 1, 50.0, {"a":0.8, "b":3.0, "c":0.5})
+
+        self.animate_var('rose', self.state.zn, 3, 33.333, {"a":1.0, "b":4.0, "c":0.0})
+
+        self.animate_var('rose', self.state.zn, 8, 75.0, {"a":0.8, "b":3.0, "c":1.5})
+        self.animate_var('rose', self.state.zn, 9, 25.0, {"a":0.8, "b":5.0, "c":0.5})
+        self.animate_var('rose', self.state.zn, 10, 50.0, {"a":0.5, "b":4.0, "c":1.7})
+        self.animate_var('rose', self.state.zn, 11, 66.6666, {"a":0.8, "b":3.0, "c":0.5})
+
 
 
     def __del__(self):
@@ -181,11 +192,11 @@ class CmdCenter(Animator):
         if(self.env.exit):
             self.interface.renderer.stop()
 
-
+        # temporary automation
         if(self.env.automate_components and self.time() - self.last_event_time > 10):
             self.last_event_time = self.time()
 
-            i = randint(0,3)
+            i = randint(0,2)
             if(i == 0):
                 async(lambda :self.componentmanager.inc_data('T', 1))
             elif(i == 1):
@@ -359,7 +370,9 @@ class CmdCenter(Animator):
         info("Loading state: %s" % name)
 
         new_state = configmanager.merge_with_default("state", name)
-
+        if(not new_state):
+            return False
+        
         updates = {}
 
         # get update components
@@ -395,14 +408,8 @@ class CmdCenter(Animator):
     def load_state(self, idx):
         ''' Loads and blends to the state with the given id. '''
 
-        self.load("state_%d" % idx)
+        return self.load("state_%d" % idx)
 
-    def arc(self, idx):
-        ''' Loads a state from the archive '''
-        debug("loading archive %d" % idx)
-        idx = ("%5d" % int(idx)).replace(" ", "0")
-        print idx
-        self.load("archive/fractal%s" % idx)
 
     def manual(self):
         ''' Toggles manual iteration. '''
@@ -442,18 +449,4 @@ class CmdCenter(Animator):
             self.state.bmp = 1.0 / (sum(lst) / (len(self.tempo_events) - 1)) * 60
             info("Tempo: %s bmp" % self.state.bmp)
 
-    
-    def inc_archive(self, idx):
-        ''' Increments the archive index and loads the state '''
-
-        # randomly chose an index
-        if(idx == 0):
-            self.archive_idx = random.randint(0, len(os.listdir('archive/')))
-        else:
-            if(self.archive_idx != None):
-                self.archive_idx += idx
-            else:
-                self.archive_idx = 0
-
-        self.arc(self.archive_idx)
-            
+               

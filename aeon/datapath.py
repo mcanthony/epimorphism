@@ -46,3 +46,9 @@ def wave_1d(t, data):
     ''' 1 dimensional sinousoidal path '''
 
     return (data['a'] * sin(2.0 * pi * t + data['th']) + data['b'], True)
+
+
+def rose(t, data):
+    ''' a rose curve '''
+
+    return (p_to_r([data['c'] + data['a'] * cos(data['b'] * t), t]), True)

@@ -5,6 +5,9 @@ __device__ float4 seed_wca(float2 z){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
+  // HACK?
+  float intrp_t;
+
   float4 res;
   float ep = nextafterf(0.0f, -1.0f);
   float4 seed_c, seed_c0, seed_c1;
