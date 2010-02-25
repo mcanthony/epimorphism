@@ -32,14 +32,16 @@ class VideoRenderer(object):
         while(self.waiting_for_frame and not self.env.exit):
             time.sleep(0.01)
 
-        # info("Done waiting")
+        info("Done waiting")
 
         # define internal function for async execution
         def grab_frame():
-            # info("Grabbing frame")
+            info("Grabbing frame")
 
             # save frame
             image = self.cmdcenter.grab_image()
+
+            info("Finished grabbing")
 
             # pad frame_num
             digit_size = 5

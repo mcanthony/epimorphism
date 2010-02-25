@@ -66,7 +66,7 @@ class KeyboardHandler(object):
 
         # toggle recording events
         elif(key == GLUT_KEY_F9):
-            self.cmdcenter.cmd("toggle_record()")
+            self.cmdcenter.toggle_record()
 
         # toggle echo
         elif(key == GLUT_KEY_F11):

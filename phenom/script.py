@@ -29,10 +29,19 @@ class Script(object):
 
 
         # main execution loop
-        while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):
+        while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):            
+            #print "a"
             while(self.current_idx < len(self.events) and self.cmdcenter.time() >= self.events[self.current_idx]["time"]):
-                self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
+                print "found event1"
+                if("inc" in self.events[self.current_idx]["cmd"]):
+                    async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
+                    print "inc data!!!!"
+                else:
+                    self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
+                #print "found event2"
                 self.current_idx += 1
+                #print "found event3"
+            #print "b"
             time.sleep(0.001)
 
 

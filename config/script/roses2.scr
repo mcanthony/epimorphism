@@ -1,4 +1,4 @@
-[{'cmd': 'animate_var("rose", "zn", 1, 50.0, {"a":0.8, "b":3.0, "c":0.5})',
+[{'cmd': 'animate_var("rose", "zn", 1, 50.0, {"a":0.6, "b":5.0, "c":0.5})',
  'time': 0.0},
 {'cmd': 'animate_var("rose", "zn", 3, 33.333, {"a":1.0, "b":4.0, "c":0.0})',
  'time': 0.0},
@@ -11,7 +11,7 @@
 {'cmd': 'animate_var("rose", "zn", 12, 25.0, {"a":1.0, "b":6.0, "c":1.8})',
  'time': 0.0},
 
-{'cmd': 'animate_var("wave_1d", "par", 0, 25.0, {"a":0.3, "b":0.5, "th":0.0})',
+{'cmd': 'animate_var("wave_1d", "par", 0, 25.0, {"a":0.25, "b":0.5, "th":0.0})',
  'time': 0.0},
 
 {'cmd': 'animate_var("wave_1d", "par", 1, 100.0, {"a":0.5, "b":0.5, "th":0.0})',

@@ -147,6 +147,8 @@ class CmdCenter(Animator, Archiver):
     def do(self):
         ''' Main application loop '''
 
+        info("do1 at time " + str(self.time()))
+
         # execute engine
         if((not (self.env.manual_iter and not self.env.next_frame)) and not self.env.freeze):
             self.env.next_frame = False
@@ -170,6 +172,10 @@ class CmdCenter(Animator, Archiver):
 
             self.state.frame_cnt += 1
 
+
+        info("do2 at time " + str(self.time()))
+        
+
         # execute interface
         self.interface.do()
 
@@ -187,15 +193,17 @@ class CmdCenter(Animator, Archiver):
 
             i = randint(0,2)
             if(i == 0):
-                async(lambda :self.componentmanager.inc_data('T', 1))
+                async(lambda :self.cmd("inc_data('T', 1)"))
             elif(i == 1):
-               async(lambda :self.componentmanager.inc_data('T_SEED', 1))
+               async(lambda :self.cmd("inc_data('T_SEED', 1)"))
             elif(i == 2):
-               async(lambda :self.componentmanager.inc_data('SEED_W', 1))
+               async(lambda :self.cmd("inc_data('SEED_W', 1)"))
             elif(i == 3):
-               async(lambda :self.componentmanager.inc_data('SEED_WT', 1))
+               async(lambda :self.cmd("inc_data('SEED_WT', 1)"))
             elif(i == 4):
-               async(lambda :self.componentmanager.inc_data('SEED_A', 1))
+               async(lambda :self.cmd("inc_data('SEED_A', 1)"))
+
+        info("do3 at time " + str(self.time()))
 
 
     def send_frame(self):
@@ -223,6 +231,10 @@ class CmdCenter(Animator, Archiver):
 
     def cmd(self, code, capture=False):
         ''' Execute code in the CmdEnv environment '''
+
+
+        print "executing " + code
+
 
         if(self.env.record_events):
             if(not self.recorded_events): self.recorded_events = Script(self)
@@ -298,10 +310,12 @@ class CmdCenter(Animator, Archiver):
 
     def grab_image(self):
         ''' Gets the framebuffer and binds it to an Image. '''
-        debug("Grab image")
+        info("Grab image")
 
         img = Image.frombuffer("RGBA", (self.engine.profile.kernel_dim, self.engine.profile.kernel_dim),
                                self.engine.get_fb(), "raw", "RGBA", 0, -1).convert("RGB")
+
+        info("Done grab image")
 
         # img.show()
         return img
@@ -406,11 +420,14 @@ class CmdCenter(Animator, Archiver):
         if(not self.env.record_events):
             self.save()
             self.env.record_events = self.time()
-            self.interface.renderer.echo("Recording script")
-        else:
+            self.interface.renderer.flash_message("Recording script")
+            info("Recording script")
+        else:            
             self.env.record_events = False
             self.recorded_events.save()            
-            self.interface.renderer.echo("Saved script as %s" % (self.recorded_events.name))
+            self.interface.renderer.flash_message("Saved script as %s" % (self.recorded_events.name))
+            info("Saved script as %s" % (self.recorded_events.name))
+            self.recorded_events = None
 
 
     def manual(self):
