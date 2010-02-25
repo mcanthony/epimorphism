@@ -123,17 +123,6 @@ class CmdCenter(Animator, Archiver):
             self.initial_script = None
 
 
-        self.animate_var('rose', self.state.zn, 1, 50.0, {"a":0.8, "b":3.0, "c":0.5})
-
-        self.animate_var('rose', self.state.zn, 3, 33.333, {"a":1.0, "b":4.0, "c":0.0})
-
-        self.animate_var('rose', self.state.zn, 8, 75.0, {"a":0.8, "b":3.0, "c":1.5})
-        self.animate_var('rose', self.state.zn, 9, 25.0, {"a":0.8, "b":5.0, "c":0.5})
-        self.animate_var('rose', self.state.zn, 10, 50.0, {"a":0.5, "b":4.0, "c":1.7})
-        self.animate_var('rose', self.state.zn, 11, 66.6666, {"a":0.8, "b":3.0, "c":0.5})
-
-
-
     def __del__(self):
         ''' Exit handler '''
 
@@ -237,7 +226,7 @@ class CmdCenter(Animator, Archiver):
 
         if(self.env.record_events):
             if(not self.recorded_events): self.recorded_events = Script(self)
-            self.recorded_events.push(self.time(), code)
+            self.recorded_events.push(self.time() - self.env.record_events, code)
 
         #debug("Executing cmd: %s", code)
 
@@ -409,6 +398,19 @@ class CmdCenter(Animator, Archiver):
         ''' Loads and blends to the state with the given id. '''
 
         return self.load("state_%d" % idx)
+
+
+    def toggle_record(self):
+        ''' Toggles event recording '''
+        
+        if(not self.env.record_events):
+            self.save()
+            self.env.record_events = self.time()
+            self.interface.renderer.echo("Recording script")
+        else:
+            self.env.record_events = False
+            self.recorded_events.save()            
+            self.interface.renderer.echo("Saved script as %s" % (self.recorded_events.name))
 
 
     def manual(self):

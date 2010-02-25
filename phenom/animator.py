@@ -29,7 +29,7 @@ class Animator(object):
     def animate_var(self, type, obj, idx, speed, data, exclude="Exclude"):
         ''' Adds a path to the animator. '''
 
-        obj.midi_echo = False
+        # obj.midi_echo = False
 
         key = {"obj":obj, "idx":idx}
 
@@ -75,7 +75,8 @@ class Animator(object):
             (res, status) = path[1]["func"]((t - path[1]["start"]) / path[1]["speed"])
 
             # set result
-            path[0]["obj"][path[0]["idx"]] = res
+            # path[0]["obj"][path[0]["idx"]] = res
+            self.set_val(res, path[0]["obj"], path[0]["idx"])
 
             # if necessary, remove path
             if(not status):

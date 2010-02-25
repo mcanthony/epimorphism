@@ -64,6 +64,10 @@ class KeyboardHandler(object):
         elif(key == GLUT_KEY_F1):
             self.cmdcenter.cmd("tap_tempo()")
 
+        # toggle recording events
+        elif(key == GLUT_KEY_F9):
+            self.cmdcenter.cmd("toggle_record()")
+
         # toggle echo
         elif(key == GLUT_KEY_F11):
             self.cmdcenter.cmd("toggle_echo()")
@@ -71,6 +75,9 @@ class KeyboardHandler(object):
         # toggle fps
         elif(key == GLUT_KEY_F12):
             self.cmdcenter.cmd("toggle_fps()")
+
+
+        
 
         # save state
         elif(key == "\015"): # enter
