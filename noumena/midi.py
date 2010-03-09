@@ -153,11 +153,16 @@ class MidiHandler(threading.Thread):
                 val = eval("set_" + binding[2])(old, f)
 
                 # HACK to smoothen values
-                if(binding[2] == "radius" or binding[2] == "th"):
-                    self.cmdcenter.cmd('radial_2d(zn, %d, %f, %s, %s)' % (eval(binding[1]), self.cmdcenter.interface.context.midi_speed, str(r_to_p(old)), str(r_to_p(val))))
-                else:
-                    self.cmdcenter.cmd('linear_1d(par, %d, %f, %s, %s)' % (eval(binding[1]), self.cmdcenter.interface.context.midi_speed, old, val))
+#                if(binding[2] == "radius" or binding[2] == "th"):
+ #                   self.cmdcenter.radial_2d('zn', eval(binding[1]), self.cmdcenter.interface.context.midi_speed, str(r_to_p(old)), str(r_to_p(val)))
+ #               else:
+ #                   self.cmdcenterlinear_1d('par', eval(binding[1]), self.cmdcenter.interface.context.midi_speed, str(old), str(val))
+                # self.cmdcenter.cmd('animate_var("radial_2d", "zn", 1, 50, {"s": "[0.0, 0.0]", "e":"[1.0, 0.0]"})') # (eval(binding[1]), self.cmdcenter.interface.context.midi_speed)) #, str(r_to_p(old)), str(r_to_p(val))))
 
+
+
+#                self.cmdcenter.cmd('animate_var("wave_1d", "par", 0, 25.0, {"a":0.25, "b":0.5, "th":0.0})')
+                self.cmdcenter.cmd('animate_var("linear_1d", "par", 0, 25.0, {"s": %f, "e":%f})' % (old, val))
 
             # change bindings - sortofHACK: buttons switch bindings
 

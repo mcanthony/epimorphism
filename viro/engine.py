@@ -216,24 +216,17 @@ class Engine(object):
     def do(self):
         ''' Main event loop '''
 
-
-        info("executing main loop 1")
-
         if(not self.pbo):
             critical("can't render without a pbo")
             import sys
             sys.exit()
             return
 
-        info("executing main loop 2")
-
         # grab frame buffer
         if(self.do_get_fb):
             self.do_get_fb = False
             self.get_fb_internal()
 
-
-        info("executing main loop 3")
 
         # idle until kernel found
         while(not self.kernel and not self.new_kernel): time.sleep(0.01)
@@ -264,9 +257,6 @@ class Engine(object):
         # call kernel
         cudaConfigureCall(self.grid, self.block, 0, 0)
 
-
-        info("executing main loop 4")
-
         if(self.do_reset_fb):
             self.reset(self.output_2D, c_ulong(self.output_2D_pitch.value / sizeof(float4)))
             self.do_reset_fb = False
@@ -283,16 +273,12 @@ class Engine(object):
                             self.profile.kernel_dim, cudaMemcpyDeviceToDevice)
         self.record_event(2)
 
-        info("executing main loop 5")
-
         # unmap pbo
         cudaGLUnmapBufferObject(self.pbo)
         self.record_event(3)
 
         # compute and print timings
         self.print_timings()
-
-        info("executing main loop 6")
 
         # utility - DON'T REMOVE
         #fb = self.get_fb()

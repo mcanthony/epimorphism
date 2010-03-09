@@ -147,8 +147,6 @@ class CmdCenter(Animator, Archiver):
     def do(self):
         ''' Main application loop '''
 
-        info("do1 at time " + str(self.time()))
-
         # execute engine
         if((not (self.env.manual_iter and not self.env.next_frame)) and not self.env.freeze):
             self.env.next_frame = False
@@ -162,7 +160,6 @@ class CmdCenter(Animator, Archiver):
 
             #print str(self.state.time), str(self.t_phase)
 
-
             # execute animation paths
             self.execute_paths()
 
@@ -171,9 +168,6 @@ class CmdCenter(Animator, Archiver):
             self.engine.do()
 
             self.state.frame_cnt += 1
-
-
-        info("do2 at time " + str(self.time()))
         
 
         # execute interface
@@ -203,7 +197,7 @@ class CmdCenter(Animator, Archiver):
             elif(i == 4):
                async(lambda :self.cmd("inc_data('SEED_A', 1)"))
 
-        info("do3 at time " + str(self.time()))
+
 
 
     def send_frame(self):
@@ -231,10 +225,6 @@ class CmdCenter(Animator, Archiver):
 
     def cmd(self, code, capture=False):
         ''' Execute code in the CmdEnv environment '''
-
-
-        print "executing " + code
-
 
         if(self.env.record_events):
             if(not self.recorded_events): self.recorded_events = Script(self)
