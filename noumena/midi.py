@@ -152,7 +152,7 @@ class MidiHandler(threading.Thread):
                 old = self.cmdcenter.get_val(binding[0], eval(binding[1]))
                 val = eval("set_" + binding[2])(old, f)
 
-                # HACK to smoothen values
+                # HACK to smoothen valuesx
                 if(binding[2] == "radius" or binding[2] == "th"):
                     self.cmdcenter.radial_2d('state.zn', eval(binding[1]), self.cmdcenter.interface.context.midi_speed, r_to_p(old), r_to_p(val))
                 else:

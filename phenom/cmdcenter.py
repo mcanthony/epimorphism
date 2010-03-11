@@ -233,6 +233,7 @@ class CmdCenter(Animator, Archiver):
 
 
     def cmd(self, code, capture=False):
+        debug("cmd: " + code)
         ''' Execute code in the CmdEnv environment '''
 
         if(self.env.record_events):
