@@ -75,7 +75,8 @@ class Animator(object):
             (res, status) = path[1]["func"]((t - path[1]["start"]) / path[1]["speed"])
 
             # set result
-            path[0]["obj"][path[0]["idx"]] = res
+            self.cmd("set_val(%f, %s, %s)" % (res, path[0]["obj"], str(path[0]["idx"])))
+#            path[0]["obj"][path[0]["idx"]] = res
 
             # if necessary, remove path
             if(not status):
