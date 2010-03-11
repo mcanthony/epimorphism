@@ -2,7 +2,7 @@ Epimorphism Installation:
 
 1. Download & install latest cuda drivers & cuda toolkit.  Make sure LD_LIBRARY_PATH is correctly set
 
-2. Install packages - sudo apt-get install unclutter g++ python-pyrex python-dev libportmidi-dev timidity freepats libasound2-dev
+2. Install packages - sudo apt-get install unclutter g++ python-pyrex python-dev libportmidi-dev timidity freepats libasound2-dev mencoder
 
 3. Install pyport midi from sources/pypm
    cd sources/pypm

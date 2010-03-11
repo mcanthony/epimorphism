@@ -5,6 +5,8 @@ import math
 
 from common.runner import *
 
+import threading
+
 from common.log import *
 set_log("VIDEO")
 
@@ -19,7 +21,6 @@ class VideoRenderer(object):
         # initialize vars
         self.cmdcenter, self.env = cmdcenter, env
         self.frame_num = 0
-        self.waiting_for_frame = False
 
 
     def capture(self):
@@ -29,10 +30,7 @@ class VideoRenderer(object):
         if(not self.env.render_video):
             return False
 
-        while(self.waiting_for_frame and not self.env.exit):
-            time.sleep(0.01)
-
-        info("Done waiting")
+        event = threading.Event()
 
         # define internal function for async execution
         def grab_frame():
@@ -57,12 +55,17 @@ class VideoRenderer(object):
             if(self.env.max_video_frames and self.frame_num == int(self.env.max_video_frames)):
                 self.stop_video(True)
 
-            self.waiting_for_frame = False
+            event.set()
+
+            
 
         # grab frame
-        if(not self.env.exit):
-            self.waiting_for_frame = True
-            async(grab_frame)
+        async(grab_frame)
+
+        # wait until we have frame
+        #event.wait()
+
+        info("Done waiting")
 
 
     def start_video(self, video_name=None):
