@@ -154,9 +154,10 @@ class MidiHandler(threading.Thread):
 
                 # HACK to smoothen values
                 if(binding[2] == "radius" or binding[2] == "th"):
-                    self.cmdcenter.cmd('radial_2d(zn, %d, %f, %s, %s)' % (eval(binding[1]), self.cmdcenter.interface.context.midi_speed, str(r_to_p(old)), str(r_to_p(val))))
+                    self.cmdcenter.radial_2d(self.cmdcenter.state.zn, eval(binding[1]), self.cmdcenter.interface.context.midi_speed, r_to_p(old), r_to_p(val))
+#                    self.cmdcenter.cmd('radial_2d(zn, %d, %f, %s, %s)' % (eval(binding[1]), 
                 else:
-                    self.cmdcenter.cmd('linear_1d(par, %d, %f, %s, %s)' % (eval(binding[1]), self.cmdcenter.interface.context.midi_speed, old, val))
+                    self.cmdcenter.linear_1d(self.cmdcenter.state.par, eval(binding[1]), self.cmdcenter.interface.context.midi_speed, old, val)
 
 
             # change bindings - sortofHACK: buttons switch bindings

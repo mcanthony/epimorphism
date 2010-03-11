@@ -123,14 +123,14 @@ class CmdCenter(Animator, Archiver):
             self.initial_script = None
 
 
-        self.animate_var('rose', self.state.zn, 1, 50.0, {"a":0.8, "b":3.0, "c":0.5})
+#        self.animate_var('rose', self.state.zn, 1, 50.0, {"a":0.8, "b":3.0, "c":0.5})
 
-        self.animate_var('rose', self.state.zn, 3, 33.333, {"a":1.0, "b":4.0, "c":0.0})
+ #       self.animate_var('rose', self.state.zn, 3, 33.333, {"a":1.0, "b":4.0, "c":0.0})
 
-        self.animate_var('rose', self.state.zn, 8, 75.0, {"a":0.8, "b":3.0, "c":1.5})
-        self.animate_var('rose', self.state.zn, 9, 25.0, {"a":0.8, "b":5.0, "c":0.5})
-        self.animate_var('rose', self.state.zn, 10, 50.0, {"a":0.5, "b":4.0, "c":1.7})
-        self.animate_var('rose', self.state.zn, 11, 66.6666, {"a":0.8, "b":3.0, "c":0.5})
+  #      self.animate_var('rose', self.state.zn, 8, 75.0, {"a":0.8, "b":3.0, "c":1.5})
+   #     self.animate_var('rose', self.state.zn, 9, 25.0, {"a":0.8, "b":5.0, "c":0.5})
+    #    self.animate_var('rose', self.state.zn, 10, 50.0, {"a":0.5, "b":4.0, "c":1.7})
+     #   self.animate_var('rose', self.state.zn, 11, 66.6666, {"a":0.8, "b":3.0, "c":0.5})
 
 
 
