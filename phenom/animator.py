@@ -29,7 +29,7 @@ class Animator(object):
     def animate_var(self, type, obj, idx, speed, data, exclude="Exclude"):
         ''' Adds a path to the animator. '''
 
-#        eval("self." + obj).midi_echo = False
+        # obj.midi_echo = False
 
         key = {"obj":obj, "idx":idx}
 
@@ -44,7 +44,7 @@ class Animator(object):
         # if Overwrite, remove existing path
         if(exclude == "Overwrite"):
             self.remove_paths(obj, idx);
-#            eval("self." + obj).midi_echo = False
+            #obj.midi_echo=False
 
         # add path
         self.paths.append((key, {"start": self.time(), "speed": speed, "func":(lambda t: eval(type)(t, data))}))
@@ -60,7 +60,7 @@ class Animator(object):
         for path in active_paths:
             self.paths.remove(path)
 
- #       eval("self." + obj).midi_echo = True
+        #obj.midi_echo = True
 
 
     def execute_paths(self):
@@ -75,11 +75,9 @@ class Animator(object):
             (res, status) = path[1]["func"]((t - path[1]["start"]) / path[1]["speed"])
 
             # set result
-#            self.cmd("set_val(%s, %s, %s)" % (str(res), path[0]["obj"], str(path[0]["idx"])))
-            path[0]["obj"][path[0]["idx"]] = res
+            # path[0]["obj"][path[0]["idx"]] = res
+            self.set_val(res, path[0]["obj"], path[0]["idx"])
 
             # if necessary, remove path
             if(not status):
                 self.remove_paths(path[0]["obj"], path[0]["idx"])
-
-
