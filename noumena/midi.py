@@ -107,6 +107,10 @@ class MidiHandler(threading.Thread):
     def writef(self, bank, channel, f):
         ''' Write a value out '''
 
+        # return if midi output disabled
+        if(not self.context.midi_output):
+            return
+
         # get val
         val = int(f * 128.0)
         if(val == 128): val = 127

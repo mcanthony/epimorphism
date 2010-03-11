@@ -42,6 +42,7 @@ class State(DictObj):
         # create midi_lists
         self.zn  = MidiList(self.zn)
         self.par = MidiList(self.par)
+        self.time = 0
 
 
 class Profile(DictObj):

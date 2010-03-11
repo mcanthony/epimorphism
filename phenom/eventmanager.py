@@ -11,11 +11,13 @@ class EventManager(object):
         def inner(self, element, multiplier=0):
             old_time = self.state.component_switch_time
             time = 60.0 / self.state.bpm * (2 ** multiplier)
-            self.state.component_switch_time = 2.0#time
+            self.cmdcenter.cmd("state.component_switch_time = 2.0")
+            #self.state.component_switch_time = 2.0#time
 
             f(self, element, time)
 
-            self.state.component_switch_time = old_time
+            self.cmdcenter.cmd("state.component_switch_time = %f" % old_time)
+            # self.state.component_switch_time = old_time
 
         return inner
 

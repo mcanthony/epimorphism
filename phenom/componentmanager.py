@@ -105,7 +105,7 @@ class ComponentManager(object):
 
     def switch_components(self, data):
         ''' Switches the system to the new components specified in data '''
-        debug("Switching components: %s" % str(data))
+        info("Switching components: %s" % str(data))
 
         if(len(data) == 0):
             return True
@@ -156,6 +156,8 @@ class ComponentManager(object):
         # wait until interpolation is done
         while(self.cmdcenter.time() - self.state.internal[first_idx] < self.state.component_switch_time):
             time.sleep(0.1)
+
+        info("done switching")
 
         # update state
         for component_name, update in updates.items():

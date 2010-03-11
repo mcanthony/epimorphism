@@ -36,6 +36,7 @@ class Script(object):
                 else:
                     self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
                 self.current_idx += 1
+#            print("a")
             time.sleep(0.001)
 
 
