@@ -30,6 +30,7 @@ class Animator(object):
         ''' Adds a path to the animator. '''
 
         # obj.midi_echo = False
+        eval("self."+obj).midi_echo = False
 
         key = {"obj":obj, "idx":idx}
 

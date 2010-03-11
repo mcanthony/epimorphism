@@ -155,6 +155,8 @@ class Engine(object):
     def get_fb_internal(self):
         ''' This is the internal function called by the main thread to grab the frame buffer '''
 
+        info("Get fb internal")
+
         # map buffer
         cudaGLMapBufferObject(byref(self.pbo_ptr), self.pbo)
 
@@ -224,6 +226,7 @@ class Engine(object):
         if(self.do_get_fb):
             self.do_get_fb = False
             self.get_fb_internal()
+
 
         # idle until kernel found
         while(not self.kernel and not self.new_kernel): time.sleep(0.01)
