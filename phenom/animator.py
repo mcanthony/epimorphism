@@ -45,7 +45,7 @@ class Animator(object):
         # if Overwrite, remove existing path
         if(exclude == "Overwrite"):
             self.remove_paths(obj, idx);
-            #obj.midi_echo=False
+            eval("self."+obj).midi_echo = False
 
         # add path
         self.paths.append((key, {"start": self.time(), "speed": speed, "func":(lambda t: eval(type)(t, data))}))
@@ -61,7 +61,8 @@ class Animator(object):
         for path in active_paths:
             self.paths.remove(path)
 
-        #obj.midi_echo = True
+
+        eval("self."+obj).midi_echo = False
 
 
     def execute_paths(self):
