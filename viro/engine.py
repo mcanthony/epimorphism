@@ -5,6 +5,7 @@ from cuda.cuda_api import *
 from viro.compiler import Compiler
 from viro import compiler
 
+import threading
 import time
 import Image
 
@@ -90,6 +91,9 @@ class Engine(object):
         # compiler config
         self.compiler_config = {}
 
+        self.new_kernel_event = threading.Event()
+        self.new_fb_event = threading.Event()
+
 
     def __del__(self):
         debug("Deleting Engine")
@@ -167,12 +171,14 @@ class Engine(object):
 
         # return c_ubyte array
         self.fb_contents = (c_ubyte * (4 * (self.profile.kernel_dim ** 2))).from_address(self.host_array.value)
+        self.new_fb_event.set()
 
 
     def set_new_kernel(self, name):
         ''' Compiler callback '''
         debug("Setting new kernel: %s" % name)
 
+        self.new_kernel_event.set()
         self.new_kernel = name
 
 
@@ -229,7 +235,8 @@ class Engine(object):
 
 
         # idle until kernel found
-        while(not self.kernel and not self.new_kernel): time.sleep(0.01)
+        if(not self.kernel):
+            self.new_kernel_event.wait()
 
         # switch kernel if necessary
         if(self.new_kernel) : self.switch_kernel()
@@ -305,12 +312,11 @@ class Engine(object):
 
         # set flag and wait
         self.do_get_fb = True
-        while(not self.fb_contents): time.sleep(0.01)\
+        self.new_fb_event.clear()
+        self.new_fb_event.wait()
 
-        # return & clear contents
-        tmp = self.fb_contents
-        self.fb_contents = None
-        return tmp
+        # return contents
+        return self.fb_contents
 
 
     def pixel_at(self, x, y):

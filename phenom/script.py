@@ -27,18 +27,17 @@ class Script(object):
     def _execute(self):
         ''' Internal execution loop '''
 
-
         # main execution loop
         while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):            
-            while(self.current_idx < len(self.events) and self.cmdcenter.time() >= self.events[self.current_idx]["time"]):
+            while(self.current_idx < len(self.events) and self.cmdcenter.time() >= self.events[self.current_idx]["time"] and not self.cmdcenter.env.exit):
                 if("inc" in self.events[self.current_idx]["cmd"]):
                     async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
                 else:
                     self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
                 self.current_idx += 1
-#            print("a")
-            time.sleep(0.001)
-
+            if(self.current_idx < len(self.events)):
+                t = self.events[self.current_idx]["time"] - self.cmdcenter.time()
+                time.sleep(t)
 
         debug("Finished executing script")
 

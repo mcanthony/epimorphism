@@ -1,5 +1,4 @@
 Queue -
-  fix threading time.sleep issues
   clean video rendering & video_script
   fix corrupt images
   create roses path
