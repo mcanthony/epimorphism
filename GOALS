@@ -1,7 +1,28 @@
-1. Live VJ software
+Environments - 
 
-3. Gallery exhibition
+1. autonomous generation
+   a. randomly navigate space,
+   b. use ai to search space
+   c. sync up with music
 
-4. Media(Video/Still) generation
+2. user interactive mode
+   a. simple midi controller or keyboard layout
+   b. periodicly switches through archived states
+   c. periodicly changes components
+   d. periodicly adds/removes paths
+   e. somehow expose advanced interface
 
-5. Screensaver
+3. screensaver
+   a. operates as 1
+   b. but can be switched into 2
+
+4. vj mode
+   a. similar to 2
+   b. additional real time animation controls
+   
+5. video rendering 
+
+6. high quality still generation
+
+7. development
+

@@ -106,7 +106,8 @@ class VideoRenderer(object):
 
         # run script to compress video
         if(compress):
-            "mencoder mf://video/2/*.png -mf w=512:h=512:fps=20:type=png -ovc lavc -lavcopts vcodec=mpeg4:mbd=2:trell -oac copy -o %s.avi" % self.video_name
+            "mencoder mf://video/11/*.png -mf w=1536:h=1536:fps=30:type=png -ovc lavc -lavcopts vbitrate=11520000:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o 11.avi"
+            "mencoder 11.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o 11_audio.avi"
 
         # turn off fps sync
         self.env.fps_sync = False

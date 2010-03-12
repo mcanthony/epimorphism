@@ -1,3 +1,14 @@
+Queue -
+  fix threading time.sleep issues
+  clean video rendering & video_script
+  fix corrupt images
+  create roses path
+  create component script
+  unify state(paths, time, etc)
+  figure out command recording
+
+  archiving
+
 Release -
   create installer script
   figure out pyportmidi

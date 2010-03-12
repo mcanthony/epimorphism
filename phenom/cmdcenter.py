@@ -302,8 +302,12 @@ class CmdCenter(Animator, Archiver):
         ''' Gets the framebuffer and binds it to an Image. '''
         info("Grab image")
 
-        img = Image.frombuffer("RGBA", (self.engine.profile.kernel_dim, self.engine.profile.kernel_dim),
-                               self.engine.get_fb(), "raw", "RGBA", 0, -1).convert("RGB")
+        try:
+            img = Image.frombuffer("RGBA", (self.engine.profile.kernel_dim, self.engine.profile.kernel_dim),
+                                   self.engine.get_fb(), "raw", "RGBA", 0, -1).convert("RGB")
+        except Exception, err:
+            info(str(err))
+            sys.exit(0)
 
         info("Done grab image")
 
