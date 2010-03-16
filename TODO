@@ -1,6 +1,6 @@
 Queue -
+  fix video rendering script bug
   clean video rendering & video_script
-  fix corrupt images
   create roses path
   create component script
   unify state(paths, time, etc)

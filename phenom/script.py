@@ -37,7 +37,8 @@ class Script(object):
                 self.current_idx += 1
             if(self.current_idx < len(self.events)):
                 t = self.events[self.current_idx]["time"] - self.cmdcenter.time()
-                time.sleep(t)
+                if(t > 0):
+                    time.sleep(t)
 
         debug("Finished executing script")
 

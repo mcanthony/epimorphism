@@ -98,6 +98,9 @@ class Engine(object):
     def __del__(self):
         debug("Deleting Engine")
 
+        self.new_kernel_event.set()
+        self.new_fb_event.set()
+
         # clear cuda memory
         cudaFreeArray(self.fb)
         cudaFreeArray(self.aux)
@@ -293,6 +296,7 @@ class Engine(object):
         #c = self.profile.kernel_dim - 5
         #if(self.frame_count % 20 == 0):
         #    print fb[4 * (r * self.profile.kernel_dim + c) + 0], fb[4 * (r * self.profile.kernel_dim + c) + 1], fb[4 * (r * self.profile.kernel_dim + c) + 2], fb[4 * (r * self.profile.kernel_dim + c) + 3]
+
 
 
     ######################################### PUBLIC ##################################################

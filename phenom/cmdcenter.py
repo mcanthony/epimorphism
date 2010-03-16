@@ -126,6 +126,10 @@ class CmdCenter(Animator, Archiver):
     def __del__(self):
         ''' Exit handler '''
 
+        # stop video
+        if(self.env.render_video):
+            self.video_renderer.stop_video()
+
         # save events
         if(self.env.record_events and self.recorded_events):
             info("Saving events")
@@ -156,7 +160,6 @@ class CmdCenter(Animator, Archiver):
                 self.state.time = self.state.frame_cnt / float(self.env.fps_sync) + self.t_phase
             else:
                 self.state.time = time.time() - self.t_start # + self.t_phase
-
 
             #print str(self.state.time), str(self.t_phase)
 

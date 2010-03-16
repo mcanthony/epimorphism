@@ -1,5 +1,6 @@
 import time
 import os.path
+import os
 
 import math
 
@@ -14,6 +15,7 @@ class VideoRenderer(object):
     ''' The VideoRenderer object is responsible for sequentially capturing the
         frames output by the engine '''
 
+
     def __init__(self, cmdcenter, env):
 
         debug("Initializing video renderer")
@@ -21,6 +23,8 @@ class VideoRenderer(object):
         # initialize vars
         self.cmdcenter, self.env = cmdcenter, env
         self.frame_num = 0
+
+        self.capturing_event = threading.Event()
 
 
     def capture(self):
@@ -30,16 +34,9 @@ class VideoRenderer(object):
         if(not self.env.render_video):
             return False
 
-        event = threading.Event()
-
-        # define internal function for async execution
-        def grab_frame():
-            info("Grabbing frame")
-
-            # save frame
+        # encapsulated for asynchronous execution
+        def grab_image():
             image = self.cmdcenter.grab_image()
-
-            info("Finished grabbing")
 
             # pad frame_num
             digit_size = 5
@@ -48,24 +45,23 @@ class VideoRenderer(object):
             # save
             image.save("video/%s/%s.png" % (self.video_name, padded))
 
-            # inc frame num
-            self.frame_num += 1
-
             # stop video if necessary
             if(self.env.max_video_frames and self.frame_num == int(self.env.max_video_frames)):
                 self.stop_video(True)
 
-            event.set()
+            self.capturing_event.set()
 
-            
 
-        # grab frame
-        async(grab_frame)
+        if(self.frame_num != 0):
+            self.capturing_event.wait()
+        self.capturing_event.clear()
 
-        # wait until we have frame
-        #event.wait()
+        # inc frame num
+        self.frame_num += 1
 
-        info("Done waiting")
+        # async grab frame
+        self.cmdcenter.engine.do_get_fb = True
+        async(grab_image)
 
 
     def start_video(self, video_name=None):
@@ -94,20 +90,21 @@ class VideoRenderer(object):
 
 
     def stop_video(self, compress=False):
-
         info("Stopping video renderer")
 
         # return if necessary
         if(not self.env.render_video):
             return False
 
-        # set vars
         self.env.render_video = False
 
-        # run script to compress video
-        if(compress):
-            "mencoder mf://video/11/*.png -mf w=1536:h=1536:fps=30:type=png -ovc lavc -lavcopts vbitrate=11520000:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o 11.avi"
-            "mencoder 11.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o 11_audio.avi"
+        def compress():
+            cmd = "mencoder mf://video/%s/*.png -mf w=%d:h=%d:fps=%f:type=png -ovc lavc -lavcopts vbitrate=%d:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o %s.avi" % (self.video_name, self.cmdcenter.engine.profile.kernel_dim, self.cmdcenter.engine.profile.kernel_dim, self.env.video_frame_rate, 60 * 25 * self.cmdcenter.engine.profile.kernel_dim * self.cmdcenter.engine.profile.kernel_dim / 256, self.video_name)
+            info("Compressing with command - " + cmd)
+            os.system(cmd)
+            print "to add audio - mencoder %s.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o %s_audio.avi" % (self.video_name, self.video_name)
+
+        async(compress)                           
 
         # turn off fps sync
         self.env.fps_sync = False
