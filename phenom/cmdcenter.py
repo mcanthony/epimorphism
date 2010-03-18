@@ -230,7 +230,6 @@ class CmdCenter(Animator, Archiver):
         ''' Execute code in the CmdEnv environment '''
 
         if(self.env.record_events):
-            if(not self.recorded_events): self.recorded_events = Script(self)
             self.recorded_events.push(self.time() - self.env.record_events, code)
 
         #debug("Executing cmd: %s", code)
@@ -265,8 +264,6 @@ class CmdCenter(Animator, Archiver):
 
 
     # UTILITY FUNCTIONS
-
-
     def set_val(self, val, var, idx):
         self.cmd("%s[%s] = %s" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx), val))
 
@@ -351,6 +348,8 @@ class CmdCenter(Animator, Archiver):
 
         self.env.freeze = True
         async(lambda : self.__save_image(img, name))
+
+        return name
         # img.show()
 
 
@@ -415,8 +414,10 @@ class CmdCenter(Animator, Archiver):
         ''' Toggles event recording '''
         
         if(not self.env.record_events):
-            self.save()
+            name = self.save()
             self.env.record_events = self.time()
+            self.recorded_events = Script(self)
+            self.recorded_events.add_event(0.0, "load('%s')" % name)
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
         else:            

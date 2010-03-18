@@ -1,27 +1,36 @@
 Queue -
-  fix video rendering script bug
   clean video rendering & video_script
+
+  add paths to states
+  remove internal from states
+  intelligently deal with color speeds & phases
+  clean compiler options
+  
   create roses path
   create component script
   unify state(paths, time, etc)
+  Path objects  
   figure out command recording
+
+  video rendering script bug
 
   archiving
 
 Release -
-  create installer script
+  create installer script - distutils
   figure out pyportmidi
-  windows & mac compatible
+  mac compatible
+  windows compatible
   compile to binaries
 
 Public - 
   readme
   finish website
   configure keyboard for public use
+  more documentation
   add argument lists to help
 
 Archiving - 
-  load/save state time
   archive application for adding to archive
   archive current_data
   high fidelity rerendering archiving
@@ -55,17 +64,13 @@ Ideas -
   transition dumps??
 
 Misc Tasks - 
-  add paths to states
-  remove internal from states
   compiler - intellegently load function from kernel.so
-  clean compiler options
-  intelligently deal with color speeds & phases
   manual iteration fps_time
   ?? save image fps_time
   screenshots while manual iteration
 
 Bugs - 
-  glGetIntegerv fails
+     
   configmanager dump object newline issues(only really relevant for scripts)
   fix console window
   component switch discontinuities
