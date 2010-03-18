@@ -100,6 +100,8 @@ class ComponentManager(object):
                 warning("Can't load component: %s - %s" % (component_name, val))
                 can_switch = False
 
+
+
         return can_switch
 
 

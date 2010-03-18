@@ -49,6 +49,10 @@ class VideoRenderer(object):
             if(self.env.max_video_frames and self.frame_num == int(self.env.max_video_frames)):
                 self.stop_video(True)
 
+                if(self.env.video_script):
+                    info("Video rendering complete.  Exiting program")
+                    self.env.exit = True
+
             self.capturing_event.set()
 
 

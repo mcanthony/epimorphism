@@ -66,6 +66,11 @@ class Script(object):
         # increment index if necessary
         if(idx < self.current_idx): self.current_idx += 1
 
+    def last_event_time(self):
+        ''' Returns the time of the last event '''
+
+        return self.events[-1]["time"]
+
 
     def push(self, time, cmd):
         ''' Push an event to the top of the stack '''

@@ -82,11 +82,24 @@ class CmdCenter(Animator, Archiver):
         self.t_phase = 0.0
         self.recorded_events = None
 
+        # load initial script
+        if(self.env.initial_script):
+            self.initial_script = Script(self, self.env.initial_script)
+        else:
+            self.initial_script = None
+
         # create video_renderer
         self.video_renderer = VideoRenderer(self, self.env)
 
+        if(self.env.video_script):
+            self.env.render_video = True
+            self.initial_script = Script(self, self.env.video_script)
+            self.env.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.env.video_frame_rate)
+            debug("Setting max_video_frames to %d" % self.env.max_video_frames)
+
         if(self.env.render_video):
             self.video_renderer.start_video()
+
 
         # create cmd_env function blacklist
         func_blacklist = ['do', '__del__', '__init__', 'kernel', 'print_timings', 'record_event', 'start', 'switch_kernel',
@@ -115,12 +128,6 @@ class CmdCenter(Animator, Archiver):
 
         self.last_event_time = 0
         seed()
-
-        # load initial script
-        if(self.env.initial_script):
-            self.initial_script = Script(self, self.env.initial_script)
-        else:
-            self.initial_script = None
 
 
     def __del__(self):
@@ -360,7 +367,7 @@ class CmdCenter(Animator, Archiver):
         self.env.freeze = False
 
 
-    def load(self, name):
+    def load(self, name, immediate=False):
         ''' Loads and blends to the given state. '''
 
         if(isinstance(name, int)):
@@ -373,6 +380,11 @@ class CmdCenter(Animator, Archiver):
             return False
         
         updates = {}
+
+        # if immediate, change switch time
+        if(immediate):
+            old_switch_time = self.state.component_switch_time
+            self.state.component_switch_time = 0.000001            
 
         # get update components
         for name in self.componentmanager.component_list():
@@ -389,19 +401,22 @@ class CmdCenter(Animator, Archiver):
 
         # blend to zns
         for i in xrange(len(new_state.zn)):
-            self.cmd('radial_2d(zn, %d, component_switch_time, %s, %s)' % (i, str(r_to_p(self.state.zn[i])), str(r_to_p(new_state.zn[i]))))
+            self.radial_2d('state.zn', i, self.state.component_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
 
         # blend to pars
         for i in xrange(len(new_state.par)):
-            self.cmd('linear_1d(par, %d, component_switch_time, %f, %f)' % (i, self.state.par[i], new_state.par[i]))
+            self.linear_1d('state.par', i, self.state.component_switch_time, self.state.par[i], new_state.par[i])
 
 
         # print new_state.time, self.state.time, self.t_phase, self.state.component_switch_time
-
         # shift t_start
         # self.cmd('linear_1d(cmd, "t_phase", component_switch_time, %f, %f)' % (0, state.time + self.t_phase - 1.0) / 1.0))
 
-        self.cmd("switch_components(%s)" % str(updates))
+        self.componentmanager.switch_components(updates)
+
+        # if immediate, revert switch time
+        if(immediate):
+            self.state.component_switch_time = old_switch_time
 
 
     def load_state(self, idx):
@@ -417,7 +432,7 @@ class CmdCenter(Animator, Archiver):
             name = self.save()
             self.env.record_events = self.time()
             self.recorded_events = Script(self)
-            self.recorded_events.add_event(0.0, "load('%s')" % name)
+            self.recorded_events.add_event(0.0, "load('%s', True)" % name)
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
         else:            

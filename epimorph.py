@@ -86,6 +86,7 @@ def main():
     # start main loop
     debug("Starting")
     cmdcenter.start()
+    env.exit = True
     info("Main loop completed")
 
     # clean objects

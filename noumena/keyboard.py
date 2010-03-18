@@ -52,13 +52,13 @@ class KeyboardHandler(object):
         elif(key == GLUT_KEY_HOME):
             default = configmanager.load_dict("state", "default")
             for i in xrange(len(default.zn)):
-                self.cmdcenter.cmd('radial_2d(zn, %d, 0.4, %s, %s)' % (i, str(r_to_p(self.state.zn[i])), str(r_to_p(default.zn[i]))))
+                self.cmdcenter.radial_2d('state.zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
 
         # reset par
         elif(key == GLUT_KEY_END):
             default = configmanager.load_dict("state", "default")
             for i in xrange(len(default.par)):
-                self.cmdcenter.cmd('linear_1d(par, %d, 0.4, %f, %f)' % (i, self.state.par[i], default.par[i]))
+                self.cmdcenter.linear_1d('state.par', i, 0.4, self.state.par[i], default.par[i])
 
         # tap tempo
         elif(key == GLUT_KEY_F1):
@@ -75,9 +75,7 @@ class KeyboardHandler(object):
         # toggle fps
         elif(key == GLUT_KEY_F12):
             self.cmdcenter.cmd("toggle_fps()")
-
-
-        
+     
 
         # save state
         elif(key == "\015"): # enter
@@ -118,7 +116,7 @@ class KeyboardHandler(object):
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20
                 x0 = self.state.par[i]
                 x1 = self.state.par[i] + 0.05
-                self.cmdcenter.cmd('linear_1d(par, %d, kbd_switch_spd, %f, %f)' % (i, x0, x1))
+                self.cmdcenter.linear_1d('state.par', i, self.context.kbd_switch_spd, x0, x1)
 
             # decrement par[i]
             elif(ord(key) in [17, 23, 5, 18, 20, 25, 21, 9, 15, 16, 26, 24, 3, 22, 2, 14, 13, 44, 46, 31]): # row 2 & 4
@@ -126,7 +124,7 @@ class KeyboardHandler(object):
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20
                 x0 = self.state.par[i]
                 x1 = self.state.par[i] - 0.05
-                self.cmdcenter.cmd('linear_1d(par, %d, kbd_switch_spd, %f, %f)' % (i, x0, x1))
+                self.cmdcenter.linear_1d('state.par', i, self.context.kbd_switch_spd, x0, x1)
 
         else:
 
@@ -146,7 +144,7 @@ class KeyboardHandler(object):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[0] += self.context.par_scale * 0.05
-                self.cmdcenter.cmd('radial_2d(zn, %d, kbd_switch_spd, %s, %s)' % (i, str(z0), str(z1)))
+                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0, z1)
 
             # decrement zn_r
             elif(key in ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]):
@@ -156,7 +154,7 @@ class KeyboardHandler(object):
                 z1[0] -= self.context.par_scale * 0.05
                 if(z1[0] < 0.0):
                     z1[0] = 0
-                self.cmdcenter.cmd('radial_2d(zn, %d, kbd_switch_spd, %s, %s)' % (i, str(z0), str(z1)))
+                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0, z1)
 
             # increment zn_th
             elif(key in ["A", "S", "D", "F", "G", "H", "J", "K", "L", ":"]):
@@ -164,7 +162,7 @@ class KeyboardHandler(object):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] += self.context.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.cmd('radial_2d(zn, %d, kbd_switch_spd, %s, %s)' % (i, str(z0), str(z1)))
+                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0, z1)
 
             # decrement zn_th
             elif(key in ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"]):
@@ -172,7 +170,7 @@ class KeyboardHandler(object):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] -= self.context.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.cmd('radial_2d(zn, %d, kbd_switch_spd, %s, %s)' % (i, str(z0), str(z1)))
+                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0, 
 
             # magnify par_scale
             elif(key == GLUT_KEY_PAGE_UP):

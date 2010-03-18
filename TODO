@@ -1,16 +1,15 @@
 Queue -
-  clean video rendering & video_script
+  figure out command recording
+
+  create roses path
+  create component script
+  unify state(paths, time, etc)
+  Path objects  
 
   add paths to states
   remove internal from states
   intelligently deal with color speeds & phases
   clean compiler options
-  
-  create roses path
-  create component script
-  unify state(paths, time, etc)
-  Path objects  
-  figure out command recording
 
   video rendering script bug
 
