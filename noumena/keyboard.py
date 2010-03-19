@@ -170,7 +170,7 @@ class KeyboardHandler(object):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] -= self.context.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0, 
+                self.cmdcenter.radial_2d('state.zn', i, self.context.kbd_switch_spd, z0,  z1)
 
             # magnify par_scale
             elif(key == GLUT_KEY_PAGE_UP):

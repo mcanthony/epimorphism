@@ -1,12 +1,12 @@
 Queue -
-  figure out command recording
-
   create roses path
   create component script
+
+  figure out command recording
+
   unify state(paths, time, etc)
   Path objects  
 
-  add paths to states
   remove internal from states
   intelligently deal with color speeds & phases
   clean compiler options
@@ -15,12 +15,14 @@ Queue -
 
   archiving
 
+
 Release -
   create installer script - distutils
   figure out pyportmidi
   mac compatible
   windows compatible
   compile to binaries
+
 
 Public - 
   readme
@@ -29,11 +31,13 @@ Public -
   more documentation
   add argument lists to help
 
+
 Archiving - 
   archive application for adding to archive
   archive current_data
   high fidelity rerendering archiving
   state names
+
 
 Contents - 
   paths
@@ -45,7 +49,9 @@ Contents -
   w=-1 response
   kernel optimization  
 
+
 Ideas -
+  script migrations
   metapaths 
   opengl effects
   smarter randomization
@@ -60,13 +66,14 @@ Ideas -
   seed impulses
   deal with state dumps that occur while blending
   force fps
-  transition dumps??
+
 
 Misc Tasks - 
   compiler - intellegently load function from kernel.so
   manual iteration fps_time
   ?? save image fps_time
   screenshots while manual iteration
+
 
 Bugs - 
      

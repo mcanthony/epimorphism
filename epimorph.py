@@ -73,7 +73,7 @@ def main():
     global interface, engine, cmdcenter
     interface = Interface(context)
     engine    = Engine(profile)
-    cmdcenter = CmdCenter(env, state, interface, engine)
+    cmdcenter = CmdCenter(env, state, interface, engine)    
 
     debug("Syncing modules")
     interface.sync(cmdcenter)
