@@ -79,10 +79,6 @@ def main():
     interface.sync(cmdcenter)
     engine.sync(interface.renderer)
 
-    # compile engine - CLEAN THIS
-    engine.compile({'ptxas_stats': profile.ptxas_stats, 'par_names':state.par_names, 'datamanager':cmdcenter.componentmanager.datamanager,
-                    'splice':env.splice_components, 'state':state, 'cull_enabled':env.cull_enabled})
-
     # start main loop
     debug("Starting")
     cmdcenter.start()

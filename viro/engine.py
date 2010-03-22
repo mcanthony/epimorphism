@@ -301,6 +301,12 @@ class Engine(object):
 
     ######################################### PUBLIC ##################################################
 
+    def start(self, compiler_options):
+        ''' Start engine '''
+        info("Starting engine")
+
+        self.compile(compiler_options)
+
     def compile(self, compiler_config):
         # compile engine kernel - this needs to be generalized
         debug("Compiling kernel")

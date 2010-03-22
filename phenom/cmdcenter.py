@@ -150,6 +150,10 @@ class CmdCenter(Animator, Archiver):
 
         if(self.initial_script):
             self.initial_script.start()
+
+        self.engine.start({'ptxas_stats': self.engine.profile.ptxas_stats, 'par_names':self.state.par_names, 'datamanager':self.componentmanager.datamanager,
+                           'splice':self.env.splice_components, 'state':self.state, 'cull_enabled':self.env.cull_enabled})
+
         self.interface.renderer.start()
 
 
