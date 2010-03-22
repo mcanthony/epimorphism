@@ -20,7 +20,7 @@ class Interface(object):
         # set variables
         Globals().load(self)
 
-        self.renderer = Renderer(self.context)
+        self.renderer = Renderer()
 
 
     def __del__(self):

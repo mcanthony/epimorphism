@@ -1,3 +1,5 @@
+from globals import *
+
 from ctypes import *
 from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
@@ -19,9 +21,10 @@ class Renderer(object):
 
     def __init__(self, context):
         debug("Initializing Renderer")
+        Globals().load(self)
 
         # set variables
-        self.context, self.screen = context, context.screen
+        self.screen = self.context.screen
 
         # initialize glut
         glutInit(1, [])
