@@ -1,3 +1,5 @@
+from globals import *
+
 import time
 import os
 import re
@@ -38,10 +40,11 @@ class Compiler(threading.Thread):
     ''' A Compiler object if responsible for asynchronously calling nvcc.
         The compilation can be restarted by a call to update. '''
 
-    def __init__(self, callback, config):
+    def __init__(self, callback):
         debug("Initializing Compiler")
+        Globals().load(self)
 
-        self.callback, self.config = callback, config
+        self.callback = callback
 
         self.substitutions = {}
 
@@ -54,10 +57,13 @@ class Compiler(threading.Thread):
             statements that are spliced into the kernels '''
         debug("Splicing components")
 
-        for component_name in self.config['datamanager'].component_names:
-            component_list = self.config['datamanager'].components[component_name]
 
-            idx = self.config['datamanager'].component_names.index(component_name)
+
+
+        for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
+            component_list = self.cmdcenter.componentmanager.datamanager.components[component_name]
+
+            idx = self.cmdcenter.componentmanager.datamanager.component_names.index(component_name)
 
             if(len(component_list) == 0):
                 self.substitutions[component_name] = ""
@@ -102,27 +108,27 @@ class Compiler(threading.Thread):
         file.close()
 
         # cull mode
-        if(self.config['cull_enabled']):
+        if(self.env.cull_enabled):
             self.substitutions['CULL_ENABLED'] = "#define CULL_ENABLED"
         else:
             self.substitutions['CULL_ENABLED'] = ""
 
         # components
-        if(self.config['splice']):
+        if(self.env.splice_components):
             self.splice_components()
         else:
-            for component_name in self.config['datamanager'].component_names:
-                if(component_name in self.config['state'].components):
-                    self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.config['state'].components[component_name])
+            for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
+                if(component_name in self.state.components):
+                    self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.state.components[component_name])
                 else:
                     self.substitutions[component_name] = ""
 
         # bind PAR_NAMES
         par_name_str = ""
 
-        for i in xrange(len(self.config["par_names"])):
-            if(self.config["par_names"][i] != ""):
-                par_name_str += "#define %s par[%d]\n" % (self.config["par_names"][i], i)
+        for i in xrange(len(self.state.par_names)):
+            if(self.state.par_names[i] != ""):
+                par_name_str += "#define %s par[%d]\n" % (self.state.par_names[i], i)
 
         self.substitutions["PAR_NAMES"] = par_name_str
 
@@ -157,13 +163,13 @@ class Compiler(threading.Thread):
             contents += open("aeon/" + file).read()
 
         # seed to force recompilation if necessary
-        if(not self.config["splice"]): contents += str(time.clock())
+        if(not self.env.splice_components): contents += str(time.clock())
 
         # hash
         hash = hashlib.sha1(contents).hexdigest()
 
         # make name
-        if(self.config["splice"]):
+        if(self.env.splice_components):
             name = "kernel_spliced-%s" % hash
         else:
             os.system("rm kernels/kernels_nonspliced*")
@@ -173,7 +179,7 @@ class Compiler(threading.Thread):
         if(not os.path.exists("kernels/%s.so" % name)):
             info("Compiling kernel - %s" % name)
 
-            os.system("/usr/local/cuda/bin/nvcc  --host-compilation=c -Xcompiler -fPIC -o kernels/%s.so --shared %s aeon/__kernel.cu" % (name, self.config['ptxas_stats'] and "--ptxas-options=-v" or ""))
+            os.system("/usr/local/cuda/bin/nvcc  --host-compilation=c -Xcompiler -fPIC -o kernels/%s.so --shared %s aeon/__kernel.cu" % (name, self.profile.ptxas_stats and "--ptxas-options=-v" or ""))
 
             # remove tmp files
             files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

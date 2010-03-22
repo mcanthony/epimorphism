@@ -69,22 +69,16 @@ state   = configmanager.merge_with_default("state", app.state, **args["state"])
 def main():
     info("Starting main loop")
 
-    # initialize & sync modules
-    debug("Initializing modules")
-    #interface = Interface(context)
-    #engine    = Engine(profile)
-    #cmdcenter = CmdCenter(env, state, interface, engine)    
+    # initialize modules
+    debug("Initializing modules")    
 
     interface = Interface()
     engine = Engine()
     cmdcenter = CmdCenter()
     Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
-
     interface.init()
     engine.init()
     cmdcenter.init(env, state, interface, engine)
-    
-    engine.sync(interface.renderer)
 
     # start main loop
     debug("Starting")

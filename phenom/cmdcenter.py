@@ -148,12 +148,12 @@ class CmdCenter(Animator, Archiver):
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
+        # start initial script
         if(self.initial_script):
             self.initial_script.start()
 
-        self.engine.start({'ptxas_stats': self.engine.profile.ptxas_stats, 'par_names':self.state.par_names, 'datamanager':self.componentmanager.datamanager,
-                           'splice':self.env.splice_components, 'state':self.state, 'cull_enabled':self.env.cull_enabled})
-
+        # start modules - DOESN'T RETURN
+        self.engine.start()
         self.interface.start()
 
 

@@ -89,9 +89,6 @@ class Engine(object):
 
         self.pbo = None
 
-        # compiler config
-        self.compiler_config = {}
-
         self.new_kernel_event = threading.Event()
         self.new_fb_event = threading.Event()
 
@@ -113,18 +110,6 @@ class Engine(object):
 
         # delete events
         [cudaEventDestroy(event) for event in self.events]
-
-
-    def sync(self, output):
-        ''' Syncs output module with engine '''
-
-        # generate pbo
-        self.pbo = output.generate_pbo(self.profile.kernel_dim)
-
-        # register_pbo
-        self.pbo_ptr = c_void_p()
-        status = cudaGLRegisterBufferObject(self.pbo)
-        cudaGLMapBufferObject(byref(self.pbo_ptr), self.pbo)
 
 
     def record_event(self, idx):
@@ -302,18 +287,26 @@ class Engine(object):
 
     ######################################### PUBLIC ##################################################
 
-    def start(self, compiler_options):
+    def start(self):
         ''' Start engine '''
         info("Starting engine")
 
-        self.compile(compiler_options)
+        # generate pbo
+        self.pbo = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
 
-    def compile(self, compiler_config):
+        # register_pbo
+        self.pbo_ptr = c_void_p()
+        status = cudaGLRegisterBufferObject(self.pbo)
+        cudaGLMapBufferObject(byref(self.pbo_ptr), self.pbo)
+
+        self.compile()
+
+
+    def compile(self):
         # compile engine kernel - this needs to be generalized
         debug("Compiling kernel")
 
-        self.compiler_config.update(compiler_config)
-        Compiler(self.set_new_kernel, self.compiler_config).start()
+        Compiler(self.set_new_kernel).start()
 
 
     def get_fb(self):

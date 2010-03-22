@@ -8,7 +8,6 @@ Queue -
 
   video rendering script bug
 
-  clean compiler options
   figure out command recording
 
   move interface to another thread
