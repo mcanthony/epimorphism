@@ -1,3 +1,5 @@
+from globals import *
+
 from ctypes import *
 from cuda.cuda_defs import *
 from cuda.cuda_api import *
@@ -17,14 +19,9 @@ class Engine(object):
         It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
         It communicates to out via a pbo  '''
 
-    def __init__(self):
-        pass
-
-    def init(self, profile):
-
+    def init(self):
         debug("Initializing Engine")
-
-        self.profile = profile
+        Globals().load(self)
 
         debug("Setting up CUDA")
 

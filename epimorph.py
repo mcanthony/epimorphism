@@ -81,7 +81,7 @@ def main():
     Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
 
     interface.init()
-    engine.init(profile)
+    engine.init()
     cmdcenter.init(env, state, interface, engine)
     
     engine.sync(interface.renderer)
