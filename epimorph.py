@@ -5,6 +5,8 @@ import os
 import atexit
 import re
 
+from globals import *
+
 import config.configmanager
 from noumena.interface import *
 from viro.engine import *
@@ -69,14 +71,19 @@ def main():
 
     # initialize & sync modules
     debug("Initializing modules")
+    #interface = Interface(context)
+    #engine    = Engine(profile)
+    #cmdcenter = CmdCenter(env, state, interface, engine)    
 
-    global interface, engine, cmdcenter
-    interface = Interface(context)
-    engine    = Engine(profile)
-    cmdcenter = CmdCenter(env, state, interface, engine)    
+    interface = Interface()
+    engine = Engine()
+    cmdcenter = CmdCenter()
+    Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
 
-    debug("Syncing modules")
-    interface.sync(cmdcenter)
+    interface.init()
+    engine.init(profile)
+    cmdcenter.init(env, state, interface, engine)
+    
     engine.sync(interface.renderer)
 
     # start main loop

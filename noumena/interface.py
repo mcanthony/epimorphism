@@ -1,3 +1,5 @@
+from globals import *
+
 from noumena.renderer import *
 
 from noumena.console import *
@@ -12,13 +14,13 @@ set_log("INTERFACE")
 
 class Interface(object):
 
-    def __init__(self, context):
+    def init(self):
         debug("Initializing interface")
 
         # set variables
-        self.context = context
+        Globals().load(self)
 
-        self.renderer = Renderer(context)
+        self.renderer = Renderer(self.context)
 
 
     def __del__(self):
@@ -28,10 +30,8 @@ class Interface(object):
  #           self.server.__del___()
         pass
 
-    def sync(self, cmdcenter):
-        debug("Syncing with CmdCenter")
-
-        self.cmdcenter = cmdcenter
+    def start(self):
+        debug("Starting interface")
 
         # create input handlers
         self.mouse_handler = MouseHandler(self.cmdcenter, self.context)
@@ -45,7 +45,7 @@ class Interface(object):
         self.renderer.register_console_callbacks(console.render_console, console.console_keyboard)
 
         # register cmdcenter with renderer
-        self.renderer.cmdcenter = cmdcenter
+        self.renderer.cmdcenter = self.cmdcenter
 
         # start server
         if(self.context.server):
@@ -67,6 +67,8 @@ class Interface(object):
 
         else:
             self.midi = None
+
+        self.renderer.start()
 
 
     def do(self):

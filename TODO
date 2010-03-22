@@ -1,18 +1,17 @@
 Queue -
   create roses path
 
-  figure out command recording
-
-  clean compiler options
-  rework threading
-
   unify state(paths, time, etc)
-  Path objects  
 
   remove internal from states
   intelligently deal with color speeds & phases
 
   video rendering script bug
+
+  clean compiler options
+  figure out command recording
+
+  move interface to another thread
 
   archiving
 

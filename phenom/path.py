@@ -1,3 +1,5 @@
+from globals import *
+
 from aeon.datapath import *
 
 from common.log import *
@@ -6,8 +8,9 @@ set_log("Path")
 class Path(object):
 
 
-    def __init__(self, type, obj, idx, phase, start, spd, data, cmdcenter):
-        self.type, self.obj, self.idx, self.phase, self.start, self.spd, self.data, self.cmdcenter = type, obj, idx, phase, start, spd, data, cmdcenter
+    def __init__(self, type, obj, idx, phase, start, spd, data, cmdcenter2):
+        self.type, self.obj, self.idx, self.phase, self.start, self.spd, self.data  = type, obj, idx, phase, start, spd, data
+        Globals().load(self)
 
 
     def execute(self, t):
@@ -18,3 +21,7 @@ class Path(object):
             self.cmdcenter.set_val(res, self.obj, self.idx)
 
         return status
+
+
+#    def repr(self):
+#        return "Path(%s, %s, %s, %f, %f, %f, %s

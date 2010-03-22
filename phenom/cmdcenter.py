@@ -51,9 +51,9 @@ class CmdCenter(Animator, Archiver):
     ''' The CmdCenter is the central control center for the engine and
         renderer.  All systems generating signals live here, and the object
         provides an interface for executing code int the appropriate environment. '''
+    
 
-
-    def __init__(self, env, state, interface, engine):
+    def init(self, env, state, interface, engine):
         debug("Initializing CmdCenter")
 
         self.env, self.state, self.interface, self.engine = env, state, interface, engine
@@ -154,7 +154,7 @@ class CmdCenter(Animator, Archiver):
         self.engine.start({'ptxas_stats': self.engine.profile.ptxas_stats, 'par_names':self.state.par_names, 'datamanager':self.componentmanager.datamanager,
                            'splice':self.env.splice_components, 'state':self.state, 'cull_enabled':self.env.cull_enabled})
 
-        self.interface.renderer.start()
+        self.interface.start()
 
 
     def do(self):

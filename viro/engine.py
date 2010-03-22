@@ -17,7 +17,11 @@ class Engine(object):
         It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
         It communicates to out via a pbo  '''
 
-    def __init__(self, profile):
+    def __init__(self):
+        pass
+
+    def init(self, profile):
+
         debug("Initializing Engine")
 
         self.profile = profile
