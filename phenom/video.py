@@ -1,3 +1,5 @@
+from globals import *
+
 import time
 import os.path
 import os
@@ -16,14 +18,11 @@ class VideoRenderer(object):
         frames output by the engine '''
 
 
-    def __init__(self, cmdcenter, env):
-
+    def __init__(self):
         debug("Initializing video renderer")
+        Globals().load(self)
 
-        # initialize vars
-        self.cmdcenter, self.env = cmdcenter, env
         self.frame_num = 0
-
         self.capturing_event = threading.Event()
 
 

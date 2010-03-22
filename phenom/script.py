@@ -1,3 +1,5 @@
+from globals import *
+
 import config
 
 import sys
@@ -15,10 +17,11 @@ class Script(object):
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
 
-    def __init__(self, cmdcenter, name = None):
+    def __init__(self, name = None):
         debug("Creating script")
+        Globals().load(self)
 
-        self.cmdcenter, self.name = cmdcenter, name
+        self.name = name
 
         self.events = (self.name and config.configmanager.load_obj("script", name)) or []
         self.current_idx = 0

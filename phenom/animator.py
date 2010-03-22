@@ -47,7 +47,10 @@ class Animator(object):
                 eval("self."+obj).midi_echo = False
 
         # add path
-        path = Path(type, obj, idx, 0.0, self.time(), spd, data, self)
+        path = Path(type, obj, idx, 0.0, self.time(), spd, data)
+#        print repr(path)
+#        print str(eval(repr(path)))
+        path = eval(repr(path))
         self.paths.append(path)
 
         return path

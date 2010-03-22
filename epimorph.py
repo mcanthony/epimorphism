@@ -72,13 +72,11 @@ def main():
     # initialize modules
     debug("Initializing modules")    
 
-    interface = Interface()
-    engine = Engine()
-    cmdcenter = CmdCenter()
+    interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
     Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
     interface.init()
     engine.init()
-    cmdcenter.init(env, state, interface, engine)
+    cmdcenter.init()
 
     # start main loop
     debug("Starting")

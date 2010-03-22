@@ -1,3 +1,5 @@
+from globals import *
+
 from phenom.video import *
 
 from phenom.animator import *
@@ -53,10 +55,9 @@ class CmdCenter(Animator, Archiver):
         provides an interface for executing code int the appropriate environment. '''
     
 
-    def init(self, env, state, interface, engine):
+    def init(self):
         debug("Initializing CmdCenter")
-
-        self.env, self.state, self.interface, self.engine = env, state, interface, engine
+        Globals().load(self)
 
         # init animator
         Animator.__init__(self)
@@ -65,10 +66,10 @@ class CmdCenter(Animator, Archiver):
         Archiver.__init__(self)
 
         # init componentmanager
-        self.componentmanager = ComponentManager(self, self.state)
+        self.componentmanager = ComponentManager()
 
         # init eventmanager
-        self.eventmanager = EventManager(self)
+        self.eventmanager = EventManager()
 
         # for cycling through existing states
         self.current_state_idx = -1
@@ -83,16 +84,16 @@ class CmdCenter(Animator, Archiver):
 
         # load initial script
         if(self.env.initial_script):
-            self.initial_script = Script(self, self.env.initial_script)
+            self.initial_script = Script(self.env.initial_script)
         else:
             self.initial_script = None
 
         # create video_renderer
-        self.video_renderer = VideoRenderer(self, self.env)
+        self.video_renderer = VideoRenderer()
 
         if(self.env.video_script):
             self.env.render_video = True
-            self.initial_script = Script(self, self.env.video_script)
+            self.initial_script = Script(self.env.video_script)
             self.env.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.env.video_frame_rate)
             debug("Setting max_video_frames to %d" % self.env.max_video_frames)
 
@@ -124,8 +125,6 @@ class CmdCenter(Animator, Archiver):
         # tap tempo info
         self.tempo_events = []
         self.last_tempo_event_time = 0
-
-        seed()
 
 
     def __del__(self):

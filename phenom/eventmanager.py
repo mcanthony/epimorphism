@@ -1,10 +1,12 @@
+from globals import *
+
 from common.complex import *
 
 class EventManager(object):
 
 
-    def __init__(self, cmdcenter):
-        self.cmdcenter, self.state = cmdcenter, cmdcenter.state
+    def __init__(self):
+        Globals().load(self)
 
 
     def handle_event(f):

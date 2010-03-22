@@ -1,3 +1,5 @@
+from globals import *
+
 from phenom.datamanager import *
 
 import time
@@ -9,13 +11,13 @@ set_log("COMPONENT")
 class ComponentManager(object):
 
 
-    def __init__(self, cmdcenter, state):
-        self.cmdcenter, self.state = cmdcenter, state
+    def __init__(self):
+        Globals().load(self)
 
         self.switching_component = False
 
         # start datamanager
-        self.datamanager = DataManager(self.cmdcenter.env)
+        self.datamanager = DataManager(self.env)
 
         # init indices for components
         self.component_idx = [0 for i in xrange(20)]

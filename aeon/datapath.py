@@ -1,6 +1,6 @@
 from common.complex import *
 from common.runner import *
-from random import *
+import random
 
 def linear_1d(self, t, data):
     ''' 1 dimensional linear path '''
@@ -58,12 +58,12 @@ def rose(self, t, data):
 def random_components1(self, t, data):
     if(not self.__dict__.has_key('last_event_time1')):
         self.last_event_time1 = 0.0
-
+        random.seed()
 
     if(t - self.last_event_time1 > data["interval"]):
         self.last_event_time1 = t
 
-        i = randint(0,2)
+        i = random.randint(0,2)
         if(i == 0):
             async(lambda :self.cmdcenter.cmd("inc_data('T', 1)"))
         elif(i == 1):
@@ -78,11 +78,12 @@ def random_components1(self, t, data):
 def random_components2(self, t, data):
     if(not self.__dict__.has_key('last_event_time1')):
         self.last_event_time1 = 0.0
+        random.seed()
 
     if(t - self.last_event_time2 > data["interval"]):
         self.last_event_time2 = t
 
-        i = randint(0,4)
+        i = random.randint(0,4)
         if(i == 0):
             async(lambda :self.cmdcenter.cmd("inc_data('T', 1)"))
         elif(i == 1):
