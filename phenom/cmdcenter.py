@@ -19,7 +19,6 @@ import Image
 from common.log import *
 set_log("CMDCENTER")
 
-from random import *
 from common.runner import *
 
 
@@ -126,7 +125,6 @@ class CmdCenter(Animator, Archiver):
         self.tempo_events = []
         self.last_tempo_event_time = 0
 
-        self.last_event_time = 0
         seed()
 
 
@@ -190,24 +188,6 @@ class CmdCenter(Animator, Archiver):
         # cleanup
         if(self.env.exit):
             self.interface.renderer.stop()
-
-        # temporary automation
-        if(self.env.automate_components and self.time() - self.last_event_time > 10):
-            self.last_event_time = self.time()
-
-            i = randint(0,2)
-            if(i == 0):
-                async(lambda :self.cmd("inc_data('T', 1)"))
-            elif(i == 1):
-               async(lambda :self.cmd("inc_data('T_SEED', 1)"))
-            elif(i == 2):
-               async(lambda :self.cmd("inc_data('SEED_W', 1)"))
-            elif(i == 3):
-               async(lambda :self.cmd("inc_data('SEED_WT', 1)"))
-            elif(i == 4):
-               async(lambda :self.cmd("inc_data('SEED_A', 1)"))
-
-
 
 
     def send_frame(self):

@@ -26,6 +26,8 @@ class KeyboardHandler(object):
         #initialize component list
         self.components = cmdcenter.componentmanager.component_list()
 
+        self.automating_components = False
+
 
     def keyboard(self, key, x, y):
 
@@ -181,7 +183,6 @@ class KeyboardHandler(object):
                 self.context.par_scale /= 2.0
 
 
-
     def live(self, key, modifiers):
 
         self.common(key, modifiers)
@@ -193,6 +194,19 @@ class KeyboardHandler(object):
 
         if((modifiers & GLUT_ACTIVE_CTRL) == GLUT_ACTIVE_CTRL):
             multiplier = 0
+
+        # automate components
+        if(key == GLUT_KEY_F8):        
+            if(self.automating_components):
+                self.cmdcenter.paths = []
+                self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
+                info("Stopping component automation")
+            else:
+                self.cmdcenter.animate_var('random_components1', None, None, 1.0, {'interval': 10}, None)
+                self.cmdcenter.interface.renderer.flash_message("Starting component automation")
+                info("Starting component automation")
+
+            self.automating_components = not self.automating_components
 
         # switch midi speed
         if(key == GLUT_KEY_F9):
@@ -210,13 +224,11 @@ class KeyboardHandler(object):
                 info("Switch to BCF_VJ bindings")
                 self.context.midi_controller[1] = "BCF_VJ"
                 self.cmdcenter.interface.midi.load_bindings()
-                self.cmdcenter.env.automate_components = False
             elif(self.context.midi_controller[1] == "BCF_VJ"):
                 self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
                 info("Switch to BCF_LIVE bindings")
                 self.context.midi_controller[1] = "BCF_LIVE"
                 self.cmdcenter.interface.midi.load_bindings()
-                self.cmdcenter.env.automate_components = True
 
         elif(key == "1"):
             self.cmdcenter.eventmanager.switch_component("T", multiplier)

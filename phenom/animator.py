@@ -29,8 +29,8 @@ class Animator(object):
     def animate_var(self, type, obj, idx, spd, data, exclude="Exclude"):
         ''' Adds a path to the animator. '''
 
-        # obj.midi_echo = False
-        eval("self." + obj).midi_echo = False
+        if(obj):
+            eval("self." + obj).midi_echo = False
 
         if(not data.has_key("loop")): data["loop"] = False
 
@@ -43,10 +43,11 @@ class Animator(object):
         # if Overwrite, remove existing path
         if(exclude == "Overwrite"):
             self.remove_paths(obj, idx);
-            eval("self."+obj).midi_echo = False
+            if(obj):
+                eval("self."+obj).midi_echo = False
 
         # add path
-        path = Path(type, obj, idx, self.time(), spd, data)
+        path = Path(type, obj, idx, 0.0, self.time(), spd, data, self)
         self.paths.append(path)
 
         return path
@@ -58,7 +59,6 @@ class Animator(object):
         active_paths = filter(lambda path: path.obj == obj and path.idx == idx, self.paths)
         for path in active_paths:
             self.paths.remove(path)
-
 
         eval("self."+obj).midi_echo = False
 
@@ -72,10 +72,7 @@ class Animator(object):
         for path in self.paths[::-1]:
 
             # execute path
-            (res, status) = path.execute((t - path.start) / path.spd)
-
-            # set result
-            self.set_val(res, path.obj, path.idx)
+            status = path.execute((t - path.start) / path.spd)
 
             # if necessary, remove path
             if(not status):

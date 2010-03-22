@@ -1,15 +1,16 @@
 Queue -
   create roses path
-  create component script
 
   figure out command recording
+
+  clean compiler options
+  rework threading
 
   unify state(paths, time, etc)
   Path objects  
 
   remove internal from states
   intelligently deal with color speeds & phases
-  clean compiler options
 
   video rendering script bug
 

@@ -6,9 +6,15 @@ set_log("Path")
 class Path(object):
 
 
-    def __init__(self, type, obj, idx, start, spd, data):
-        self.type, self.obj, self.idx, self.start, self.spd, self.data = type, obj, idx, start, spd, data
+    def __init__(self, type, obj, idx, phase, start, spd, data, cmdcenter):
+        self.type, self.obj, self.idx, self.phase, self.start, self.spd, self.data, self.cmdcenter = type, obj, idx, phase, start, spd, data, cmdcenter
 
 
     def execute(self, t):
-        return eval(self.type)(t, self.data)
+        (res, status) = eval(self.type)(self, self.phase + t, self.data)
+
+        # set result
+        if(self.obj):
+            self.cmdcenter.set_val(res, self.obj, self.idx)
+
+        return status
