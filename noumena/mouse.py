@@ -1,3 +1,5 @@
+from globals import *
+
 from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
 
@@ -7,8 +9,8 @@ class MouseHandler(object):
         in the Renderer object during normal opperation '''
 
 
-    def __init__(self, cmdcenter, context):
-        self.cmdcenter, self.context, self.state = cmdcenter, context, cmdcenter.state
+    def __init__(self):
+        Globals().load(self)
 
         # init coords
         self.vp_start_x = 0

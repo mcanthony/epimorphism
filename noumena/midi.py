@@ -1,3 +1,5 @@
+from globals import *
+
 import threading
 import pypm
 import re
@@ -18,8 +20,8 @@ class MidiHandler(threading.Thread):
         events and that sends midi output information '''
 
 
-    def __init__(self, cmdcenter, context):
-        self.cmdcenter, self.context = cmdcenter, context
+    def __init__(self):
+        Globals().load(self)
 
         # find devices - MAYBE A BIT FLAKEY
         for i in range(pypm.CountDevices()):

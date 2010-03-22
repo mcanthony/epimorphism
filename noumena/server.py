@@ -5,6 +5,8 @@
 # mvr adapted from http://twistedmatrix.com/documents/current/core/examples/echoserv.py
 #              and geneServer.original.py
 
+from globals import *
+
 from twisted.internet.protocol import Protocol, Factory
 from twisted.internet import reactor
 
@@ -28,9 +30,11 @@ class Echo(Protocol):
 
 
 class Server(object):
-    def __init__(self, cmd):
+    def __init__(self):
+        Globals().load(self)
+
         global cmdcenter
-        cmdcenter = cmd
+        cmdcenter = self.cmdcenter
 
         f = Factory()
         f.protocol = Echo

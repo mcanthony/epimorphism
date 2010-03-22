@@ -16,8 +16,6 @@ class Interface(object):
 
     def init(self):
         debug("Initializing interface")
-
-        # set variables
         Globals().load(self)
 
         self.renderer = Renderer()
@@ -26,19 +24,20 @@ class Interface(object):
     def __del__(self):
         # self.renderer.__del__()
         # kill server
-#        if(self.server):
- #           self.server.__del___()
+        # if(self.server):
+        #   self.server.__del___()
         pass
+
 
     def start(self):
         debug("Starting interface")
 
         # create input handlers
-        self.mouse_handler = MouseHandler(self.cmdcenter, self.context)
-        self.keyboard_handler = KeyboardHandler(self.cmdcenter, self.context)
+        self.mouse_handler = MouseHandler()
+        self.keyboard_handler = KeyboardHandler()
 
         # create_console
-        console = Console(self.cmdcenter)
+        console = Console()
 
         # register callbacks & console with Renderer
         self.renderer.register_callbacks(self.keyboard_handler.keyboard, self.mouse_handler.mouse, self.mouse_handler.motion)
@@ -49,7 +48,7 @@ class Interface(object):
 
         # start server
         if(self.context.server):
-            self.server = Server(self.cmdcenter)
+            self.server = Server()
             self.server.start()
 
         else:
@@ -57,7 +56,7 @@ class Interface(object):
 
         # start midi
         if(self.context.midi):
-            self.midi = MidiHandler(self.cmdcenter, self.context)
+            self.midi = MidiHandler()
 
             if(self.context.midi):
                 # sync midi lists to controller

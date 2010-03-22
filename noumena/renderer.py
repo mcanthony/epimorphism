@@ -19,7 +19,7 @@ set_log("RENDERER")
 class Renderer(object):
     ''' The Renderer object is responsible for displaying the system via OpenGL/GLUT '''
 
-    def __init__(self, context):
+    def __init__(self):
         debug("Initializing Renderer")
         Globals().load(self)
 

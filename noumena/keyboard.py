@@ -1,3 +1,5 @@
+from globals import *
+
 from ctypes import *
 from cuda.cuda_defs import *
 
@@ -18,13 +20,11 @@ class KeyboardHandler(object):
     ''' The KeyboardHandler is the GLUT callback that handles keyboard events
         in the Renderer object during normal opperation '''
 
-    def __init__(self, cmdcenter, context):
-
-        self.cmdcenter = cmdcenter
-        self.state, self.context = self.cmdcenter.state, context
+    def __init__(self):
+        Globals().load(self)
 
         #initialize component list
-        self.components = cmdcenter.componentmanager.component_list()
+        self.components = self.cmdcenter.componentmanager.component_list()
 
         self.automating_components = False
 

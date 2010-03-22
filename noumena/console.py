@@ -1,3 +1,5 @@
+from globals import *
+
 from ctypes import *
 from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
@@ -10,9 +12,8 @@ class Console(object):
     ''' The Console object is responsible for rendering the console in the
         Renderer as well as relaying key events to the Cmdcenter '''
 
-    def __init__(self, cmdcenter):
-
-        self.cmdcenter = cmdcenter
+    def __init__(self):
+        Globals().load(self)
 
         # console parameters
         self.console_font_size = 12
