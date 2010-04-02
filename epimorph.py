@@ -58,17 +58,17 @@ for arg in sys.argv[1:]:
     if(len(split) == 1): args["app"][split[0]] = val
     else : args[split[0]][split[1]] = val
 
+# create structures
+debug("Creating Data Structures")
+app     = configmanager.merge_with_default("app", args["application"], **args["app"])
+env     = configmanager.merge_with_default("environment", app.env, **args["env"])
+context = configmanager.merge_with_default("context", app.context, **args["context"])
+profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
+state   = configmanager.merge_with_default("state", app.state, **args["state"])
+
 # encapsulated for asynchronous execution
 def main():
     info("Starting main loop")
-
-    # create structures
-    debug("Creating Data Structures")
-    app     = configmanager.merge_with_default("app", args["application"], **args["app"])
-    env     = configmanager.merge_with_default("environment", app.env, **args["env"])
-    context = configmanager.merge_with_default("context", app.context, **args["context"])
-    profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
-    state   = configmanager.merge_with_default("state", app.state, **args["state"])
 
     # initialize modules
     debug("Initializing modules")    
