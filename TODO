@@ -1,14 +1,14 @@
 Queue -
   create roses path
 
-  unify state(paths, time, etc)
-
+  save scripts in states
   intelligently deal with color speeds & phases
+
+  change component_switch_time to env.state_switch_time
+
 
   video rendering script bug
   figure out command recording
-
-  save scripts in states
 
   archiving
 

@@ -146,6 +146,8 @@ class CmdCenter(Animator, Archiver):
         ''' Start main loop '''
         debug("Start main loop")
 
+        self.state.time = 0
+
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
@@ -394,9 +396,13 @@ class CmdCenter(Animator, Archiver):
             self.linear_1d('state.par', i, self.state.component_switch_time, self.state.par[i], new_state.par[i])
 
         # load paths
-        for path in new_state.paths:
-            path.phase = new_state.time - self.state.time
-            state.paths = state
+        def load_paths():
+            time.sleep(self.state.component_switch_time)
+            self.state.paths = []
+            for path in new_state.paths:
+                path.phase = new_state.time - self.time()
+                self.state.paths.append(path)
+        async(load_paths)
 
         self.componentmanager.switch_components(updates)
 
