@@ -3,14 +3,12 @@ Queue -
 
   unify state(paths, time, etc)
 
-  remove internal from states
   intelligently deal with color speeds & phases
 
   video rendering script bug
-
   figure out command recording
 
-  move interface to another thread
+  save scripts in states
 
   archiving
 
@@ -33,9 +31,8 @@ Public -
 
 Archiving - 
   archive application for adding to archive
-  archive current_data
   high fidelity rerendering archiving
-  state names
+  make sure migrations are working
 
 
 Contents - 
@@ -50,6 +47,9 @@ Contents -
 
 
 Ideas -
+  make components object
+  make witch component a script
+  move interface to another thread
   script migrations
   metapaths 
   opengl effects

@@ -31,7 +31,7 @@ atexit.register(exit)
 # run unclutter to remove mouse pointer
 os.system("unclutter -idle 0.25 -jitter 1 -root&")
 
-# initialize env/state/profile/context/env
+# debug messages
 debug("Initializing state/profile/context/env")
 if(len(sys.argv[1:]) != 0):
     debug("with args %s" % (str(sys.argv[1:])))
@@ -58,25 +58,24 @@ for arg in sys.argv[1:]:
     if(len(split) == 1): args["app"][split[0]] = val
     else : args[split[0]][split[1]] = val
 
-# create structures
-app     = configmanager.merge_with_default("app", args["application"], **args["app"])
-env     = configmanager.merge_with_default("environment", app.env, **args["env"])
-context = configmanager.merge_with_default("context", app.context, **args["context"])
-profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
-state   = configmanager.merge_with_default("state", app.state, **args["state"])
-
 # encapsulated for asynchronous execution
 def main():
     info("Starting main loop")
+
+    # create structures
+    debug("Creating Data Structures")
+    app     = configmanager.merge_with_default("app", args["application"], **args["app"])
+    env     = configmanager.merge_with_default("environment", app.env, **args["env"])
+    context = configmanager.merge_with_default("context", app.context, **args["context"])
+    profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
+    state   = configmanager.merge_with_default("state", app.state, **args["state"])
 
     # initialize modules
     debug("Initializing modules")    
 
     interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
     Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
-    interface.init()
-    engine.init()
-    cmdcenter.init()
+    interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop
     debug("Starting")
@@ -93,6 +92,7 @@ def main():
 def start():
     async(main)
 
+# autostart
 if(env.autostart):
     start()
 

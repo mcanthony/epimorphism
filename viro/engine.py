@@ -92,6 +92,8 @@ class Engine(object):
         self.new_kernel_event = threading.Event()
         self.new_fb_event = threading.Event()
 
+        return True
+
 
     def __del__(self):
         debug("Deleting Engine")

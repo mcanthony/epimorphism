@@ -39,10 +39,16 @@ class State(DictObj):
         # update dict with migrated vars
         self.__dict__.update(migrate(vars))
 
-        # create midi_lists
+        # create midi_lists - for echoing changes back to midi devices
         self.zn  = MidiList(self.zn)
         self.par = MidiList(self.par)
+        
+        # set path phases
+        for path in self.paths:
+            path.phase = self.time
+
         self.time = 0
+        
 
 
 class Profile(DictObj):
@@ -58,5 +64,5 @@ class Environment(DictObj):
 
 
 class App(DictObj):
-    ''' Encapsulates one of each other struct. '''
+    ''' Encapsulates one of each other structs. '''
 

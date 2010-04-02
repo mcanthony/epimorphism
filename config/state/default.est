@@ -3,7 +3,7 @@
  'time': 0.0,
  'frame_cnt': 0,
  'bpm': 120,
-
+ 'paths': [],
  'components': {
  'SEED': 'seed_wca(z)',
  'SEED_W': 'square(z)',

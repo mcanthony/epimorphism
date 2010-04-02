@@ -5,6 +5,7 @@ import copy
 import noumena
 from config.structs import *
 from phenom.script import *
+from phenom.path import *
 
 from common.log import *
 set_log("CONFIG")
@@ -14,7 +15,7 @@ set_log("CONFIG")
 extension_names = {"state": "est", "profile": "prf", "context": "ctx", "environment": "env", "script": "scr", "app":"app"}
 
 
-def merge_with_default(type, name, **additional_vars):
+def merge_with_default(ctype, name, **additional_vars):
     ''' Loads a dictionary object and merges it with the default object '''
 
     default = load_dict(type, "default")

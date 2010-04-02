@@ -10,11 +10,16 @@ class Path(object):
 
     def __init__(self, type, obj, idx, phase, start, spd, data):
         self.type, self.obj, self.idx, self.phase, self.start, self.spd, self.data  = type, obj, idx, phase, start, spd, data
+        self.globals_initialized = False
+        
+
+    def initialize_globals(self):
         Globals().load(self)
+        self.globals_initialized = True
 
 
     def execute(self, t):
-        (res, status) = eval(self.type)(self, self.phase + t, self.data)
+        (res, status) = eval(self.type)(self, t, self.data)
 
         # set result
         if(self.obj):

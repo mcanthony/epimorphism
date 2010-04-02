@@ -20,6 +20,8 @@ class Interface(object):
 
         self.renderer = Renderer()
 
+        return True
+
 
     def __del__(self):
         # self.renderer.__del__()

@@ -125,6 +125,8 @@ class CmdCenter(Animator, Archiver):
         # tap tempo info
         self.tempo_events = []
         self.last_tempo_event_time = 0
+        
+        return True
 
 
     def __del__(self):
@@ -350,6 +352,7 @@ class CmdCenter(Animator, Archiver):
         self.env.freeze = False
 
 
+    # needs some work - right now it only loads components, zn & par
     def load(self, name, immediate=False):
         ''' Loads and blends to the given state. '''
 
@@ -390,10 +393,10 @@ class CmdCenter(Animator, Archiver):
         for i in xrange(len(new_state.par)):
             self.linear_1d('state.par', i, self.state.component_switch_time, self.state.par[i], new_state.par[i])
 
-
-        # print new_state.time, self.state.time, self.t_phase, self.state.component_switch_time
-        # shift t_start
-        # self.cmd('linear_1d(cmd, "t_phase", component_switch_time, %f, %f)' % (0, state.time + self.t_phase - 1.0) / 1.0))
+        # load paths
+        for path in new_state.paths:
+            path.phase = new_state.time - self.state.time
+            state.paths = state
 
         self.componentmanager.switch_components(updates)
 
