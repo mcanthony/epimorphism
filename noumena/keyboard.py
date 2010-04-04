@@ -1,5 +1,7 @@
 from globals import *
 
+from phenom.program import *
+
 from ctypes import *
 from cuda.cuda_defs import *
 
@@ -198,11 +200,15 @@ class KeyboardHandler(object):
         # automate components
         if(key == GLUT_KEY_F8):        
             if(self.automating_components):
-                self.cmdcenter.paths = []
+                for program in self.state.programs:
+                    program.stop()
+                self.state.programs = []
                 self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
                 info("Stopping component automation")
             else:
-                self.cmdcenter.animate_var('random_components1', None, None, 1.0, {'interval': 10}, None)
+                program = RandomComponents1({'interval': 10})
+                program.start()
+                self.state.programs.append(program)
                 self.cmdcenter.interface.renderer.flash_message("Starting component automation")
                 info("Starting component automation")
 

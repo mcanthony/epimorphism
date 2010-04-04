@@ -12,7 +12,6 @@ set_log("SCRIPT")
 from common.runner import *
 
 
-
 class Script(object):
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
@@ -26,20 +25,22 @@ class Script(object):
         self.events = (self.name and config.configmanager.load_obj("script", name)) or []
         self.current_idx = 0
 
+        self.phase = 0
+
 
     def _execute(self):
         ''' Internal execution loop '''
 
         # main execution loop
         while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):            
-            while(self.current_idx < len(self.events) and self.cmdcenter.time() >= self.events[self.current_idx]["time"] and not self.cmdcenter.env.exit):
+            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.cmdcenter.env.exit):
                 if("inc" in self.events[self.current_idx]["cmd"]):
                     async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
                 else:
                     self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
                 self.current_idx += 1
             if(self.current_idx < len(self.events)):
-                t = self.events[self.current_idx]["time"] - self.cmdcenter.time()
+                t = self.events[self.current_idx]["time"] - (self.cmdcenter.time() + self.phase)
                 if(t > 0):
                     time.sleep(t)
 
@@ -69,6 +70,7 @@ class Script(object):
         # increment index if necessary
         if(idx < self.current_idx): self.current_idx += 1
 
+
     def last_event_time(self):
         ''' Returns the time of the last event '''
 
@@ -86,3 +88,7 @@ class Script(object):
 
         # output events
         self.name = config.configmanager.outp_obj("script", self.events, self.name)
+
+
+    def __repr__(self):
+        return "Script('%s')" % self.name

@@ -155,6 +155,10 @@ class CmdCenter(Animator, Archiver):
         if(self.initial_script):
             self.initial_script.start()
 
+        # start programs
+        for program in self.state.programs:
+            program.start()
+
         # start modules - DOESN'T RETURN
         self.engine.start()
         self.interface.start()
@@ -402,6 +406,11 @@ class CmdCenter(Animator, Archiver):
             for path in new_state.paths:
                 path.phase = new_state.time - self.time()
                 self.state.paths.append(path)
+
+            for program in new_state.programs:
+                program.start()
+                self.state.programs.append(program)
+
         async(load_paths)
 
         self.componentmanager.switch_components(updates)

@@ -45,7 +45,7 @@ class State(DictObj):
         
         # set path phases
         for path in self.paths:
-            path.phase = self.time    
+            path.phase = self.time
 
 
 class Profile(DictObj):

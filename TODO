@@ -1,24 +1,20 @@
 Queue -
-  create roses path
 
-  save scripts in states
-  intelligently deal with color speeds & phases
+  nested config objects
+  split state into sub states
 
   change component_switch_time to env.state_switch_time
 
-
-  video rendering script bug
-  figure out command recording
-
-  archiving
+  archiving/voting
 
 
 Release -
+  Public 
   create installer script - distutils
   figure out pyportmidi
   mac compatible
   windows compatible
-  compile to binaries
+  optimize
 
 
 Public - 
@@ -31,8 +27,9 @@ Public -
 
 Archiving - 
   archive application for adding to archive
-  high fidelity rerendering archiving
+  randomly load from archive
   make sure migrations are working
+  high fidelity rerendering archiving
 
 
 Contents - 
@@ -44,17 +41,18 @@ Contents -
   animations
   w=-1 response
   kernel optimization  
+  scripts
 
 
 Ideas -
+  rework scripts - truncate
+  save scripts in states
+  figure out command recording
   make components object
-  make witch component a script
-  move interface to another thread
-  script migrations
+  make switch component a script
+  move interface to another thread  
   metapaths 
   opengl effects
-  smarter randomization
-  stepped animation events
   better keyboard multipliers
   when loading state, upload image too?
   integrate ipython into console
@@ -70,12 +68,13 @@ Ideas -
 Misc Tasks - 
   compiler - intellegently load function from kernel.so
   manual iteration fps_time
-  ?? save image fps_time
+  save image fps_time
   screenshots while manual iteration
 
 
 Bugs - 
-     
+  color speeds & phases
+  video rendering script bug     
   configmanager dump object newline issues(only really relevant for scripts)
   fix console window
   component switch discontinuities

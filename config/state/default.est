@@ -4,6 +4,7 @@
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],
+ 'programs': [],
  'components': {
  'SEED': 'seed_wca(z)',
  'SEED_W': 'square(z)',
