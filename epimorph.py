@@ -7,7 +7,7 @@ import re
 
 from globals import *
 
-import config.configmanager
+from config.structs import *
 from noumena.interface import *
 from viro.engine import *
 from phenom.cmdcenter import *
@@ -36,35 +36,34 @@ debug("Initializing state/profile/context/env")
 if(len(sys.argv[1:]) != 0):
     debug("with args %s" % (str(sys.argv[1:])))
 
+cmd = []
+app_name = "default"
 # parse command line arguments
-args={"application":"default", "app":{}, "env":{}, "context":{}, "profile":{}, "state":{}}
 for arg in sys.argv[1:]:
 
     # application
     split = re.compile("=").split(arg)
     if(len(split) == 1):
-        args["application"] = arg
+        app_name = arg
         continue
-
-    # parse val
-    val = split[1]
-    try:
-        val = eval(val)
-    except:
-        pass
-
-    # create vars
-    split = re.compile("\.").split(split[0])
-    if(len(split) == 1): args["app"][split[0]] = val
-    else : args[split[0]][split[1]] = val
+    else:
+        cmd.append(arg)
 
 # create structures
 debug("Creating Data Structures")
-app     = configmanager.merge_with_default("app", args["application"], **args["app"])
-env     = configmanager.merge_with_default("environment", app.env, **args["env"])
-context = configmanager.merge_with_default("context", app.context, **args["context"])
-profile = configmanager.merge_with_default("profile", app.profile, **args["profile"])
-state   = configmanager.merge_with_default("state", app.state, **args["state"])
+app     = App(app_name)
+env     = Environment(app._env) 
+profile  = Profile(app._profile) 
+context = Context(app._context) 
+state   = State(app._state) 
+
+
+
+#configmanager.merge_with_default("app", args["application"], **args["app"])
+#env     = configmanager.merge_with_default("environment", app._env, **args["env"].merge)
+#context = configmanager.merge_with_default("context", app._context, **args["context"])
+#profile = configmanager.merge_with_default("profile", app._profile, **args["profile"])
+#state   = configmanager.merge_with_default("state", app._state, **args["state"])
 
 # encapsulated for asynchronous execution
 def main():

@@ -339,8 +339,7 @@ class CmdCenter(Animator, Archiver):
     def save(self, name=None):
         ''' Grabs a screenshot and saves the current state. '''
 
-        name = configmanager.outp_obj("state", self.state.__dict__, name)
-        info("saved state as: %s" % name)
+        name = self.state.save(name)
 
         img = self.grab_image()
 

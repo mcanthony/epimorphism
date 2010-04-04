@@ -1,8 +1,7 @@
 {
  'name': 'live',
 
- 'env': 'live',
- 'context': 'live',
- 'profile': 'default',
- 'state': 'live'
+ '_env': 'live',
+ '_context': 'live',
+ '_state': 'live'
 }

@@ -1,8 +1,6 @@
 {
  'name': 'dev',
 
- 'env': 'dev',
- 'context': 'default',
- 'profile': 'default',
- 'state': 'dev'
+ '_env': 'dev',
+ '_state': 'dev'
 }
