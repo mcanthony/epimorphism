@@ -5,7 +5,7 @@ import os
 import atexit
 import re
 
-from globals import *
+from common.globals import *
 from config.structs import *
 from noumena.interface import *
 from viro.engine import *

@@ -1,4 +1,4 @@
-from globals import *
+from common.globals import *
 
 import sys
 import os.path

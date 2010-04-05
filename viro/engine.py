@@ -1,4 +1,4 @@
-from globals import *
+from common.globals import *
 
 from ctypes import *
 from cuda.cuda_defs import *

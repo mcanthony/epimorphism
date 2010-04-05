@@ -1,4 +1,4 @@
-from globals import *
+from common.globals import *
 
 from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
