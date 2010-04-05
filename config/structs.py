@@ -93,7 +93,7 @@ class DictObj(object):
 
   
     def __getattribute__(self, key):
-        if(key == "__dict__" or key == "children" or key == "has_key" or self.__dict__.has_key(key)):
+        if(key == "__dict__"  or key == "children" or key == "has_key" or key == "save" or key == "merge" or self.__dict__.has_key(key)):
             return object.__getattribute__(self, key)
         else:
             for child in self.children():
@@ -112,7 +112,7 @@ class DictObj(object):
             i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))]) for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file)]) + 1
             name = "%s_%d" % (self.top_type, i)
 
-        self.name = name
+        object.__setattr__(self, 'name', name)
     
         loc = self.path + "%s.%s" % (self.name, self.extension)
 

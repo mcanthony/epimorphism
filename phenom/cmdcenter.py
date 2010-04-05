@@ -9,6 +9,7 @@ from phenom.script import *
 from phenom.eventmanager import *
 from common.default import *
 from common.complex import *
+from config.structs import *
 
 import StringIO
 import os

@@ -1,15 +1,14 @@
 from globals import *
 
-import config
-
 import sys
 import os.path
 import time
 
+from config.structs import *
+from common.runner import *
+
 from common.log import *
 set_log("SCRIPT")
-
-from common.runner import *
 
 
 class Script(object):
@@ -18,14 +17,8 @@ class Script(object):
 
     def __init__(self, name = None):
         debug("Creating script")
-        Globals().load(self)
-
-        self.name = name
-
-        self.events = (self.name and config.configmanager.load_obj("script", name)) or []
-        self.current_idx = 0
-
-        self.phase = 0
+        self.extension = "scp"
+        DictObj.__init__(self, ['script'], name)
 
 
     def _execute(self):
@@ -33,6 +26,9 @@ class Script(object):
 
         # main execution loop
         while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):            
+            if(not self.__dict__.has_key('cmdcenter')):
+                   Globals().load(self)
+
             while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.cmdcenter.env.exit):
                 if("inc" in self.events[self.current_idx]["cmd"]):
                     async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
@@ -83,12 +79,6 @@ class Script(object):
         self.events.append({"time":time, "cmd":cmd})
 
 
-    def save(self, name = None):
-        ''' Saves the script '''
 
-        # output events
-        self.name = config.configmanager.outp_obj("script", self.events, self.name)
-
-
-    def __repr__(self):
-        return "Script('%s')" % self.name
+#    def __repr__(self):
+#        return "Script('%s')" % self.name
