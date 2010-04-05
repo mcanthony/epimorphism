@@ -5,7 +5,7 @@
 # mvr adapted from http://twistedmatrix.com/documents/current/core/examples/echoserv.py
 #              and geneServer.original.py
 
-from common.globals import *
+from globals import *
 
 from twisted.internet.protocol import Protocol, Factory
 from twisted.internet import reactor

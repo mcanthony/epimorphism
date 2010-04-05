@@ -1,4 +1,4 @@
-from common.globals import *
+from globals import *
 
 import time
 import os

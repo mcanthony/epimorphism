@@ -1,4 +1,4 @@
-from common.globals import *
+from globals import *
 
 from phenom.datamanager import *
 
