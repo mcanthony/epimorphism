@@ -1,10 +1,5 @@
 Queue -
 
-  split state into sub states
-
-  cant save/load paths
-  scripts broken
-
   change component_switch_time to env.state_switch_time
 
   archiving/voting
@@ -28,6 +23,8 @@ Public -
 
 
 Archiving - 
+  split state into sub states
+
   archive application for adding to archive
   randomly load from archive
   make sure migrations are working
@@ -75,9 +72,10 @@ Misc Tasks -
 
 
 Bugs - 
+  cant save paths
   color speeds & phases
   video rendering script bug     
-  configmanager dump object newline issues(only really relevant for scripts)
-  fix console window
-  component switch discontinuities
+  ??configmanager dump object newline issues(only really relevant for scripts)
+  ??fix console window
+  ??component switch discontinuities
   

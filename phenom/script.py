@@ -1,4 +1,4 @@
-from globals import *
+from common.globals import *
 
 import sys
 import os.path
@@ -11,18 +11,24 @@ from common.log import *
 set_log("SCRIPT")
 
 
-class Script(object):
+class Script(DictObj):
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
 
     def __init__(self, name = None):
         debug("Creating script")
-        self.extension = "scp"
+        self.extension = "scr"
         DictObj.__init__(self, ['script'], name)
+
+    def __dir__(self):
+        return ["_execute", "start", "add_event", "last_event_time", "push"] + DictObj.__dir__(self)
 
 
     def _execute(self):
         ''' Internal execution loop '''
+
+        if(not self.__dict__.has_key('cmdcenter')):
+            Globals().load(self)
 
         # main execution loop
         while(self.current_idx < len(self.events) and not self.cmdcenter.env.exit):            

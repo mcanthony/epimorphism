@@ -29,24 +29,24 @@ class MidiList(list):
 
 def load_obj(type, name, extension):
     # open file & extract contents
-    try:
-        file = "config/" + "/".join(type) + "/" + name + "." + extension
-        file = open(file)
+#    try:
+    file = "config/" + "/".join(type) + "/" + name + "." + extension
+    file = open(file)
 
-        results = file.read().replace("\n", "")
-        file.close()
+    results = file.read().replace("\n", "")
+    file.close()
 
-        results = eval(results)
+    results = eval(results)
 
         # evaluate nested fields
-        for k in results:
-            if(k[0] == "_"):
-                results[k] = eval(k[1:].capitalize())(results[k])
+    for k in results:
+        if(k[0] == "_"):
+            results[k] = eval(k[1:].capitalize())(results[k])
             
-        return results
-    except:
-        critical("couldn't read %s" % name)
-        return None  
+    return results
+    #except:
+    #    critical("couldn't read %s" % name)
+    #    return None  
 
 
 class DictObj(object):
@@ -65,7 +65,7 @@ class DictObj(object):
             
         data = load_obj(self.type, "default", self.extension)
 
-        if(self.name != "default"):
+        if(self.name and self.name != "default"):
             data.update(load_obj(self.type, self.name, self.extension))
 
         self.__dict__.update(data)
@@ -91,9 +91,12 @@ class DictObj(object):
                     return
             object.__setattr__(self, key, val)
 
+    def __dir__(self):
+        return ["children", "has_key", "merge", "save"]
+
   
     def __getattribute__(self, key):
-        if(key == "__dict__"  or key == "children" or key == "has_key" or key == "save" or key == "merge" or self.__dict__.has_key(key)):
+        if(key == "__dict__"  or key in dir(self) or self.__dict__.has_key(key)):
             return object.__getattribute__(self, key)
         else:
             for child in self.children():
@@ -104,7 +107,7 @@ class DictObj(object):
         return None
                  
 
-    def save(self, name):
+    def save(self, name=None):
         ''' Dumps an object to a file.  Adds newlines after commas for legibility '''
 
         if(not name):

@@ -1,4 +1,4 @@
-from globals import *
+from common.globals import *
 
 from phenom.video import *
 
@@ -263,6 +263,7 @@ class CmdCenter(Animator, Archiver):
 
     # UTILITY FUNCTIONS
     def set_val(self, val, var, idx):
+        print val, var, idx
         self.cmd("%s[%s] = %s" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx), val))
 
 
@@ -431,7 +432,7 @@ class CmdCenter(Animator, Archiver):
         if(not self.env.record_events):
             name = self.save()
             self.env.record_events = self.time()
-            self.recorded_events = Script(self)
+            self.recorded_events = Script()
             self.recorded_events.add_event(0.0, "load('%s', True)" % name)
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
