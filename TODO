@@ -3,6 +3,9 @@ Queue -
   nested config objects
   split state into sub states
 
+  cant save/load paths
+  scripts broken
+
   change component_switch_time to env.state_switch_time
 
   archiving/voting

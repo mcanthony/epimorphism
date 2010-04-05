@@ -1,6 +1,9 @@
 from config.migration import *
+from phenom.path import *
+from phenom.program import *
 
 import re
+
 
 class MidiList(list):
     ''' This is an internal class to add midi synchronization to
@@ -20,16 +23,26 @@ class MidiList(list):
         if(self.midi_echo and hasattr(self, "midi")):
             self.midi.mirror(self, key)
 
-def load_obj(name):
+def load_obj(type, name, extension):
     # open file & extract contents
-        try:
-            file = open(name)
-            results = file.read()
-            file.close()
-            return eval(results)
-        except:
-            critical("couldn't read %s" % name)
-            return None  
+#    try:
+    file = "config/" + "/".join(type) + "/" + name + "." + extension
+    file = open(file)
+
+    results = file.read().replace("\n", "")
+    file.close()
+
+    results = eval(results)
+
+        # evaluate nested fields
+    for k in results:
+        if(k[0] == "_"):
+            results[k] = eval(k[1:].capitalize())(results[k])
+            
+    return results
+    #except:
+    #    critical("couldn't read %s" % name)
+    #    return None  
 
 
 class DictObj(object):
@@ -38,41 +51,67 @@ class DictObj(object):
 
     def __init__(self, type, name="default"):
         self.type, self.name = type, name
+
         if(not self.__dict__.has_key("extension")):
             self.extension = "obj" 
+
         self.path = "config/" + "/".join(self.type) + "/"
+
         self.top_type = self.type[-1]
-        print self.path, self.top_type
             
-        data = load_obj(self.path + "default." + self.extension)
+        data = load_obj(self.type, "default", self.extension)
 
         if(self.name != "default"):
-            data.update(load_obj(self.path + self.name + "." + self.extension))
+            data.update(load_obj(self.type, self.name, self.extension))
 
-        # hack for states
-        if(self.top_type == "state"):
-            data['par_names'] = data['par'][::2]
-            data['par'] = data['par'][1::2]
-            data = migrate(data)
-            data['zn']  = MidiList(data['zn'])
-            data['par'] = MidiList(data['par'])
+        self.__dict__.update(data)
 
-        self.__dict__.update(data)    
-    
+
+    def children(self):
+        # print [k[1:] for k in self.__dict__ if [0] == '_']
+        return [self.__dict__[k] for k in self.__dict__ if k[0] == '_']
+
+
+    def has_key(self, key):
+        return self.__dict__.has_key(key) or any([child.__dict__.has_key(key) for child in self.children()])
+
+
+    def __setattr__(self, key, val):        
+        if(key == 'name' and self.__dict__.has_key('name') and self.name != val):
+            self.__dict__ = eval(self.top_type.capitalize())(val).__dict__
+        else:
+            if(key == "__dict__"):
+                object.__setattr__(self, key, val)                          
+            for child in self.children():
+                if(child.has_key(key)):
+                    object.__setattr__(child, key, val)
+                    return
+            object.__setattr__(self, key, val)
+
+  
+    def __getattribute__(self, key):
+        if(key == "__dict__" or key == "children" or key == "has_key" or self.__dict__.has_key(key)):
+            return object.__getattribute__(self, key)
+        else:
+            for child in self.children():
+                val = getattr(child, key)
+                if(val):
+                    return val 
+
+        return None
+                 
 
     def save(self, name):
         ''' Dumps an object to a file.  Adds newlines after commas for legibility '''
 
         if(not name):
             # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
-            i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))] for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file))]) + 1
+            i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))]) for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file)]) + 1
             name = "%s_%d" % (self.top_type, i)
 
-        debug("with name %s" % name)
-        print name
         self.name = name
     
-        loc = path + "%s.%s" % (name, self.extension)
+        loc = self.path + "%s.%s" % (self.name, self.extension)
 
         # copy object
         obj = copy.copy(self.__dict__)
@@ -119,7 +158,7 @@ class Context(DictObj):
         DictObj.__init__(self, ['app', 'context'], name)
 
 
-class Environment(DictObj):
+class Env(DictObj):
     ''' Configuration settings for the application. '''
 
     def __init__(self, name="default"):
@@ -134,8 +173,12 @@ class State(DictObj):
         self.extension = "est"
         DictObj.__init__(self, ['app', 'state'], name)
 
-        # create midi_lists - for echoing changes back to midi devices
-        
+        self.par_names = self.par[::2]
+        self.par = self.par[1::2]
+        self.__dict__ = migrate(self.__dict__)
+        self.zn  = MidiList(self.zn)
+        self.par = MidiList(self.par)
+
         # set path phases
-        #for path in self.paths:
-        #    path.phase = self.time
+        for path in self.paths:
+            path.phase = self.time

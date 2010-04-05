@@ -6,15 +6,13 @@ import atexit
 import re
 
 from globals import *
-
 from config.structs import *
 from noumena.interface import *
 from viro.engine import *
 from phenom.cmdcenter import *
-
 from common.runner import *
-
 from common.log import *
+
 set_log("EPIMORPH")
 info("Starting Epimorphism")
 
@@ -31,39 +29,24 @@ atexit.register(exit)
 # run unclutter to remove mouse pointer
 os.system("unclutter -idle 0.25 -jitter 1 -root&")
 
-# debug messages
-debug("Initializing state/profile/context/env")
-if(len(sys.argv[1:]) != 0):
-    debug("with args %s" % (str(sys.argv[1:])))
-
-cmd = []
-app_name = "default"
-# parse command line arguments
-for arg in sys.argv[1:]:
-
-    # application
-    split = re.compile("=").split(arg)
-    if(len(split) == 1):
-        app_name = arg
-        continue
-    else:
-        cmd.append(arg)
 
 # create structures
-debug("Creating Data Structures")
-app     = App(app_name)
-env     = Environment(app._env) 
-profile  = Profile(app._profile) 
-context = Context(app._context) 
-state   = State(app._state) 
+debug("Creating Application")
+if(len(sys.argv[1:]) != 0):
+    debug("with args %s" % (str(sys.argv[1:])))
+app = App("default")
 
+# execute command line arguments
+for cmd in sys.argv[1:]:
+    cmd = cmd.split('=')
+    try:
+        val = eval(cmd[1])
+    except:
+        val = "'" + cmd[1] + "'"
 
+    exec("app.%s=%s" % (cmd[0], val))
 
-#configmanager.merge_with_default("app", args["application"], **args["app"])
-#env     = configmanager.merge_with_default("environment", app._env, **args["env"].merge)
-#context = configmanager.merge_with_default("context", app._context, **args["context"])
-#profile = configmanager.merge_with_default("profile", app._profile, **args["profile"])
-#state   = configmanager.merge_with_default("state", app._state, **args["state"])
+print app.screen
 
 # encapsulated for asynchronous execution
 def main():
@@ -71,15 +54,14 @@ def main():
 
     # initialize modules
     debug("Initializing modules")    
-
     interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
-    Globals().init(app, env, context, profile, state, cmdcenter, interface, engine)
+    Globals().init(app, app._env, app._context, app._profile, app._state, cmdcenter, interface, engine)
     interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop
     debug("Starting")
     cmdcenter.start()
-    env.exit = True
+    app._env.exit = True
     info("Main loop completed")
 
     # clean objects
@@ -87,11 +69,12 @@ def main():
     engine.__del__()
     cmdcenter.__del__()
 
+
 # start
 def start():
     async(main)
 
 # autostart
-if(env.autostart):
+if(app._env.autostart):
     start()
 
