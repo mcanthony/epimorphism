@@ -241,6 +241,7 @@ class Engine(object):
 
             # convert to ctypes
             if(data["type"] == "float"):
+                print data["val"]
                 val = c_float(data["val"])
             elif(data["type"] == "float_array"):
                 val = (c_float * len(data["val"]))(*[p for p in data["val"]])
