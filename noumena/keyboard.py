@@ -10,7 +10,7 @@ from sources.OpenGL.GLUT import *
 
 from common.complex import *
 from common.runner import *
-from config import configmanager
+from config.structs import *
 
 import sys
 import time
@@ -54,13 +54,13 @@ class KeyboardHandler(object):
 
         # reset zn
         elif(key == GLUT_KEY_HOME):
-            default = configmanager.load_dict("state", "default")
+            default = State()
             for i in xrange(len(default.zn)):
                 self.cmdcenter.radial_2d('state.zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
 
         # reset par
         elif(key == GLUT_KEY_END):
-            default = configmanager.load_dict("state", "default")
+            default = State()
             for i in xrange(len(default.par)):
                 self.cmdcenter.linear_1d('state.par', i, 0.4, self.state.par[i], default.par[i])
 

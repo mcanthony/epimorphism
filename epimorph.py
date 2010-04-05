@@ -34,11 +34,12 @@ os.system("unclutter -idle 0.25 -jitter 1 -root&")
 debug("Creating Application")
 if(len(sys.argv[1:]) != 0):
     debug("with args %s" % (str(sys.argv[1:])))
-app = App("default")
+app = App()
 
 # execute command line arguments
 for cmd in sys.argv[1:]:
     cmd = cmd.split('=')
+
     try:
         val = eval(cmd[1])
     except:
@@ -46,7 +47,6 @@ for cmd in sys.argv[1:]:
 
     exec("app.%s=%s" % (cmd[0], val))
 
-print app.screen
 
 # encapsulated for asynchronous execution
 def main():

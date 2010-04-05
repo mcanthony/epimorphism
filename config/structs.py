@@ -4,6 +4,9 @@ from phenom.program import *
 
 import re
 
+from common.log import *
+set_log("DictObj")
+
 
 class MidiList(list):
     ''' This is an internal class to add midi synchronization to
@@ -23,26 +26,27 @@ class MidiList(list):
         if(self.midi_echo and hasattr(self, "midi")):
             self.midi.mirror(self, key)
 
+
 def load_obj(type, name, extension):
     # open file & extract contents
-#    try:
-    file = "config/" + "/".join(type) + "/" + name + "." + extension
-    file = open(file)
+    try:
+        file = "config/" + "/".join(type) + "/" + name + "." + extension
+        file = open(file)
 
-    results = file.read().replace("\n", "")
-    file.close()
+        results = file.read().replace("\n", "")
+        file.close()
 
-    results = eval(results)
+        results = eval(results)
 
         # evaluate nested fields
-    for k in results:
-        if(k[0] == "_"):
-            results[k] = eval(k[1:].capitalize())(results[k])
+        for k in results:
+            if(k[0] == "_"):
+                results[k] = eval(k[1:].capitalize())(results[k])
             
-    return results
-    #except:
-    #    critical("couldn't read %s" % name)
-    #    return None  
+        return results
+    except:
+        critical("couldn't read %s" % name)
+        return None  
 
 
 class DictObj(object):
@@ -68,7 +72,6 @@ class DictObj(object):
 
 
     def children(self):
-        # print [k[1:] for k in self.__dict__ if [0] == '_']
         return [self.__dict__[k] for k in self.__dict__ if k[0] == '_']
 
 

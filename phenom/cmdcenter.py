@@ -9,7 +9,6 @@ from phenom.script import *
 from phenom.eventmanager import *
 from common.default import *
 from common.complex import *
-from config import configmanager
 
 import StringIO
 import os
@@ -366,7 +365,7 @@ class CmdCenter(Animator, Archiver):
 
         info("Loading state: %s" % name)
 
-        new_state = configmanager.merge_with_default("state", name)
+        new_state = State(name)
         if(not new_state):
             return False
         
