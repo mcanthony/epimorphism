@@ -220,7 +220,7 @@ class CmdCenter(Animator, Archiver):
         data = {"type":"complex_array", "val":self.state.zn}
         self.frame["zn"] = data
 
-        data = {"type":"float", "val":self.state.component_switch_time}
+        data = {"type":"float", "val":self.env.state_switch_time}
         self.frame["switch_time"] = data
 
 
@@ -263,7 +263,6 @@ class CmdCenter(Animator, Archiver):
 
     # UTILITY FUNCTIONS
     def set_val(self, val, var, idx):
-        print val, var, idx
         self.cmd("%s[%s] = %s" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx), val))
 
 
@@ -375,8 +374,8 @@ class CmdCenter(Animator, Archiver):
 
         # if immediate, change switch time
         if(immediate):
-            old_switch_time = self.state.component_switch_time
-            self.state.component_switch_time = 0.000001            
+            old_switch_time = self.env.state_switch_time
+            self.env.state_switch_time = 0.000001            
 
         # get update components
         for name in self.componentmanager.component_list():
@@ -393,15 +392,15 @@ class CmdCenter(Animator, Archiver):
 
         # blend to zns
         for i in xrange(len(new_state.zn)):
-            self.radial_2d('state.zn', i, self.state.component_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
+            self.radial_2d('state.zn', i, self.env.state_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
 
         # blend to pars
         for i in xrange(len(new_state.par)):
-            self.linear_1d('state.par', i, self.state.component_switch_time, self.state.par[i], new_state.par[i])
+            self.linear_1d('state.par', i, self.env.state_switch_time, self.state.par[i], new_state.par[i])
 
         # load paths
         def load_paths():
-            time.sleep(self.state.component_switch_time)
+            time.sleep(self.env.state_switch_time)
             self.state.paths = []
             for path in new_state.paths:
                 path.phase = new_state.time - self.time()
@@ -417,7 +416,7 @@ class CmdCenter(Animator, Archiver):
 
         # if immediate, revert switch time
         if(immediate):
-            self.state.component_switch_time = old_switch_time
+            self.env.state_switch_time = old_switch_time
 
 
     def load_state(self, idx):

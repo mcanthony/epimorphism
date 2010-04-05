@@ -158,7 +158,7 @@ class ComponentManager(object):
             self.cmdcenter.interface.renderer.flash_message("switching %s to: %s" % (updates.keys()[0], updates[updates.keys()[0]]["val"]))
 
         # wait until interpolation is done
-        t = self.state.component_switch_time - (self.cmdcenter.time() - self.state.internal[first_idx])
+        t = self.env.state_switch_time - (self.cmdcenter.time() - self.state.internal[first_idx])
         time.sleep(t)
 
         # update state
