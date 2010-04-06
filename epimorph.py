@@ -42,14 +42,14 @@ for cmd in sys.argv[1:]:
     cmd = cmd.split('=')
     
     if(len(cmd) == 1):
-        exec(cmd)
+        exec(cmd[0])
     else:
         try:
             val = eval(cmd[1])
         except:
             val = "'" + cmd[1] + "'"
 
-    exec("app.%s=%s" % (cmd[0], val))
+        exec("app.%s=%s" % (cmd[0], val))
 
 
 

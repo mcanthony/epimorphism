@@ -31,11 +31,11 @@ class Script(DictObj):
             Globals().load(self)
 
         # main execution loop
-        while(self.current_idx < len(self.events) and not self.cmdcenter.app.exit):            
+        while(self.current_idx < len(self.events) and not self.app.exit):            
             if(not self.__dict__.has_key('cmdcenter')):
                    Globals().load(self)
 
-            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.cmdcenter.app.exit):
+            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.app.exit):
                 if("inc" in self.events[self.current_idx]["cmd"]):
                     async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
                 else:

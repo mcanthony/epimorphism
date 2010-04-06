@@ -115,7 +115,7 @@ class ComponentManager(object):
             return True
 
         # non-spliced
-        if(not self.cmdcenter.app.splice_components):
+        if(not self.app.splice_components):
             for component_name, val in data.items():
                 idx_idx = self.datamanager.component_names.index(component_name)
                 components = self.datamanager.components[component_name]

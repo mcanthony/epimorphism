@@ -120,7 +120,7 @@ class CmdCenter(Animator, Archiver):
         funcs.update(default_funcs)
 
         # generate cmd exec environment
-        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state}, self.state.__dict__, self.interface.context.__dict__, self.app.__dict__], funcs)
+        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state, "app":self.app}, self.state.__dict__, self.interface.context.__dict__, self.app.__dict__], funcs)
 
         # tap tempo info
         self.tempo_events = []

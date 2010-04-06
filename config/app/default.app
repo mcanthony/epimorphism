@@ -8,6 +8,8 @@
  'manual_iter': False,
  'next_frame': False,
 
+ 'initial_script': None,
+
  'fps_sync': False,
  'record_events': False,
 

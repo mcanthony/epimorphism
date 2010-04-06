@@ -29,24 +29,24 @@ class MidiList(list):
 
 def load_obj(type, name, extension):
     # open file & extract contents
-#    try:
-    file = "config/" + "/".join(type) + "/" + name + "." + extension
-    file = open(file)
+    try:
+        file = "config/" + "/".join(type) + "/" + name + "." + extension
+        file = open(file)
 
-    results = file.read().replace("\n", "")
-    file.close()
+        results = file.read().replace("\n", "")
+        file.close()
 
-    results = eval(results)
+        results = eval(results)
 
         # evaluate nested fields
-    for k in results:
-        if(k[0] == "_"):
-            results[k] = eval(k[1:].capitalize())(results[k])
+        for k in results:
+            if(k[0] == "_"):
+                results[k] = eval(k[1:].capitalize())(results[k])
             
-    return results
-    #except:
-    #    critical("couldn't read %s" % name)
-    #    return None  
+        return results
+    except:
+        critical("couldn't read %s" % name)
+        return None  
 
 
 class DictObj(object):
