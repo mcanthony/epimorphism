@@ -40,13 +40,17 @@ if(len(sys.argv[1:]) != 0):
 
 for cmd in sys.argv[1:]:
     cmd = cmd.split('=')
-
-    try:
-        val = eval(cmd[1])
-    except:
-        val = "'" + cmd[1] + "'"
+    
+    if(len(cmd) == 1):
+        exec(cmd)
+    else:
+        try:
+            val = eval(cmd[1])
+        except:
+            val = "'" + cmd[1] + "'"
 
     exec("app.%s=%s" % (cmd[0], val))
+
 
 
 # encapsulated for asynchronous execution
@@ -64,7 +68,7 @@ def main():
     cmdcenter.start()
 
     info("Main loop completed")
-    app._env.exit = True
+    app.exit = True
 
     # delete objects
     interface.__del__()
@@ -77,6 +81,6 @@ def start():
     async(main)
 
 # autostart
-if(app._env.autostart):
+if(app.autostart):
     start()
 

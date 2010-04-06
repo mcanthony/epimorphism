@@ -108,13 +108,13 @@ class Compiler(threading.Thread):
         file.close()
 
         # cull mode
-        if(self.env.cull_enabled):
+        if(self.app.cull_enabled):
             self.substitutions['CULL_ENABLED'] = "#define CULL_ENABLED"
         else:
             self.substitutions['CULL_ENABLED'] = ""
 
         # components
-        if(self.env.splice_components):
+        if(self.app.splice_components):
             self.splice_components()
         else:
             for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
@@ -163,13 +163,13 @@ class Compiler(threading.Thread):
             contents += open("aeon/" + file).read()
 
         # seed to force recompilation if necessary
-        if(not self.env.splice_components): contents += str(time.clock())
+        if(not self.app.splice_components): contents += str(time.clock())
 
         # hash
         hash = hashlib.sha1(contents).hexdigest()
 
         # make name
-        if(self.env.splice_components):
+        if(self.app.splice_components):
             name = "kernel_spliced-%s" % hash
         else:
             os.system("rm kernels/kernels_nonspliced*")

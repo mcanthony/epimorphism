@@ -1,6 +1,8 @@
 {
  'name': 'dev',
 
- '_env': 'dev',
- '_state': 'dev'
+ '_state': 'dev',
+
+ 'splice_components': False,
+ 'component_level': 'DEV'
 }

@@ -1,3 +1,5 @@
+from common.globals import *
+
 import os
 import re
 
@@ -9,8 +11,9 @@ class DataManager(object):
         .epi and .cu library files in the aeon directory '''
 
 
-    def __init__(self, env):
-        self.env = env
+    def __init__(self):
+        Globals().load(self)
+
         # load components from files of form *.epi
         files = [file for file in os.listdir("aeon") if re.search("^[^_\.][^#]*?.epi$", file)]
 
@@ -98,7 +101,7 @@ class DataManager(object):
                         levels = [level.strip() for level in comments[1].split(',')]
 
                         # filter by level
-                        if(env.component_level in levels):
+                        if(self.app.component_level in levels):
                             # make clause
                             clause = "(" + ", ".join(args) + ")"
                             component = [func_name + clause, comments[0]]

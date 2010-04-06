@@ -17,7 +17,7 @@ class ComponentManager(object):
         self.switching_component = False
 
         # start datamanager
-        self.datamanager = DataManager(self.env)
+        self.datamanager = DataManager()
 
         # init indices for components
         self.component_idx = [0 for i in xrange(20)]
@@ -115,7 +115,7 @@ class ComponentManager(object):
             return True
 
         # non-spliced
-        if(not self.cmdcenter.env.splice_components):
+        if(not self.cmdcenter.app.splice_components):
             for component_name, val in data.items():
                 idx_idx = self.datamanager.component_names.index(component_name)
                 components = self.datamanager.components[component_name]
@@ -158,7 +158,7 @@ class ComponentManager(object):
             self.cmdcenter.interface.renderer.flash_message("switching %s to: %s" % (updates.keys()[0], updates[updates.keys()[0]]["val"]))
 
         # wait until interpolation is done
-        t = self.env.state_switch_time - (self.cmdcenter.time() - self.state.internal[first_idx])
+        t = self.app.state_switch_time - (self.cmdcenter.time() - self.state.internal[first_idx])
         time.sleep(t)
 
         # update state

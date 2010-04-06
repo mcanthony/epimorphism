@@ -43,7 +43,7 @@ class Server(object):
 
     def go(self):
         global cmdcenter
-        while(not cmdcenter.env.exit):
+        while(not cmdcenter.app.exit):
             reactor.iterate()
 
 

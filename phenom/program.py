@@ -36,7 +36,7 @@ class Program(object):
 
 class RandomComponents1(Program):
     def _execute(self):
-        while(not self.exit and not self.env.exit):
+        while(not self.exit and not self.app.exit):
 
             i = random.randint(0,2)
             if(i == 0):
@@ -51,7 +51,7 @@ class RandomComponents1(Program):
 
 class RandomComponents2(Program):
     def _execute(self):
-        while(not self.exit and not self.env.exit):
+        while(not self.exit and not self.app.exit):
             
             i = random.randint(0,4)
             if(i == 0):

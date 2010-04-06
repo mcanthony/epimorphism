@@ -11,7 +11,6 @@ class Globals(object):
 
     def load(self, obj):
         setattr(obj, "app", self.app)
-        setattr(obj, "env", self.app._env)
         setattr(obj, "context", self.app._context)
         setattr(obj, "profile", self.app._profile)
         setattr(obj, "state", self.app._state)

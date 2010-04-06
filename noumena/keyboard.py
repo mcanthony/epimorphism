@@ -42,7 +42,7 @@ class KeyboardHandler(object):
     def common(self, key, modifiers):
         # exit
         if(key == '|'): # escape
-            self.cmdcenter.env.exit = True
+            self.cmdcenter.app.exit = True
 
         # toggle console
         elif(key == "`"):

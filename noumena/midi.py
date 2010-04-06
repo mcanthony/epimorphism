@@ -129,9 +129,9 @@ class MidiHandler(threading.Thread):
         while(True and self.context.midi):
 
             # sleep / exit
-            while(not self.midi_in.Poll() and not self.cmdcenter.env.exit):
+            while(not self.midi_in.Poll() and not self.cmdcenter.app.exit):
                 time.sleep(0.01)
-            if(self.cmdcenter.env.exit) : exit()
+            if(self.cmdcenter.app.exit) : exit()
 
             # read
             data = self.midi_in.Read(1)

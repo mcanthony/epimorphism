@@ -77,7 +77,7 @@ class Console(object):
 
         # exit
         if(key == "\033"):
-            self.cmdcenter.env.exit = True
+            self.cmdcenter.app.exit = True
 
         # toggle console
         elif(key == "`"):

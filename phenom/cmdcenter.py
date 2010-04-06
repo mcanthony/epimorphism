@@ -83,21 +83,21 @@ class CmdCenter(Animator, Archiver):
         self.recorded_events = None
 
         # load initial script
-        if(self.env.initial_script):
-            self.initial_script = Script(self.env.initial_script)
+        if(self.app.initial_script):
+            self.initial_script = Script(self.app.initial_script)
         else:
             self.initial_script = None
 
         # create video_renderer
         self.video_renderer = VideoRenderer()
 
-        if(self.env.video_script):
-            self.env.render_video = True
-            self.initial_script = Script(self.env.video_script)
-            self.env.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.env.video_frame_rate)
-            debug("Setting max_video_frames to %d" % self.env.max_video_frames)
+        if(self.app.video_script):
+            self.app.render_video = True
+            self.initial_script = Script(self.app.video_script)
+            self.app.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.app.video_frame_rate)
+            debug("Setting max_video_frames to %d" % self.app.max_video_frames)
 
-        if(self.env.render_video):
+        if(self.app.render_video):
             self.video_renderer.start_video()
 
 
@@ -120,7 +120,7 @@ class CmdCenter(Animator, Archiver):
         funcs.update(default_funcs)
 
         # generate cmd exec environment
-        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state}, self.state.__dict__, self.interface.context.__dict__, self.env.__dict__], funcs)
+        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state}, self.state.__dict__, self.interface.context.__dict__, self.app.__dict__], funcs)
 
         # tap tempo info
         self.tempo_events = []
@@ -134,11 +134,11 @@ class CmdCenter(Animator, Archiver):
         debug("Deleting Cmdcenter")
 
         # stop video
-        if(self.env.render_video):
+        if(self.app.render_video):
             self.video_renderer.stop_video()
 
         # save events
-        if(self.env.record_events and self.recorded_events):
+        if(self.app.record_events and self.recorded_events):
             info("Saving events")
             self.recorded_events.save()
 
@@ -169,12 +169,12 @@ class CmdCenter(Animator, Archiver):
         ''' Main application loop '''
 
         # execute engine
-        if((not (self.env.manual_iter and not self.env.next_frame)) and not self.env.freeze):
-            self.env.next_frame = False
+        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze):
+            self.app.next_frame = False
 
             # get time
-            if(self.env.fps_sync):
-                self.state.time = self.state.frame_cnt / float(self.env.fps_sync) + self.t_phase
+            if(self.app.fps_sync):
+                self.state.time = self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
             else:
                 self.state.time = time.time() - self.t_start # + self.t_phase
 
@@ -194,11 +194,11 @@ class CmdCenter(Animator, Archiver):
         self.interface.do()
 
         # capture video frames
-        if(self.env.render_video):
+        if(self.app.render_video):
             self.video_renderer.capture()
 
         # cleanup
-        if(self.env.exit):
+        if(self.app.exit):
             self.interface.renderer.stop()
 
 
@@ -221,15 +221,15 @@ class CmdCenter(Animator, Archiver):
         data = {"type":"complex_array", "val":self.state.zn}
         self.frame["zn"] = data
 
-        data = {"type":"float", "val":self.env.state_switch_time}
+        data = {"type":"float", "val":self.app.state_switch_time}
         self.frame["switch_time"] = data
 
 
     def cmd(self, code, capture=False):
         ''' Execute code in the CmdEnv environment '''
 
-        if(self.env.record_events):
-            self.recorded_events.push(self.time() - self.env.record_events, code)
+        if(self.app.record_events):
+            self.recorded_events.push(self.time() - self.app.record_events, code)
 
         #debug("Executing cmd: %s", code)
 
@@ -325,7 +325,7 @@ class CmdCenter(Animator, Archiver):
         ''' Prints a list of all functions available in the command environment. '''
 
         # sort keys
-        keys = self.env.funcs.keys()
+        keys = self.app.funcs.keys()
         keys.sort()
 
         for key in keys : print key
@@ -344,7 +344,7 @@ class CmdCenter(Animator, Archiver):
 
         img = self.grab_image()
 
-        self.env.freeze = True
+        self.app.freeze = True
         async(lambda : self.__save_image(img, name))
 
         return name
@@ -355,7 +355,7 @@ class CmdCenter(Animator, Archiver):
         ''' Save image '''
         img.save("image/image_%s.png" % name)
         self.interface.renderer.flash_message("saved state as %s" % name)
-        self.env.freeze = False
+        self.app.freeze = False
 
 
     # needs some work - right now it only loads components, zn & par
@@ -375,8 +375,8 @@ class CmdCenter(Animator, Archiver):
 
         # if immediate, change switch time
         if(immediate):
-            old_switch_time = self.env.state_switch_time
-            self.env.state_switch_time = 0.000001            
+            old_switch_time = self.app.state_switch_time
+            self.app.state_switch_time = 0.000001            
 
         # get update components
         for name in self.componentmanager.component_list():
@@ -393,15 +393,15 @@ class CmdCenter(Animator, Archiver):
 
         # blend to zns
         for i in xrange(len(new_state.zn)):
-            self.radial_2d('state.zn', i, self.env.state_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
+            self.radial_2d('state.zn', i, self.app.state_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
 
         # blend to pars
         for i in xrange(len(new_state.par)):
-            self.linear_1d('state.par', i, self.env.state_switch_time, self.state.par[i], new_state.par[i])
+            self.linear_1d('state.par', i, self.app.state_switch_time, self.state.par[i], new_state.par[i])
 
         # load paths
         def load_paths():
-            time.sleep(self.env.state_switch_time)
+            time.sleep(self.app.state_switch_time)
             self.state.paths = []
             for path in new_state.paths:
                 path.phase = new_state.time - self.time()
@@ -417,7 +417,7 @@ class CmdCenter(Animator, Archiver):
 
         # if immediate, revert switch time
         if(immediate):
-            self.env.state_switch_time = old_switch_time
+            self.app.state_switch_time = old_switch_time
 
 
     def load_state(self, idx):
@@ -429,15 +429,15 @@ class CmdCenter(Animator, Archiver):
     def toggle_record(self):
         ''' Toggles event recording '''
         
-        if(not self.env.record_events):
+        if(not self.app.record_events):
             name = self.save()
-            self.env.record_events = self.time()
+            self.app.record_events = self.time()
             self.recorded_events = Script()
             self.recorded_events.add_event(0.0, "load('%s', True)" % name)
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
         else:            
-            self.env.record_events = False
+            self.app.record_events = False
             self.recorded_events.save()            
             self.interface.renderer.flash_message("Saved script as %s" % (self.recorded_events.name))
             info("Saved script as %s" % (self.recorded_events.name))
@@ -447,16 +447,16 @@ class CmdCenter(Animator, Archiver):
     def manual(self):
         ''' Toggles manual iteration. '''
 
-        if(self.env.manual_iter):
-            self.env.next_frame = True
+        if(self.app.manual_iter):
+            self.app.next_frame = True
 
-        self.env.manual_iter = not self.env.manual_iter
+        self.app.manual_iter = not self.app.manual_iter
 
 
     def next(self):
         ''' If manual iteration toggles, andvances frame. '''
 
-        self.env.next_frame = True
+        self.app.next_frame = True
 
 
     def tap_tempo(self):

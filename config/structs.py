@@ -141,7 +141,7 @@ class DictObj(object):
 
 
 class App(DictObj):
-    ''' Encapsulates one of each other structs. '''
+    ''' Configuration settings for the application. '''
 
     def __init__(self, name="default"):
         self.extension = "app"
@@ -162,14 +162,6 @@ class Context(DictObj):
     def __init__(self, name="default"):
         self.extension = "ctx"
         DictObj.__init__(self, ['app', 'context'], name)
-
-
-class Env(DictObj):
-    ''' Configuration settings for the application. '''
-
-    def __init__(self, name="default"):
-        self.extension = "env"
-        DictObj.__init__(self, ['app', 'environment'], name)
 
 
 class State(DictObj):

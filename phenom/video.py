@@ -30,7 +30,7 @@ class VideoRenderer(object):
         info("Capturing video frame %d at time %s" % (self.frame_num, self.cmdcenter.time()))
 
         # return if necessary
-        if(not self.env.render_video):
+        if(not self.app.render_video):
             return False
 
         # encapsulated for asynchronous execution
@@ -45,12 +45,12 @@ class VideoRenderer(object):
             image.save("video/%s/%s.png" % (self.video_name, padded))
 
             # stop video if necessary
-            if(self.env.max_video_frames and self.frame_num == int(self.env.max_video_frames)):
+            if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):
                 self.stop_video(True)
 
-                if(self.env.video_script):
+                if(self.app.video_script):
                     info("Video rendering complete.  Exiting program")
-                    self.env.exit = True
+                    self.app.exit = True
 
             self.capturing_event.set()
 
@@ -72,11 +72,11 @@ class VideoRenderer(object):
         info("Starting video renderer")
 
         # turn on fps sync
-        self.env.fps_sync = self.env.video_frame_rate
+        self.app.fps_sync = self.app.video_frame_rate
 
         # set vars
         self.frame_num = 0
-        self.env.render_video = True
+        self.app.render_video = True
 
         # get video name if necessary
         if(not video_name):
@@ -96,13 +96,13 @@ class VideoRenderer(object):
         info("Stopping video renderer")
 
         # return if necessary
-        if(not self.env.render_video):
+        if(not self.app.render_video):
             return False
 
-        self.env.render_video = False
+        self.app.render_video = False
 
         def compress():
-            cmd = "mencoder mf://video/%s/*.png -mf w=%d:h=%d:fps=%f:type=png -ovc lavc -lavcopts vbitrate=%d:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o %s.avi" % (self.video_name, self.cmdcenter.engine.profile.kernel_dim, self.cmdcenter.engine.profile.kernel_dim, self.env.video_frame_rate, 60 * 25 * self.cmdcenter.engine.profile.kernel_dim * self.cmdcenter.engine.profile.kernel_dim / 256, self.video_name)
+            cmd = "mencoder mf://video/%s/*.png -mf w=%d:h=%d:fps=%f:type=png -ovc lavc -lavcopts vbitrate=%d:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o %s.avi" % (self.video_name, self.cmdcenter.engine.profile.kernel_dim, self.cmdcenter.engine.profile.kernel_dim, self.app.video_frame_rate, 60 * 25 * self.cmdcenter.engine.profile.kernel_dim * self.cmdcenter.engine.profile.kernel_dim / 256, self.video_name)
             info("Compressing with command - " + cmd)
             os.system(cmd)
             print "to add audio - mencoder %s.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o %s_audio.avi" % (self.video_name, self.video_name)
@@ -110,4 +110,4 @@ class VideoRenderer(object):
         async(compress)                           
 
         # turn off fps sync
-        self.env.fps_sync = False
+        self.app.fps_sync = False
