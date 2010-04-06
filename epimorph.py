@@ -19,7 +19,7 @@ info("Starting Epimorphism")
 
 # define & register exit handler
 def exit():
-    debug("Exiting program")
+    debug("Running exit handler")
 
     # remove unclutter
     os.system("killall unclutter")
@@ -32,11 +32,12 @@ os.system("unclutter -idle 0.25 -jitter 1 -root&")
 
 # create structures
 debug("Creating Application")
-if(len(sys.argv[1:]) != 0):
-    debug("with args %s" % (str(sys.argv[1:])))
 app = App()
 
 # execute command line arguments
+if(len(sys.argv[1:]) != 0):
+    debug("with args %s" % (str(sys.argv[1:])))
+
 for cmd in sys.argv[1:]:
     cmd = cmd.split('=')
 
@@ -55,16 +56,17 @@ def main():
     # initialize modules
     debug("Initializing modules")    
     interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
-    Globals().init(app, app._env, app._context, app._profile, app._state, cmdcenter, interface, engine)
+    Globals().init(app, cmdcenter, interface, engine)
     interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop
-    debug("Starting")
+    debug("Starting CmdCenter")
     cmdcenter.start()
-    app._env.exit = True
-    info("Main loop completed")
 
-    # clean objects
+    info("Main loop completed")
+    app._env.exit = True
+
+    # delete objects
     interface.__del__()
     engine.__del__()
     cmdcenter.__del__()

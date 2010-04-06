@@ -1,7 +1,5 @@
 Queue -
 
-  change component_switch_time to env.state_switch_time
-
   archiving/voting
 
 
@@ -15,23 +13,25 @@ Release -
 
 
 Public - 
-  readme
-  finish website
-  configure keyboard for public use
+  readme / 
   more documentation
   add argument lists to help
+  configure keyboard for public use
+  finish website
 
 
 Archiving - 
   split state into sub states
 
   archive application for adding to archive
-  randomly load from archive
   make sure migrations are working
+  auto migrate feature?
+
   high fidelity rerendering archiving
 
 
 Contents - 
+  programs
   paths
   color function
   seed function

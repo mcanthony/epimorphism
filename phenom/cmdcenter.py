@@ -131,6 +131,7 @@ class CmdCenter(Animator, Archiver):
 
     def __del__(self):
         ''' Exit handler '''
+        debug("Deleting Cmdcenter")
 
         # stop video
         if(self.env.render_video):

@@ -24,6 +24,7 @@ class Interface(object):
 
 
     def __del__(self):
+        debug("Deleting Cmdcenter")
         # self.renderer.__del__()
         # kill server
         # if(self.server):
