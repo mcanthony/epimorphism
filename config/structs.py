@@ -9,6 +9,12 @@ import traceback
 from common.log import *
 set_log("DictObj")
 
+global root
+root = "config/"
+
+def set_root(new_root):
+    global root
+    root = new_root
 
 class MidiList(list):
     ''' This is an internal class to add midi synchronization to
@@ -31,8 +37,9 @@ class MidiList(list):
 
 def load_nested_dict(type, name, extension):
     # open file & extract contents
-#    try:
-    file = "config/" + "/".join(type) + "/" + name + "." + extension
+#   try:
+    global root
+    file = root + "/".join(type) + "/" + name + "." + extension
     file = open(file)
 
     results = file.read().replace("\n", "")
@@ -52,7 +59,7 @@ def load_nested_dict(type, name, extension):
     return results
  #   except:
  #       critical("couldn't read %s" % name)
-#        traceback.print_stack()
+ #       traceback.print_stack()
  #       return None  
 
 
@@ -66,7 +73,8 @@ class DictObj(object):
         if(not self.__dict__.has_key("extension")):
             self.extension = "obj" 
 
-        self.path = "config/" + "/".join(self.type) + "/"
+        global root
+        self.path = root + "/".join(self.type) + "/"
 
         self.top_type = self.type[-1]
             
@@ -78,9 +86,12 @@ class DictObj(object):
         self.__dict__.update(data)
 
 
-
     def children(self):
         return [k for k in self.__dict__ if k[0] == '_' and self.__dict__[k].__class__.__name__ != 'list']
+
+
+    def list_children(self):
+        return [k for k in self.__dict__ if k[0] == '_' and self.__dict__[k].__class__.__name__ == 'list']
 
 
     def has_key(self, key):
@@ -101,7 +112,7 @@ class DictObj(object):
 
 
     def __dir__(self):
-        return ["children", "has_key", "merge", "save", "rm", "__class__"]
+        return ["children", "has_key", "merge", "save", "rm", "__class__", "list_children"]
 
   
     def __getattribute__(self, key):
@@ -119,22 +130,27 @@ class DictObj(object):
     def save(self, name=None):
         ''' Dumps an object to a file.  Adds newlines after commas for legibility '''
 
+        # copy object
+        obj = copy.copy(self.__dict__)
+
         # save children
         for child in self.children():
             new_name = self.__dict__[child].save(name)
-            object.__setattr__(self, child, new_name)
+            obj[child] = new_name
 
+        # save list children
+        for child in self.list_children():
+            print child
+            obj[child] = [sub_child.save(name) for sub_child in self.__dict__[child]]
+
+        # set name
         if(not name):
             # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
             i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))]) for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file)]) + 1
             name = "%s_%d" % (self.top_type, i)
 
         object.__setattr__(self, 'name', name)
-
-        loc = self.path + "%s.%s" % (self.name, self.extension)
-
-        # copy object
-        obj = copy.copy(self.__dict__)
+        obj["name"] = name
 
         # hack for state
         if(self.top_type == "state"):
@@ -142,6 +158,7 @@ class DictObj(object):
             del(obj['par_names'])
 
         # open file & dump repr(obj)
+        loc = self.path + "%s.%s" % (self.name, self.extension)
         file = open(loc, "w")
         file.write(repr(obj).replace(",", ",\n"))
         file.close()

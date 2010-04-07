@@ -3,7 +3,7 @@
  'image': None,
  'frame_cnt': 0,
  'bpm': 120,
- '_script': ['default', 'script_0'],
+ '_script': ['default', 'script_5'],
  'paths': [],
  'programs': [],
  'components': {
