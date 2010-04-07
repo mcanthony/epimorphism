@@ -36,7 +36,10 @@ class MidiList(list):
             self.midi.mirror(self, key)
 
 
-def load_nested_dict(type, name, extension):
+
+
+
+def load_obj(type, name, extension):
     # open file & extract contents
 #   try:
     global root
@@ -48,14 +51,15 @@ def load_nested_dict(type, name, extension):
 
     results = eval(results)
 
-        # evaluate nested fields
-    for k in results:
-        if(k[0] == "_"):
-            if(results[k].__class__.__name__ == "list"):
-                results[k] = [eval(k[1:].capitalize())(k1) for k1 in results[k]]
-            else:
-                results[k] = eval(k[1:].capitalize())(results[k])
-
+    # evaluate nested fields
+    if(results.__class__.__name__ == 'dict'):
+        for k in results:
+            if(k[0] == "_"):
+                if(results[k].__class__.__name__ == "list"):
+                    results[k] = [eval(k[1:].capitalize())(k1) for k1 in results[k]]
+                else:
+                    results[k] = eval(k[1:].capitalize())(results[k])
+                
             
     return results
  #   except:
@@ -79,10 +83,10 @@ class DictObj(object):
 
         self.top_type = self.type[-1]
             
-        data = load_nested_dict(self.type, "default", self.extension)
+        data = load_obj(self.type, "default", self.extension)
 
         if(self.name and self.name != "default"):
-            data.update(load_nested_dict(self.type, self.name, self.extension))
+            data.update(load_obj(self.type, self.name, self.extension))
 
         self.__dict__.update(data)
 
@@ -141,6 +145,8 @@ class DictObj(object):
 
         # save list children
         for child in self.list_children():
+            print child
+            print self.__dict__[child]
             obj[child] = [sub_child.save(name) for sub_child in self.__dict__[child]]
 
         # set name
@@ -169,7 +175,7 @@ class DictObj(object):
 
     def update_record(self, key, val):
         # load & update self
-        old_self = load_nested_dict(self.type, self.name, self.extension)
+        old_self = load_obj(self.type, self.name, self.extension)
         old_self[key] = val
 
         # update file
@@ -243,8 +249,5 @@ class State(DictObj):
         for path in self.paths:
             path.phase = self.time
 
-        # set script phases
-        for script in self._script:
-            script.phase = self.time
 
 from phenom.script import *

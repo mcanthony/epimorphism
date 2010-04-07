@@ -24,7 +24,7 @@ class Script(DictObj):
 
 
     def __dir__(self):
-        return ["_execute", "start", "add_event", "last_event_time", "push"] + DictObj.__dir__(self)
+        return ["_execute", "start", "stop", "add_event", "last_event_time", "push", "save"] + DictObj.__dir__(self)
 
 
     def _execute(self):
@@ -33,21 +33,37 @@ class Script(DictObj):
         if(not self.__dict__.has_key('cmdcenter')):
             Globals().load(self)
 
-        # main execution loop
-        while(self.current_idx < len(self.events) and not self.app.exit):            
-            if(not self.__dict__.has_key('cmdcenter')):
-                   Globals().load(self)
+        while(len(self.events) > 0 and not self.app.exit and not self.exit):
+            next_event = self.events[0]
+ #           print next_event["time"]
 
-            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.app.exit):
-                if("inc" in self.events[self.current_idx]["cmd"]):
-                    async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
-                else:
-                    self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
-                self.current_idx += 1
-            if(self.current_idx < len(self.events)):
-                t = self.events[self.current_idx]["time"] - (self.cmdcenter.time() + self.phase)
-                if(t > 0):
-                    time.sleep(t)
+            t = next_event["time"] + self.phase - self.cmdcenter.time()
+#            print t
+            if(t > 0):
+                time.sleep(t)
+
+            cmd = next_event["cmd"]
+
+            async(lambda: self.cmdcenter.cmd(cmd))
+
+            self.events.pop(0)
+
+
+        # main execution loop
+#        while(self.current_idx < len(self.events) and not self.app.exit):            
+#            if(not self.__dict__.has_key('cmdcenter')):
+#                   Globals().load(self)
+
+#            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.app.exit):
+#                if("inc" in self.events[self.current_idx]["cmd"]):
+#                    async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
+#                else:
+#                    self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
+#                self.current_idx += 1
+#            if(self.current_idx < len(self.events)):
+#                t = self.events[self.current_idx]["time"] - (self.cmdcenter.time() + self.phase)
+#                if(t > 0):
+#                    time.sleep(t)
 
         debug("Finished executing script")
 
@@ -56,7 +72,16 @@ class Script(DictObj):
         ''' Starts the script '''
         debug("Start script")
 
+        self.exit = False
         async(self._execute)
+
+
+    def stop(self):
+        ''' Stops the script '''
+        debug("Stop script")
+
+        self.exit = True
+
 
 
     def add_event(self, time, cmd):

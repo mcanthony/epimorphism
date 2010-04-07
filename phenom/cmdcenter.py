@@ -420,7 +420,7 @@ class CmdCenter(Animator, Archiver):
                 self.state.programs.append(program)
 
             for script in new_state._script:
-                script.phase = new_state.time - self.time()
+                script.phase += self.time()
                 script.start()
                 self.state._script.append(script)
 
