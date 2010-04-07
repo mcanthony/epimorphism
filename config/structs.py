@@ -4,6 +4,7 @@ from phenom.program import *
 
 import re
 import os
+import traceback
 
 from common.log import *
 set_log("DictObj")
@@ -30,24 +31,29 @@ class MidiList(list):
 
 def load_nested_dict(type, name, extension):
     # open file & extract contents
-    try:
-        file = "config/" + "/".join(type) + "/" + name + "." + extension
-        file = open(file)
+#    try:
+    file = "config/" + "/".join(type) + "/" + name + "." + extension
+    file = open(file)
 
-        results = file.read().replace("\n", "")
-        file.close()
+    results = file.read().replace("\n", "")
+    file.close()
 
-        results = eval(results)
+    results = eval(results)
 
         # evaluate nested fields
-        for k in results:
-            if(k[0] == "_"):
+    for k in results:
+        if(k[0] == "_"):
+            if(results[k].__class__.__name__ == "list"):
+                results[k] = [eval(k[1:].capitalize())(k1) for k1 in results[k]]
+            else:
                 results[k] = eval(k[1:].capitalize())(results[k])
+
             
-        return results
-    except:
-        critical("couldn't read %s" % name)
-        return None  
+    return results
+ #   except:
+ #       critical("couldn't read %s" % name)
+#        traceback.print_stack()
+ #       return None  
 
 
 class DictObj(object):
@@ -72,8 +78,9 @@ class DictObj(object):
         self.__dict__.update(data)
 
 
+
     def children(self):
-        return [k for k in self.__dict__ if k[0] == '_']
+        return [k for k in self.__dict__ if k[0] == '_' and self.__dict__[k].__class__.__name__ != 'list']
 
 
     def has_key(self, key):
@@ -94,7 +101,7 @@ class DictObj(object):
 
 
     def __dir__(self):
-        return ["children", "has_key", "merge", "save", "rm"]
+        return ["children", "has_key", "merge", "save", "rm", "__class__"]
 
   
     def __getattribute__(self, key):
@@ -206,3 +213,5 @@ class State(DictObj):
         # set path phases
         for path in self.paths:
             path.phase = self.time
+
+from phenom.script import *
