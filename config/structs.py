@@ -3,6 +3,7 @@ from phenom.path import *
 from phenom.program import *
 
 import re
+import os
 
 from common.log import *
 set_log("DictObj")
@@ -27,7 +28,7 @@ class MidiList(list):
             self.midi.mirror(self, key)
 
 
-def load_obj(type, name, extension):
+def load_nested_dict(type, name, extension):
     # open file & extract contents
     try:
         file = "config/" + "/".join(type) + "/" + name + "." + extension
@@ -63,20 +64,20 @@ class DictObj(object):
 
         self.top_type = self.type[-1]
             
-        data = load_obj(self.type, "default", self.extension)
+        data = load_nested_dict(self.type, "default", self.extension)
 
         if(self.name and self.name != "default"):
-            data.update(load_obj(self.type, self.name, self.extension))
+            data.update(load_nested_dict(self.type, self.name, self.extension))
 
         self.__dict__.update(data)
 
 
     def children(self):
-        return [self.__dict__[k] for k in self.__dict__ if k[0] == '_']
+        return [k for k in self.__dict__ if k[0] == '_']
 
 
     def has_key(self, key):
-        return self.__dict__.has_key(key) or any([child.__dict__.has_key(key) for child in self.children()])
+        return self.__dict__.has_key(key) or any([self.__dict__[child].__dict__.has_key(key) for child in self.children()])
 
 
     def __setattr__(self, key, val):        
@@ -86,13 +87,14 @@ class DictObj(object):
             if(key == "__dict__"):
                 object.__setattr__(self, key, val)                          
             for child in self.children():
-                if(child.has_key(key)):
-                    object.__setattr__(child, key, val)
+                if(self.__dict__[child].has_key(key)):
+                    object.__setattr__(self.__dict__[child], key, val)
                     return
             object.__setattr__(self, key, val)
 
+
     def __dir__(self):
-        return ["children", "has_key", "merge", "save"]
+        return ["children", "has_key", "merge", "save", "rm"]
 
   
     def __getattribute__(self, key):
@@ -100,7 +102,7 @@ class DictObj(object):
             return object.__getattribute__(self, key)
         else:
             for child in self.children():
-                val = getattr(child, key)
+                val = getattr(self.__dict__[child], key)
                 if(val):
                     return val 
 
@@ -110,13 +112,18 @@ class DictObj(object):
     def save(self, name=None):
         ''' Dumps an object to a file.  Adds newlines after commas for legibility '''
 
+        # save children
+        for child in self.children():
+            new_name = self.__dict__[child].save(name)
+            object.__setattr__(self, child, new_name)
+
         if(not name):
             # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
             i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))]) for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file)]) + 1
             name = "%s_%d" % (self.top_type, i)
 
         object.__setattr__(self, 'name', name)
-    
+
         loc = self.path + "%s.%s" % (self.name, self.extension)
 
         # copy object
@@ -132,9 +139,23 @@ class DictObj(object):
         file.write(repr(obj).replace(",", ",\n"))
         file.close()
 
-        info("saved state as: %s" % name)
+        info("saved %s as: %s" % (self.type, self.name))
         return name
 
+
+    def rm(self):
+        ''' Deletes an object and all of its children from disk '''
+
+        # delete children
+        for child in self.children():
+            self.__dict__[child].rm()
+
+        loc = self.path + "%s.%s" % (self.name, self.extension)
+
+        os.system("rm " + loc)
+            
+        debug("Deleted " + loc)
+        
 
     def merge(self, dict_obj):
         self.__dict__.update(dict_obj.__dict__)
@@ -171,9 +192,14 @@ class State(DictObj):
         self.extension = "est"
         DictObj.__init__(self, ['app', 'state'], name)
 
+        # process pars & names
         self.par_names = self.par[::2]
         self.par = self.par[1::2]
+
+        # perform migration
         self.__dict__ = migrate(self.__dict__)
+
+        # make midi lists
         self.zn  = MidiList(self.zn)
         self.par = MidiList(self.par)
 
