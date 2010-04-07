@@ -1,42 +1,71 @@
 EPIMORPHISM - v1.0b
 
-Epimorphism is a real time video feedback simultation that runs on Nvidia graphics hardware using CUDA.  Epimorphism recursively processes image data to create a continuous flow of higly virbant geometrical fractaline imagery.  The application can run autonomously or it can be manually controlled or scripted.
+Epimorphism is a real time video feedback simultation that runs on Nvidia graphics hardware using CUDA.  Epimorphism recursively processes image data to create a continuous flow of higly virbant geometrical fractaline imagery.  The application can run autonomously or it can be manually controlled/scripted.
 
-MODES:
+MODES
+
 Epimophsim has the following main methods of opperation:
   Autonomous  - The program can be completely automated and run with no user interaction
   Manual      - The parameters of the system can also be changed by the user, using various diffent control schemes
   Live        - This mode is a combination of the above two with a control scheme designed for triggering animations/effect with at particular rythms
-  Video       - Scripts of automation events can be recorded/dynamically generated and then rendered ofline into high resolution videos 
+  Video       - Scripts of automation events can be recorded or dynamically generated and then rendered offline into high resolution video
 
-CONTROLS:
-see noumena/interface.txt
 
-EXPLANATION:
+EXECUTION
 
 This application simulates video feedback. On a high level, on each cycle, the following actions occur:
-
-1. Grab the previously rendered frame
-2. SEED: Draw something on top of it
-3. TRANS: Put the image through a spatial transformation
-4. COLOR: Put the image through a color transformation
-5. Draw the result
-
-
+1. Grab the previously rendered image
+2. Process the image
+  a. SEED: Draw something on top of it
+  b. TRANS: Put the image through a spatial transformation
+  c. COLOR: Put the image through a color transformation
+3. Draw the result
 
 
+MAIN OBJECTS
+
+Upon program initialization, three objects are created:
+CMDCENTER - The main control/execution infrastructure for the application.
+ENGINE    - The program's interface with CUDA.  All gpu specific code is handled by this class. This class is responsible for executing the KERNEL which computes the images.
+INTERFACE - The program's interface with the outside world.  Comrpised of an OpenGL RENDERER object as well as several objects for various input methods.
 
 
 CONFIGURATION 
 
-Application - An object which contains one of each of the following:
-Profile     - Contains CUDA & internal rendering configuration parameters.  Basically controls the fidelity of the images produced.
-Context     - Configures the UI, both inputs & outputs.  Configures screen resolution, keyboard, mouse, and midi mappings, etc...
-Environment - Configures miscelaneous application settings.
-State       - Contains all information the CUDA engine needs to make a frame, and the specification for how this information evolves over time.x
+The applicaion is controlled by the following cofiguration system:
+APP         - An object which containes the global configuration parameters for the application. It contains one of each of the following, as well as various other settings:
+PROFILE     - An object which ontains CUDA & internal rendering configuration parameters.  Basically controls the fidelity of the images produced. Configures the ENGINE.
+CONTEXT     - An object which configures the UI, both inputs & outputs.  Configures screen resolution, keyboard, mouse, midi mappings, etc...  Configures the INTERFACE.
+STATE       - An object which contains all information the CMDCENTER needs to make FRAME's for the ENGINE, and the specification for how this information evolves over time. Comprised of:
+  seed      - An object which contains all information necessary to generate the SEED
+  trans     - An object which contains all information necessary for the spatial transformation(TRANS) 
+  color     - An object which contains all information necessary to color the final image(COLOR)
+  paths     - A list of all currently executing PATHs
+  scripts   - A list of all currently executing SCRIPTs
+  programs  - A list of all currently executing PROGRAMs
+            - Miscelaneous other parameters
+
+All objects(not lists) referenced here are special types of dictionaries that allow easy attribute referencing, nesting, serialization and deserialization.
 
 
+PROGRAM FLOW
 
-Application Flow:
+The CMDCENTER is continuously generating FRAMES from the STATE and sending them to the ENGINE.  A FRAME is all of the information the current CUDA KERNEL needs to perform 
+it's calculations.  The result is then passed to INTERFACE.RENDERER and drawn to the screen.  
 
-There is an
+The STATE is constantly changing over time.  Changes to the state happen in the following ways:
+1. On each cycle, STATE.time is updated
+2. Execution of STATE.PATH objects
+3. Various INTERFACE input modules can send commands to the CMDCENTER
+4. Execution of STATE.SCRIPT objects
+5. Execution of STATE.PROGRAM objects
+
+1, 2 are synchronous and happen on each of the applications cycle.  3, 4, 5 are asynchronous.
+
+All changes to the STATE object must be routed through the CMDCENTER and not performed directly.  This allows for recording and playback of commands into SCRIPT objects.
+
+PATH
+
+SCRIPT
+
+PROGRAM
