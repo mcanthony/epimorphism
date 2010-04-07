@@ -20,16 +20,14 @@ class Script():
 
         self.__dict__ = load_obj(["script"], name, "scr")
 
-        Globals().load(self)
-
 
     def save(self, name = None):
-        print repr(self)
-        return save_obj(eval(repr(self)), ["script"], "scr", name)
+        self.name = save_obj({'name':name, 'events':self.events, 'phase':self.phase}, ["script"], "scr", name)
+        return self.name
 
 
     def __repr__(self):
-        return "{'name':'%s', 'events':%s, 'phase':%s}" % (self.name, str(self.events), str(self.phase))
+        return "Script('%s')" % self.name
 
 
     def _execute(self):
@@ -76,6 +74,7 @@ class Script():
     def start(self):
         ''' Starts the script '''
         debug("Start script")
+        Globals().load(self)
 
         self.exit = False
         async(self._execute)
