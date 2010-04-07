@@ -20,6 +20,9 @@ class Script(DictObj):
         self.extension = "scr"
         DictObj.__init__(self, ["app", "state", "script"], name)
 
+        self.phase = 0
+
+
     def __dir__(self):
         return ["_execute", "start", "add_event", "last_event_time", "push"] + DictObj.__dir__(self)
 

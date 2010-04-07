@@ -8,8 +8,6 @@
  'manual_iter': False,
  'next_frame': False,
 
- 'initial_script': None,
-
  'fps_sync': False,
  'record_events': False,
 
@@ -25,7 +23,6 @@
  'render_video': False,
  'max_video_frames': None,
  'video_frame_rate': 30.0,
- 'video_script': None,
 
  'state_switch_time': 4.0
 }

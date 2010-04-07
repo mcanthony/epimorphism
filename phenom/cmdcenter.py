@@ -82,20 +82,14 @@ class CmdCenter(Animator, Archiver):
         self.t_phase = 0.0
         self.recorded_events = None
 
-        # load initial script
-        if(self.app.initial_script):
-            self.initial_script = Script(self.app.initial_script)
-        else:
-            self.initial_script = None
-
         # create video_renderer
         self.video_renderer = VideoRenderer()
 
-        if(self.app.video_script):
-            self.app.render_video = True
-            self.initial_script = Script(self.app.video_script)
-            self.app.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.app.video_frame_rate)
-            debug("Setting max_video_frames to %d" % self.app.max_video_frames)
+#        if(self.app.video_script):
+#            self.app.render_video = True
+#            self.initial_script = Script(self.app.video_script)
+#            self.app.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.app.video_frame_rate)
+#            debug("Setting max_video_frames to %d" % self.app.max_video_frames)
 
         if(self.app.render_video):
             self.video_renderer.start_video()
@@ -140,7 +134,10 @@ class CmdCenter(Animator, Archiver):
         # save events
         if(self.app.record_events and self.recorded_events):
             info("Saving events")
-            self.recorded_events.save()
+            script_names = [script.name for script in self.state._script]
+            script_names.remove(self.recorded_events.name)
+            self.recorded_events.save()   
+            script_names.append(self.recorded_events.name)
 
 
     def start(self):
@@ -152,13 +149,15 @@ class CmdCenter(Animator, Archiver):
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
-        # start initial script
-        if(self.initial_script):
-            self.initial_script.start()
+        # start scripts
+        for script in self.state._script:
+            script.start()
 
         # start programs
         for program in self.state.programs:
             program.start()
+
+
 
         # start modules - DOESN'T RETURN
         self.engine.start()
@@ -391,6 +390,15 @@ class CmdCenter(Animator, Archiver):
 
         debug("Loading state, updating components: %s" % str(updates))
 
+        # stop paths, scripts & programs
+        self.state.paths = []
+
+        for script in self.state._script:
+            script.stop()
+
+        for program in self.state.programs:
+            program.stop()
+
         # blend to zns
         for i in xrange(len(new_state.zn)):
             self.radial_2d('state.zn', i, self.app.state_switch_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
@@ -399,7 +407,7 @@ class CmdCenter(Animator, Archiver):
         for i in xrange(len(new_state.par)):
             self.linear_1d('state.par', i, self.app.state_switch_time, self.state.par[i], new_state.par[i])
 
-        # load paths
+        # load evolution
         def load_paths():
             time.sleep(self.app.state_switch_time)
             self.state.paths = []
@@ -410,6 +418,11 @@ class CmdCenter(Animator, Archiver):
             for program in new_state.programs:
                 program.start()
                 self.state.programs.append(program)
+
+            for script in new_state._script:
+                script.phase = new_state.time - self.time()
+                script.start()
+                self.state._script.append(script)
 
         async(load_paths)
 
@@ -430,17 +443,24 @@ class CmdCenter(Animator, Archiver):
         ''' Toggles event recording '''
         
         if(not self.app.record_events):
-            name = self.save()
             self.app.record_events = self.time()
             self.recorded_events = Script()
-            self.recorded_events.add_event(0.0, "load('%s', True)" % name)
+            self.state._script.append(self.recorded_events)
+
+            name = self.save()
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
         else:            
             self.app.record_events = False
-            self.recorded_events.save()            
-            self.interface.renderer.flash_message("Saved script as %s" % (self.recorded_events.name))
-            info("Saved script as %s" % (self.recorded_events.name))
+
+            script_names = [script.name for script in self.state._script]
+            script_names.remove(self.recorded_events.name)
+            self.recorded_events.save()   
+            script_names.append(self.recorded_events.name)
+
+            self.state.update_record("_script", script_names)
+            self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
+            info("Saved state as %s" % (self.state.name))
             self.recorded_events = None
 
 

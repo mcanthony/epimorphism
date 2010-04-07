@@ -16,6 +16,7 @@ def set_root(new_root):
     global root
     root = new_root
 
+
 class MidiList(list):
     ''' This is an internal class to add midi synchronization to
         changes in parameters. '''
@@ -112,7 +113,7 @@ class DictObj(object):
 
 
     def __dir__(self):
-        return ["children", "has_key", "merge", "save", "rm", "__class__", "list_children"]
+        return ["children", "has_key", "merge", "save", "rm", "__class__", "list_children", "update_record"]
 
   
     def __getattribute__(self, key):
@@ -140,7 +141,6 @@ class DictObj(object):
 
         # save list children
         for child in self.list_children():
-            print child
             obj[child] = [sub_child.save(name) for sub_child in self.__dict__[child]]
 
         # set name
@@ -165,6 +165,18 @@ class DictObj(object):
 
         info("saved %s as: %s" % (self.type, self.name))
         return name
+
+
+    def update_record(self, key, val):
+        # load & update self
+        old_self = load_nested_dict(self.type, self.name, self.extension)
+        old_self[key] = val
+
+        # update file
+        loc = self.path + "%s.%s" % (self.name, self.extension)
+        file = open(loc, "w")
+        file.write(repr(old_self).replace(",", ",\n"))
+        file.close()        
 
 
     def rm(self):
@@ -230,5 +242,9 @@ class State(DictObj):
         # set path phases
         for path in self.paths:
             path.phase = self.time
+
+        # set script phases
+        for script in self._script:
+            script.phase = self.time
 
 from phenom.script import *
