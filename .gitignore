@@ -15,4 +15,4 @@ est
 *.log
 sources/pypm/build/*
 config/app/state/*.est
-config/app/state/script/script_*
+config/script/script_*

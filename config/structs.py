@@ -38,6 +38,31 @@ class MidiList(list):
 
 
 
+def save_obj(obj, type, extension, name=None):
+
+    path = root + "/".join(type) + "/" 
+    
+    top_type = type[-1]
+
+    # set name
+    if(not name):
+        # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
+        i = max([-1] + [int(file[(len(top_type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(top_type + '_').match(file)]) + 1
+        name = "%s_%d" % (top_type, i)
+        
+    obj["name"] = name
+
+    # open file & dump repr(obj)
+    loc = path + "%s.%s" % (name, extension)
+    file = open(loc, "w")
+    file.write(repr(obj).replace(",", ",\n"))
+    file.close()
+
+    info("saved %s.%s" % (name, extension))
+
+    return name
+
+
 
 def load_obj(type, name, extension):
     # open file & extract contents
@@ -55,10 +80,7 @@ def load_obj(type, name, extension):
     if(results.__class__.__name__ == 'dict'):
         for k in results:
             if(k[0] == "_"):
-                if(results[k].__class__.__name__ == "list"):
-                    results[k] = [eval(k[1:].capitalize())(k1) for k1 in results[k]]
-                else:
-                    results[k] = eval(k[1:].capitalize())(results[k])
+                results[k] = eval(k[1:].capitalize())(results[k])
                 
             
     return results
@@ -92,11 +114,7 @@ class DictObj(object):
 
 
     def children(self):
-        return [k for k in self.__dict__ if k[0] == '_' and self.__dict__[k].__class__.__name__ != 'list']
-
-
-    def list_children(self):
-        return [k for k in self.__dict__ if k[0] == '_' and self.__dict__[k].__class__.__name__ == 'list']
+        return [k for k in self.__dict__ if k[0] == '_']
 
 
     def has_key(self, key):
@@ -117,7 +135,7 @@ class DictObj(object):
 
 
     def __dir__(self):
-        return ["children", "has_key", "merge", "save", "rm", "__class__", "list_children", "update_record"]
+        return ["children", "has_key", "merge", "save", "rm", "__class__", "update_record"]
 
   
     def __getattribute__(self, key):
@@ -143,33 +161,15 @@ class DictObj(object):
             new_name = self.__dict__[child].save(name)
             obj[child] = new_name
 
-        # save list children
-        for child in self.list_children():
-            print child
-            print self.__dict__[child]
-            obj[child] = [sub_child.save(name) for sub_child in self.__dict__[child]]
-
-        # set name
-        if(not name):
-            # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
-            i = max([-1] + [int(file[(len(self.top_type) + 1):(-1 - len(self.extension))]) for file in os.listdir(self.path) if re.compile(self.top_type + '_').match(file)]) + 1
-            name = "%s_%d" % (self.top_type, i)
-
-        object.__setattr__(self, 'name', name)
-        obj["name"] = name
-
         # hack for state
         if(self.top_type == "state"):
             obj['par'] = list(reduce(lambda s,t: s + t, zip(obj['par_names'], obj['par']), ()))
             del(obj['par_names'])
 
-        # open file & dump repr(obj)
-        loc = self.path + "%s.%s" % (self.name, self.extension)
-        file = open(loc, "w")
-        file.write(repr(obj).replace(",", ",\n"))
-        file.close()
+        # save object
+        name = save_obj(obj, self.type, self.extension, name)
+        object.__setattr__(self, 'name', name)
 
-        info("saved %s as: %s" % (self.type, self.name))
         return name
 
 

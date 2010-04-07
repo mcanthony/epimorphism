@@ -11,20 +11,25 @@ from common.log import *
 set_log("SCRIPT")
 
 
-class Script(DictObj):
+class Script():
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
 
-    def __init__(self, name = None):
+    def __init__(self, name = "default"):
         debug("Creating script")
-        self.extension = "scr"
-        DictObj.__init__(self, ["app", "state", "script"], name)
 
-        self.phase = 0
+        self.__dict__ = load_obj(["script"], name, "scr")
+
+        Globals().load(self)
 
 
-    def __dir__(self):
-        return ["_execute", "start", "stop", "add_event", "last_event_time", "push", "save"] + DictObj.__dir__(self)
+    def save(self, name = None):
+        print repr(self)
+        return save_obj(eval(repr(self)), ["script"], "scr", name)
+
+
+    def __repr__(self):
+        return "{'name':'%s', 'events':%s, 'phase':%s}" % (self.name, str(self.events), str(self.phase))
 
 
     def _execute(self):

@@ -150,7 +150,7 @@ class CmdCenter(Animator, Archiver):
         self.state.frame_cnt = 0
 
         # start scripts
-        for script in self.state._script:
+        for script in self.state.scripts:
             script.start()
 
         # start programs
@@ -445,20 +445,17 @@ class CmdCenter(Animator, Archiver):
         if(not self.app.record_events):
             self.app.record_events = self.time()
             self.recorded_events = Script()
-            self.state._script.append(self.recorded_events)
+            self.state.scripts.append(self.recorded_events)
 
-            name = self.save()
+            self.save()
             self.interface.renderer.flash_message("Recording script")
             info("Recording script")
         else:            
             self.app.record_events = False
 
-            script_names = [script.name for script in self.state._script]
-            script_names.remove(self.recorded_events.name)
             self.recorded_events.save()   
-            script_names.append(self.recorded_events.name)
 
-            self.state.update_record("_script", script_names)
+            self.state.update_record("scripts", repr(self.state.scripts))
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
             info("Saved state as %s" % (self.state.name))
             self.recorded_events = None
