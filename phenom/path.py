@@ -8,8 +8,10 @@ set_log("Path")
 class Path(object):
 
 
-    def __init__(self, type, obj, idx, phase, start, spd, data):
-        self.type, self.obj, self.idx, self.phase, self.start, self.spd, self.data  = type, obj, idx, phase, start, spd, data
+    def __init__(self, type, obj, idx, phase, start, spd, **vars):
+        self.data_keys = vars.keys()
+        self.type, self.obj, self.idx, self.phase, self.start, self.spd = type, obj, idx, phase, start, spd
+        self.__dict__.update(vars)
         self.globals_initialized = False
         
 
@@ -19,14 +21,14 @@ class Path(object):
 
 
     def execute(self, t):
-        (res, status) = eval(self.type)(self, t, self.data)
+        (res, status) = eval(self.type)(self, t)
 
         # set result
         if(self.obj):
-            self.cmdcenter.set_val(res, self.obj, self.idx)
+            self.cmdcenter.set_val(res, self.obj, self.idx) 
 
         return status
 
 
     def __repr__(self):
-        return "Path('%s', %s, %s, %f, %f, %f, %s)" % (self.type, self.obj and ("'" + self.obj + "'") or "None", self.idx or "None", self.phase, self.start, self.spd, str(self.data))
+        return "Path('%s', %s, %s, %f, %f, %f, %s)" % (self.type, self.obj and ("'" + self.obj + "'") or "None", self.idx or "None", self.phase, self.start, self.spd, str(self.data_keys))
