@@ -49,7 +49,13 @@ def wave_1d(self, t):
     return (self.a * sin(2.0 * pi * t + self.th) + self.b, True)
 
 
+def wave_zr(self, t):
+    ''' complex sinousoidal radius path '''       
+
+    return (p_to_r([self.a * sin(2.0 * pi * t + self.th) + self.b, 0]), True)
+
+
 def rose(self, t):
     ''' a rose curve '''
 
-    return (p_to_r([self.c + self.a * cos(self.b * t), t]), True)
+    return (p_to_r([self.a * cos(self.b * t) + self.c, t]), True)

@@ -18,8 +18,8 @@
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y)'
  },
- 'zn': [(1.3+0.0j),
- (0.0+0.0j),
+ 'zn': [(0.0+1.0j),
+ (1.0+0.0j),
  (1.0+0j),
  0j,
  0j,

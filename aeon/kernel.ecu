@@ -71,12 +71,12 @@ extern "C" {
         float2 z_c = z;
 
         // compute z[0] * T(z[2] * z + z[3]) + z[1]
-        z = zn[2] * (z - zn[3]);
+        z = zn[2] * z + zn[3];
         %REDUCE%
         z = reduce;
         %T%
         z = t;
-        z = zn[0] * (z - zn[1]);
+        z = zn[0] * z + zn[1];
         %REDUCE%
         z = recover(reduce);
 
