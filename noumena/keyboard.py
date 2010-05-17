@@ -52,6 +52,10 @@ class KeyboardHandler(object):
         elif(key == "\\"):
             self.cmdcenter.cmd("reset_fb()")
 
+        # inc current_state_idx
+        elif(key == GLUT_KEY_PAGE_UP):
+            self.cmdcenter.update_current_state_idx()
+
         # reset zn
         elif(key == GLUT_KEY_HOME):
             default = State()

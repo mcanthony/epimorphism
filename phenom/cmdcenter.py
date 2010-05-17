@@ -150,15 +150,12 @@ class CmdCenter(Animator, Archiver):
         self.state.frame_cnt = 0
 
         # start scripts
-        print "aaaa", self.state.scripts
         for script in self.state.scripts:
             script.start()
 
         # start programs
         for program in self.state.programs:
             program.start()
-
-
 
         # start modules - DOESN'T RETURN
         self.engine.start()
@@ -277,7 +274,7 @@ class CmdCenter(Animator, Archiver):
         return self.state.time
 
 
-    def update_current_state_idx(self, idx):
+    def update_current_state_idx(self, idx=1):
         self.current_state_idx += idx
         self.load(self.current_state_idx)
 

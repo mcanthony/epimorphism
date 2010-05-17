@@ -1,5 +1,19 @@
 Queue -
 
+  states - 
+    scripts
+    paths
+    programs
+    variables
+
+    add image to state
+
+    make sure they save correctly
+    make sure they load correctly - startup & intermediate
+
+  don't route paths through cmd center.  all calls to animate_var through cmd_center
+
+
   stop paths dicts & programs in load
 
   make component switching a program
