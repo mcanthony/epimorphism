@@ -7,7 +7,17 @@ tan(z)                                  :
 sinh(z)                                 :
 cosh(z)                                 :
 tanh(z)                                 :
-tanh(tanh(z))                           :
+1.0 / sinh(z)				:
+1.0 / tan(z)				:
+1.0 / sq(z)				:
+sin(z) * cos(z)				:
+z / sinh(z)				:
+z + exp(z)				:
+z + sq(z)				:
+1.0 / sinh(z*z)				:
+sin(tan(z))				:
+sin(z) + tan(z)				:
+exp(z) + 1.0 / sinh(z)			:
 sq(z)                                   :
 1.0 - sq(z)                             :
 sq(1.0 - z)                             :

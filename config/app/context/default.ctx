@@ -1,7 +1,7 @@
 {
  'name': 'default',
 
- 'keyboard':'live',
+ 'keyboard':'full',
  'par_scale': 1,
  'midi': True,
  'midi_output': True,

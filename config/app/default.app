@@ -1,7 +1,7 @@
 {
  'name': 'default',
 
- '_context': 'hdtv',
+ '_context': 'default',
  '_profile': 'default',
  '_state': 'default',
 

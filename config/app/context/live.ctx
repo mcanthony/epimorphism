@@ -1,5 +1,6 @@
 {
  'name': 'live',
+ 'keyboard':'live',
 
  'screen' : [1024, 768, True],
 }

@@ -10,6 +10,10 @@ from phenom.datamanager import *
 # dict of all migrations
 all_migrations = {}
 
+# increment through all states, migrate & save
+def migrate_all_states():
+    pass
+
 def migrate(vars):
 
     # test if update necessary

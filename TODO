@@ -1,6 +1,17 @@
 Queue -
 
-  states - 
+  final preparations:
+    cleaning/documention pass
+    configure keyboard
+    console  
+    installer script/pyport midi
+
+  contents:
+    make cool things
+
+  archiving:
+
+  states:
     scripts
     paths
     programs
@@ -12,7 +23,6 @@ Queue -
     make sure they load correctly - startup & intermediate
 
   don't route paths through cmd center.  all calls to animate_var through cmd_center
-
 
   stop paths dicts & programs in load
 
@@ -43,11 +53,9 @@ Public -
 Archiving - 
   split state into sub states
 
-  archive application for adding to archive
+  archive feature for adding to archive or deleting
   make sure migrations are working
   auto migrate feature?
-
-  high fidelity rerendering archiving
 
 
 Contents - 
@@ -65,10 +73,8 @@ Contents -
 
 Ideas -
   rework scripts - truncate
-  save scripts in states
   figure out command recording
   make components object
-  make switch component a script
   move interface to another thread  
   metapaths 
   opengl effects
@@ -92,7 +98,6 @@ Misc Tasks -
 
 
 Bugs - 
-  cant save paths
   color speeds & phases
   video rendering script bug     
   ??configmanager dump object newline issues(only really relevant for scripts)

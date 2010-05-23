@@ -2,17 +2,16 @@ EPIMORPHISM - v1.0b
 
 Epimorphism is a real time video feedback simultation that runs on Nvidia graphics hardware using CUDA.  Epimorphism recursively processes image data to create a continuous flow of higly virbant geometrical fractaline imagery.  The application can run autonomously or it can be manually controlled/scripted.
 
-MODES
+INSTALLATION:
+  See INSTALL
 
-Epimophsim has the following main methods of opperation:
-  Autonomous  - The program can be completely automated and run with no user interaction
-  Manual      - The parameters of the system can also be changed by the user, using various diffent control schemes
-  Live        - This mode is a combination of the above two with a control scheme designed for triggering animations/effect with at particular rythms
-  Video       - Scripts of automation events can be recorded or dynamically generated and then rendered offline into high resolution video
+BASIC CONTROL:
+  Epimorphism is configured by default to randomly wander through its space, but at any time it can be stopped and manual control can be assumed.  The simplest way to control the program is via the keyboard.  In order to fully exploit the program, some level of understanding is necessary, but only basic knowledge is required to make the program do interesting things.  There are two distinct types of controls in the application:  continuous numerical values, and discrete controls(such as chosing a transformation from a list).  
 
-
-EXECUTION
-
+In order to have some basic control over Epimorphism, all you need to understand is the following:
+There are 3 sections of control in the keyboard, all following a similar layout scheme - 
+  
+OVERVIEW:
 This application simulates video feedback. On a high level, on each cycle, the following actions occur:
 1. Grab the previously rendered image
 2. Process the image
@@ -69,3 +68,14 @@ PATH
 SCRIPT
 
 PROGRAM
+
+
+
+
+MODES
+
+Epimophsim has the following main methods of opperation:
+  Autonomous  - The program can be completely automated and run with no user interaction
+  Manual      - The parameters of the system can also be changed by the user, using various diffent control schemes
+  Live        - This mode is a combination of the above two with a control scheme designed for triggering animations/effect with at particular rythms
+  Video       - Scripts of automation events can be recorded or dynamically generated and then rendered offline into high resolution video

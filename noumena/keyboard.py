@@ -72,9 +72,48 @@ class KeyboardHandler(object):
         elif(key == GLUT_KEY_F1):
             self.cmdcenter.cmd("tap_tempo()")
 
+        # switch midi speed
+        if(key == GLUT_KEY_F7):
+            if(self.context.midi_speed >= 0.5):
+                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.01")
+                self.context.midi_speed = 0.01
+            else:
+                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
+                self.context.midi_speed = 0.5
+
+        # automate components
+        if(key == GLUT_KEY_F8):        
+            if(self.automating_components):
+                for program in self.state.programs:
+                    program.stop()
+                self.state.programs = []
+                self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
+                info("Stopping component automation")
+            else:
+                program = RandomComponents2({'interval': 10})
+                program.start()
+                self.state.programs.append(program)
+                self.cmdcenter.interface.renderer.flash_message("Starting component automation")
+                info("Starting component automation")
+
+            self.automating_components = not self.automating_components
+
         # toggle recording events
         elif(key == GLUT_KEY_F9):
             self.cmdcenter.toggle_record()
+
+        # switch_midi
+        if(key == GLUT_KEY_F10):
+            if(self.context.midi_controller[1] == "BCF_LIVE"):
+                self.cmdcenter.interface.renderer.flash_message("Switching to VJ bindings")
+                info("Switch to BCF_VJ bindings")
+                self.context.midi_controller[1] = "BCF_VJ"
+                self.cmdcenter.interface.midi.load_bindings()
+            elif(self.context.midi_controller[1] == "BCF_VJ"):
+                self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
+                info("Switch to BCF_LIVE bindings")
+                self.context.midi_controller[1] = "BCF_LIVE"
+                self.cmdcenter.interface.midi.load_bindings()
 
         # toggle echo
         elif(key == GLUT_KEY_F11):
@@ -86,7 +125,7 @@ class KeyboardHandler(object):
      
 
         # save state
-        elif(key == "\015"): # enter
+        elif(key == ' '): # enter
             self.cmdcenter.cmd("save()")
 
         # toggle manual iteration
@@ -200,45 +239,6 @@ class KeyboardHandler(object):
 
         if((modifiers & GLUT_ACTIVE_CTRL) == GLUT_ACTIVE_CTRL):
             multiplier = 0
-
-        # automate components
-        if(key == GLUT_KEY_F8):        
-            if(self.automating_components):
-                for program in self.state.programs:
-                    program.stop()
-                self.state.programs = []
-                self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
-                info("Stopping component automation")
-            else:
-                program = RandomComponents1({'interval': 10})
-                program.start()
-                self.state.programs.append(program)
-                self.cmdcenter.interface.renderer.flash_message("Starting component automation")
-                info("Starting component automation")
-
-            self.automating_components = not self.automating_components
-
-        # switch midi speed
-        if(key == GLUT_KEY_F9):
-            if(self.context.midi_speed >= 0.5):
-                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.01")
-                self.context.midi_speed = 0.01
-            else:
-                self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
-                self.context.midi_speed = 0.5
-
-        # switch_midi
-        if(key == GLUT_KEY_F10):
-            if(self.context.midi_controller[1] == "BCF_LIVE"):
-                self.cmdcenter.interface.renderer.flash_message("Switching to VJ bindings")
-                info("Switch to BCF_VJ bindings")
-                self.context.midi_controller[1] = "BCF_VJ"
-                self.cmdcenter.interface.midi.load_bindings()
-            elif(self.context.midi_controller[1] == "BCF_VJ"):
-                self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
-                info("Switch to BCF_LIVE bindings")
-                self.context.midi_controller[1] = "BCF_LIVE"
-                self.cmdcenter.interface.midi.load_bindings()
 
         elif(key == "1"):
             self.cmdcenter.eventmanager.switch_component("T", multiplier)
