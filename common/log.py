@@ -2,6 +2,8 @@ import sys
 import logging
 import logging.handlers
 
+import config
+
 # create formatter
 formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s %(lineno)d %(funcName)s() - %(message)s")
 
@@ -23,7 +25,8 @@ def set_log(name):
     # create logger
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    logger.addHandler(ch)
+    if(config.app and config.app.print_log):
+        logger.addHandler(ch)
     logger.addHandler(fh)
 
     # add logger to calling context

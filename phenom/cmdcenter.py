@@ -157,11 +157,13 @@ class CmdCenter(Animator, Archiver):
         for program in self.state.programs:
             program.start()
 
+        # component_automation
+        self.toggle_component_automation(self.app.automating_components)
+
         # start modules - DOESN'T RETURN
         self.engine.start()
         self.interface.start()
-
-
+        
     def do(self):
         ''' Main application loop '''
 
@@ -333,6 +335,23 @@ class CmdCenter(Animator, Archiver):
 
         self.componentmanager.print_components()
 
+    def toggle_component_automation(self, switch=None):
+        if(switch or not self.app.automating_components):
+            program = RandomComponents2({'interval': 10})
+            program.start()
+            self.state.programs.append(program)
+            self.cmdcenter.interface.renderer.flash_message("Starting component automation")
+            info("Starting component automation")
+
+            self.app.automating_components = True
+        else:
+            for program in self.state.programs:
+                program.stop()
+            self.state.programs = []
+            self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
+            info("Stopping component automation")
+
+            self.app.automating_components = False
 
     def save(self, name=None):
         ''' Grabs a screenshot and saves the current state. '''

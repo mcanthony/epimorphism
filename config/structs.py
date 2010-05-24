@@ -16,7 +16,6 @@ def set_root(new_root):
     global root
     root = new_root
 
-
 class MidiList(list):
     ''' This is an internal class to add midi synchronization to
         changes in parameters. '''

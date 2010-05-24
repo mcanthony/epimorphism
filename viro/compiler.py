@@ -2,6 +2,7 @@ from common.globals import *
 
 import time
 import os
+import commands
 import re
 import hashlib
 import threading
@@ -56,9 +57,6 @@ class Compiler(threading.Thread):
         ''' This method dynamicly generates the interpolated component switch
             statements that are spliced into the kernels '''
         debug("Splicing components")
-
-
-
 
         for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
             component_list = self.cmdcenter.componentmanager.datamanager.components[component_name]
@@ -147,7 +145,8 @@ class Compiler(threading.Thread):
         debug("Executing")
 
         # remove emacs crap
-        os.system("rm aeon/.#*")
+        if(commands.getoutput("ls aeon/.#*").find("No such file or directory") == -1):
+            os.system("rm aeon/.#*")
 
         # render ecu files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

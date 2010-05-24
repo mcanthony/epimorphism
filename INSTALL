@@ -7,3 +7,6 @@ Epimorphism Installation:
 3. Install pyport midi from sources/pypm
    cd sources/pypm
    sudo python setup.py install
+
+
+cython & opencl drivers & python-opencl

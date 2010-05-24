@@ -24,5 +24,10 @@
  'max_video_frames': None,
  'video_frame_rate': 30.0,
 
- 'state_switch_time': 4.0
+ 'state_switch_time': 4.0,
+
+ 'automating_components': False,
+ 'midi_enabled': True,
+
+ 'print_log': True
 }

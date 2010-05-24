@@ -9,6 +9,8 @@ import time
 
 from common.runner import *
 
+import pygame
+
 import common.glFreeType
 FONT_PATH = "common/FreeSansBold.ttf"
 
@@ -38,6 +40,11 @@ class Renderer(object):
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
         try:
+            if(self.context.screen == "auto"):
+                pygame.init()
+                max = pygame.display.list_modes()[0]
+                self.context.screen = [max[0], max[1], True]
+
             if(self.context.screen[2]):
                 glutGameModeString(str(self.context.screen[0]) + "x" +
                                    str(self.context.screen[1]) + ":24@60")
@@ -86,6 +93,7 @@ class Renderer(object):
         self.do_main_toggle_console = False
 
         self.pbo = None
+        
 
 
     def __del__(self):

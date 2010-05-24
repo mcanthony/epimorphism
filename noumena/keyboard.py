@@ -28,8 +28,6 @@ class KeyboardHandler(object):
         #initialize component list
         self.components = self.cmdcenter.componentmanager.component_list()
 
-        self.automating_components = False
-
 
     def keyboard(self, key, x, y):
 
@@ -83,20 +81,7 @@ class KeyboardHandler(object):
 
         # automate components
         if(key == GLUT_KEY_F8):        
-            if(self.automating_components):
-                for program in self.state.programs:
-                    program.stop()
-                self.state.programs = []
-                self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
-                info("Stopping component automation")
-            else:
-                program = RandomComponents2({'interval': 10})
-                program.start()
-                self.state.programs.append(program)
-                self.cmdcenter.interface.renderer.flash_message("Starting component automation")
-                info("Starting component automation")
-
-            self.automating_components = not self.automating_components
+            self.cmdcenter.toggle_component_automation()
 
         # toggle recording events
         elif(key == GLUT_KEY_F9):
@@ -263,3 +248,17 @@ class KeyboardHandler(object):
             self.cmdcenter.eventmanager.rotate90(8, multiplier)
         elif(key == "r"):
             self.cmdcenter.eventmanager.rotate90(10, multiplier)
+
+
+    def launch(self, key, modifiers):
+        # exit
+        if(key =='\x1b'): # escape
+            self.cmdcenter.app.exit = True
+
+        # reset fb
+        elif(key == "\\"):
+            self.cmdcenter.cmd("reset_fb()")
+
+        # save state
+        elif(key == ' '): # enter
+            self.cmdcenter.cmd("save()")

@@ -1,21 +1,14 @@
 #! /usr/bin/python
 
+
 import sys
 import os
 import atexit
 import re
 
-from common.globals import *
+import config
+config.app = None
 from config.structs import *
-from noumena.interface import *
-from viro.engine import *
-from phenom.cmdcenter import *
-from common.runner import *
-from common.log import *
-
-set_log("EPIMORPH")
-info("Starting Epimorphism")
-
 
 # define & register exit handler
 def exit():
@@ -27,17 +20,17 @@ def exit():
 atexit.register(exit)
 
 # run unclutter to remove mouse pointer
-os.system("unclutter -idle 0.25 -jitter 1 -root&")
+# os.system("unclutter -idle 0.25 -jitter 1 -root&")
 
+# import pygame
+# pygame.init()
+# print pygame.mouse.set_visible(False)
 
 # create structures
-debug("Creating Application")
 app = App()
+config.app = app
 
 # execute command line arguments
-if(len(sys.argv[1:]) != 0):
-    debug("with args %s" % (str(sys.argv[1:])))
-
 for cmd in sys.argv[1:]:
     cmd = cmd.split('=')
     
@@ -51,7 +44,18 @@ for cmd in sys.argv[1:]:
 
         exec("app.%s=%s" % (cmd[0], val))
 
+from common.globals import *
+from noumena.interface import *
+from viro.engine import *
+from phenom.cmdcenter import *
+from common.runner import *
 
+from common.log import *
+set_log("EPIMORPH")
+
+info("Starting Epimorphism")
+if(len(sys.argv[1:]) != 0):
+    debug("with args %s" % (str(sys.argv[1:])))
 
 # encapsulated for asynchronous execution
 def main():

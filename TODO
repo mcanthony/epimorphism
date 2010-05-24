@@ -1,6 +1,40 @@
-Queue -
+Queue - 
+  launch context
+  DONE - auto automating_components
+  DONE - remove messages
+  DONE - remove console
+  DONE - launch state
+  DONE - detect resolutions, choose max
+  DONE - remove logger output
+  DONE - remove compiler output  
+
+  DONE - remove midi  
+
+  periodically connect to server
+
+  OpenCL  
+
+  scale to graphics card
+
+  SDL for cross platform resultion detection
+
+  optimize packages
+  cross platform
+  windows binaries
+  mac binaries
+  linux binaries
+
+  revamp keyboard 
+   introduction
+  periodic craziness
+
+
+
+Later -
 
   final preparations:
+    move globals to config
+
     cleaning/documention pass
     configure keyboard
     console  
