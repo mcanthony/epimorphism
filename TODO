@@ -10,9 +10,9 @@ Queue -
 
   DONE - remove midi  
 
-  periodically connect to server
-
   OpenCL  
+
+  periodically connect to server
 
   scale to graphics card
 
@@ -25,9 +25,12 @@ Queue -
   linux binaries
 
   revamp keyboard 
-   introduction
+  introduction
   periodic craziness
 
+  get rid of mouse
+
+  obfuscate
 
 
 Later -
