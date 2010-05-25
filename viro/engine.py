@@ -78,12 +78,15 @@ class Engine(object):
     def do(self):
         ''' Main event loop '''
 
+        size = 8
+
         mf = cl.mem_flags
-        dest_buf = cl.Buffer(self.ctx, mf.WRITE_ONLY, 200)
+        dest_buf = cl.Buffer(self.ctx, mf.WRITE_ONLY, size * size * 4)
 
-        self.kernel(self.queue, (50,), dest_buf)
+        event = self.kernel(self.queue, (size, size), dest_buf,local_size=(size, size))
+        event.wait()
 
-        a_plus_b = numpy.empty(50, dtype=numpy.float32)
+        a_plus_b = numpy.empty((size, size)).astype(numpy.float32)
         cl.enqueue_read_buffer(self.queue, dest_buf, a_plus_b).wait()
 
         print str(a_plus_b)
