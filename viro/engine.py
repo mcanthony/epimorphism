@@ -81,7 +81,7 @@ class Engine(object):
         mf = cl.mem_flags
         dest_buf = cl.Buffer(self.ctx, mf.WRITE_ONLY, 200)
 
-        self.prg.test(self.queue, (50,), dest_buf)
+        self.kernel(self.queue, (50,), dest_buf)
 
         a_plus_b = numpy.empty(50, dtype=numpy.float32)
         cl.enqueue_read_buffer(self.queue, dest_buf, a_plus_b).wait()
