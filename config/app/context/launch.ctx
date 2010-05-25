@@ -1,0 +1,12 @@
+{
+ 'name': 'launch',
+
+ 'keyboard':'launch',
+ 'par_scale': 1,
+ 'midi': False,
+ 'midi_output': False,
+ 'echo' : False,
+
+ 'midi_controller': None,
+ 'screen' : [900,900,False]
+}
