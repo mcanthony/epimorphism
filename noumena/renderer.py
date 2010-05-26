@@ -101,9 +101,13 @@ class Renderer(object):
     def __del__(self):
         debug("Deleting Renderer")
 
-        # bind & delete pbo
-        # glBindBuffer(GL_ARRAY_BUFFER, self.pbo)
-        # glDeleteBuffers(1, self.pbo)
+        print "b"
+
+        glBindBuffer(GL_ARRAY_BUFFER, self.pbo)
+        glDeleteBuffers(1, self.pbo);
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+        self.pbo = None
 
 
     def generate_pbo(self, buffer_dim):
