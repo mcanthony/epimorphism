@@ -1,19 +1,19 @@
-uint rgbToInt(float r, float g, float b)
-{
-  r = clamp(r, 0.0f, 255.0f);
-  g = clamp(g, 0.0f, 255.0f);
-  b = clamp(b, 0.0f, 255.0f);
-  return (convert_uint(b)<<16) + (convert_uint(g)<<8) + convert_uint(r);
-}
+const sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
-__kernel void test(read_only image2d_t fb, write_only image2d_t out, __global uint* g_odata, int kernel_dim, int frame_num)
+__kernel void test(read_only image2d_t fb, write_only image2d_t out, __global char4* g_odata, int kernel_dim, int frame_num)
 {
-    const int tx = get_local_id(0);
-    const int ty = get_local_id(1);
-    const int bw = get_local_size(0);
-    const int bh = get_local_size(1);
     const int x = get_global_id(0);
     const int y = get_global_id(1);
 
-    g_odata[y * kernel_dim + x] = rgbToInt((int)(255.0 * ((frame_num + x) % kernel_dim) / kernel_dim), (int)(255.0 * ((frame_num + y) % kernel_dim) / kernel_dim), 0);
+    //uint4 res = (uint4)((uint)(255.0 * ((frame_num + x) % kernel_dim) / kernel_dim), (uint)(255.0 * ((frame_num + y) % kernel_dim) / kernel_dim), 0, 0);
+    uint4 res = read_imageui(fb, sampler, (int2)(x, y));
+
+    //res = (uint4)((res.s0 + val.s0) / 2.0,(res.s1 + val.s1) / 2.0,(res.s2 + val.s2) / 2.0,(res.s3 + val.s3) / 2.0);
+
+    //write_imageui(out, (int2)(x, y), res);
+
+    uchar4 tmp = (uchar4)(res.s0, res.s1, res.s2, res.s3);
+
+    g_odata[y * kernel_dim + x] = tmp;
+
 }
