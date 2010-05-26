@@ -66,9 +66,6 @@ class Renderer(object):
         # register callbacks
         glutReshapeFunc(self.reshape)
 
-        # generate buffer object
-        debug("Initializing GL, buffers & textures")
-
         # init gl
         glEnable(GL_TEXTURE_2D)
         glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -94,20 +91,19 @@ class Renderer(object):
 
         self.do_main_toggle_console = False
 
-        self.pbo = None
+        self.pbo_ptr = None
         
-
 
     def __del__(self):
         debug("Deleting Renderer")
 
         print "b"
 
-        glBindBuffer(GL_ARRAY_BUFFER, self.pbo)
-        glDeleteBuffers(1, self.pbo);
+        glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
+        glDeleteBuffers(1, self.pbo_ptr);
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
-        self.pbo = None
+        self.pbo_ptr = None
 
 
     def generate_pbo(self, buffer_dim):
@@ -116,10 +112,9 @@ class Renderer(object):
         self.buffer_dim = buffer_dim
 
         # generate pbo
-
-        self.pbo = GLuint()
-        glGenBuffers(1, byref(self.pbo))
-        glBindBuffer(GL_ARRAY_BUFFER, self.pbo)
+        self.pbo_ptr = GLuint()
+        glGenBuffers(1, byref(self.pbo_ptr))
+        glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
         #empty_buffer = (c_float * (sizeof(c_float) * 4 * self.buffer_dim ** 2))()
         #glBufferData(GL_ARRAY_BUFFER, (self.buffer_dim ** 2) * 4 * sizeof(c_float),
         #             empty_buffer, GL_DYNAMIC_DRAW)
@@ -144,7 +139,7 @@ class Renderer(object):
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
 
-        return self.pbo
+        return self.pbo_ptr
 
 
     def reshape(self, w, h):
@@ -201,7 +196,7 @@ class Renderer(object):
     def do(self):
 
         # test for existence of buffer_dim
-        if(not self.pbo):
+        if(not self.pbo_ptr):
             critical("can't render without a pbo")
             import sys
             sys.exit()
@@ -223,7 +218,7 @@ class Renderer(object):
                 self.d_timebase = self.d_time
 
         # copy texture from pbo
-        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo.value)
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo_ptr.value)
         glBindTexture(GL_TEXTURE_2D, self.display_tex)
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.buffer_dim, self.buffer_dim,
                         GL_BGRA, GL_UNSIGNED_BYTE, None)
@@ -269,11 +264,6 @@ class Renderer(object):
         # repost
         glutSwapBuffers()
         glutPostRedisplay()
-
-
-
-
-
 
 
 

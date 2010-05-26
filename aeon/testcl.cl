@@ -6,7 +6,7 @@ uint rgbToInt(float r, float g, float b)
   return (convert_uint(b)<<16) + (convert_uint(g)<<8) + convert_uint(r);
 }
 
-__kernel void test(__global uint* g_odata, int kernel_dim)
+__kernel void test(__global uint* g_odata, int kernel_dim, int frame_num)
 {
     const int tx = get_local_id(0);
     const int ty = get_local_id(1);
@@ -15,5 +15,5 @@ __kernel void test(__global uint* g_odata, int kernel_dim)
     const int x = get_global_id(0);
     const int y = get_global_id(1);
 
-    g_odata[y * kernel_dim + x] = rgbToInt((int)(255.0 * y / kernel_dim), 0, (int)(255.0 * x / kernel_dim));
+    g_odata[y * kernel_dim + x] = rgbToInt((int)(255.0 * ((frame_num + x) % kernel_dim) / kernel_dim), (int)(255.0 * ((frame_num + y) % kernel_dim) / kernel_dim), 0);
 }

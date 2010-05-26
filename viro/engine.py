@@ -47,6 +47,8 @@ class Engine(object):
 #        cudaMemset2D(self.output_2D, self.output_2D_pitch, 0, self.profile.kernel_dim * sizeof(float4),
 #                     self.profile.kernel_dim)
 
+        self.frame_num = 0
+
         return True
 
 
@@ -66,8 +68,11 @@ class Engine(object):
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim), self.pbo, 
-                      numpy.int32(self.profile.kernel_dim), local_size=(block_size,block_size)).wait()
+                      numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim), 
+                      local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
+
+        self.frame_num += 1
 
 
     ######################################### PUBLIC ##################################################
