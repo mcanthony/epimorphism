@@ -2,17 +2,17 @@ from sources.OpenGL.GL import *
 
 from common.globals import *
 
-from viro import compiler
-
-from common.log import *
-set_log("ENGINE")
+from viro.compiler import *
 
 import pyopencl as cl
 import numpy
 
-from viro.compiler import *
-
 import sys
+
+import Image
+
+from common.log import *
+set_log("ENGINE")
 
 mf = cl.mem_flags
 
@@ -36,23 +36,13 @@ class Engine(object):
 
         self.pbo = None
 
+        data = numpy.array(Image.open("test.png").getdata())
 
         self.fb = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT), (self.profile.kernel_dim,) * 2)
         self.out = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT), (self.profile.kernel_dim,) * 2)
 
-        # create frame buffer
-#        self.channel_desc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat)
-#        self.fb = cudaArray_p()
-#        cudaMallocArray(byref(self.fb), byref(self.channel_desc), self.profile.kernel_dim, self.profile.kernel_dim)
-
-
-        # create output_2D
-#        self.output_2D, self.output_2D_pitch = c_void_p(), c_uint()
-#        cudaMallocPitch(byref(self.output_2D), byref(self.output_2D_pitch),
-#                        self.profile.kernel_dim * sizeof(float4), self.profile.kernel_dim)
-#        cudaMemset2D(self.output_2D, self.output_2D_pitch, 0, self.profile.kernel_dim * sizeof(float4),
-#                     self.profile.kernel_dim)
-
+        cl.enqueue_write_image(self.queue, self.fb, (0,0), (self.profile.kernel_dim,)*2, data, 0,0,None,True).wait()
+        
         self.frame_num = 0
 
         return True
