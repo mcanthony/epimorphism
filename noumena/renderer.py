@@ -115,10 +115,6 @@ class Renderer(object):
         self.pbo_ptr = GLuint()
         glGenBuffers(1, byref(self.pbo_ptr))
         glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
-        #empty_buffer = (c_float * (sizeof(c_float) * 4 * self.buffer_dim ** 2))()
-        #glBufferData(GL_ARRAY_BUFFER, (self.buffer_dim ** 2) * 4 * sizeof(c_float),
-        #             empty_buffer, GL_DYNAMIC_DRAW)
-        #glBindBuffer(GL_ARRAY_BUFFER, 0)
 
         num_texels = self.buffer_dim ** 2
 

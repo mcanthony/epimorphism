@@ -14,6 +14,8 @@ from viro.compiler import *
 
 import sys
 
+mf = cl.mem_flags
+
 class Engine(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
         It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
@@ -33,6 +35,10 @@ class Engine(object):
         self.compiler = Compiler(self.ctx)
 
         self.pbo = None
+
+
+        self.fb = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT), (self.profile.kernel_dim,) * 2)
+        self.out = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.FLOAT), (self.profile.kernel_dim,) * 2)
 
         # create frame buffer
 #        self.channel_desc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat)
@@ -67,10 +73,13 @@ class Engine(object):
         block_size = 16
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
-        self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim), self.pbo, 
+        self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim), 
+                      self.fb, self.out, self.pbo, 
                       numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim), 
                       local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
+
+        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
 
         self.frame_num += 1
 
@@ -107,7 +116,7 @@ class Engine(object):
 
         # generate pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
-        self.pbo = cl.GLBuffer(self.ctx, cl.mem_flags.WRITE_ONLY, self.pbo_ptr.value)
+        self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo_ptr.value)
 
         # compile
         self.compile()

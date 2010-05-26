@@ -6,7 +6,7 @@ uint rgbToInt(float r, float g, float b)
   return (convert_uint(b)<<16) + (convert_uint(g)<<8) + convert_uint(r);
 }
 
-__kernel void test(__global uint* g_odata, int kernel_dim, int frame_num)
+__kernel void test(read_only image2d_t fb, write_only image2d_t out, __global uint* g_odata, int kernel_dim, int frame_num)
 {
     const int tx = get_local_id(0);
     const int ty = get_local_id(1);
