@@ -1,3 +1,5 @@
+from sources.OpenGL.GL import *
+
 from common.globals import *
 
 from viro import compiler
@@ -49,6 +51,7 @@ class Engine(object):
         self.device = cl.get_platforms()[0].get_devices()[0]
 
         self.ctx = cl.Context([self.device])
+
         self.queue = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 
         self.compiler = Compiler(self.ctx)
@@ -78,23 +81,21 @@ class Engine(object):
     def do(self):
         ''' Main event loop '''
 
-        size = block_size = 16
+        if(not self.pbo):
+            print "a"
+            return
 
-        h_c = numpy.empty((size, size)).astype(numpy.float32)
+        block_size = 16
 
         mf = cl.mem_flags
 
-        d_c_buf = cl.Buffer(self.ctx, mf.WRITE_ONLY, size=h_c.nbytes)
+        glFinish()
 
-        event = self.kernel(self.queue, (size, size), d_c_buf, local_size=(block_size, block_size))
-        event.wait()
+        cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
 
-        cl.enqueue_read_buffer(self.queue, d_c_buf, h_c).wait()
+        self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim), self.pbo, numpy.int32(self.profile.kernel_dim), local_size=(block_size,block_size)).wait()
 
-        print str(h_c)
-
-        sys.exit(0)
-
+        cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
 
 
     ######################################### PUBLIC ##################################################
@@ -106,6 +107,10 @@ class Engine(object):
 
         # generate pbo
         self.pbo = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
+
+        mf = cl.mem_flags
+
+        self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo.value)
 
         # bind pbo to OpenCL
 

@@ -1,11 +1,11 @@
 {
  'name': 'launch',
 
- 'keyboard':'launch',
+ 'keyboard':'full',
  'par_scale': 1,
  'midi': False,
  'midi_output': False,
- 'echo' : False,
+ 'echo' : True,
 
  'midi_controller': None,
  'screen' : [900,900,False]

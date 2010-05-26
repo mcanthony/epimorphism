@@ -39,6 +39,8 @@ class Renderer(object):
 
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
+        self.context.screen=[self.profile.kernel_dim, self.profile.kernel_dim, False]
+
         try:
             if(self.context.screen == "auto"):
                 pygame.init()
@@ -110,11 +112,19 @@ class Renderer(object):
         self.buffer_dim = buffer_dim
 
         # generate pbo
+
         self.pbo = GLuint()
         glGenBuffers(1, byref(self.pbo))
         glBindBuffer(GL_ARRAY_BUFFER, self.pbo)
-        empty_buffer = (c_float * (sizeof(c_float) * 4 * self.buffer_dim ** 2))()
-        glBufferData(GL_ARRAY_BUFFER, (self.buffer_dim ** 2) * 4 * sizeof(c_float),
+        #empty_buffer = (c_float * (sizeof(c_float) * 4 * self.buffer_dim ** 2))()
+        #glBufferData(GL_ARRAY_BUFFER, (self.buffer_dim ** 2) * 4 * sizeof(c_float),
+        #             empty_buffer, GL_DYNAMIC_DRAW)
+        #glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+        num_texels = self.buffer_dim ** 2
+
+        empty_buffer = (c_char * (sizeof(c_char) * 4 * num_texels))()
+        glBufferData(GL_ARRAY_BUFFER, num_texels * 4 * sizeof(c_char),
                      empty_buffer, GL_DYNAMIC_DRAW)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
@@ -209,10 +219,10 @@ class Renderer(object):
                 self.d_timebase = self.d_time
 
         # copy texture from pbo
-        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo)
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo.value)
         glBindTexture(GL_TEXTURE_2D, self.display_tex)
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.buffer_dim, self.buffer_dim,
-                        GL_RGBA, GL_UNSIGNED_BYTE, None)
+                        GL_BGRA, GL_UNSIGNED_BYTE, None)
         glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0)
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0)
 
