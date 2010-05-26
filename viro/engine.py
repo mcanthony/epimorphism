@@ -10,7 +10,7 @@ set_log("ENGINE")
 import pyopencl as cl
 import numpy
 
-from viro.compiler_opencl import *
+from viro.compiler import *
 
 import sys
 

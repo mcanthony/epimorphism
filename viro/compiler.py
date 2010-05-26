@@ -1,56 +1,71 @@
 from common.globals import *
 
-import time
-import os
-import commands
-import re
-import hashlib
-import threading
-import time
+import pyopencl as cl
 
-from ctypes import *
+import os, re, hashlib, time
 
 from common.log import *
-set_log("COMPILER")
+set_log("COMPILER_OPENCL")
 
+class Compiler():
+    ''' OpenCL Program compiler '''
 
-def get_functions(name):
-    ''' Creates & returns ctypes interfaces to the kernel .so '''
-    debug("Getting functions from: %s" % name)
-
-    # attempt to load kernel
-    try:
-        lib = cdll.LoadLibrary("kernels/%s.so" % name)#, RTLD_LOCAL)
-    except:
-        critical("Kernel not found")
-        os._exit(0)
-
-    # extract function - this could probably be done more smartly
-    kernel = lib.__device_stub__Z9kernel_fbP6float4mP6uchar4iffff
-    kernel.restype = None
-    kernel.argtypes = [ c_void_p, c_ulong, c_void_p, c_int, c_float, c_float, c_float, c_float ]
-
-    reset = lib.__device_stub__Z5resetP6float4m
-    reset.restype = None
-    reset.argtypes = [ c_void_p, c_ulong ]
-
-    return (kernel, reset)
-
-
-class Compiler(threading.Thread):
-    ''' A Compiler object if responsible for asynchronously calling nvcc.
-        The compilation can be restarted by a call to update. '''
-
-    def __init__(self, callback):
+    def __init__(self, ctx):
         debug("Initializing Compiler")
         Globals().load(self)
 
-        self.callback = callback
-
         self.substitutions = {}
+        self.ctx = ctx
 
-        # init thread
-        threading.Thread.__init__(self)
+
+    def compile(self):
+        ''' Executes the main Compiler sequence '''
+        debug("Executing")
+
+        # render ecu files
+        files = [file for file in os.listdir("aeon") if re.search("\.ecl$", file)]
+        for file in files:
+            self.render_file(file)
+
+        # hash files
+        contents = "".join([open("aeon/" + file).read() for file in os.listdir("aeon") if re.search("\.cl$", file)])
+
+        # seed to force recompilation if necessary
+        if(not self.app.splice_components): contents += str(time.clock())
+
+        # hash
+        hash = hashlib.sha1(contents).hexdigest()
+
+        # make name
+        if(self.app.splice_components):
+            name = "kernel_spliced-%s" % hash
+        else:
+            os.system("rm kernels/kernels_nonspliced*")
+            name = "kernel_nonspliced-%s" % hash
+
+        # compile if library doesn't exist, else load from disk - !!!!FIX!!!!
+        if(not os.path.exists("kernels/%s.so" % name)):
+        #    info("Compiling kernel - %s" % name)
+            # kernel_contents = open("aeon/__kernel.cu").read()
+            kernel_contents = open("aeon/testcl.cl").read()
+            prg = cl.Program(self.ctx, kernel_contents)
+            try:
+                prg.build()
+            except:
+                critical("Error:")
+                critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
+                raise
+
+            # save program
+
+            # remove tmp files
+            files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
+            # remove files
+
+        else: # load program from disk
+            pass
+
+        return prg
 
 
     def splice_components(self):
@@ -70,7 +85,6 @@ class Compiler(threading.Thread):
                 self.substitutions[component_name] = "%s = %s;" % (component_name.lower(), component_list[0][0])
 
             else:
-
                 clause1 = "switch(component_idx[%d][0]){\n" % idx
                 for component in component_list:
                     name = component[0]
@@ -85,15 +99,12 @@ class Compiler(threading.Thread):
 
                 interp = "if(internal[%d] != 0){\n" % idx
                 interp += "intrp_t = min((_clock - internal[%d]) / switch_time, 1.0f);\n" % (idx)
-#                interp += "intrp_t = 1.0f / (1.0f + expf(-1.0f * (12.0f * intrp_t - 6.0f)));\n"
                 interp += "intrp_t = (1.0 + erff(4.0f * intrp_t - 2.0f)) / 2.0;\n"
                 sub = "intrp_t"
                 interp += "%s\n%s = ((1.0f - %s) * (%s0) + %s * (%s1));" % (clause2,  component_name.lower(), sub, component_name.lower(), sub, component_name.lower())
                 interp += "\n}else{\n%s = %s0;\n}" % (component_name.lower(), component_name.lower())
 
                 self.substitutions[component_name] = clause1 + interp
-
-        return self
 
 
     def render_file(self, name):
@@ -138,54 +149,3 @@ class Compiler(threading.Thread):
         file = open("aeon/__%s" % (name.replace(".ecu", ".cu")), 'w')
         file.write(contents)
         file.close()
-
-
-    def run(self):
-        ''' Executes the main Compiler sequence '''
-        debug("Executing")
-
-        # remove emacs crap
-        if(commands.getoutput("ls aeon/.#*").find("No such file or directory") == -1):
-            os.system("rm aeon/.#*")
-
-        # render ecu files
-        files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
-
-        for file in files:
-            self.render_file(file)
-
-        # hash files
-        files = [file for file in os.listdir("aeon") if re.search("\.cu$", file)]
-
-        contents = ""
-        for file in files:
-            contents += open("aeon/" + file).read()
-
-        # seed to force recompilation if necessary
-        if(not self.app.splice_components): contents += str(time.clock())
-
-        # hash
-        hash = hashlib.sha1(contents).hexdigest()
-
-        # make name
-        if(self.app.splice_components):
-            name = "kernel_spliced-%s" % hash
-        else:
-            os.system("rm kernels/kernels_nonspliced*")
-            name = "kernel_nonspliced-%s" % hash
-
-        # compile if library doesn't exist
-        if(not os.path.exists("kernels/%s.so" % name)):
-            info("Compiling kernel - %s" % name)
-
-            os.system("/usr/local/cuda/bin/nvcc  --host-compilation=c -Xcompiler -fPIC -o kernels/%s.so --shared %s aeon/__kernel.cu" % (name, self.profile.ptxas_stats and "--ptxas-options=-v" or ""))
-
-            # remove tmp files
-            files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
-            #for file in files:
-            #    os.system("rm aeon/__%s" % (file.replace(".ecu", ".cu")))
-            if(os.path.exists("__kernel.linkinfo")) : os.system("rm __kernel.linkinfo")
-
-        # execute callback
-        self.callback(name)
-
