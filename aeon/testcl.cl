@@ -15,8 +15,9 @@ uint4 seed(float2 z, float t){
 }
 
 
-__kernel void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, int kernel_dim, int frame_num, float time, float switch_time,
-		   __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn)
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, int kernel_dim, int frame_num, float time, float switch_time,
+	  __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn)
 {
     const int x = get_global_id(0);
     const int y = get_global_id(1);

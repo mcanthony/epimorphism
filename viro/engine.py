@@ -7,6 +7,7 @@ import numpy
 
 import sys
 import itertools
+from time import time
 
 import Image
 
@@ -49,6 +50,12 @@ class Engine(object):
       
         self.frame_num = 0
 
+        num_time_events = 3
+        self.time_events = True
+        self.event_accum_tmp = [0 for i in xrange(num_time_events)]
+        self.event_accum = [0 for i in xrange(num_time_events)]
+        self.last_frame_time = 0
+
         return True
 
 
@@ -63,9 +70,10 @@ class Engine(object):
 
         if(not self.pbo):
             return
+        
+        self.timings = [time()]
 
-        block_size = 8
-
+        block_size = 16
 
         #cl.enqueue_write_buffer(self.queue, self.par, hostbuf=numpy.array(self.frame["par"], dtype=numpy.float32), is_blocking=True).wait()
         #cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
@@ -74,7 +82,6 @@ class Engine(object):
         args = [self.fb, self.out, self.pbo, 
                 numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
 #                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
-
         # copy constants to kernel
         for data in self.frame:
             # convert to ctypes
@@ -86,17 +93,20 @@ class Engine(object):
                 args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
             elif(data["type"] == "complex_array"):
                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
-
+        self.timings.append(time())
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                       *args, 
                       local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
+        self.timings.append(time())
 
         cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
+        self.timings.append(time())
 
         self.frame_num += 1
+        self.print_timings()
 
         #Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")       
         #sys.exit(0)
@@ -127,6 +137,36 @@ class Engine(object):
                 debug(platform)
                 debug(75*"=")
                 print_info(device, cl.device_info)
+
+    def print_timings(self):
+
+        if(self.time_events):
+            # get times
+            times = [1000 * (self.timings[i + 1] - self.timings[i]) for i in xrange(len(self.timings) - 1)]
+
+            # set accumulators
+            self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
+            self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
+
+            if(self.frame_num % self.profile.debug_freq == 0):
+                # print times
+                for i in range(len(times)):
+                    print "event" + str(i) + "-" + str(i + 1) + ": " + str(self.event_accum_tmp[i] / self.profile.debug_freq) + "ms"
+                    print "event" + str(i) + "-" + str(i + 1) + "~ " + str(self.event_accum[i] / self.frame_num) + "ms"
+
+                # print totals
+                print "total cuda:", str(sum(self.event_accum_tmp) / self.profile.debug_freq) + "ms"
+                print "total cuda~", str(sum(self.event_accum) / self.frame_num) + "ms"
+
+                # print abs times
+                abs = 1000 * ((time() - self.last_frame_time) % 1) / self.profile.debug_freq
+                print "python:", abs - sum(self.event_accum_tmp) / self.profile.debug_freq
+                print "abs:", abs
+
+                # reset tmp accumulator
+                self.event_accum_tmp = [0 for i in xrange(len(times))]
+
+                self.last_frame_time = time()
 
 
     def start(self):
