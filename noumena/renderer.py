@@ -39,8 +39,6 @@ class Renderer(object):
 
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
-        self.context.screen=[self.profile.kernel_dim, self.profile.kernel_dim, False]
-
         try:
             if(self.context.screen == "auto"):
                 pygame.init()

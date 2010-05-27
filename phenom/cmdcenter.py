@@ -76,7 +76,7 @@ class CmdCenter(Animator, Archiver):
 
         # setup application
         self.interface.renderer.set_inner_loop(self.do)
-        self.frame = {}
+        self.frame = []
         self.engine.frame = self.frame
         self.t_start = None
         self.t_phase = 0.0
@@ -204,24 +204,14 @@ class CmdCenter(Animator, Archiver):
     def send_frame(self):
         ''' Generates and sends the current frame to the Engine '''
 
-        clock = self.time()
-        data = {"type":"float", "val":clock}
-        self.frame["_clock"] = data
+        del self.frame[:]
 
-        data = {"type":"float_array", "val":self.state.par}
-        self.frame["par"] = data
-
-        data = {"type":"float_array", "val":self.state.internal}
-        self.frame["internal"] = data
-
-        data = {"type":"int_array", "val":self.componentmanager.component_idx}
-        self.frame["component_idx"] = data
-
-        data = {"type":"complex_array", "val":self.state.zn}
-        self.frame["zn"] = data
-
-        data = {"type":"float", "val":self.app.state_switch_time}
-        self.frame["switch_time"] = data
+        self.frame.append({"type": "float",         "val": self.time()})        
+        self.frame.append({"type": "float_array",   "val": self.state.par})
+        self.frame.append({"type": "float_array",   "val": self.state.internal})        
+        self.frame.append({"type": "int_array",     "val": self.componentmanager.component_idx})        
+        self.frame.append({"type": "complex_array", "val": self.state.zn})    
+        self.frame.append({"type": "float",         "val": self.app.state_switch_time})
 
 
     def cmd(self, code, capture=False):
