@@ -2,7 +2,7 @@ from common.globals import *
 
 import pyopencl as cl
 
-import os, re, hashlib, time
+import os, re, hashlib, time, commands
 
 from common.log import *
 set_log("COMPILER")
@@ -21,6 +21,10 @@ class Compiler():
     def compile(self):
         ''' Executes the main Compiler sequence '''
         debug("Executing")
+
+        # remove emacs crap
+        if(commands.getoutput("ls aeon/.#*").find("No such file or directory") == -1):
+            os.system("rm aeon/.#*")
 
         # render ecu files
         files = [file for file in os.listdir("aeon") if re.search("\.ecl$", file)]
