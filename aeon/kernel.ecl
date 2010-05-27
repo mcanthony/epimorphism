@@ -39,13 +39,14 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
   // compute T
   z = M(z, zn[0]) + zn[1];
-
+  z = D($l, z);
 
   // get prev
   float4 prev = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
   // blend
-  float4 res = (seed.w * seed + (1.0 - seed.w) * prev) * 0.9;
+  float4 res = (seed.w * seed + (1.0 - seed.w) * prev) * 0.8;
+  res = res.zxyw;
 
   // write to out
   write_imageui(out, p, convert_uint4(255.0f * res));
