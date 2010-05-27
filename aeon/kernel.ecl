@@ -11,8 +11,7 @@
 #include "colorspace.cl"
 #include "color.cl"
 
-const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
-
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_NEAREST | CLK_ADDRESS_REPEAT;
 
 float4 seedf(float2 z, float t){  
   z = (z + (float2)(1.0f, 1.0f)) / 2.0f;
