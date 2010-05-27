@@ -85,7 +85,7 @@ class DataManager(object):
                     # get function name & args
                     try:
                         func_name = re.search("_EPI_ .+? (\S+)\(", func).group(1)
-                        args = [arg.split(" ")[1] for arg in re.search("\(.+\)", func).group(0)[1:-1].split(", ")]
+                        args = [arg.split(" ")[-1] for arg in re.search("\(.+\)", func).group(0)[1:-1].split(", ")]
                     except:
                         error("invalid function definition: %s" % func)
                         continue

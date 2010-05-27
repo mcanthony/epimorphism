@@ -33,3 +33,10 @@ float2 remf(float2 z, float m){
   return z - m * floor(CX(native_divide(z.x, m), native_divide(z.y, m)));
 }
 
+float n_pow(float x, float y){
+  return exp2(y * native_log2(x));
+}
+
+float4 _gamma3(float4 v, float gamma){
+  return (float4)(n_pow(v.x, gamma), n_pow(v.y, gamma), n_pow(v.z, gamma), v.w);
+}

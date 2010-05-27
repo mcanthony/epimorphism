@@ -73,6 +73,8 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
       z = recover2(reduce);
       float4 seed = seedf(z, time);
 
+      seed = _gamma3(seed, _COLOR_GAMMA);
+
       // get frame
       float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
@@ -86,8 +88,8 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
   v = i_n_sq * v;
   v.w = v.w / i_n_sq;
 
-  //v = gbr_id(v, z_z, par, time);
-  v = rotate_hsls(v, z_z, par, time);
+  %COLOR%;
+  v = (1.0f - _COLOR_KILL) * color;
 
   // write to out
   write_imageui(out, p, convert_uint4(255.0f * v));
