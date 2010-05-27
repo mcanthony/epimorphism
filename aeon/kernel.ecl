@@ -44,12 +44,12 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
   // internal antialiasing
   float4 v = color(0.0f, 0.0f, 0.0f, 0.0f);
-  const float inc = 2.0f / (KERNEL_DIM * (FRACT - 1.0));  
+  const float i_k = FRACT == 1 ? 0.0f : 1.0f / KERNEL_DIM;  
+  const float m_k = FRACT == 1 ? 1.0f : 1.0001f / KERNEL_DIM;  
+  const float inc = FRACT == 1 ? 1.0f : 2.0f / (KERNEL_DIM * (FRACT - 1.0f));  
 
-  for(z.x = z_z.x - 1.0f / KERNEL_DIM; z.x <= z_z.x + 1.0001 / KERNEL_DIM; z.x += inc)
-    for(z.y = z_z.y - 1.0f / KERNEL_DIM; z.y <= z_z.y + 1.0001 / KERNEL_DIM; z.y += inc){
-  //for(z.x = z_z.x; z.x < z_z.x + 1.0; z.x += 1.0)
-  //  for(z.y = z_z.y; z.y < z_z.y + 1.0; z.y += 1.0){
+  for(z.x = z_z.x - i_k; z.x < z_z.x + m_k; z.x += inc)
+    for(z.y = z_z.y - i_k; z.y < z_z.y + m_k; z.y += inc){
       float2 z_c = z;
 
       // compute T
@@ -70,7 +70,7 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
   v = i_n_sq * v;
   v.w = v.w / i_n_sq;
 
-//v = gbr_id(v, z_z, par, time);
+  //v = gbr_id(v, z_z, par, time);
   v = rotate_hsls(v, z_z, par, time);
 
   // write to out
