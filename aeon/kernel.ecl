@@ -57,9 +57,8 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
       z = M(zn[2], z) + zn[3];
       %REDUCE%
       z = reduce;
-      //z = D($l, z);
-      z = cosz(z) + sinz(z);
-      z = M(z, zn[0]) + zn[1];
+      %T%
+      z = t;
       %REDUCE%
       z = recover2(reduce);      
 

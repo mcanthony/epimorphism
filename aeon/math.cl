@@ -1,4 +1,4 @@
-float2 sq(float2 z0){
+float2 sqz(float2 z0){
   return M(z0, z0);
 }
 
