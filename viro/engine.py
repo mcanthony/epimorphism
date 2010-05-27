@@ -67,24 +67,26 @@ class Engine(object):
         block_size = 8
 
 
-        cl.enqueue_write_buffer(self.queue, self.par, hostbuf=numpy.array(self.frame["par"], dtype=numpy.float32), is_blocking=True).wait()
-        cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
+        #cl.enqueue_write_buffer(self.queue, self.par, hostbuf=numpy.array(self.frame["par"], dtype=numpy.float32), is_blocking=True).wait()
+        #cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
         # cl.enqueue_write_buffer(self.queue, self.indices, hostbuf=numpy.array(self.frame["indices"], dtype=numpy.int32), is_blocking=True).wait()
+        #cl.enqueue_write_buffer(self.queue, self.zn, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in self.frame["zn"]])), dtype=numpy.float32), is_blocking=True).wait()
         args = [self.fb, self.out, self.pbo, 
-                numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim),
-                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
+                numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
+#                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
 
         # copy constants to kernel
-#        for data in self.frame:
+        for data in self.frame:
             # convert to ctypes
-#            if(data["type"] == "float"):
-#                args.append(numpy.float32(data["val"]))
-#            elif(data["type"] == "float_array"):
-#                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
-#            elif(data["type"] == "int_array"):
-#                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
-#            elif(data["type"] == "complex_array"):
-#               args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
+            if(data["type"] == "float"):
+                args.append(numpy.float32(data["val"]))
+            elif(data["type"] == "float_array"):
+                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
+            elif(data["type"] == "int_array"):
+                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
+            elif(data["type"] == "complex_array"):
+               args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
+
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
