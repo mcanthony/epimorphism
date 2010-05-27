@@ -1,4 +1,4 @@
-const sampler_t sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_REPEAT;
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_NEAREST | CLK_ADDRESS_REPEAT;
 
 uint4 seed(float2 z, float t){
   z = z + (float2)(t, 0);
@@ -26,7 +26,7 @@ __kernel void test(read_only image2d_t fb, write_only image2d_t out, __global ch
     //    float2 prev_idxf = kernel_dim * (0.5f * z + (float2)(0.5f, 0.5f));
     //int2 prev_idx = (int2)(prev_idxf.s0, prev_idxf.s1);
     //uint4 prev = read_imageui(fb, sampler, prev_idx);
-    uint4 res = read_imageui(fb, sampler, (int2)(x,y));
+    uint4 res = read_imageui(fb, sampler, (float2)(x / (float)kernel_dim, y / (float)kernel_dim));
 
     //uint4 res = (uint4)((prev.s0 + seed_val.s0) / 2.0,(prev.s1 + seed_val.s1) / 2.0,(prev.s2 + seed_val.s2) / 2.0, 255);
     //uint4 res = seed_val;
