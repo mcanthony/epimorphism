@@ -68,13 +68,13 @@ class Engine(object):
         for data in self.frame:
             # convert to ctypes
             if(data["type"] == "float"):
-                val = numpy.float(data["val"])
+                args.append(numpy.float(data["val"]))
             elif(data["type"] == "float_array"):
-                val = numpy.array(data["val"], dtype=numpy.float)
+                args.append(numpy.array(data["val"], dtype=numpy.float))
             elif(data["type"] == "int_array"):
-                val = numpy.array(data["val"], dtype=numpy.int32)                
+                args.append(numpy.array(data["val"], dtype=numpy.int32))               
             elif(data["type"] == "complex_array"):
-                val = numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=float)
+                args.append(numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=float))
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
