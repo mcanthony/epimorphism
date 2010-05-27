@@ -14,21 +14,39 @@
 #include "colorspace.cl"
 #include "color.cl"
 #include "reduce.cl"
+#include "reset.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
 float4 seedf(float2 z, float t){  
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
     return (float4)(1.0f, 0.0f, 0.0f, 1.0f);
-
   else
     return (float4)(0.0f, 0.0f, 0.0f, 0.0f);
 
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
-	  __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
+void reset(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
+	   __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
+
+  // get coords
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  // vars
+  float intrp_t;
+  float4 reset, reset0, reset1;
+
+  // reset
+  %RESET%
+  write_imageui(out, p, convert_uint4(255.0f * reset));  
+}
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
+	      __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
   // get coords
   const int x = get_global_id(0);
   const int y = get_global_id(1);

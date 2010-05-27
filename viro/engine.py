@@ -56,6 +56,8 @@ class Engine(object):
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
 
+        self.do_reset_fb = False
+
         return True
 
 
@@ -95,9 +97,15 @@ class Engine(object):
         self.timings.append(time())
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
-        self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
-                      *args, 
-                      local_size=(block_size,block_size)).wait()
+        if(self.do_reset_fb):
+            self.prg.reset(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
+                           *args, 
+                           local_size=(block_size,block_size)).wait()
+            self.do_reset_fb = False
+        else:
+            self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
+                              *args, 
+                              local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
         self.timings.append(time())
 
@@ -185,7 +193,6 @@ class Engine(object):
         debug("Compiling kernel")
 
         self.prg = self.compiler.compile()
-        self.kernel = self.prg.test
 
 
     def upload_image(self, cl_image, data):
@@ -204,4 +211,9 @@ class Engine(object):
         
         return data
 
+
+    def reset_fb(self):
+        ''' Clear the current frame buffer '''
+
+        self.do_reset_fb = True
 
