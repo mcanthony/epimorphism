@@ -41,6 +41,11 @@ class Engine(object):
         self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
   
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
+
+        self.par      = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.par), dtype=numpy.float32))
+        self.internal = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.internal), dtype=numpy.float32))
+        self.indices  = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.components), dtype=numpy.float32)) 
+        self.zn       = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(2 * len(self.state.zn), dtype=numpy.float32)) 
       
         self.frame_num = 0
 
@@ -64,17 +69,19 @@ class Engine(object):
         args = [self.fb, self.out, self.pbo, 
                 numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
 
-#        # copy constants to kernel
-        for data in self.frame:
+        args.append([self.frame["time"], self.frame["switch_time"], self.par, self.internal, self.indices, self.zn])
+
+        # copy constants to kernel
+#        for data in self.frame:
             # convert to ctypes
-            if(data["type"] == "float"):
-                args.append(numpy.float32(data["val"]))
-            elif(data["type"] == "float_array"):
-                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
-            elif(data["type"] == "int_array"):
-                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
-            elif(data["type"] == "complex_array"):
-                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
+#            if(data["type"] == "float"):
+#                args.append(numpy.float32(data["val"]))
+#            elif(data["type"] == "float_array"):
+#                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
+#            elif(data["type"] == "int_array"):
+#                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
+#            elif(data["type"] == "complex_array"):
+#               args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
