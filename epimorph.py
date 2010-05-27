@@ -27,7 +27,7 @@ atexit.register(exit)
 # print pygame.mouse.set_visible(False)
 
 # create structures
-app = App('launch')
+app = App('default')
 config.app = app
 
 # execute command line arguments

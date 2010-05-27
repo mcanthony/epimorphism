@@ -158,7 +158,7 @@ class CmdCenter(Animator, Archiver):
             program.start()
 
         # component_automation
-        self.toggle_component_automation(self.app.automating_components)
+#        self.toggle_component_automation(self.app.automating_components)
 
         # start modules - DOESN'T RETURN
         self.engine.start()
