@@ -64,17 +64,17 @@ class Engine(object):
         args = [self.fb, self.out, self.pbo, 
                 numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
 
-        # copy constants to kernel
+#        # copy constants to kernel
         for data in self.frame:
             # convert to ctypes
             if(data["type"] == "float"):
-                args.append(numpy.float(data["val"]))
+                args.append(numpy.float32(data["val"]))
             elif(data["type"] == "float_array"):
-                args.append(numpy.array(data["val"], dtype=numpy.float))
+                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
             elif(data["type"] == "int_array"):
-                args.append(numpy.array(data["val"], dtype=numpy.int32))               
+                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
             elif(data["type"] == "complex_array"):
-                args.append(numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=float))
+                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
 
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.test(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
