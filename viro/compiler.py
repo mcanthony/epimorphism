@@ -54,7 +54,8 @@ class Compiler():
             except:
                 critical("Error:")
                 critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
-                raise
+                self.app.exit = True
+                sys.exit(0)
 
             # save program
 

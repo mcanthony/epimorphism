@@ -7,5 +7,5 @@
 
  'automating_components': True,
  'midi_enabled': False,
- 'print_log': False
+ 'print_log': True
 }
