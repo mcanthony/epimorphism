@@ -90,21 +90,21 @@ class Compiler():
                 self.substitutions[component_name] = "%s = %s;" % (component_name.lower(), component_list[0][0])
 
             else:
-                clause1 = "switch(component_idx[%d][0]){\n" % idx
+                clause1 = "switch(indices[2 * %d]){\n" % idx
                 for component in component_list:
                     name = component[0]
                     clause1 += "case %d: %s0 = %s;break;\n" % (component_list.index(component), component_name.lower(), name)
                 clause1 += "}\n"
 
-                clause2 = "switch(component_idx[%d][1]){\n" % idx
+                clause2 = "switch(indices[2 * %d + 1]){\n" % idx
                 for component in component_list:
                     name = component[0]
                     clause2 += "case %d: %s1 = %s;break;\n" % (component_list.index(component), component_name.lower(), name)
                 clause2 += "}\n"
 
                 interp = "if(internal[%d] != 0){\n" % idx
-                interp += "intrp_t = min((_clock - internal[%d]) / switch_time, 1.0f);\n" % (idx)
-                interp += "intrp_t = (1.0 + erff(4.0f * intrp_t - 2.0f)) / 2.0;\n"
+                interp += "intrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx)
+                interp += "intrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
                 sub = "intrp_t"
                 interp += "%s\n%s = ((1.0f - %s) * (%s0) + %s * (%s1));" % (clause2,  component_name.lower(), sub, component_name.lower(), sub, component_name.lower())
                 interp += "\n}else{\n%s = %s0;\n}" % (component_name.lower(), component_name.lower())

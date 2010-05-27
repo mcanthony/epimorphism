@@ -11,7 +11,7 @@
  'fps_sync': False,
  'record_events': False,
 
- 'splice_components': False,
+ 'splice_components': True,
  'component_level': 'FULL',
 
  'cull_enabled': False,

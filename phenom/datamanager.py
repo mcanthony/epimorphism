@@ -8,7 +8,7 @@ set_log("DATAMANAGER")
 
 class DataManager(object):
     ''' The DataManager singleton object is resonsible for loading components from
-        .epi and .cu library files in the aeon directory '''
+        .epi and .cl library files in the aeon directory '''
 
 
     def __init__(self):
@@ -59,8 +59,8 @@ class DataManager(object):
                 # add component
                 values.append(component)
 
-        # load components from files of form *.cu
-        files = [file for file in os.listdir("aeon") if re.search("^[^_\.][^#]*?cu$", file)]
+        # load components from files of form *.cl
+        files = [file for file in os.listdir("aeon") if re.search("^[^_\.][^#]*?cl$", file)]
 
         for file_name in files:
 
@@ -78,13 +78,13 @@ class DataManager(object):
                 values = self.components[component_name.upper()]
 
                 # get all function definitions
-                funcs = re.findall("^__device__.+?^}$", contents, re.M | re.S)
+                funcs = re.findall("^_EPI_.+?^}$", contents, re.M | re.S)
 
                 for func in funcs:
 
                     # get function name & args
                     try:
-                        func_name = re.search("__device__ .+? (\S+)\(", func).group(1)
+                        func_name = re.search("_EPI_ .+? (\S+)\(", func).group(1)
                         args = [arg.split(" ")[1] for arg in re.search("\(.+\)", func).group(0)[1:-1].split(", ")]
                     except:
                         error("invalid function definition: %s" % func)

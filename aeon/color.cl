@@ -88,10 +88,10 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   s  = s * (1.0f - _COLOR_BASE_I) + _COLOR_BASE_I;
   phi = 2.0f * PI * _COLOR_BASE_PHI;
   psi = 2.0f * PI * _COLOR_BASE_PSI;
-  float4 base = _COLOR_BASE_R * color(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
+  float4 base = _COLOR_BASE_R * (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
   tmp = s * tmp + (1.0f - s) * base;
 
-  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * color(v.x, v.y, v.z, 0.0f);
+  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * (float4)(v.x, v.y, v.z, 0.0f);
 
   //s = tmp.x;
   //tmp.x = native_sin(PI * tmp.z);
@@ -99,7 +99,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   //tmp.y = native_cos(PI * s);
 
   // get result
-  v = color(tmp.x, tmp.y, tmp.z, v.w);
+  v = (float4)(tmp.x, tmp.y, tmp.z, v.w);
   return HSLstoRGB(v);
 }
 
