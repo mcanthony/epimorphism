@@ -17,6 +17,7 @@
 #include "reset.cl"
 #include "seed_a.cl"
 #include "seed_c.cl"
+#include "seed_wt.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
