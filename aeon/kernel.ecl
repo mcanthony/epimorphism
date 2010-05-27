@@ -18,6 +18,8 @@
 #include "seed_a.cl"
 #include "seed_c.cl"
 #include "seed_wt.cl"
+#include "seed_w.cl"
+#include "__seed.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
@@ -91,7 +93,9 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);
-      float4 seed = seedf(z, time);
+      //float4 seed = seedf(z, time);
+
+      %SEED%
 
       seed = _gamma3(seed, _COLOR_GAMMA);
 

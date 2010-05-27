@@ -22,5 +22,5 @@ _EPI_ float circular_alpha(float w, __constant float* par){
   // circular with w
   // FULL, LIVE, DEV
 
-  return sqrtf(1.0f - (1.0f - w) * (1.0f - w)) * _COLOR_A;
+  return native_sqrt(1.0f - (1.0f - w) * (1.0f - w)) * _COLOR_A;
 }
