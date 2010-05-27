@@ -38,16 +38,14 @@ class Engine(object):
 
         data = numpy.array(Image.open("test.png").convert("RGBA").getdata(), dtype=numpy.uint8)
 
-#        print data
-
         self.fb = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.out = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.RGBA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2)
+        self.out = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2)
 
-        data =  0.0 * numpy.ones((512 * 512 * 2.0))
+        data =  numpy.zeros((512,512,4), dtype=numpy.uint8)
 
         cl.enqueue_read_image(self.queue, self.fb, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
         
-        print str(data)
+        Image.fromarray(data, "RGBA").save("out.png")
         
         self.frame_num = 0
 
