@@ -39,7 +39,7 @@ class Engine(object):
         self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
         self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
   
-        # self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
+        self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
       
         self.frame_num = 0
 
@@ -67,12 +67,13 @@ class Engine(object):
                       local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
 
-        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
+#        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
 
         self.frame_num += 1
 
-#        Image.fromarray(self.download_image(self.fb), "RGBA").save("out.png")       
-#        sys.exit(0)
+        Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")       
+        if(self.frame_num == 1):
+            sys.exit(0)
 
 
     ######################################### PUBLIC ##################################################
