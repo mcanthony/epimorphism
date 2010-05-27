@@ -26,7 +26,6 @@ float4 seedf(float2 z, float t){
 
 }
 
-
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
 	  __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
@@ -55,11 +54,21 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
       float2 z_c = z;
 
       // compute T
-      z = M(z, zn[0]) + zn[1];
+      z = M(zn[2], z) + zn[3];
+      %REDUCE%
+      z = reduce;
       //z = D($l, z);
       z = cosz(z) + sinz(z);
+      z = M(z, zn[0]) + zn[1];
+      %REDUCE%
+      z = recover2(reduce);      
 
       // compute seed
+      z = M(zn[10], (z - zn[11]));
+
+      //T_SEED%
+      //z = t_seed;
+      z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);
       float4 seed = seedf(z, time);
