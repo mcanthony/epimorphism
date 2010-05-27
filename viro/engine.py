@@ -44,7 +44,7 @@ class Engine(object):
 
         self.par      = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.par), dtype=numpy.float32))
         self.internal = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.internal), dtype=numpy.float32))
-        self.indices  = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.components), dtype=numpy.float32)) 
+        self.indices  = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.components), dtype=numpy.int32)) 
         self.zn       = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(2 * len(self.state.zn), dtype=numpy.float32)) 
       
         self.frame_num = 0
@@ -66,10 +66,13 @@ class Engine(object):
 
         block_size = 8
 
-        args = [self.fb, self.out, self.pbo, 
-                numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
 
-        args.append([self.frame["time"], self.frame["switch_time"], self.par, self.internal, self.indices, self.zn])
+        cl.enqueue_write_buffer(self.queue, self.par, hostbuf=numpy.array(self.frame["par"], dtype=numpy.float32), is_blocking=True).wait()
+        cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
+        cl.enqueue_write_buffer(self.queue, self.indices, hostbuf=numpy.array(self.frame["indices"], dtype=numpy.int32), is_blocking=True).wait()
+        args = [self.fb, self.out, self.pbo, 
+                numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim),
+                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
 
         # copy constants to kernel
 #        for data in self.frame:

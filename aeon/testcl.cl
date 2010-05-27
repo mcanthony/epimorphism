@@ -25,7 +25,7 @@ __kernel void test(read_only image2d_t fb, write_only image2d_t out, __global ch
 
     uint4 seed_val = seed(z, (float)frame_num / kernel_dim);
 
-    z *= zn[0].y;
+    z *= 1.1;//zn[0].y;
     uint4 prev = read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
 
     //uint4 res = seed_val;
