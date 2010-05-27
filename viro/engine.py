@@ -51,7 +51,7 @@ class Engine(object):
         self.frame_num = 0
 
         num_time_events = 3
-        self.time_events = True
+        self.time_events = False
         self.event_accum_tmp = [0 for i in xrange(num_time_events)]
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
