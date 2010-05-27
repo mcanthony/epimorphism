@@ -7,6 +7,7 @@
 #define $l (float2)(1.0, 0.0)
 
 #include "math.cl"
+#include "colorspace.cl"
 
 %PAR_NAMES%
 
@@ -21,10 +22,10 @@ float4 seedf(float2 z, float t){
   z = 2.0f * z - (float2)(1.0f, 1.0f);
 
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
-    return (float4)(1.0f, 0.0f, 0.0f, 1.0f);
+    return color(1.0f, 0.0f, 0.0f, 1.0f);
 
   else
-    return (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+    return color(0.0f, 0.0f, 0.0f, 0.0f);
 
 }
 
@@ -39,10 +40,14 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
   // get z
   float2 z = (float2)(2.0f / kernel_dim) * convert_float2(p) + (float2)(1.0f / kernel_dim - 1.0f, 1.0f / kernel_dim - 1.0f);
+  float2 z_z = z;
+
+  // internal antialiasing
+  float4 result = color(0.0f, 0.0f, 0.0f, 0.0f);
 
   // compute T
   z = M(z, zn[0]) + zn[1];
-  //z = D($l, z);
+  z = D($l, z);
 
   // compute seed
   float4 seed = seedf(z, (float)frame_num / kernel_dim);

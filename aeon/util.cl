@@ -15,3 +15,7 @@ float2 D(float2 z0, float2 z1){
   float r = dot(z1, z1);
   return CX((z0.x * z1.x + z0.y * z1.y) / r, (z0.y * z1.x - z0.x * z1.y) / r);
 }
+
+float4 color(float r, float g, float b, float a){
+  return (float4)(r, g, b, a);
+}
