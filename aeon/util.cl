@@ -19,3 +19,22 @@ float2 D(float2 z0, float2 z1){
 float4 color(float r, float g, float b, float a){
   return (float4)(r, g, b, a);
 }
+
+float recover(float x){
+  if(isnan(x) || isinf(x))
+    x = 0.0f;
+  return x;
+}
+
+float2 recover2(float2 z){
+  if(isnan(z.x) || isinf(z.x))
+    z.x = 0.0f;
+  if(isnan(z.y) || isinf(z.y))
+    z.y = 0.0f;
+  return z;
+}
+
+float2 remf(float2 z, float m){
+  return m * (z / m - floor(z / m));
+}
+

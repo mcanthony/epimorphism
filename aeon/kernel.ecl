@@ -13,13 +13,12 @@
 #include "math.cl"
 #include "colorspace.cl"
 #include "color.cl"
+#include "reduce.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
 float4 seedf(float2 z, float t){  
-  z = (z + (float2)(1.0f, 1.0f)) / 2.0f;
-  z = z - floor(z);
-  z = 2.0f * z - (float2)(1.0f, 1.0f);
+  z = torus_reduce(z);
 
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
     return color(1.0f, 0.0f, 0.0f, 1.0f);
@@ -54,7 +53,8 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
       // compute T
       z_c = M(z_c, zn[0]) + zn[1];
-      z_c = D($l, z_c);
+      //z_c = D($l, z_c);
+      z_c = sinz(z_c);
 
       // compute seed
       float4 seed = seedf(z_c, time);
