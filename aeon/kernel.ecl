@@ -5,13 +5,11 @@
 #define PI 3.1415926535f
 #define $i (float2)(0.0, 1.0)
 #define $l (float2)(1.0, 0.0)
-
+%PAR_NAMES%
+%CULL_ENABLED%
 #include "math.cl"
 #include "colorspace.cl"
-
-%PAR_NAMES%
-
-%CULL_ENABLED%
+#include "color.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
@@ -57,7 +55,7 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
   // blend
   float4 res = (seed.w * seed + (1.0 - seed.w) * prev) * 0.8;
-  res = res.zyxw;
+  res = gbr_id(res, z_z, par, time);
 
   // write to out
   write_imageui(out, p, convert_uint4(255.0f * res));

@@ -49,7 +49,7 @@ float4 HSVtoRGB(float4 val){
 
 float4 HSLstoRGB(float4 val){
 
-  float s = len(vec2(val.x, val.y));
+  float s = hypot(val.x, val.y);
   float h;
 
   if(s < 0.0001f){
@@ -110,6 +110,6 @@ float4 RGBtoHSLs(float4 val){
       h = 4.0f + ( val.x - val.y ) / delta;
     h *= PI / 3.0f;
   }
-  return color(s * cosf(h), s * sinf(h), l, val.w);
+  return color(s * cos(h), s * sin(h), l, val.w);
 
 }
