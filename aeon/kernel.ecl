@@ -1,5 +1,8 @@
 #define _EPI_
 
+#define KERNEL_DIM %KERNEL_DIM%
+#define FRACT %FRACT%
+
 #include "util.cl"
 
 #define PI 3.1415926535f
@@ -11,7 +14,7 @@
 #include "colorspace.cl"
 #include "color.cl"
 
-const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_NEAREST | CLK_ADDRESS_REPEAT;
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
 
 float4 seedf(float2 z, float t){  
   z = (z + (float2)(1.0f, 1.0f)) / 2.0f;
@@ -28,7 +31,7 @@ float4 seedf(float2 z, float t){
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, int kernel_dim, int frame_num, float time, float switch_time,
+void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
 	  __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
   // get coords
   const int x = get_global_id(0);
@@ -36,32 +39,46 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
   int2 p = (int2)(x, y);
 
   // get z
-  float2 z = (float2)(2.0f / kernel_dim) * convert_float2(p) + (float2)(1.0f / kernel_dim - 1.0f, 1.0f / kernel_dim - 1.0f);
+  float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
   float2 z_z = z;
 
   // internal antialiasing
-  float4 result = color(0.0f, 0.0f, 0.0f, 0.0f);
+  float4 v = color(0.0f, 0.0f, 0.0f, 0.0f);
+  const float inc = 2.0f / (KERNEL_DIM * (FRACT - 1.0));  
 
-  // compute T
-  z = M(z, zn[0]) + zn[1];
-  z = D($l, z);
+  for(z.x = z_z.x - 1.0f / KERNEL_DIM; z.x <= z_z.x + 1.0001 / KERNEL_DIM; z.x += inc)
+    for(z.y = z_z.y - 1.0f / KERNEL_DIM; z.y <= z_z.y + 1.0001 / KERNEL_DIM; z.y += inc){
+  //for(z.x = z_z.x; z.x < z_z.x + 1.0; z.x += 1.0)
+  //  for(z.y = z_z.y; z.y < z_z.y + 1.0; z.y += 1.0){
+      float2 z_c = z;
 
-  // compute seed
-  float4 seed = seedf(z, (float)frame_num / kernel_dim);
+      // compute T
+      z_c = M(z_c, zn[0]) + zn[1];
+      z_c = D($l, z_c);
 
-  // get prev
-  float4 prev = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
+      // compute seed
+      float4 seed = seedf(z_c, time);
 
-  // blend
-  float4 res = (seed.w * seed + (1.0 - seed.w) * prev) * 0.8;
-  res = gbr_id(res, z_z, par, time);
+      // get frame
+      float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z_c + (float2)(0.5f, 0.5f)))) / 255.0f;
+
+      // blend
+      v += (seed.w * seed + (1.0 - seed.w) * frame);
+    }
+
+  const float i_n_sq = 1.0f / (FRACT * FRACT);
+  v = i_n_sq * v;
+  v.w = v.w / i_n_sq;
+
+//v = gbr_id(v, z_z, par, time);
+  v = rotate_hsls(v, z_z, par, time);
 
   // write to out
-  write_imageui(out, p, convert_uint4(255.0f * res));
+  write_imageui(out, p, convert_uint4(255.0f * v));
 
   // write to pbo
-  uchar4 tmp = convert_uchar4(255.0f * res);
-  pbo[y * kernel_dim + x] = tmp;
+  uchar4 tmp = convert_uchar4(255.0f * v);
+  pbo[y * KERNEL_DIM + x] = tmp;
 
 }
 

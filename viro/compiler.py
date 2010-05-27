@@ -14,7 +14,7 @@ class Compiler():
         debug("Initializing Compiler")
         Globals().load(self)
 
-        self.substitutions = {}
+        self.substitutions = {"KERNEL_DIM": self.profile.kernel_dim, "FRACT": self.profile.FRACT}
         self.ctx = ctx
 
 
@@ -76,7 +76,7 @@ class Compiler():
     def splice_components(self):
         ''' This method dynamicly generates the interpolated component switch
             statements that are spliced into the kernels '''
-        debug("Splicing components")
+        debug("Splicing components")        
 
         for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
             component_list = self.cmdcenter.componentmanager.datamanager.components[component_name]

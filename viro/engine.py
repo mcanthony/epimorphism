@@ -79,8 +79,7 @@ class Engine(object):
         #cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
         # cl.enqueue_write_buffer(self.queue, self.indices, hostbuf=numpy.array(self.frame["indices"], dtype=numpy.int32), is_blocking=True).wait()
         #cl.enqueue_write_buffer(self.queue, self.zn, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in self.frame["zn"]])), dtype=numpy.float32), is_blocking=True).wait()
-        args = [self.fb, self.out, self.pbo, 
-                numpy.int32(self.profile.kernel_dim), numpy.int32(self.frame_num % self.profile.kernel_dim)]
+        args = [self.fb, self.out, self.pbo]
 #                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
         # copy constants to kernel
         for data in self.frame:
