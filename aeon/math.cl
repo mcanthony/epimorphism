@@ -82,8 +82,8 @@ float2 B(float2 z0){
 
 float4 rotate3D(float4 v, float4 axis, float th){
   // compute constants
-  float c = cos(th);
-  float s = sin(th);
+  float c = native_cos(th);
+  float s = native_sin(th);
 
   // compute rotation
   float4 res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);

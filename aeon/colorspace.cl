@@ -49,7 +49,7 @@ float4 HSVtoRGB(float4 val){
 
 float4 HSLstoRGB(float4 val){
 
-  float s = hypot(val.x, val.y);
+  float s = native_sqrt(val.x * val.x + val.y * val.y);
   float h;
 
   if(s < 0.0001f){
