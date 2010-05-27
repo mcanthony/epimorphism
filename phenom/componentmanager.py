@@ -14,7 +14,7 @@ class ComponentManager(object):
     def __init__(self):
         Globals().load(self)
 
-        self.switching_component = False
+        self.switching_components = False
 
         # start datamanager
         self.datamanager = DataManager()
@@ -66,7 +66,7 @@ class ComponentManager(object):
         debug("Inc data: %s, %s" % (component_name, idx))
 
         # abort if already switching
-        if(self.switching_component):
+        if(self.switching_components):
             return
 
         # get components
@@ -111,6 +111,8 @@ class ComponentManager(object):
         ''' Switches the system to the new components specified in data '''
         debug("Switching components: %s" % str(data))
 
+        self.switching_components = True
+
         if(len(data) == 0):
             return True
 
@@ -129,7 +131,9 @@ class ComponentManager(object):
 
                 self.state.components[component_name] = val
                 self.component_idx[2 * idx_idx] = val_idx
-                self.cmdcenter.engine.compile()
+                self.engine.prg = self.engine.compile()
+
+                self.switching_components = False
                 return
 
         # generate updates
@@ -171,7 +175,5 @@ class ComponentManager(object):
             self.state.internal[idx_idx] = 0
             self.component_idx[2 * idx_idx] = val_idx
 
-
-
-
+        self.switching_components = False
 

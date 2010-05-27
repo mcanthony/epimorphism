@@ -185,14 +185,14 @@ class Engine(object):
         self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo_ptr.value)
 
         # compile
-        self.compile()
+        self.prg = self.compile()
 
 
     def compile(self):
         ''' Compile the kernel'''
         debug("Compiling kernel")
 
-        self.prg = self.compiler.compile()
+        return self.compiler.compile()
 
 
     def upload_image(self, cl_image, data):
