@@ -1,5 +1,3 @@
-from sources.OpenGL.GL import *
-
 from common.globals import *
 
 from viro.compiler import *
@@ -36,16 +34,10 @@ class Engine(object):
 
         self.pbo = None
 
-        data = numpy.array(Image.open("test.png").convert("RGBA").getdata(), dtype=numpy.uint8)
-
-        self.fb = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.out = cl.Image(self.ctx, mf.READ_WRITE, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2)
-
-        data =  numpy.zeros((512,512,4), dtype=numpy.uint8)
-
-        cl.enqueue_read_image(self.queue, self.fb, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
-        
-        Image.fromarray(data, "RGBA").save("out.png")
+        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+        self.fb  = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
+        self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
+        self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
         
         self.frame_num = 0
 
@@ -73,9 +65,13 @@ class Engine(object):
                       local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
 
-#        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
+        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
 
         self.frame_num += 1
+
+#        Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")
+        
+#        sys.exit(0)
 
 
     ######################################### PUBLIC ##################################################
@@ -104,6 +100,7 @@ class Engine(object):
                 debug(75*"=")
                 print_info(device, cl.device_info)
 
+
     def start(self):
         ''' Start engine '''
         info("Starting engine")
@@ -124,3 +121,13 @@ class Engine(object):
         self.kernel = self.prg.test
 
 
+    def upload_image(self, cl_image, data):
+        cl.enqueue_write_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()        
+
+
+    def download_image(self, cl_image):
+        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+
+        cl.enqueue_read_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
+        
+        return data
