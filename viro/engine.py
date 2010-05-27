@@ -71,9 +71,8 @@ class Engine(object):
 
         self.frame_num += 1
 
-        Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")
-        
-        sys.exit(0)
+#        Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")       
+#        sys.exit(0)
 
 
     ######################################### PUBLIC ##################################################
