@@ -141,14 +141,14 @@ class Engine(object):
     def print_timings(self):
 
         if(self.time_events):
-            # get times
-            times = [1000 * (self.timings[i + 1] - self.timings[i]) for i in xrange(len(self.timings) - 1)]
-
-            # set accumulators
-            self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
-            self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
-
             if(self.frame_num % self.profile.debug_freq == 0):
+                # get times
+                times = [1000 * (self.timings[i + 1] - self.timings[i]) for i in xrange(len(self.timings) - 1)]
+
+                # set accumulators
+                self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
+                self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
+
                 # print times
                 for i in range(len(times)):
                     print "event" + str(i) + "-" + str(i + 1) + ": " + str(self.event_accum_tmp[i] / self.profile.debug_freq) + "ms"
