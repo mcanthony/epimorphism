@@ -65,8 +65,8 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
       // compute seed
       z = M(zn[10], (z - zn[11]));
 
-      //T_SEED%
-      //z = t_seed;
+      %T_SEED%
+      z = t_seed;
       z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);

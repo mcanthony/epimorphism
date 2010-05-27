@@ -1,14 +1,14 @@
-z                                       :
-exp(z)                                  :
-sin(z)                                  :
-cos(z)                                  :
-tan(z)                                  :
-sinh(z)                                 :
-z + sinh(z)                             :
-cosh(z)                                 :
-tanh(z)                                 :
-tanh(tanh(z))                           :
-sq(z)                                   :
-1.0 - sq(z)                             :
-sq(1.0 - z)                             :
-tanh(1.0 + cos(z))                      :
+z                                        :
+expz(z)                                  :
+sinz(z)                                  :
+cosz(z)                                  :
+tanz(z)                                  :
+sinhz(z)                                 :
+z + sinhz(z)                             :
+coshz(z)                                 :
+tanhz(z)                                 :
+tanhz(tanhz(z))                          :
+sqz(z)                                   :
+$l - sqz(z)       			 :
+sqz($l - z)                              :
+tanhz($l + cosz(z))                      :

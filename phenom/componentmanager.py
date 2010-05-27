@@ -129,7 +129,7 @@ class ComponentManager(object):
 
                 self.state.components[component_name] = val
                 self.component_idx[2 * idx_idx] = val_idx
-                self.cmdcenter.engine.compile({})
+                self.cmdcenter.engine.compile()
                 return
 
         # generate updates
