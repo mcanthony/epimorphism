@@ -68,12 +68,12 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   const float i_k = FRACT == 1 ? 0.0f : 1.0f / KERNEL_DIM;  
   const float m_k = FRACT == 1 ? 1.0f : 1.0001f / KERNEL_DIM;  
-  const float inc = FRACT == 1 ? 1.0f : 2.0f / (KERNEL_DIM * (FRACT - 1.0f));  
+  const float inc = FRACT == 1 ? 1.1f : 2.0f / (KERNEL_DIM * (FRACT - 1.0f));  
   float2 t, t0, t1, t_seed, t_seed0, t_seed1, reduce, reduce0, reduce1;
   float4 seed, seed0, seed1, color, color0, color1;
 
-  for(z.x = z_z.x - i_k; z.x < z_z.x + m_k; z.x += inc)
-    for(z.y = z_z.y - i_k; z.y < z_z.y + m_k; z.y += inc){
+  for(z.x = z_z.x - i_k; z.x <= z_z.x + m_k; z.x += inc)
+    for(z.y = z_z.y - i_k; z.y <= z_z.y + m_k; z.y += inc){
       float2 z_c = z;
 
       // compute T
