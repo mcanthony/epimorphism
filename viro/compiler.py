@@ -5,7 +5,7 @@ import pyopencl as cl
 import os, re, hashlib, time
 
 from common.log import *
-set_log("COMPILER_OPENCL")
+set_log("COMPILER")
 
 class Compiler():
     ''' OpenCL Program compiler '''
@@ -47,7 +47,7 @@ class Compiler():
         if(not os.path.exists("kernels/%s.so" % name)):
         #    info("Compiling kernel - %s" % name)
             # kernel_contents = open("aeon/__kernel.cu").read()
-            kernel_contents = open("aeon/testcl.cl").read()
+            kernel_contents = open("aeon/__kernel.cl").read()
             prg = cl.Program(self.ctx, kernel_contents)
             try:
                 prg.build()
@@ -147,6 +147,6 @@ class Compiler():
             contents = re.compile("\%" + key + "\%").sub(str(self.substitutions[key]), contents)
 
         # write file contents
-        file = open("aeon/__%s" % (name.replace(".ecu", ".cu")), 'w')
+        file = open("aeon/__%s" % (name.replace(".ecl", ".cl")), 'w')
         file.write(contents)
         file.close()
