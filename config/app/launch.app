@@ -6,6 +6,6 @@
  '_state': 'launch',
 
  'automating_components': True,
- 'midi_enabled': False,
+ 'midi_enabled': True,
  'print_log': True
 }

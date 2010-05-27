@@ -1,11 +1,17 @@
+#include "util.cl"
+
+#define PI 3.1415926535f
+#define $i (float2)(0.0, 1.0)
+#define $l (float2)(1.0, 0.0)
+
+#include "math.cl"
+
 %PAR_NAMES%
 
 %CULL_ENABLED%
 
-#define PI 3.1415926535f
-#define $I (float2)(0.0, 1.0)
-
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_REPEAT;
+
 
 uint4 seed(float2 z, float t){
   z = (z + (float2)(1.0f, 1.0f)) / 2.0f;
@@ -33,7 +39,7 @@ void test(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo,
 
     uint4 seed_val = seed(z, (float)frame_num / kernel_dim);
 
-    z *= 1.1;//zn[0].y;
+    z = M(z, zn[0]);
     uint4 prev = read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
 
     //uint4 res = seed_val;

@@ -72,10 +72,10 @@ class Interface(object):
             self.server = None
 
         # start midi
-        if(self.context.midi):
+        if(self.app.midi_enabled):
             self.midi = MidiHandler()
 
-            if(self.context.midi):
+            if(self.app.midi_enabled):
                 # sync midi lists to controller
                 self.cmdcenter.state.zn.midi = self.midi
                 self.cmdcenter.state.par.midi = self.midi

@@ -3,7 +3,6 @@
 
  'keyboard':'full',
  'par_scale': 1,
- 'midi': True,
  'midi_output': True,
  'server': False,
  'kbd_switch_spd' : 2.0,

@@ -54,7 +54,7 @@ class Compiler():
             kernel_contents = open("aeon/__kernel.cl").read()
             prg = cl.Program(self.ctx, kernel_contents)
             try:
-                prg.build()
+                prg.build(options="-I /home/gene/epimorphism/aeon")
             except:
                 critical("Error:")
                 critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))

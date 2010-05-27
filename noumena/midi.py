@@ -48,7 +48,7 @@ if(config.app and config.app.midi_enabled):
                 self.midi_in = None
                 self.midi_out = None
                 info("MIDI device not found")
-                self.context.midi = False
+                self.app.midi_enabled = False
 
             # set default bindings
             self.binding_idx = 0
@@ -128,7 +128,7 @@ if(config.app and config.app.midi_enabled):
             ''' Main execution loop '''
 
             # run loop
-            while(True and self.context.midi):
+            while(True and self.app.midi_enabled):
 
                 # sleep / exit
                 while(not self.midi_in.Poll() and not self.cmdcenter.app.exit):
@@ -147,8 +147,8 @@ if(config.app and config.app.midi_enabled):
                 f = val / 128.0
                 if(val == 127.0) : f = 1.0
 
-                print "MIDI", bank, channel, val, f
-                print self.state.par[self.state.par_names.index("_COLOR_BASE_PHI")]
+                # print "MIDI", bank, channel, val, f
+                # print self.state.par[self.state.par_names.index("_COLOR_BASE_PHI")]
                 # check bindings
                 bindings = self.bindings[self.binding_idx]
                 if(bindings.has_key((bank, channel))):
@@ -159,7 +159,7 @@ if(config.app and config.app.midi_enabled):
 
                     old = self.cmdcenter.get_val(binding[0], eval(binding[1]))
                     val = eval("set_" + binding[2])(old, f)
-                    print old, val, str(binding[1])
+                    # print old, val, str(binding[1])
                     # HACK to smoothen valuesx
                     if(binding[2] == "radius" or binding[2] == "th"):
                         self.cmdcenter.radial_2d('state.zn', eval(binding[1]), self.cmdcenter.interface.context.midi_speed, r_to_p(old), r_to_p(val))

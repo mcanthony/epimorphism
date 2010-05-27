@@ -3,10 +3,9 @@
 
  'keyboard':'full',
  'par_scale': 1,
- 'midi': False,
  'midi_output': False,
  'echo' : True,
 
- 'midi_controller': None,
+ 'midi_controller':  ['BCF2000', 'BCF_LIVE'],
  'screen' : [900,900,False]
 }
