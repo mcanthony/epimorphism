@@ -8,13 +8,13 @@ float4 RGBtoHSV(float4 val){
   if(vmax < 0.001f || delta < 0.001f){
     return color(0.0f, 0.0f, vmax, val.w);
   }else {
-    s = delta / vmax;
+    s = native_divide(delta, vmax);
     if(fabs(val.x - vmax) < 0.0001f)
-      h = ( val.y - val.z ) / delta;
+      h = native_divide(( val.y - val.z ), delta);
     else if(fabs(val.y - vmax) < 0.0001f)
-      h = 2.0f + ( val.z - val.x ) / delta;
+      h = 2.0f + native_divide((val.z - val.x), delta);
     else
-      h = 4.0f + ( val.x - val.y ) / delta;
+      h = 4.0f + native_divide((val.x - val.y), delta);
     h /= 6.0f;
     return color(h, s, vmax, val.w);
   }
@@ -65,9 +65,9 @@ float4 HSLstoRGB(float4 val){
   float l = val.z;
 
   if(s < 0.0001f)
-    return color((l + 1.0f) / 2.0f, (l + 1.0f) / 2.0f, (l + 1.0f) / 2.0f, val.w);
+    return color((l + 1.0f) / 2.0f, (l + 1.0f) / 2.0f, (l + 1.0f) /  2.0f, val.w);
 
-  float delta = s / sqrt(1.0f - l * l);
+  float delta = native_divide(s, sqrt(1.0f - l * l));
 
   if(l > 0)
     delta *= (2.0f - l - 1.0f);
@@ -76,7 +76,7 @@ float4 HSLstoRGB(float4 val){
 
   float v = (l + 1.0f + delta) / 2.0f;
   float min = v - delta;
-  s = 1.0f - min / v;
+  s = 1.0f - native_divide(min, v);
 
   return HSVtoRGB(color(h, s, v, val.w));
 }
@@ -90,24 +90,24 @@ float4 RGBtoHSLs(float4 val){
 
   l = (vmax + vmin) - 1.0f;
 
-  s = delta * sqrt(1.0f - l * l);
+  s = delta * native_sqrt(1.0f - l * l);
 
   if(l < -0.9999f || l > 0.9999f)
     s = 0.0f;
   else if(l > 0)
-    s /= (2.0f - l - 1.0f);
+    s = native_divide(s, (2.0f - l - 1.0f));
   else if(l <= 0)
-    s /= (l + 1.0f);
+    s = native_divide(s, (l + 1.0f));
 
   if(s < 0.0001f){
     h = 0.0f;
   }else {
     if(fabs(val.x - vmax) < 0.0001f)
-      h = ( val.y - val.z ) / delta;            // between yellow & magenta
+      h = native_divide((val.y - val.z), delta);            // between yellow & magenta
     else if(fabs(val.y - vmax) < 0.0001f)
-      h = 2.0f + ( val.z - val.x ) / delta;     // between cyan & yellow
+      h = 2.0f + native_divide((val.z - val.x), delta);     // between cyan & yellow
     else
-      h = 4.0f + ( val.x - val.y ) / delta;
+      h = 4.0f + native_divide((val.x - val.y), delta);
     h *= PI / 3.0f;
   }
   return color(s * native_cos(h), s * native_sin(h), l, val.w);

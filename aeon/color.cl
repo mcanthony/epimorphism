@@ -31,7 +31,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
     a = atan2(z_z.y, z_z.x) * floor(8.0f * _COLOR_TH_EFF) / (2.0f * PI);
   }
 
-  float th =  (_COLOR_DHUE + l + a + native_divide(time * _COLOR_SPEED_TH * _GLOBAL_SPEED, 10.0f));
+  float th =  (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
 
   v.x += th;
 
@@ -71,29 +71,27 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
 
 
   // compute rotation 1
-  float th =  2.0f * PI * (a + l + native_divide(time * _COLOR_SPEED_TH * _GLOBAL_SPEED, 10.0f));
+  float th =  2.0f * PI * (a + l + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
   float4 tmp = (float4)(v.x, v.y, v.z, 0.0f);
   tmp = rotate3D(tmp, axis, th);
 
 
   // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE;
-  phi += native_divide(2.0f * PI * _COLOR_PHI2, 2.0f);
-  psi += native_divide(2.0f * PI * _COLOR_PSI2, 2.0f);
+  phi += 2.0f * PI * _COLOR_PHI2 / 2.0f;
+  psi += 2.0f * PI * _COLOR_PSI2 / 2.0f;
   axis = (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
   tmp = rotate3D(tmp, axis, th);
 
 
-  float s = sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
+  float s = native_sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
   s  = s * (1.0f - _COLOR_BASE_I) + _COLOR_BASE_I;
   phi = 2.0f * PI * _COLOR_BASE_PHI;
   psi = 2.0f * PI * _COLOR_BASE_PSI;
   float4 base = _COLOR_BASE_R * color(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
   tmp = s * tmp + (1.0f - s) * base;
 
-  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * (float4)(v.x, v.y, v.z, 0.0f);
-
-
+  tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * color(v.x, v.y, v.z, 0.0f);
 
   //s = tmp.x;
   //tmp.x = native_sin(PI * tmp.z);
@@ -101,8 +99,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   //tmp.y = native_cos(PI * s);
 
   // get result
-
-  v = color(0.99999f * tmp.x, 0.99999f * tmp.y, 0.99999f * tmp.z, v.w);
+  v = color(tmp.x, tmp.y, tmp.z, v.w);
   return HSLstoRGB(v);
 }
 
