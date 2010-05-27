@@ -298,8 +298,7 @@ class CmdCenter(Animator, Archiver):
         info("Grab image")
 
         try:
-            img = Image.frombuffer("RGBA", (self.engine.profile.kernel_dim, self.engine.profile.kernel_dim),
-                                   self.engine.get_fb(), "raw", "RGBA", 0, -1).convert("RGB")
+            img = Image.fromarray(self.engine.download_image(self.fb), "RGBA")
         except Exception, err:
             info(str(err))
             sys.exit(0)
