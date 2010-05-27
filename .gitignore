@@ -7,6 +7,7 @@
 *.jpg
 *.png
 __*.cu
+__*.cl
 *log.txt
 log.txt*
 *.linkinfo
