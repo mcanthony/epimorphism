@@ -95,8 +95,41 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       // get frame
       float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
+    
+      // cull mode
+      #ifdef CULL_ENABLED
+
+      float new_w;
+
+      if(frame.w >= 0.0f)
+	new_w = (1.0 - seed.w) * (frame.w + 1.0f);
+      else
+	if(seed.w < 0.0001f)
+	  new_w = frame.w;
+	else
+	  new_w = 0.0f;
+
+      frame.w = new_w;
+
+      int null = (frame.w < 0.0f || result.w < 0.0f);
+
+      v += seed.w * seed + (1.0 - seed.w) * frame;      
+
+      if(null)
+	result.w = -10000000.0f;
+      
+      if(_CULL_DEPTH != 0.0f){
+
+	if(result.w > 20 * _CULL_DEPTH - 0.000001)
+	  result = (float4)(0.0f, 0.0f, 0.0f, -10000000.0f);
+      }
+
+      #else
+
       // blend
-      v += (seed.w * seed + (1.0 - seed.w) * frame);
+      v += seed.w * seed + (1.0 - seed.w) * frame;      
+
+      #endif
 
       z = z_c;
     }
