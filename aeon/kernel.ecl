@@ -92,7 +92,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
       seed = _gamma3(seed, _COLOR_GAMMA);
 
-      // get frame
+      // get framer
       float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
     
@@ -111,17 +111,17 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
       frame.w = new_w;
 
-      int null = (frame.w < 0.0f || result.w < 0.0f);
+      int null = (frame.w < 0.0f || v.w < 0.0f);
 
       v += seed.w * seed + (1.0 - seed.w) * frame;      
 
       if(null)
-	result.w = -10000000.0f;
+	v.w = -10000000.0f;
       
       if(_CULL_DEPTH != 0.0f){
 
-	if(result.w > 20 * _CULL_DEPTH - 0.000001)
-	  result = (float4)(0.0f, 0.0f, 0.0f, -10000000.0f);
+	if(v.w > 20 * _CULL_DEPTH - 0.000001)
+	  v = (float4)(0.0f, 0.0f, 0.0f, -10000000.0f);
       }
 
       #else
