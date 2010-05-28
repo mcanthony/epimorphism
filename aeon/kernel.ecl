@@ -22,8 +22,6 @@
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 
-const sampler_t sampler2 = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP;
-
 float4 seedf(float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
     return (float4)(1.0f, 0.0f, 0.0f, 1.0f);
@@ -32,14 +30,6 @@ float4 seedf(float2 z, __constant int* indices, __constant float* internal, __co
 
 }
 
-float4 get_pixel(read_only image2d_t fb, float2 z, int2 p){
-  //z = 0.5f * z + (float2)(0.5f, 0.5f);
-
-
-  
-  p = convert_int2((z - (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f)) * (float2)(KERNEL_DIM / 2.0f));
-  return read_imagef(fb, sampler2, p);
-}
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
@@ -68,8 +58,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
     for(z.y = z_z.y - i_k; z.y <= z_z.y + m_k; z.y += inc){
       float2 z_c = z;
 
-      // compute T
-      
+      // compute T      
       z = M(zn[2], z) + zn[3];
       %REDUCE%
       z = reduce;
@@ -80,26 +69,15 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       z = recover2(reduce);      
       
 
-      // compute seed
-      
-      z = M(zn[10], (z - zn[11]));
-      
-      
+      // compute seed    
+      z = M(zn[10], (z - zn[11]));           
       %T_SEED%
       z = t_seed;
       z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);
-      
-      seed = seedf(z, indices, internal, par, time, switch_time);
-
-      
       %SEED%
-
-      
-	 /*
       seed = _gamma3(seed, _COLOR_GAMMA);
-      */
       
 
       // get frame

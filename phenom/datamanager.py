@@ -59,6 +59,7 @@ class DataManager(object):
                 # add component
                 values.append(component)
 
+
         # load components from files of form *.cl
         files = [file for file in os.listdir("aeon") if re.search("^[^_\.][^#]*?cl$", file)]
 

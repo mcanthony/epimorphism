@@ -131,13 +131,14 @@ class ComponentManager(object):
 
                 intrp  = "\t%s0 = %s;\n" % (name, self.state.components[component_name])
                 intrp += "\t%s1 = %s;\n" % (name, val)
-                intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (val_idx)
+                intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx_idx)
                 intrp += "\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
                 intrp += "\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));" % (name, name, name)                
 
                 self.state.components[component_name] = intrp
                 t1 = time.time()
-                self.state.internal[val_idx] = self.cmdcenter.time()
+                self.state.internal[idx_idx] = self.cmdcenter.time()
+                print self.state.internal
                 self.engine.prg = self.engine.compile()
 
                 # wait until interpolation is done
