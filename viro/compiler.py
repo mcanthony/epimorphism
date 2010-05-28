@@ -148,7 +148,7 @@ class Compiler():
             if(self.state.par_names[i] != ""):
                 par_name_str += "#define %s par[%d]\n" % (self.state.par_names[i], i)
 
-        self.substitutions["PAR_NAMES"] = par_name_str
+        self.substitutions["PAR_NAMES"] = par_name_str[0:-1]
 
         # replace variables
         for key in self.substitutions:
