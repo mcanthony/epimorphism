@@ -42,7 +42,7 @@ float4 recover4(float4 z){
 }
 
 float2 remf(float2 z, float m){
-  return z - m * floor(CX(native_divide(z.x, m), native_divide(z.y, m)));
+  return z - m * floor(CX(z.x / m, z.y / m));
 }
 
 float n_pow(float x, float y){

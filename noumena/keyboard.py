@@ -110,7 +110,7 @@ class KeyboardHandler(object):
      
 
         # save state
-        elif(key == ' '): # enter
+        elif(key == ' '): # space
             self.cmdcenter.cmd("save()")
 
         # toggle manual iteration
@@ -118,7 +118,7 @@ class KeyboardHandler(object):
             self.cmdcenter.cmd("manual()")
 
         # toggle next frame
-        elif(key == "\040"): # space
+        elif(key == "\015"): # enter
             self.cmdcenter.cmd("next()")
 
         # increment archive
