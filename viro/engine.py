@@ -7,7 +7,7 @@ import numpy
 
 import sys
 import itertools
-from time import time
+import time
 
 import Image
 
@@ -15,6 +15,7 @@ from common.log import *
 set_log("ENGINE")
 
 mf = cl.mem_flags
+block_size = 16
 
 class Engine(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
@@ -36,17 +37,15 @@ class Engine(object):
 
         self.pbo = None
 
-        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
+        data       = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
+        data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+
         self.fb  = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
         self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
         self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
+        self.img = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data_uint8)
   
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
-
-        self.par      = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.par), dtype=numpy.float32))
-        self.internal = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.internal), dtype=numpy.float32))
-        self.indices  = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(len(self.state.components), dtype=numpy.int32)) 
-        self.zn       = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, hostbuf=numpy.zeros(2 * len(self.state.zn), dtype=numpy.float32)) 
       
         self.frame_num = 0
 
@@ -55,6 +54,8 @@ class Engine(object):
         self.event_accum_tmp = [0 for i in xrange(num_time_events)]
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
+
+        self.engine_running = False
 
         return True
 
@@ -67,21 +68,15 @@ class Engine(object):
 
     def do(self):
         ''' Main event loop '''
+        self.engine_running = True
 
         if(not self.pbo):
             return
         
-        self.timings = [time()]
+        self.timings = [time.time()]
 
-        block_size = 16
-
-        #cl.enqueue_write_buffer(self.queue, self.par, hostbuf=numpy.array(self.frame["par"], dtype=numpy.float32), is_blocking=True).wait()
-        #cl.enqueue_write_buffer(self.queue, self.internal, hostbuf=numpy.array(self.frame["internal"], dtype=numpy.float32), is_blocking=True).wait()
-        # cl.enqueue_write_buffer(self.queue, self.indices, hostbuf=numpy.array(self.frame["indices"], dtype=numpy.int32), is_blocking=True).wait()
-        #cl.enqueue_write_buffer(self.queue, self.zn, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in self.frame["zn"]])), dtype=numpy.float32), is_blocking=True).wait()
+        # create args
         args = [self.fb, self.out, self.pbo]
-#                numpy.float32(self.frame["time"]), numpy.float32(self.frame["switch_time"]), self.par, self.internal, self.indices, self.zn]
-        # copy constants to kernel
         for data in self.frame:
             # convert to ctypes
             if(data["type"] == "float"):
@@ -92,23 +87,32 @@ class Engine(object):
                 args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
             elif(data["type"] == "complex_array"):
                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
-        self.timings.append(time())
 
+        # execute kernel
+        self.timings.append(time.time())
         cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
         self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                           *args, 
                           local_size=(block_size,block_size)).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
-        self.timings.append(time())
+        self.timings.append(time.time())
 
+        # copy out to fb
         cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
-        self.timings.append(time())
+        self.timings.append(time.time())
 
         self.frame_num += 1
         self.print_timings()
 
-        #Image.fromarray(self.download_image(self.out), "RGBA").save("out.png")       
-        #sys.exit(0)
+        if(self.frame_num == 5):
+            self.cmdcenter.grab_image()
+#            data = self.download_image()
+#            data1 = numpy.array(data, dtype=numpy.uint8)
+#            print data[-10:-1]
+#            Image.fromarray(data, "RGBA").convert("RGB").save("out.png")       
+            sys.exit(0)
+
+        self.engine_running = False
 
 
     ######################################### PUBLIC ##################################################
@@ -158,14 +162,14 @@ class Engine(object):
                 print "total cuda~", str(sum(self.event_accum) / self.frame_num) + "ms"
 
                 # print abs times
-                abs = 1000 * ((time() - self.last_frame_time) % 1) / self.profile.debug_freq
+                abs = 1000 * ((time.time() - self.last_frame_time) % 1) / self.profile.debug_freq
                 print "python:", abs - sum(self.event_accum_tmp) / self.profile.debug_freq
                 print "abs:", abs
 
                 # reset tmp accumulator
                 self.event_accum_tmp = [0 for i in xrange(len(times))]
 
-                self.last_frame_time = time()
+                self.last_frame_time = time.time()
 
 
     def start(self):
@@ -194,13 +198,27 @@ class Engine(object):
         cl.enqueue_write_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()        
 
 
-    def download_image(self, cl_image):
+    def download_image(self):
         ''' Download an image from the DEVICE '''
         debug("Downloading image")
 
-        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
-        cl.enqueue_read_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
+#        while(self.engine_running):
+#            time.sleep(0.01)
+
+        print "a"
+
+        # compute image
+        self.prg.get_image(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
+                           self.fb, self.img,
+                           local_size=(block_size,block_size)).wait()
+
+        print "c"
+        # download image
+        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
         
+        print "b"
+
         return data
 
 

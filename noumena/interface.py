@@ -25,6 +25,7 @@ from noumena.midi import *
 from common.log import *
 set_log("INTERFACE")
 
+import sys
 
 class Interface(object):
 

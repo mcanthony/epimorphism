@@ -6,6 +6,7 @@ from sources.OpenGL.GLUT import *
 from sources.OpenGL.GLU import *
 
 import time
+import sys
 
 from common.runner import *
 
@@ -192,7 +193,6 @@ class Renderer(object):
         # test for existence of buffer_dim
         if(not self.pbo_ptr):
             critical("can't render without a pbo")
-            import sys
             sys.exit()
             return
 

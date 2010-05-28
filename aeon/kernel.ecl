@@ -20,6 +20,7 @@
 #include "cull.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
+const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
@@ -96,5 +97,16 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   uchar4 tmp = convert_uchar4(255.0f * v.zyxw);
   pbo[y * KERNEL_DIM + x] = tmp;
 
+}
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void get_image(read_only image2d_t fb, write_only image2d_t out){
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  float4 frame = read_imagef(fb, image_sampler, p);
+
+  write_imageui(out, p, convert_uint4(255.0 * frame));
 }
 
