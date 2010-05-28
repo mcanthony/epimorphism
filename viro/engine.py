@@ -36,10 +36,10 @@ class Engine(object):
 
         self.pbo = None
 
-        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
-        self.fb  = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data)
+        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
+        self.fb  = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
+        self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
+        self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
   
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
 
@@ -198,7 +198,7 @@ class Engine(object):
         ''' Download an image from the DEVICE '''
         debug("Downloading image")
 
-        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
         cl.enqueue_read_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
         
         return data
@@ -207,4 +207,4 @@ class Engine(object):
     def reset_fb(self):
         ''' Clear the current frame buffer '''
 
-        self.upload_image(self.fb, numpy.zeros(4 * self.profile.kernel_dim ** 2, dtype=numpy.uint8))
+        self.upload_image(self.fb, numpy.zeros(4 * self.profile.kernel_dim ** 2, dtype=numpy.float))

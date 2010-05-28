@@ -15,7 +15,7 @@
  'T': 'z',
  'T_SEED': 'z',
  'COLOR': 'rotate_hsls(v, z_z, par, time)',
- 'REDUCE': 'torus_reduce(z)',
+ 'REDUCE': 'no_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
  'zn': [(0.0+1.0j),

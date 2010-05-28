@@ -29,6 +29,18 @@ float2 recover2(float2 z){
   return z;
 }
 
+float4 recover4(float4 z){
+  if(isnan(z.x) || isinf(z.x))
+    z.x = 0.0f;
+  if(isnan(z.y) || isinf(z.y))
+    z.y = 0.0f;
+  if(isnan(z.z) || isinf(z.z))
+    z.z = 0.0f;
+  if(isnan(z.w) || isinf(z.w))
+    z.w = 0.0f;
+  return z;
+}
+
 float2 remf(float2 z, float m){
   return z - m * floor(CX(native_divide(z.x, m), native_divide(z.y, m)));
 }

@@ -20,7 +20,7 @@
 #include "seed_w.cl"
 #include "__seed.cl"
 
-const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP;
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP;
 
 float4 seedf(float2 z, float t){  
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
@@ -69,7 +69,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
       // compute seed
       z = M(zn[10], (z - zn[11]));
-
+      %REDUCE%
+	 z = reduce;
       %T_SEED%
       z = t_seed;
       z = M(zn[8], (z - zn[9]));
@@ -82,7 +83,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       seed = _gamma3(seed, _COLOR_GAMMA);
 
       // get frame
-      float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
+      //float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
+      float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
     
       // cull mode
       #ifdef CULL_ENABLED
@@ -129,12 +131,14 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   %COLOR%;
   v = (1.0f - _COLOR_KILL) * color;
   
+  v = recover4(v);
 
 
   //float4 v = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
   // write to out
-  write_imageui(out, p, convert_uint4(255.0f * v));
+  //write_imageui(out, p, convert_uint4(255.0f * v));
+  write_imagef(out, p, v);
 
   // write to pbo
   uchar4 tmp = convert_uchar4(255.0f * v);
