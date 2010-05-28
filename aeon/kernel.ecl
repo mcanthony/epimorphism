@@ -20,7 +20,7 @@
 #include "seed_w.cl"
 #include "__seed.cl"
 
-const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP;
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP;
 
 float4 seedf(float2 z, float t){  
   if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
@@ -61,12 +61,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       z = M(zn[2], z) + zn[3];
       %REDUCE%
       z = reduce;
-
-
       %T%
-
-
-
       z = t;
       %REDUCE%
       z = recover2(reduce);      
@@ -79,7 +74,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);
-      //float4 seed = seedf(z, time);
+      //float4 seed = seedf(z, indices, internel, par, time, switch_time);
 
       %SEED%
 

@@ -333,7 +333,7 @@ class CmdCenter(Animator, Archiver):
 
     def toggle_component_automation(self, switch=None):
         if(switch or not self.app.automating_components):
-            program = RandomComponents2({'interval': 30})
+            program = RandomComponents2({'interval': 10})
             program.start()
             self.state.programs.append(program)
             self.cmdcenter.interface.renderer.flash_message("Starting component automation")
