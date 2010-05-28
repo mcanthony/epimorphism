@@ -14,7 +14,6 @@
 #include "colorspace.cl"
 #include "color.cl"
 #include "reduce.cl"
-#include "reset.cl"
 #include "seed_a.cl"
 #include "seed_c.cl"
 #include "seed_wt.cl"
@@ -32,24 +31,6 @@ float4 seedf(float2 z, float t){
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void reset(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
-	   __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
-
-  // get coords
-  const int x = get_global_id(0);
-  const int y = get_global_id(1);
-  int2 p = (int2)(x, y);
-
-  // vars
-  float intrp_t;
-  float4 reset, reset0, reset1;
-
-  // reset
-  %RESET%
-  write_imageui(out, p, convert_uint4(255.0f * reset));  
-}
-
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
 	      __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
   // get coords
@@ -64,7 +45,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
   float2 z_z = z;
 
-  // internal antialiasing
+// internal antialiasing
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   const float i_k = FRACT == 1 ? 0.0f : 1.0f / KERNEL_DIM;  
   const float m_k = FRACT == 1 ? 1.0f : 1.0001f / KERNEL_DIM;  
@@ -151,6 +132,10 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
   %COLOR%;
   v = (1.0f - _COLOR_KILL) * color;
+  
+
+
+  //float4 v = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
   // write to out
   write_imageui(out, p, convert_uint4(255.0f * v));
