@@ -63,6 +63,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       z = reduce;
       %T%
       z = t;
+      z = M(zn[0], z) + zn[1];
       %REDUCE%
       z = recover2(reduce);      
 
