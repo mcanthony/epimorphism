@@ -7,10 +7,10 @@ Queue -
   DONE - detect resolutions, choose max
   DONE - remove logger output
   DONE - remove compiler output  
-
   DONE - remove midi  
 
   OpenCL  
+  OpenCL Bugs
 
   periodically connect to server
 
@@ -18,13 +18,17 @@ Queue -
 
   SDL for cross platform resultion detection
 
+  Final Tasks
+
+  keyboard
+  console
+
   optimize packages
   cross platform
   windows binaries
   mac binaries
   linux binaries
 
-  revamp keyboard 
   introduction
   periodic craziness
 
@@ -33,22 +37,31 @@ Queue -
   obfuscate
 
 
-Later -
+OpenCL:
+  fix color inconsistiency
 
-  final preparations:
-    move globals to config
 
-    cleaning/documention pass
-    configure keyboard
-    console  
-    installer script/pyport midi
+OpenCL Bugs:
+  screenshots
+  make internal go all the way to 1
+  component switching interrupt bug
+  fix cull mode
+  async kernel compilation
 
-  contents:
-    make cool things
 
-  archiving:
+Final Tasks:
+  screenshots while manual iteration
+  move globals to config
 
-  states:
+
+Later:	
+  cleaning/documention pass
+
+  Contents
+
+  Archiving
+
+  finish states:
     scripts
     paths
     programs
@@ -67,35 +80,19 @@ Later -
 
   unify scripts?
 
-  archiving/voting
 
-
-Release -
-  Public 
-  create installer script - distutils
-  figure out pyportmidi
-  mac compatible
-  windows compatible
-  optimize
-
-
-Public - 
-  readme / 
-  more documentation
+Documentation: 
+  readme, etc
   add argument lists to help
-  configure keyboard for public use
-  finish website
 
 
 Archiving - 
-  split state into sub states
-
+  MAYBE split state into sub states
   archive feature for adding to archive or deleting
-  make sure migrations are working
   auto migrate feature?
 
 
-Contents - 
+Contents:
   programs
   paths
   color function
@@ -128,10 +125,8 @@ Ideas -
 
 
 Misc Tasks - 
-  compiler - intellegently load function from kernel.so
   manual iteration fps_time
   save image fps_time
-  screenshots while manual iteration
 
 
 Bugs - 
@@ -139,5 +134,4 @@ Bugs -
   video rendering script bug     
   ??configmanager dump object newline issues(only really relevant for scripts)
   ??fix console window
-  ??component switch discontinuities
   
