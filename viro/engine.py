@@ -5,9 +5,7 @@ from viro.compiler import *
 import pyopencl as cl
 import numpy
 
-import sys
-import itertools
-import time
+import sys, itertools, time, threading
 
 import Image
 
@@ -29,6 +27,7 @@ class Engine(object):
         debug("Setting up OpenCL")
         self.print_opencl_info()
 
+        # OpenCL objects
         self.device = cl.get_platforms()[0].get_devices()[0]
         self.ctx    = cl.Context([self.device])
         self.queue  = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
@@ -37,6 +36,7 @@ class Engine(object):
 
         self.pbo = None
 
+        # OpenCL buffers
         data       = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
         data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
 
@@ -44,21 +44,21 @@ class Engine(object):
         self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
         self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
         self.img = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data_uint8)
-  
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
-      
-        self.frame_num = 0
 
+        # timing vars
         num_time_events = 3
         self.time_events = False
         self.event_accum_tmp = [0 for i in xrange(num_time_events)]
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
 
-        self.engine_running = False
+        # fb download vars
+        self.new_fb_event = threading.Event()
+        self.do_get_fb = False
+        self.fb_contents = None
 
-        return True
-
+        self.frame_num = 0
 
     def __del__(self):
         debug("Deleting Engine")
@@ -67,13 +67,14 @@ class Engine(object):
 
 
     def do(self):
-        ''' Main event loop '''
-        self.engine_running = True
-
-        if(not self.pbo):
-            return
+        ''' Main event loop '''      
         
         self.timings = [time.time()]
+
+        # grab frame buffer
+        if(self.do_get_fb):
+            self.do_get_fb = False
+            self.get_fb_internal()
 
         # create args
         args = [self.fb, self.out, self.pbo]
@@ -198,28 +199,25 @@ class Engine(object):
         cl.enqueue_write_image(self.queue, cl_image, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()        
 
 
-    def download_image(self):
-        ''' Download an image from the DEVICE '''
-        debug("Downloading image")
+    def get_fb(self):
+        ''' Download the fb '''
+        debug("Downloading frame buffer")
 
-#        while(self.engine_running):
-#            time.sleep(0.01)
+        self.do_get_fb = True
+        self.new_fb_event.clear()
+        self.new_fb_event.wait()
 
-        print "a"
+        # return contents
+        return self.fb_contents
 
         # compute image
         self.prg.get_image(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                            self.fb, self.img,
                            local_size=(block_size,block_size)).wait()
 
-        print "c"
         # download image
         data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
-        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()
-        
-        print "b"
-
-        return data
+        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()    
 
 
     def reset_fb(self):
