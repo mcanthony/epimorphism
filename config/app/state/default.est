@@ -3,7 +3,7 @@
  'image': None,
  'frame_cnt': 0,
  'bpm': 120,
- 'scripts': [],
+ 'scripts': [Script('roses')],
  'paths': [],
  'programs': [],
  'components': {

@@ -130,7 +130,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   %COLOR%;
   v = (1.0f - _COLOR_KILL) * color;
   
-  //  v = recover4(v);
+  v = recover4(v);
 
 
   //float4 v = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;

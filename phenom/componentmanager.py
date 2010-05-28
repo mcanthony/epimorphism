@@ -138,7 +138,6 @@ class ComponentManager(object):
                 self.state.components[component_name] = intrp
                 t1 = time.time()
                 self.state.internal[idx_idx] = self.cmdcenter.time()
-                print self.state.internal
                 self.engine.prg = self.engine.compile()
 
                 # wait until interpolation is done
