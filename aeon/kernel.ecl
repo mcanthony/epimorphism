@@ -1,15 +1,13 @@
 #define _EPI_
-
 #define KERNEL_DIM %KERNEL_DIM%
 #define FRACT %FRACT%
-
-#include "util.cl"
-
 #define PI 3.1415926535f
 #define $i (float2)(0.0, 1.0)
 #define $l (float2)(1.0, 0.0)
 %PAR_NAMES%
 %CULL_ENABLED%
+
+#include "util.cl"
 #include "math.cl"
 #include "colorspace.cl"
 #include "color.cl"
@@ -22,14 +20,6 @@
 #include "cull.cl"
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
-
-float4 seedf(float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
-  if(z.s0 > 0.9 ||z.s0 < -0.9 || z.s1 > 0.9 || z.s1 < -0.9)
-    return (float4)(1.0f, 0.0f, 0.0f, 1.0f);
-  else
-    return (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-
-}
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
