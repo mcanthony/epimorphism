@@ -38,7 +38,7 @@ _EPI_ float2 circle(float2 z, __constant float* par){
   // FULL, LIVE, DEV
 
   z = grid_reduce(z);
-  float r = len(z);
+  float r = native_sqrt(z.x * z.x + z.y * z.y);
   float w = -0.0000001;
   if(r > _SEED_CIRCLE_R - _SEED_W / 2.0f && r  < _SEED_CIRCLE_R + _SEED_W / 2.0f)
     w = (1.0f - 2.0f * fabs(r - _SEED_CIRCLE_R) / _SEED_W);

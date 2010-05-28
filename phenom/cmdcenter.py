@@ -168,14 +168,14 @@ class CmdCenter(Animator, Archiver):
         ''' Main application loop '''
 
         # execute engine
-        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze):
+        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.switching_components):
             self.app.next_frame = False
 
             # get time
             if(self.app.fps_sync):
                 self.state.time = self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
             else:
-                self.state.time = time.time() - self.t_start # + self.t_phase
+                self.state.time = time.time() - self.t_start + self.t_phase
 
             #print str(self.state.time), str(self.t_phase)
 
@@ -333,7 +333,7 @@ class CmdCenter(Animator, Archiver):
 
     def toggle_component_automation(self, switch=None):
         if(switch or not self.app.automating_components):
-            program = RandomComponents2({'interval': 10})
+            program = RandomComponents2({'interval': 30})
             program.start()
             self.state.programs.append(program)
             self.cmdcenter.interface.renderer.flash_message("Starting component automation")

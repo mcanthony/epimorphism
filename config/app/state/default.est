@@ -7,7 +7,7 @@
  'paths': [],
  'programs': [],
  'components': {
- 'SEED': 'seed_wca(z, par, time)',
+ 'SEED': 'seed_wca(z, indices, internal, par, time, switch_time)',
  'SEED_W': 'lines_lr(z, par)',
  'SEED_WT': 'wt_id(w)',
  'SEED_C': 'simple_color(z, w, par, time)',

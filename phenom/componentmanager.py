@@ -102,8 +102,6 @@ class ComponentManager(object):
                 warning("Can't load component: %s - %s" % (component_name, val))
                 can_switch = False
 
-
-
         return can_switch
 
 
@@ -129,14 +127,30 @@ class ComponentManager(object):
 
                 val_idx = components.index(component)
 
-                self.state.components[component_name] = val
-                self.component_idx[2 * idx_idx] = val_idx
+                name = component_name.lower()
+
+                intrp  = "\t%s0 = %s;\n" % (name, self.state.components[component_name])
+                intrp += "\t%s1 = %s;\n" % (name, val)
+                intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (val_idx)
+                intrp += "\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
+                intrp += "\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));" % (name, name, name)                
+
+                self.state.components[component_name] = intrp
+                t1 = time.time()
+                self.state.internal[val_idx] = self.cmdcenter.time()
                 self.engine.prg = self.engine.compile()
+
+                # wait until interpolation is done
+                # t = self.app.state_switch_time - (self.cmdcenter.time() - self.state.internal[val_idx])
+                # time.sleep(t)
+
+                self.state.components[component_name] = val
+                # self.engine.prg = self.engine.compile()
+                self.component_idx[2 * idx_idx] = val_idx
 
                 self.switching_components = False
                 return
 
-        # generate updates
         updates = {}
         first_idx = None
         for component_name, val in data.items():

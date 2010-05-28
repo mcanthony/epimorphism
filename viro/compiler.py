@@ -5,6 +5,7 @@ import pyopencl as cl
 import os, re, hashlib, time, commands
 
 from common.log import *
+from common.runner import *
 set_log("COMPILER")
 
 class Compiler():
@@ -38,23 +39,26 @@ class Compiler():
         if(not self.app.splice_components): contents += str(time.clock())
 
         # hash
-        hash = hashlib.sha1(contents).hexdigest()
+        # hash = hashlib.sha1(contents).hexdigest()
 
         # make name
-        if(self.app.splice_components):
-            name = "kernel_spliced-%s" % hash
-        else:
-            os.system("rm kernels/kernels_nonspliced*")
-            name = "kernel_nonspliced-%s" % hash
+        #if(self.app.splice_components):
+        #    name = "kernel_spliced-%s" % hash
+        #else:
+        #    os.system("rm kernels/kernels_nonspliced*")
+       #     name = "kernel_nonspliced-%s" % hash
 
         # compile if library doesn't exist, else load from disk - !!!!FIX!!!!
-        if(not os.path.exists("kernels/%s.so" % name)):
+        if(True): #not os.path.exists("kernels/%s.so" % name)):
         #    info("Compiling kernel - %s" % name)
             # kernel_contents = open("aeon/__kernel.cu").read()
             kernel_contents = open("aeon/__kernel.cl").read()
             prg = cl.Program(self.ctx, kernel_contents)
             try:
+                t1 = time.time()
                 prg.build(options="-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations")
+                t2 = time.time()
+                self.cmdcenter.t_phase -= (t2 - t1)
             except:
                 critical("Error:")
                 critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
