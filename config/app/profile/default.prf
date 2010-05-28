@@ -1,7 +1,7 @@
 {
  'name': 'std',
  'debug_freq': 1.0,
- 'kernel_dim': 1024,
+ 'kernel_dim': 2048,
  'ptxas_stats' : False,
  'FRACT': 3
 }
