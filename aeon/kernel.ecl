@@ -139,7 +139,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   write_imagef(out, p, v);
 
   // write to pbo
-  uchar4 tmp = convert_uchar4(255.0f * v);
+  uchar4 tmp = convert_uchar4(255.0f * v.zyxw);
   pbo[y * KERNEL_DIM + x] = tmp;
 
 }
