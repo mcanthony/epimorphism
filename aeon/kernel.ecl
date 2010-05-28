@@ -68,6 +68,11 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       %REDUCE%
       z = recover2(reduce);      
       
+      // get frame
+      //float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
+      float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
+      //float4 frame = get_pixel(fb, z, p);
+
 
       // compute seed    
       z = M(zn[10], (z - zn[11]));           
@@ -77,13 +82,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       %REDUCE%
       z = recover2(reduce);
       %SEED%
-      seed = _gamma3(seed, _COLOR_GAMMA);
-      
-
-      // get frame
-      //float4 frame = convert_float4(read_imageui(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
-      float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
-      //float4 frame = get_pixel(fb, z, p);
+      seed = _gamma3(seed, _COLOR_GAMMA);      
     
       // cull mode
       #ifdef CULL_ENABLED
