@@ -42,8 +42,6 @@ OpenCL:
 
 
 OpenCL Bugs:
-  make internal go all the way to 1
-  component switching interrupt bug
   fix cull mode
   async kernel compilation
   fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo

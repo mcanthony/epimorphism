@@ -130,11 +130,12 @@ class ComponentManager(object):
 
                 name = component_name.lower()
 
-                intrp  = "\t%s0 = %s;\n" % (name, self.state.components[component_name])
-                intrp += "\t%s1 = %s;\n" % (name, val)
+                intrp = "\t%s1 = %s;\n" % (name, val)
                 intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx_idx)
-                intrp += "\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
-                intrp += "\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));" % (name, name, name)                
+                intrp += "\tif(intrp_t == 1.0f)\n\t\t%s=%s1;\n\telse{\n" % (name, name)
+                intrp += "\t\t%s0 = %s;\n" % (name, self.state.components[component_name])
+                intrp += "\t\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
+                intrp += "\t\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));\n\t}" % (name, name, name)                
 
                 self.state.components[component_name] = intrp
                 t1 = time.time()
