@@ -69,8 +69,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       %REDUCE%
       z = recover2(reduce);
       %SEED%
-      seed = _gamma3(seed, _COLOR_GAMMA);      
-    
+	 //seed = _gamma3(seed, _COLOR_GAMMA);      
+
       // cull & blending
       #ifdef CULL_ENABLED
       v = cull(v, seed, frame, par);

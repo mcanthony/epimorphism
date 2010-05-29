@@ -1,15 +1,15 @@
 Queue - 
-  launch context
+  DONE - launch context
   DONE - auto automating_components
   DONE - remove messages
   DONE - remove console
-  launch state
   DONE - detect resolutions, choose max
   DONE - remove logger output
   DONE - remove compiler output  
   DONE - remove midi  
+  DONE - OpenCL  
 
-  OpenCL  
+  optimize kernel
   OpenCL Bugs
 
   periodically connect to server
@@ -36,12 +36,11 @@ Queue -
 
   obfuscate
 
-
-OpenCL:
-  fix color inconsistiency
+  contents & launch state
 
 
 OpenCL Bugs:
+  fix rotate_hsls bug
   fix cull mode
   async kernel compilation
   fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
@@ -59,8 +58,8 @@ Later:
   Archiving
 
   finish states:
-    scripts
     paths
+    scripts
     programs
     variables
 

@@ -1,11 +1,11 @@
 {
  'name': 'launch',
 
- 'keyboard':'full',
+ 'keyboard':'launch',
  'par_scale': 1,
  'midi_output': False,
- 'echo' : True,
+ 'echo' : False,
 
  'midi_controller':  ['BCF2000', 'BCF_LIVE'],
- 'screen' : [900,900,False]
+ 'screen' : auto
 }
