@@ -17,19 +17,21 @@ Queue -
 
   periodically connect to server
 
-  scale performance to system
+  get rid of mouse
+
+  Final Non Launch Tasks
+
+  Bugs
+
+  keyboard
+  console
 
   OpenCL ATI Stream
   OpenCL Mac
   OpenCL CPUs - replace images with buffers
 
-  Final Tasks
+  scale performance to system
 
-  keyboard
-  console
-
-  optimize packages
-  cross platform
   windows binaries
   mac binaries
   linux binaries
@@ -37,21 +39,24 @@ Queue -
   introduction
   periodic craziness
 
-  get rid of mouse
-
   obfuscate
 
   contents & launch state
+
+  multiplebanannas@epimorphism.com
+
+
+Bugs:
+  fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
 
 
 OpenCL Bugs:
   fix rotate_hsls bug
   fix cull mode
   async kernel compilation
-  fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
 
 
-Final Tasks:
+Final Non Launch Tasks:
   move globals to config
 
 
@@ -90,7 +95,7 @@ Documentation:
 Archiving - 
   MAYBE split state into sub states
   archive feature for adding to archive or deleting
-  auto migrate feature?
+  auto migrate feature
 
 
 Contents:
@@ -115,22 +120,19 @@ Ideas -
   better keyboard multipliers
   when loading state, upload image too?
   integrate ipython into console
-  post processing multiple gpu
   quantize angles?
   different reductions?
   camera input
   seed impulses
   deal with state dumps that occur while blending
   force fps
+  multiple gpu integration
 
 
 Misc Tasks - 
   save image fps_time
-
-
-Bugs - 
   color speeds & phases
-  video rendering script bug     
   ??configmanager dump object newline issues(only really relevant for scripts & paths)
-  ??fix console window
+
+
   
