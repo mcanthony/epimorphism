@@ -107,6 +107,6 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
 
   float4 frame = read_imagef(fb, image_sampler, p);
 
-  write_imageui(out, p, convert_uint4(255.0 * frame));
+  write_imageui(out, p, convert_uint4(255.0 * frame).zyxw);
 }
 

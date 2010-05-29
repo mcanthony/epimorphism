@@ -15,6 +15,7 @@ class ComponentManager(object):
         Globals().load(self)
 
         self.switching_components = False
+        self.compiling = False
 
         # start datamanager
         self.datamanager = DataManager()
@@ -138,17 +139,18 @@ class ComponentManager(object):
                 self.state.components[component_name] = intrp
                 t1 = time.time()
                 self.state.internal[idx_idx] = self.cmdcenter.time()
+                self.compiling = True
                 self.engine.prg = self.engine.compile()
-
-                # wait until interpolation is done
-                # t = self.app.state_switch_time - (self.cmdcenter.time() - self.state.internal[val_idx])
-                # time.sleep(t)
+                self.compiling = False
 
                 self.state.components[component_name] = val
                 # self.engine.prg = self.engine.compile()
                 self.component_idx[2 * idx_idx] = val_idx
 
+                # wait until interpolation is done
+                time.sleep(self.app.state_switch_time)
                 self.switching_components = False
+
                 return
 
         updates = {}

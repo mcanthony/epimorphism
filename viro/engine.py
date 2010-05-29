@@ -5,7 +5,10 @@ from viro.compiler import *
 import pyopencl as cl
 import numpy
 
-import sys, itertools, time, threading
+import sys
+import itertools
+import time
+import threading
 
 import Image
 
@@ -56,9 +59,11 @@ class Engine(object):
         # fb download vars
         self.new_fb_event = threading.Event()
         self.do_get_fb = False
-        self.fb_contents = None
+        self.fb_contents = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
 
         self.frame_num = 0
+
+        return True
 
     def __del__(self):
         debug("Deleting Engine")
@@ -70,11 +75,6 @@ class Engine(object):
         ''' Main event loop '''      
         
         self.timings = [time.time()]
-
-        # grab frame buffer
-        if(self.do_get_fb):
-            self.do_get_fb = False
-            self.get_fb_internal()
 
         # create args
         args = [self.fb, self.out, self.pbo]
@@ -105,15 +105,24 @@ class Engine(object):
         self.frame_num += 1
         self.print_timings()
 
-        if(self.frame_num == 5):
-            self.cmdcenter.grab_image()
-#            data = self.download_image()
-#            data1 = numpy.array(data, dtype=numpy.uint8)
-#            print data[-10:-1]
-#            Image.fromarray(data, "RGBA").convert("RGB").save("out.png")       
-            sys.exit(0)
+        # grab frame buffer - must be at end of function
+        if(self.do_get_fb):
+            self.do_get_fb = False
+            self.get_fb_internal()
 
-        self.engine_running = False
+
+    def get_fb_internal(self):
+        debug("Get fb internal")
+
+        # compute image
+        self.prg.get_image(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
+                           self.fb, self.img,
+                           local_size=(block_size,block_size)).wait()
+
+        # download image        
+        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), self.fb_contents, 0, 0, None, True).wait()    
+
+        self.new_fb_event.set()
 
 
     ######################################### PUBLIC ##################################################
@@ -209,15 +218,6 @@ class Engine(object):
 
         # return contents
         return self.fb_contents
-
-        # compute image
-        self.prg.get_image(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
-                           self.fb, self.img,
-                           local_size=(block_size,block_size)).wait()
-
-        # download image
-        data = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
-        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), data, 0, 0, None, True).wait()    
 
 
     def reset_fb(self):

@@ -119,6 +119,8 @@ class CmdCenter(Animator, Archiver):
         # tap tempo info
         self.tempo_events = []
         self.last_tempo_event_time = 0
+
+        self.last_frame_time = 0
         
         return True
 
@@ -168,7 +170,7 @@ class CmdCenter(Animator, Archiver):
         ''' Main application loop '''
 
         # execute engine
-        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.switching_components):
+        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
             self.app.next_frame = False
 
             # get time
@@ -176,6 +178,14 @@ class CmdCenter(Animator, Archiver):
                 self.state.time = self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
             else:
                 self.state.time = time.time() - self.t_start + self.t_phase
+
+            if(self.app.manual_iter):
+                d = self.time() - self.last_frame_time
+                self.state.time -= d
+                self.t_phase -= d
+                self.state.time += 1.0 / 30.0
+
+            self.last_frame_time = self.time()
 
             #print str(self.state.time), str(self.t_phase)
 
@@ -204,15 +214,8 @@ class CmdCenter(Animator, Archiver):
     def send_frame(self):
         ''' Generates and sends the current frame to the Engine '''
 
-#        self.frame["time"]        = self.time()
-#        self.frame["switch_time"] = self.state.state_switch_time
-#        self.frame["par"]         = self.state.par
-#        self.frame["internal"]    = self.state.internal
-#        self.frame["indices"]     = self.componentmanager.component_idx
-#        self.frame["zn"]          = self.state.zn
 
         del self.frame[:]
-
         self.frame.append({"type": "float",         "val": self.time()})      
         self.frame.append({"type": "float",         "val": self.app.state_switch_time})  
         self.frame.append({"type": "float_array",   "val": self.state.par})
@@ -298,7 +301,8 @@ class CmdCenter(Animator, Archiver):
         info("Grab image")
 
         try:
-            img = Image.fromarray(self.engine.download_image(), "RGBA").convert("RGB")
+            self.app.next_frame = True
+            img = Image.fromarray(self.engine.get_fb(), "RGBA").convert("RGB")
         except Exception, err:
             info(str(err))
             sys.exit(0)

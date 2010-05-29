@@ -3,7 +3,7 @@ Queue -
   DONE - auto automating_components
   DONE - remove messages
   DONE - remove console
-  DONE - launch state
+  launch state
   DONE - detect resolutions, choose max
   DONE - remove logger output
   DONE - remove compiler output  
@@ -14,7 +14,7 @@ Queue -
 
   periodically connect to server
 
-  scale to graphics card
+  scale performance to system
 
   SDL for cross platform resultion detection
 
@@ -42,7 +42,6 @@ OpenCL:
 
 
 OpenCL Bugs:
-  fix screenshots
   make internal go all the way to 1
   component switching interrupt bug
   fix cull mode
@@ -51,7 +50,6 @@ OpenCL Bugs:
 
 
 Final Tasks:
-  screenshots while manual iteration
   move globals to config
 
 
