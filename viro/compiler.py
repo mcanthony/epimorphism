@@ -55,7 +55,7 @@ class Compiler():
         #    sys.exit(0)
 
         t1 = time.time()
-        print t1-t0
+        # print t1-t0
         self.cmdcenter.t_phase -= t1-t0
 
         # remove tmp files

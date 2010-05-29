@@ -1,6 +1,5 @@
 {
  'name': 'default',
-
  '_context': 'default',
  '_profile': 'default',
  '_state': 'default',
@@ -11,7 +10,6 @@
  'fps_sync': False,
  'record_events': False,
 
- 'splice_components': False,
  'component_level': 'FULL',
 
  'cull_enabled': False,

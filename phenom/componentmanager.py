@@ -115,50 +115,7 @@ class ComponentManager(object):
         if(len(data) == 0):
             return True
 
-        # non-spliced
-        if(not self.app.splice_components):
-            for component_name, val in data.items():
-                idx_idx = self.datamanager.component_names.index(component_name)
-                components = self.datamanager.components[component_name]
-                try:
-                    component = [c for c in components if c[0] == val][0]
-                except:
-                    error("couldn't find val in components - %s, %s" % (component_name, val))
-                    return False
-
-                val_idx = components.index(component)
-
-                name = component_name.lower()
-
-                intrp = "\t%s1 = %s;\n" % (name, val)
-                intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx_idx)
-                intrp += "\tif(intrp_t == 1.0f)\n\t\t%s=%s1;\n\telse{\n" % (name, name)
-                intrp += "\t\t%s0 = %s;\n" % (name, self.state.components[component_name])
-                intrp += "\t\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
-                intrp += "\t\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));\n\t}" % (name, name, name)                
-
-                self.state.components[component_name] = intrp
-                # self.compiling = True
-                #t0 = self.cmdcenter.time()
-                self.engine.prg = self.engine.compile()
-                # self.compiling = False
-                #t1 = self.cmdcenter.time()
-                #print t1-t0
-
-                self.state.internal[idx_idx] = self.cmdcenter.time()
-
-                self.state.components[component_name] = val
-                # self.engine.prg = self.engine.compile()
-                self.component_idx[2 * idx_idx] = val_idx
-
-                # wait until interpolation is done
-                time.sleep(self.app.state_switch_time)
-                self.switching_components = False        
-
-                return
-
-        updates = {}
-        first_idx = None
+        # create interpolation strings
         for component_name, val in data.items():
             idx_idx = self.datamanager.component_names.index(component_name)
             components = self.datamanager.components[component_name]
@@ -169,31 +126,30 @@ class ComponentManager(object):
                 return False
 
             val_idx = components.index(component)
-            updates[component_name] = {"val":val, "component":component, "val_idx":val_idx, "idx_idx":idx_idx}
 
-            if(not first_idx):
-                first_idx = idx_idx
+            name = component_name.lower()
+            
+            intrp = "\t%s1 = %s;\n" % (name, val)
+            intrp += "\tintrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx_idx)
+            intrp += "\tif(intrp_t == 1.0f)\n\t\t%s=%s1;\n\telse{\n" % (name, name)
+            intrp += "\t\t%s0 = %s;\n" % (name, self.state.components[component_name])
+            intrp += "\t\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
+            intrp += "\t\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));\n\t}" % (name, name, name)                
 
-            self.component_idx[2 * idx_idx + 1] = val_idx
-            self.state.internal[idx_idx] = self.cmdcenter.time()
+            self.state.components[component_name] = intrp
 
-        # if were only changing 1 component, show a message
-        if(len(updates) == 1):
-            self.cmdcenter.interface.renderer.flash_message("switching %s to: %s" % (updates.keys()[0], updates[updates.keys()[0]]["val"]))
-
-        # wait until interpolation is done
-        t = self.app.state_switch_time - (self.cmdcenter.time() - self.state.internal[first_idx])
-        time.sleep(t)
-
-        # update state
-        for component_name, update in updates.items():
-            val_idx = update["val_idx"]
-            idx_idx = update["idx_idx"]
-            val = update["val"]
-
-            self.state.components[component_name] = val
-            self.state.internal[idx_idx] = 0
             self.component_idx[2 * idx_idx] = val_idx
 
+        # compile engine
+        self.engine.prg = self.engine.compile()
+
+        # set internal values
+        for component_name, val in data.items():
+            idx_idx = self.datamanager.component_names.index(component_name)
+            self.state.internal[idx_idx] = self.cmdcenter.time()
+            self.state.components[component_name] = val            
+
+        # wait until interpolation is done
+        time.sleep(self.app.state_switch_time)
         self.switching_components = False
 
