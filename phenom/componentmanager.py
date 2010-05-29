@@ -138,11 +138,14 @@ class ComponentManager(object):
                 intrp += "\t\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));\n\t}" % (name, name, name)                
 
                 self.state.components[component_name] = intrp
-                t1 = time.time()
-                self.state.internal[idx_idx] = self.cmdcenter.time()
-                self.compiling = True
+                # self.compiling = True
+                #t0 = self.cmdcenter.time()
                 self.engine.prg = self.engine.compile()
-                self.compiling = False
+                # self.compiling = False
+                #t1 = self.cmdcenter.time()
+                #print t1-t0
+
+                self.state.internal[idx_idx] = self.cmdcenter.time()
 
                 self.state.components[component_name] = val
                 # self.engine.prg = self.engine.compile()
@@ -150,7 +153,7 @@ class ComponentManager(object):
 
                 # wait until interpolation is done
                 time.sleep(self.app.state_switch_time)
-                self.switching_components = False
+                self.switching_components = False        
 
                 return
 

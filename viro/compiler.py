@@ -32,97 +32,36 @@ class Compiler():
         for file in files:
             self.render_file(file)
 
-        # hash files
-        contents = "".join([open("aeon/" + file).read() for file in os.listdir("aeon") if re.search("\.cl$", file)])
+        sub = subprocess.Popen("kernels/compile_kernel.py", stdout=subprocess.PIPE)
+        while(not os.path.exists("kernels/kernel.bcl")):
+            time.sleep(0.01)         
 
-        # seed to force recompilation if necessary
-        if(not self.app.splice_components): contents += str(time.clock())
+        t0 = time.time()
+        prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
+        prg.build()
+                       
+        #   info("Compiling kernel - %s" % name)
+        #kernel_contents = open("aeon/__kernel.cl").read()
+        #prg = cl.Program(self.ctx, kernel_contents)
+        #try:
+        #    t1 = time.time()
+        #    prg.build(options="-I /home/gene/epimorphism/aeon")
+        #    t2 = time.time()
+        #    self.cmdcenter.t_phase -= (t2 - t1)
+        #except:
+        #    critical("Error:")
+        #    critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
+        #    self.app.exit = True
+        #    sys.exit(0)
 
-        # os.system("rm kernels/kernel.bcl")
-
-        #print "%s compile_kernel.py" % sys.executable
-        #sub = subprocess.Popen("./compile_kernel.py", stdout=subprocess.PIPE)
-        #(stdout, stderr) = sub.communicate()        
-
-        #print stdout
-        #sys.exit(0)
-
-        #os.system("./compile_kernel.py")
-
-        #while(not os.path.exists("kernels/kernel.bcl")):
-        #    time.sleep(0.01)
-
-        #prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [stdout])
-        #prg.build()
-
-        
-
-        #    info("Compiling kernel - %s" % name)
-        kernel_contents = open("aeon/__kernel.cl").read()
-        prg = cl.Program(self.ctx, kernel_contents)
-        try:
-            t1 = time.time()
-            prg.build(options="-I /home/gene/epimorphism/aeon")
-            t2 = time.time()
-            self.cmdcenter.t_phase -= (t2 - t1)
-        except:
-            critical("Error:")
-            critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
-            self.app.exit = True
-            sys.exit(0)
-
-        
-        #binaries = prg1.binaries
-        #prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [binaries[0]])
-
-        #prg.build()
-
-        #print prg.get_build_info(self.ctx.devices[0], cl.program_build_info.STATUS)
-        #sys.exit(0)
+        t1 = time.time()
+        print t1-t0
+        self.cmdcenter.t_phase -= t1-t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
 
         return prg
-
-
-    def splice_components(self):
-        ''' This method dynamicly generates the interpolated component switch
-            statements that are spliced into the kernels '''
-        debug("Splicing components")        
-
-        for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
-            component_list = self.cmdcenter.componentmanager.datamanager.components[component_name]
-
-            idx = self.cmdcenter.componentmanager.datamanager.component_names.index(component_name)
-
-            if(len(component_list) == 0):
-                self.substitutions[component_name] = ""
-
-            elif(len(component_list) == 1):
-                self.substitutions[component_name] = "%s = %s;" % (component_name.lower(), component_list[0][0])
-
-            else:
-                clause1 = "switch(indices[2 * %d]){\n" % idx
-                for component in component_list:
-                    name = component[0]
-                    clause1 += "case %d: %s0 = %s;break;\n" % (component_list.index(component), component_name.lower(), name)
-                clause1 += "}\n"
-
-                clause2 = "switch(indices[2 * %d + 1]){\n" % idx
-                for component in component_list:
-                    name = component[0]
-                    clause2 += "case %d: %s1 = %s;break;\n" % (component_list.index(component), component_name.lower(), name)
-                clause2 += "}\n"
-
-                interp = "if(internal[%d] != 0){\n" % idx
-                interp += "intrp_t = min((time - internal[%d]) / switch_time, 1.0f);\n" % (idx)
-                interp += "intrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
-                sub = "intrp_t"
-                interp += "%s\n%s = ((1.0f - %s) * (%s0) + %s * (%s1));" % (clause2,  component_name.lower(), sub, component_name.lower(), sub, component_name.lower())
-                interp += "\n}else{\n%s = %s0;\n}" % (component_name.lower(), component_name.lower())
-
-                self.substitutions[component_name] = clause1 + interp
 
 
     def render_file(self, name):
@@ -141,14 +80,11 @@ class Compiler():
             self.substitutions['CULL_ENABLED'] = ""
 
         # components
-        if(self.app.splice_components):
-            self.splice_components()
-        else:
-            for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
-                if(component_name in self.state.components):
-                    self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.state.components[component_name])
-                else:
-                    self.substitutions[component_name] = ""
+        for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
+            if(component_name in self.state.components):
+                self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.state.components[component_name])
+            else:
+                self.substitutions[component_name] = ""
 
         # bind PAR_NAMES
         par_name_str = ""

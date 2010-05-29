@@ -1,5 +1,5 @@
 Queue - 
-  DONE - launch context
+  DONE - launch context  save image discontinuities	
   DONE - auto automating_components
   DONE - remove messages
   DONE - remove console
@@ -58,6 +58,8 @@ OpenCL Bugs:
 Final Non Launch Tasks:
   move globals to config
   Luv or Lab color space?
+  reset_hsls
+  post processing
 
 
 Later:	

@@ -2,11 +2,10 @@
 #define KERNEL_DIM %KERNEL_DIM%
 #define FRACT %FRACT%
 #define PI 3.1415926535f
-#define $i (float2)(0.0, 1.0)
-#define $l (float2)(1.0, 0.0)
 %PAR_NAMES%
 %CULL_ENABLED%
-
+#define $i (float2)(0.0, 1.0)
+#define $l (float2)(1.0, 0.0)
 #include "util.cl"
 #include "math.cl"
 #include "colorspace.cl"
