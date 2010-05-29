@@ -16,8 +16,6 @@ ctx    = cl.Context([device])
 queue  = cl.CommandQueue(ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 prg = cl.Program(ctx, open("aeon/__kernel.cl").read())
 
-system("rm kernels/kernel.bcl")
-
 try:
     prg.build(options="-I /home/gene/epimorphism/aeon")
 except:
