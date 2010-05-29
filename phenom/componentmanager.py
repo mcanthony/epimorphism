@@ -117,6 +117,9 @@ class ComponentManager(object):
 
         # create interpolation strings
         for component_name, val in data.items():
+            if(len(data) == 1):
+                self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
+
             idx_idx = self.datamanager.component_names.index(component_name)
             components = self.datamanager.components[component_name]
             try:
@@ -141,7 +144,7 @@ class ComponentManager(object):
             self.component_idx[2 * idx_idx] = val_idx
 
         # compile engine
-        self.engine.prg = self.engine.compile()
+        self.engine.prg = self.engine.compile()        
 
         # set internal values
         for component_name, val in data.items():
