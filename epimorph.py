@@ -1,10 +1,6 @@
 #! /usr/bin/python
 
-
-import sys
-import os
-import atexit
-import re
+import sys, os, atexit, re
 
 import config
 config.app = None
