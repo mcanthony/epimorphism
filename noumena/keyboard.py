@@ -33,7 +33,7 @@ class KeyboardHandler(object):
 
         # get modifiers
         modifiers = glutGetModifiers()
-
+        
         async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
 
 

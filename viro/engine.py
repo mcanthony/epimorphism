@@ -95,6 +95,7 @@ class Engine(object):
         self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                           *args, 
                           local_size=(block_size,block_size)).wait()
+#        self.prg.test(self.queue).wait()
         cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
         self.timings.append(time.time())
 

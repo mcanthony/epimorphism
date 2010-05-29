@@ -23,7 +23,6 @@ set_log("CMDCENTER")
 
 from common.runner import *
 
-
 class CmdEnv(dict):
     ''' The CmdEnv object is a subclass of dict used as the execution
         environment for the CmdCenter.cmd method '''
@@ -174,10 +173,7 @@ class CmdCenter(Animator, Archiver):
             self.app.next_frame = False
 
             # get time
-            if(self.app.fps_sync):
-                self.state.time = self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
-            else:
-                self.state.time = time.time() - self.t_start + self.t_phase
+            self.state.time = self.get_time()
 
             if(self.app.manual_iter):
                 d = self.time() - self.last_frame_time
@@ -209,6 +205,12 @@ class CmdCenter(Animator, Archiver):
         # cleanup
         if(self.app.exit):
             self.interface.renderer.stop()
+
+    def get_time(self):
+        if(self.app.fps_sync):
+            return self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
+        else:
+            return time.time() - self.t_start + self.t_phase
 
 
     def send_frame(self):
@@ -302,7 +304,7 @@ class CmdCenter(Animator, Archiver):
 
         try:
             self.app.next_frame = True
-            img = Image.fromarray(self.engine.get_fb(), "RGBA").convert("RGB")
+            img = Image.fromarray(self.engine.get_fb(), "RGBA")
         except Exception, err:
             info(str(err))
             sys.exit(0)
@@ -337,7 +339,7 @@ class CmdCenter(Animator, Archiver):
 
     def toggle_component_automation(self, switch=None):
         if(switch or not self.app.automating_components):
-            program = RandomComponents2({'interval': 10})
+            program = RandomComponents2({'interval': 25})
             program.start()
             self.state.programs.append(program)
             self.cmdcenter.interface.renderer.flash_message("Starting component automation")
@@ -360,18 +362,15 @@ class CmdCenter(Animator, Archiver):
 
         img = self.grab_image()
 
+        t0 = self.get_time()
         self.app.freeze = True
-        async(lambda : self.__save_image(img, name))
-
-        return name
-        # img.show()
-
-
-    def __save_image(self, img, name):
-        ''' Save image '''
         img.save("image/image_%s.png" % name)
         self.interface.renderer.flash_message("saved state as %s" % name)
         self.app.freeze = False
+        t1 = self.get_time()
+        self.t_phase -= t1 - t0
+
+        return name        
 
 
     # needs some work - right now it only loads components, zn & par

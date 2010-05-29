@@ -51,12 +51,15 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
 
   v = RGBtoHSLs(v);
 
-  //float l = recover(2.0 * native_log(5.0 * len(z_z) / (len(z_z) + 1.0)));
+  //float lz = remf(z_z, 1.0f).x + 1.0f;//time;//z_z.x;//-0.2;//sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
+  //float l = recover(2.0 * log(5.0 * lz / (lz + 1.0f)));
+  //float l = native_log(lz);
 
   // compute l
+  
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
   l = native_divide((4.0f * _COLOR_LEN_SC + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC));
-  l = native_log(l + 1.0f);
+  l = recover(log(l + 1.0f));
 
   // compute a
   float a = 0.0f;
@@ -69,20 +72,19 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   float psi = 2.0f * PI * _COLOR_PSI1 / 2.0f;
   float4 axis = (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
 
-
-  // compute rotation 1
-  float th =  2.0f * PI * (a + l + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
+  // compute rotation 1  
+  float th = 2.0f * PI * (a + l + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
+  th = remf(CX(th, 0.0f), 2.0f * PI).x;
+  th = recover(th);
   float4 tmp = (float4)(v.x, v.y, v.z, 0.0f);
   tmp = rotate3D(tmp, axis, th);
 
-
-  // compute rotation 2
+  // compute rotation 2  
   th = 2.0f * PI * _COLOR_DHUE;
   phi += 2.0f * PI * _COLOR_PHI2 / 2.0f;
   psi += 2.0f * PI * _COLOR_PSI2 / 2.0f;
   axis = (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
   tmp = rotate3D(tmp, axis, th);
-
 
   float s = native_sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
   s  = s * (1.0f - _COLOR_BASE_I) + _COLOR_BASE_I;
@@ -100,6 +102,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
 
   // get result
   v = (float4)(tmp.x, tmp.y, tmp.z, v.w);
+  
   return HSLstoRGB(v);
 }
 

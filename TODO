@@ -4,7 +4,7 @@ Queue -
   DONE - remove messages
   DONE - remove console
   DONE - detect resolutions, choose max
-  DONE - SDL for cross platform resultion detection
+  DONE - SDL for cross platform resoltion detection
   DONE - remove logger output
   DONE - remove compiler output  
   DONE - remove midi  
@@ -51,13 +51,13 @@ Bugs:
 
 
 OpenCL Bugs:
-  fix rotate_hsls bug
   fix cull mode
   async kernel compilation
 
 
 Final Non Launch Tasks:
   move globals to config
+  Luv or Lab color space?
 
 
 Later:	
@@ -130,7 +130,6 @@ Ideas -
 
 
 Misc Tasks - 
-  save image fps_time
   color speeds & phases
   ??configmanager dump object newline issues(only really relevant for scripts & paths)
 

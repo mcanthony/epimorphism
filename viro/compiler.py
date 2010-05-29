@@ -2,7 +2,7 @@ from common.globals import *
 
 import pyopencl as cl
 
-import os, re, hashlib, time, commands
+import os, re, hashlib, time, commands, subprocess, sys
 
 from common.log import *
 from common.runner import *
@@ -38,41 +38,50 @@ class Compiler():
         # seed to force recompilation if necessary
         if(not self.app.splice_components): contents += str(time.clock())
 
-        # hash
-        # hash = hashlib.sha1(contents).hexdigest()
+        # os.system("rm kernels/kernel.bcl")
 
-        # make name
-        #if(self.app.splice_components):
-        #    name = "kernel_spliced-%s" % hash
-        #else:
-        #    os.system("rm kernels/kernels_nonspliced*")
-       #     name = "kernel_nonspliced-%s" % hash
+        #print "%s compile_kernel.py" % sys.executable
+        #sub = subprocess.Popen("./compile_kernel.py", stdout=subprocess.PIPE)
+        #(stdout, stderr) = sub.communicate()        
 
-        # compile if library doesn't exist, else load from disk - !!!!FIX!!!!
-        if(True): #not os.path.exists("kernels/%s.so" % name)):
+        #print stdout
+        #sys.exit(0)
+
+        #os.system("./compile_kernel.py")
+
+        #while(not os.path.exists("kernels/kernel.bcl")):
+        #    time.sleep(0.01)
+
+        #prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [stdout])
+        #prg.build()
+
+        
+
         #    info("Compiling kernel - %s" % name)
-            # kernel_contents = open("aeon/__kernel.cu").read()
-            kernel_contents = open("aeon/__kernel.cl").read()
-            prg = cl.Program(self.ctx, kernel_contents)
-            try:
-                t1 = time.time()
-                prg.build(options="-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations")
-                t2 = time.time()
-                self.cmdcenter.t_phase -= (t2 - t1)
-            except:
-                critical("Error:")
-                critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
-                self.app.exit = True
-                sys.exit(0)
+        kernel_contents = open("aeon/__kernel.cl").read()
+        prg = cl.Program(self.ctx, kernel_contents)
+        try:
+            t1 = time.time()
+            prg.build(options="-I /home/gene/epimorphism/aeon")
+            t2 = time.time()
+            self.cmdcenter.t_phase -= (t2 - t1)
+        except:
+            critical("Error:")
+            critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
+            self.app.exit = True
+            sys.exit(0)
 
-            # save program
+        
+        #binaries = prg1.binaries
+        #prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [binaries[0]])
 
-            # remove tmp files
-            files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
-            # remove files
+        #prg.build()
 
-        else: # load program from disk
-            pass
+        #print prg.get_build_info(self.ctx.devices[0], cl.program_build_info.STATUS)
+        #sys.exit(0)
+
+        # remove tmp files
+        files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
 
         return prg
 

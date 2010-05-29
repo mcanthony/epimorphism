@@ -52,7 +52,7 @@ float4 HSLstoRGB(float4 val){
   float s = native_sqrt(val.x * val.x + val.y * val.y);
   float h;
 
-  if(s < 0.0001f){
+  if(s == 0.0f){
     h = 0.0f;
   }else{
     h = atan2(val.y, val.x);
@@ -64,7 +64,7 @@ float4 HSLstoRGB(float4 val){
 
   float l = val.z;
 
-  if(s < 0.0001f)
+  if(s == 0.0f)
     return (float4)((l + 1.0f) / 2.0f, (l + 1.0f) / 2.0f, (l + 1.0f) /  2.0f, val.w);
 
   float delta = native_divide(s, sqrt(1.0f - l * l));
@@ -92,24 +92,27 @@ float4 RGBtoHSLs(float4 val){
 
   s = delta * native_sqrt(1.0f - l * l);
 
-  if(l < -0.9999f || l > 0.9999f)
+  if(l == -1.0f || l == 1.0f)
     s = 0.0f;
   else if(l > 0)
     s = native_divide(s, (2.0f - l - 1.0f));
   else if(l <= 0)
     s = native_divide(s, (l + 1.0f));
 
-  if(s < 0.0001f){
+  if(s == 0.0f){
     h = 0.0f;
   }else {
-    if(fabs(val.x - vmax) < 0.0001f)
+    if(val.x == vmax)
       h = native_divide((val.y - val.z), delta);            // between yellow & magenta
-    else if(fabs(val.y - vmax) < 0.0001f)
+    else if(val.y == vmax)
       h = 2.0f + native_divide((val.z - val.x), delta);     // between cyan & yellow
     else
       h = 4.0f + native_divide((val.x - val.y), delta);
     h *= PI / 3.0f;
   }
-  return (float4)(s * native_cos(h), s * native_sin(h), l, val.w);
+
+  float4 r = (float4)(s * native_cos(h), s * native_sin(h), 0.999999f * l, val.w);
+  
+  return r;
 
 }

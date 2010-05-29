@@ -40,9 +40,9 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
   // internal antialiasing
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  const float i_k = FRACT == 1 ? 0.0f : 1.0f / KERNEL_DIM;  
-  const float m_k = FRACT == 1 ? 1.0f : 1.0001f / KERNEL_DIM;  
-  const float inc = FRACT == 1 ? 1.1f : 2.0f / (KERNEL_DIM * (FRACT - 1.0f));  
+  const float i_k = FRACT == 1 ? 0.0f : 1.0f / KERNEL_DIM / 2.0f;  
+  const float m_k = FRACT == 1 ? 1.0f : 1.0001f / KERNEL_DIM / 2.0f;  
+  const float inc = FRACT == 1 ? 1.1f : 1.0f / (KERNEL_DIM * (FRACT - 1.0f));  
 
   for(z.x = z_z.x - i_k; z.x <= z_z.x + m_k; z.x += inc)
     for(z.y = z_z.y - i_k; z.y <= z_z.y + m_k; z.y += inc){
@@ -69,7 +69,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       %REDUCE%
       z = recover2(reduce);
       %SEED%
-	 //seed = _gamma3(seed, _COLOR_GAMMA);      
+      seed = _gamma3(seed, _COLOR_GAMMA);      
 
       // cull & blending
       #ifdef CULL_ENABLED
@@ -88,13 +88,16 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
   // compute color - RECOVER4 causses glitches
   %COLOR%;
-  v = recover4((1.0f - _COLOR_KILL) * color);
+
+  float xx = remf(CX(z.x, 0.0f), 1.0f).x + 1.0f;
+
+  //  color = (float4)(log(xx), 0, 0, 1);
 
   // write to out
-  write_imagef(out, p, v);
+  write_imagef(out, p, color);
 
   // write to pbo
-  uchar4 tmp = convert_uchar4(255.0f * v.zyxw);
+  uchar4 tmp = convert_uchar4(255.0f * color.zyxw);
   pbo[y * KERNEL_DIM + x] = tmp;
 
 }
@@ -106,6 +109,7 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
   int2 p = (int2)(x, y);
 
   float4 frame = read_imagef(fb, image_sampler, p);
+  frame.w = 1.0;
 
   write_imageui(out, p, convert_uint4(255.0 * frame).zyxw);
 }
