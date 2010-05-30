@@ -106,7 +106,7 @@
  '_CULL_DEPTH',
  0.0,
  '_POST_PROCESSING',
- 1.0,
+ 0.0,
  '',
  0.0,
  '',
