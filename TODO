@@ -44,6 +44,7 @@ Queue -
   contents & launch state
 
   multiplebanannas@epimorphism.com
+  transfer epimorphism.com dns
 
 
 Bugs:
@@ -51,7 +52,6 @@ Bugs:
 
 
 OpenCL Bugs:
-  fix cull mode
   async kernel compilation
 
 
@@ -60,7 +60,8 @@ Final Non Launch Tasks:
   Luv or Lab color space?
   reset_hsls
   post processing
-  multiple component switching
+  state nonsense
+  cull mode - hsls & FRACT
 
 
 Later:	
@@ -80,6 +81,7 @@ Later:
 
     make sure they save correctly
     make sure they load correctly - startup & intermediate
+    DONE? - multiple component switching
 
   don't route paths through cmd center.  all calls to animate_var through cmd_center
 

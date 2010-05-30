@@ -82,22 +82,20 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
   // scale
   const float i_n_sq = 1.0f / (FRACT * FRACT);
-  v = i_n_sq * v;
-  v.w = v.w / i_n_sq;
+  //v *= i_n_sq;
+  //v.w /= i_n_sq;
+  v = (float4)(i_n_sq * v.x, i_n_sq * v.y, i_n_sq * v.z, v.w);
 
-  // compute color - RECOVER4 causses glitches
+  // compute color
   %COLOR%;
-
-  float xx = remf(CX(z.x, 0.0f), 1.0f).x + 1.0f;
-
-  //  color = (float4)(log(xx), 0, 0, 1);
 
   // write to out
   write_imagef(out, p, color);
 
   // write to pbo
-  uchar4 tmp = convert_uchar4(255.0f * color.zyxw);
-  pbo[y * KERNEL_DIM + x] = tmp;
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
+  //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
 
 }
 
