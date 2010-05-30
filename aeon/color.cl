@@ -101,8 +101,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   //tmp.y = native_cos(PI * s);
 
   // get result
-  v = (float4)(tmp.x, tmp.y, tmp.z, v.w);
-  
+  v = (float4)(tmp.x, tmp.y, tmp.z, v.w);  
   return HSLstoRGB(v);
 }
 

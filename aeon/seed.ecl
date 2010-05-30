@@ -55,7 +55,7 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant int* indi
     w = seed_wt;
     %SEED_C%
     res = seed_c;
-    z /= w;
+    z /= (w * w);
     float4 res2 = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
     
     res = (0.2f * res + 0.8f * res2);

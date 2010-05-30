@@ -32,32 +32,22 @@ class Compiler():
         for file in files:
             self.render_file(file)
 
+        # start subprocess
         os.system("rm kernels/kernel.bcl")
         sub = subprocess.Popen("kernels/compile_kernel.py", stdout=subprocess.PIPE)
-        while(not os.path.exists("kernels/kernel.bcl")):
-            time.sleep(0.01)         
+        (stdout, stderr) = sub.communicate()
+
+        if(len(stdout) != 0):
+            print "CRITICAL: Couldn't compile kernel"
+            print stdout
+            sys.exit(0)
+
 
         t0 = time.time()
         prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
         prg.build()
                        
-        #   info("Compiling kernel - %s" % name)
-        #kernel_contents = open("aeon/__kernel.cl").read()
-        #prg = cl.Program(self.ctx, kernel_contents)
-        #try:
-        #    t1 = time.time()
-        #    prg.build(options="-I /home/gene/epimorphism/aeon")
-        #    t2 = time.time()
-        #    self.cmdcenter.t_phase -= (t2 - t1)
-        #except:
-        #    critical("Error:")
-        #    critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
-        #    self.app.exit = True
-        #    sys.exit(0)
-
-        t1 = time.time()
-        # print t1-t0
-        self.cmdcenter.t_phase -= t1-t0
+        self.cmdcenter.t_phase -= time.time()-t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

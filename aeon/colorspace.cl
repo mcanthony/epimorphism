@@ -116,3 +116,122 @@ float4 RGBtoHSLs(float4 val){
   return r;
 
 }
+
+float4 RGBtoXYZ(float4 val){
+  float a = val.w;
+
+  
+  if(val.x > 0.04045f)
+    val.x = pow((val.x + 0.055f) / 1.055f, 2.4f);
+  else 
+    val.x /= 12.92f;
+  if(val.y > 0.04045f)
+    val.y = pow((val.y + 0.055f) / 1.055f, 2.4f);
+  else
+    val.y / 12.92f;
+  if(val.z > 0.04045f)
+    val.z = pow((val.z + 0.055f) / 1.055f, 2.4f);
+  else
+    val.z / 12.92f;
+
+  //Observer. = 2°, Illuminant = D65
+  float4 xyz;
+
+  xyz.x = val.x * 0.412456f  + val.y * 0.357576f + val.z * 0.180438f;
+  xyz.y = val.x * 0.212673f  + val.y * 0.715152f + val.z * 0.072175f;
+  xyz.z = val.x * 0.0193339f + val.y * 0.119192f + val.z * 0.950304f;
+  xyz.w = a;
+
+  return xyz;
+}
+
+/*
+float4 XYZtoLAB(float4 val){
+  const REF_X:Number = 95.047; // Observer= 2°, Illuminant= D65
+  const REF_Y:Number = 100.000; 
+  const REF_Z:Number = 108.883; 
+  var x:Number = X / REF_X;   
+  var y:Number = Y / REF_Y;  
+  var z:Number = Z / REF_Z;  
+ 
+  if ( val.x > 0.008856 ) { val.x = pow( x , 1/3 ); }
+  else { val.x = ( 7.787 * val.x ) + ( 16/116 ); }
+  if ( val.y > 0.008856 ) { val.y = pow( val.y , 1/3 ); }
+  else { val.y = ( 7.787 * val.y ) + ( 16/116 ); }
+  if ( val.z > 0.008856 ) { val.z = pow( val.z , 1/3 ); }
+  else { val.z = ( 7.787 * val.z ) + ( 16/116 ); }
+ 
+  var lab:Object = {l:0, a:0, b:0};
+  lab.l = ( 116 * val.y ) - 16;
+  lab.a = 500 * ( val.x - val.y );
+  lab.b = 200 * ( val.y - val.z );
+ 
+  return lab;
+}
+
+
+  float4 LABtoXYZ(float4 val){
+  const REF_X:Number = 95.047; // Observer= 2°, Illuminant= D65
+  const REF_Y:Number = 100.000; 
+  const REF_Z:Number = 108.883; 
+  var y:Number = (l + 16) / 116;
+  var x:Number = a / 500 + y;
+  var z:Number = val.y - val.z / 200;
+ 
+  if ( pow( val.y , 3 ) > 0.008856 ) { val.y = pow( val.y , 3 ); }
+  else { val.y = ( val.y - 16 / 116 ) / 7.787; }
+  if ( pow( val.x , 3 ) > 0.008856 ) { val.x = pow( val.x , 3 ); }
+  else { val.x = ( val.x - 16 / 116 ) / 7.787; }
+  if ( pow( val.z , 3 ) > 0.008856 ) { val.z = pow( val.z , 3 ); }
+  else { val.z = ( val.z - 16 / 116 ) / 7.787; }
+ 
+  var xyz:Object = {x:0, y:0, z:0};
+  xyz.x = REF_X * x;     
+  xyz.y = REF_Y * y; 
+  xyz.z = REF_Z * z; 
+ 
+  return xyz;
+  }
+*/
+
+float4 XYZtoRGB(float4 val){
+  //X from 0 to  95.047      (Observer = 2°, Illuminant = D65)
+  //Y from 0 to 100.000
+  //Z from 0 to 108.883
+
+  float a = val.w;
+  float4 rgb;
+ 
+  rgb.x = val.x *   3.24045f + val.y *  -1.53714f + val.z * -0.498532f;
+  rgb.y = val.x * -0.969266f + val.y *   1.87601f + val.z * 0.0415561f;
+  rgb.z = val.x * 0.0556434f + val.y * -0.204026f + val.z *   1.05723f;
+  rgb.w = a;
+ 
+  if(rgb.x > 0.0031308f)
+    rgb.x = 1.055f * pow(rgb.x, .41667) - 0.055f;
+  else
+    rgb.x *= 12.92f;
+  if(rgb.y > 0.0031308f)
+    rgb.y = 1.055f * pow(rgb.y, .41667) - 0.055f; 
+  else
+    rgb.y *= 12.92f;
+  if(rgb.z > 0.0031308f)
+    rgb.z = 1.055f * pow(rgb.z, .41667) - 0.055f;
+  else
+    rgb.z *= 12.92f;
+
+  return rgb;
+}
+
+/*
+  float4 RGBtoLAB(float4 val){
+  var xyz:Object = ColorUtils.rgb2xyz(R, G, B);
+  return ColorUtils.xyz2lab(xyz.x, xyz.y, xyz.z);
+  }
+
+  float4 LABtoRGB(float4 val){
+  var xyz:Object = ColorUtils.rgb2xyz(R, G, B);
+  return ColorUtils.xyz2lab(xyz.x, xyz.y, xyz.z);
+  }
+
+*/
