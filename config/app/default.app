@@ -12,7 +12,7 @@
 
  'component_level': 'FULL',
 
- 'cull_enabled': True,
+ 'cull_enabled': False,
 
  'autostart': True,
  'exit': False,
