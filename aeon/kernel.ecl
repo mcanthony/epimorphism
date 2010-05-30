@@ -93,7 +93,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   write_imagef(out, p, color);
 
   // write to pbo
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  if(_POST_PROCESSING == 0.0f)
+    pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
   //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
 
@@ -109,5 +110,16 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
   frame.w = 1.0;
 
   write_imageui(out, p, convert_uint4(255.0 * frame).zyxw);
+}
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  float4 frame = read_imagef(fb, image_sampler, p);
+
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * frame.zyxw);
 }
 

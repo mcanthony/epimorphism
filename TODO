@@ -12,7 +12,10 @@ Queue -
 
   render video
 
-  optimize kernel
+  Optimize kernel:
+    investigate local mem for arguments
+    compiler options
+
   OpenCL Bugs
 
   periodically connect to server
@@ -25,6 +28,7 @@ Queue -
 
   keyboard
   console
+  contents & launch state
 
   OpenCL ATI Stream
   OpenCL Mac
@@ -36,27 +40,26 @@ Queue -
   mac binaries
   linux binaries
 
-  introduction
-  periodic craziness
-
-  obfuscate
-
-  contents & launch state
-
   multiplebanannas@epimorphism.com
   transfer epimorphism.com dns
 
+  introduction
+  periodic craziness
 
-Bugs:
-  fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
+  obfsucate
 
 
 OpenCL Bugs:
   async kernel compilation
 
 
+Bugs:
+  fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
+
+
 Final Non Launch Tasks:
   move globals to config
+  sometimes variable are messed up on start
   Luv or Lab color space?
   reset_hsls
   post processing
