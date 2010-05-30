@@ -2,9 +2,6 @@ from common.globals import *
 
 from phenom.program import *
 
-from ctypes import *
-from cuda.cuda_defs import *
-
 from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
 

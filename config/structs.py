@@ -80,8 +80,7 @@ def load_obj(type, name, extension):
         for k in results:
             if(k[0] == "_"):
                 results[k] = eval(k[1:].capitalize())(results[k])
-                
-            
+                            
     return results
  #   except:
  #       critical("couldn't read %s" % name)
@@ -111,6 +110,9 @@ class DictObj(object):
 
         self.__dict__.update(data)
 
+    def par_idx(self):
+        pass
+
 
     def children(self):
         return [k for k in self.__dict__ if k[0] == '_']
@@ -134,7 +136,7 @@ class DictObj(object):
 
 
     def __dir__(self):
-        return ["children", "has_key", "merge", "save", "rm", "__class__", "update_record"]
+        return ["children", "has_key", "merge", "save", "rm", "__class__", "update_record", "par_idx", "get_par"]
 
   
     def __getattribute__(self, key):
@@ -248,5 +250,12 @@ class State(DictObj):
         for path in self.paths:
             path.phase = self.time
 
+    def get_par(self, name):
+        return self.par[self.par_idx(name)]
 
+    def par_idx(self, name):
+        return self.par_names.index(name)
+
+
+# wtf is this?
 from phenom.script import *

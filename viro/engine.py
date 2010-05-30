@@ -99,13 +99,20 @@ class Engine(object):
         self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                           *args, 
                           local_size=(block_size,block_size)).wait()
-#        self.prg.test(self.queue).wait()
-        cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
         self.timings.append(time.time())
 
         # copy out to fb
         cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
         self.timings.append(time.time())
+
+        # post processing
+        if(self.state.get_par("_POST_PROCESSING") != 0.0):
+            self.prg.post_process(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),
+                                  self.fb, self.pbo, args[3], args[5],
+                                  local_size=(block_size,block_size)).wait()
+            self.timings.append(time.time())
+
+        cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
 
         self.frame_num += 1
         self.print_timings()

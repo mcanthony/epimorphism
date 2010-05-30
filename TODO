@@ -18,10 +18,6 @@ Queue -
 
   OpenCL Bugs
 
-  periodically connect to server
-
-  get rid of mouse
-
   Final Non Launch Tasks
 
   Bugs
@@ -29,6 +25,8 @@ Queue -
   keyboard
   console
   contents & launch state
+  periodically connect to server
+  get rid of mouse
 
   OpenCL ATI Stream
   OpenCL Mac
