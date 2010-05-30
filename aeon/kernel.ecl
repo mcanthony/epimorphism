@@ -89,8 +89,6 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   // compute color
   %COLOR%;
 
-  color = XYZtoRGB(RGBtoXYZ(color));
-
   // write to out
   write_imagef(out, p, color);
 

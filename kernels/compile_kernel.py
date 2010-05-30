@@ -17,7 +17,7 @@ queue  = cl.CommandQueue(ctx, properties=cl.command_queue_properties.PROFILING_E
 prg = cl.Program(ctx, open("aeon/__kernel.cl").read())
 
 try:
-    prg.build(options="-I /home/gene/epimorphism/aeon")
+    prg.build(options="-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros")
 except:
     print "Error:"
     print prg.get_build_info(device, cl.program_build_info.LOG)
