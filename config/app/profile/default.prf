@@ -3,5 +3,5 @@
  'debug_freq': 1.0,
  'ptxas_stats' : False,
  'FRACT':2,
- 'kernel_dim': 3072
+ 'kernel_dim': 2048
 }
