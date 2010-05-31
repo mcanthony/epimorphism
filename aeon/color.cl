@@ -48,7 +48,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
 _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time){
   // complex hsls rotation
   // FULL, LIVE, DEV
-
+  time = 2;
   float4 z = v;
   v = RGBtoHSLs(v);
 

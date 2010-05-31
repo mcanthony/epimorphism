@@ -63,15 +63,12 @@ class Engine(object):
 
         self.frame_num = 0
 
-
-        #self.prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
-        #self.prg.build()
-
         return True
+
 
     def __del__(self):
         debug("Deleting Engine")
-
+        self.new_fb_event.set()
         self.pbo = None
 
 

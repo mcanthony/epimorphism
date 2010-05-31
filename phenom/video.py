@@ -107,7 +107,7 @@ class VideoRenderer(object):
             os.system(cmd)
             print "to add audio - mencoder %s.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o %s_audio.avi" % (self.video_name, self.video_name)
 
-        async(compress)                           
+#        async(compress)                           
 
         # turn off fps sync
         self.app.fps_sync = False

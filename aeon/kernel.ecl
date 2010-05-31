@@ -118,15 +118,15 @@ void post_process(read_only image2d_t fb, __global char4* pbo, float time, __con
   const int y = get_global_id(1);
   int2 p = (int2)(x, y);
 
-  float4 frame00 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(-1,-1));
-  float4 frame01 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(-1,0));
-  float4 frame02 =  1.0f * read_imagef(fb, image_sampler, p + (int2)(-1,1));
-  float4 frame10 = -2.0f * read_imagef(fb, image_sampler, p + (int2)(0,-1));
-  float4 frame11 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(0,0));
-  float4 frame12 =  2.0f * read_imagef(fb, image_sampler, p + (int2)(0,1));
-  float4 frame20 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(1,-1));
-  float4 frame21 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(1,0));
-  float4 frame22 =  1.0f * read_imagef(fb, image_sampler, p + (int2)(1,1));
+  float4 frame00 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(-1,-1));
+  float4 frame01 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(-1,0));
+  float4 frame02 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(-1,1));
+  float4 frame10 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(0,-1));
+  float4 frame11 =  5.0f * read_imagef(fb, image_sampler, p + (int2)(0,0));
+  float4 frame12 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(0,1));
+  float4 frame20 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(1,-1));
+  float4 frame21 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(1,0));
+  float4 frame22 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(1,1));
 
   float4 frame = 
     frame00 + frame01 + frame02 + 

@@ -96,11 +96,9 @@ class Renderer(object):
     def __del__(self):
         debug("Deleting Renderer")
 
-        print "b"
-
-        glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
-        glDeleteBuffers(1, self.pbo_ptr);
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+        #glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
+        #glDeleteBuffers(1, self.pbo_ptr);
+        #glBindBuffer(GL_ARRAY_BUFFER, 0)
 
         self.pbo_ptr = None
 
@@ -189,7 +187,6 @@ class Renderer(object):
 
 
     def do(self):
-
         # test for existence of buffer_dim
         if(not self.pbo_ptr):
             critical("can't render without a pbo")

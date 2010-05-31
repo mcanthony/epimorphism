@@ -2,6 +2,6 @@
  'name': 'std',
  'debug_freq': 1.0,
  'ptxas_stats' : False,
- 'FRACT': 3,
- 'kernel_dim': 1024
+ 'FRACT':2,
+ 'kernel_dim': 2048
 }

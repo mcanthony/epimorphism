@@ -9,12 +9,12 @@ Queue -
   DONE - remove compiler output  
   DONE - remove midi  
   DONE - OpenCL  
-  DONE - OpenCL Bugs
 
   render video
 
-  Optimize kernel:
-    investigate local mem for arguments
+  optimize kernel:
+
+  OpenCL Bugs
 
   Final Non Launch Tasks
 
@@ -45,6 +45,10 @@ Queue -
   obfsucate
 
 
+OpenCL Bugs:
+  async kernel compilation
+
+
 Bugs:
   fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
 
@@ -52,7 +56,6 @@ Bugs:
 Final Non Launch Tasks:
   move globals to config
   sometimes variable are messed up on start
-  Luv or Lab color space?
   reset_hsls
   state nonsense
   cull mode - hsls & FRACT
@@ -126,7 +129,7 @@ Ideas -
   deal with state dumps that occur while blending
   force fps
   multiple gpu integration
-
+  Luv or Lab color space?
 
 Misc Tasks - 
   color speeds & phases

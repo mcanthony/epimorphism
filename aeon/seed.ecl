@@ -1,6 +1,19 @@
 // EPIMORPH library file
 // seed functions
 
+_EPI_ float4 simple(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
+  // width, color, alpha, width_trans templated seed family
+  // FULL, LIVE, DEV
+
+  z = grid_reduce(z);
+
+  if(z.x > 0.9 || z.x < -0.9 || z.y > 0.9 || z.y < -0.9)
+    return (float4)(1, 1, 0, 1);
+  else
+    return (float4)(0, 0, 0, 0);
+
+}
+
 _EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV

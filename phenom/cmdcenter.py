@@ -203,6 +203,7 @@ class CmdCenter(Animator, Archiver):
             self.video_renderer.capture()
 
         # cleanup
+        self.engine.new_fb_event.set()
         if(self.app.exit):
             self.interface.renderer.stop()
 
@@ -336,6 +337,7 @@ class CmdCenter(Animator, Archiver):
         ''' Prints a list of all components, their bindings, and their values. '''
 
         self.componentmanager.print_components()
+
 
     def toggle_component_automation(self, switch=None):
         if(switch or not self.app.automating_components):

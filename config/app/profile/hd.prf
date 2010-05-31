@@ -1,4 +1,5 @@
 {
  'name': 'hd',
- 'kernel_dim': 2048
+ 'FRACT': 2,
+ 'kernel_dim': 3072
 }

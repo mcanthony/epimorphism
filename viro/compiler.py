@@ -46,8 +46,24 @@ class Compiler():
         t0 = time.time()
         prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
         prg.build()
+
+
+        #   info("Compiling kernel - %s" % name)
+        #kernel_contents = open("aeon/__kernel.cl").read()
+        #prg = cl.Program(self.ctx, kernel_contents)
+        #try:
+        #    t1 = time.time()
+        #    prg.build(options="-I /home/gene/epimorphism/aeon")
+        #    t2 = time.time()
+        #    self.cmdcenter.t_phase -= (t2 - t1)
+        #except:
+        #    critical("Error:")
+        #    critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
+        #    self.app.exit = True
+        #    sys.exit(0)
                        
         self.cmdcenter.t_phase -= time.time()-t0
+        print time.time()-t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
