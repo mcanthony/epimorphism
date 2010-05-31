@@ -15,6 +15,7 @@ import StringIO
 import os
 import sys
 import traceback
+import random
 
 import Image
 
@@ -159,6 +160,9 @@ class CmdCenter(Animator, Archiver):
 
         # component_automation
         self.toggle_component_automation(self.app.automating_components)
+
+        # seed random
+        random.seed()
 
         # start modules - DOESN'T RETURN
         self.engine.start()
@@ -341,13 +345,13 @@ class CmdCenter(Animator, Archiver):
         self.componentmanager.print_components()
 
 
-    def toggle_component_automation(self, switch=None):
-        if(switch or not self.app.automating_components):
+    def toggle_component_automation(self, switch):
+        if(switch):
             program = RandomComponents2({'interval': 15})
             program.start()
             self.state.programs.append(program)
             self.cmdcenter.interface.renderer.flash_message("Starting component automation")
-            info("Starting component automation")
+            debug("Starting component automation")
 
             self.app.automating_components = True
         else:
@@ -355,7 +359,7 @@ class CmdCenter(Animator, Archiver):
                 program.stop()
             self.state.programs = []
             self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
-            info("Stopping component automation")
+            debug("Stopping component automation")
 
             self.app.automating_components = False
 

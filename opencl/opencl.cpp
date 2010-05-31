@@ -168,42 +168,28 @@ initCL(PyObject *self, PyObject *args)
     // init GL
     int argc = 0;
     char** argv;
-
     glutInit(&argc, (char**)argv);
     glutCreateWindow("dummy window");
 
-
     // get platform
-    printf("a");
     ciErrNum = clGetPlatformIDs (0, NULL, &num_platforms);
-    printf("a");
     clPlatformIDs = (cl_platform_id*)malloc(num_platforms * sizeof(cl_platform_id));
-    printf("a");
     
-    if(ciErrNum != CL_SUCCESS) {printf("0\n"); return Py_BuildValue("i", ciErrNum);}
-    printf("a");
+    if(ciErrNum != CL_SUCCESS) {printf("Error getting # platforms\n"); return Py_BuildValue("i", ciErrNum);}
     ciErrNum = clGetPlatformIDs (num_platforms, clPlatformIDs, NULL);
-    printf("a");
     
-    if(ciErrNum != CL_SUCCESS) {printf("1\n"); return Py_BuildValue("i", ciErrNum);}
+    if(ciErrNum != CL_SUCCESS) {printf("Error getting platform ids\n"); return Py_BuildValue("i", ciErrNum);}
     cpPlatform = clPlatformIDs[0];
-    printf("a");
     
     // Get the number of GPU devices available to the platform
     ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, 0, NULL, &uiDevCount);
 
-    if(ciErrNum != CL_SUCCESS) {printf("2\n"); return Py_BuildValue("i", ciErrNum);}
-
-    printf("a");
-
-    
+    if(ciErrNum != CL_SUCCESS) {printf("Error getting # devices\n"); return Py_BuildValue("i", ciErrNum);}
 
     // Create the device list
     cdDevices = new cl_device_id [uiDevCount];
     ciErrNum = clGetDeviceIDs(cpPlatform, CL_DEVICE_TYPE_GPU, uiDevCount, cdDevices, NULL);
-    if(ciErrNum != CL_SUCCESS) {printf("3\n"); return Py_BuildValue("i", ciErrNum);}
-
-    printf("a");
+    if(ciErrNum != CL_SUCCESS) {printf("Error getting device list\n"); return Py_BuildValue("i", ciErrNum);}
     
     // Define OS-specific context properties and create the OpenCL context
     #if defined (__APPLE__) || defined (MACOSX)
@@ -236,18 +222,23 @@ initCL(PyObject *self, PyObject *args)
     cxGPUContext = clCreateContext(props, 1, &cdDevices[0], NULL, NULL, &ciErrNum);
     #endif
     #endif
-    
-    printf("a");
 
-    if(ciErrNum != CL_SUCCESS) {printf("4\n"); return Py_BuildValue("i", ciErrNum);}
-
-    printf("a");
+    if(ciErrNum != CL_SUCCESS) {printf("Error creating context\n"); return Py_BuildValue("i", ciErrNum);}
 
     // create a command-queue
     cqCommandQueue = clCreateCommandQueue(cxGPUContext, cdDevices[0], 0, &ciErrNum);
-    if(ciErrNum != CL_SUCCESS) {printf("5\n"); return Py_BuildValue("i", ciErrNum);}
+    if(ciErrNum != CL_SUCCESS) {printf("Error create queue\n"); return Py_BuildValue("i", ciErrNum);}
 
     return Py_BuildValue("i", CL_SUCCESS);
+}
+
+// Init OpenCL - make this get correct platform & device
+//*****************************************************************************
+static PyObject *
+compileKernel(PyObject *self, PyObject *args)
+{
+  return Py_BuildValue("i", CL_SUCCESS);
+
 }
 
 
@@ -256,9 +247,12 @@ int main(int argc, const char** argv)
   return 0;
 }
 
+
 // Module initialization
 static PyMethodDef OpenCLInterfaceMethods[] = {   
-    {"initCL",  initCL, METH_VARARGS,
+    {"initCL", initCL, METH_VARARGS,
+     "Initialize the OpenCL interface."},    
+    {"compileKernel", compileKernel, METH_VARARGS,
      "Initialize the OpenCL interface."},    
     {NULL, NULL, 0, NULL}        /* Sentinel */
 };

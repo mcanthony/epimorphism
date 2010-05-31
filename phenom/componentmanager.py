@@ -2,7 +2,7 @@ from common.globals import *
 
 from phenom.datamanager import *
 
-import time
+import time, random
 
 from common.log import *
 set_log("COMPONENT")
@@ -80,8 +80,11 @@ class ComponentManager(object):
         idx_idx = self.datamanager.component_names.index(component_name)
 
         val_idx = self.component_idx[2 * idx_idx]
-        val_idx += idx
-        val_idx %= len(components)
+        if(idx == 0):
+            val_idx = random.randint(0, len(components) - 1)
+        else:
+            val_idx += idx
+            val_idx %= len(components)
 
         # get component
         component = components[val_idx]

@@ -40,11 +40,11 @@ class RandomComponents1(Program):
 
             i = random.randint(0,2)
             if(i == 0):
-                async(lambda :self.cmdcenter.cmd("inc_data('T', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('T', 0)"))
             elif(i == 1):
-                async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 0)"))
             elif(i == 2):
-                async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 0)"))
                         
             time.sleep(self.data["interval"] * 0.5 + rand.randint(0, self.data["interval"]))
 
@@ -55,17 +55,17 @@ class RandomComponents2(Program):
             
             i = random.randint(0,4)
             if(i == 0):
-                async(lambda :self.cmdcenter.cmd("inc_data('T', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('T', 0)"))
             elif(i == 1):
-                async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 0)"))
             elif(i == 2):
-                async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 0)"))
             elif(i == 3):
-                async(lambda :self.cmdcenter.cmd("inc_data('SEED_WT', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('SEED_WT', 0)"))
             elif(i == 4):
-                async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 0)"))
             elif(i == 5):
-                async(lambda :self.cmdcenter.cmd("inc_data('REDUCE', 1)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('REDUCE', 0)"))
 
             # make this better
             t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()

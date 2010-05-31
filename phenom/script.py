@@ -40,32 +40,16 @@ class Script():
             next_event = self.events[0]
 
             t = next_event["time"] + self.phase - self.cmdcenter.time()
-#            print t
             if(t > 0):
                 time.sleep(t)
 
             cmd = next_event["cmd"]
 
-            async(lambda: self.cmdcenter.cmd(cmd))
+            self.cmdcenter.cmd(cmd)
 
             self.events.pop(0)
 
-
-        # main execution loop
-#        while(self.current_idx < len(self.events) and not self.app.exit):            
-#            if(not self.__dict__.has_key('cmdcenter')):
-#                   Globals().load(self)
-
-#            while(self.current_idx < len(self.events) and (self.cmdcenter.time() + self.phase) >= self.events[self.current_idx]["time"] and not self.app.exit):
-#                if("inc" in self.events[self.current_idx]["cmd"]):
-#                    async(lambda :self.cmdcenter.cmd(self.events[self.current_idx]["cmd"]))
-#                else:
-#                    self.cmdcenter.cmd(self.events[self.current_idx]["cmd"])
-#                self.current_idx += 1
-#            if(self.current_idx < len(self.events)):
-#                t = self.events[self.current_idx]["time"] - (self.cmdcenter.time() + self.phase)
-#                if(t > 0):
-#                    time.sleep(t)
+        print "Script: num paths:", len(self.state.paths)
 
         debug("Finished executing script")
 

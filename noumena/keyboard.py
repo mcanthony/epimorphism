@@ -78,7 +78,7 @@ class KeyboardHandler(object):
 
         # automate components
         if(key == GLUT_KEY_F8):        
-            self.cmdcenter.toggle_component_automation()
+            self.cmdcenter.toggle_component_automation(not self.app.automating_components)
 
         # toggle recording events
         elif(key == GLUT_KEY_F9):
