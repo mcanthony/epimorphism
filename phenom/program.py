@@ -69,6 +69,6 @@ class RandomComponents2(Program):
 
             # make this better
             t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()
-            while(self.cmdcenter.time() < t):
+            while(self.cmdcenter.time() < t and not self.app.exit):
                 time.sleep(0.1)
             #time.sleep()
