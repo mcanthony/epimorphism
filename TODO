@@ -11,7 +11,7 @@ Queue -
   DONE - OpenCL  
 
   Video:
-    mencoder command
+    optimize mencoder command
     render video
 
   Cross platform:
@@ -52,9 +52,7 @@ Later:
   plot fps
 
   cull mode - hsls & FRACT?
-  sometimes variable are messed up on start
   reset_hsls
-  fix video scripts
 
   finish states:
     paths

@@ -49,8 +49,6 @@ class Script():
 
             self.events.pop(0)
 
-        print "Script: num paths:", len(self.state.paths)
-
         debug("Finished executing script")
 
 

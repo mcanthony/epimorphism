@@ -38,7 +38,7 @@
 	.reg .f32 	%f<1436>;
 	.reg .s16 	%rs<55>;
 	.reg .pred 	%p<204>;
-	.reg .s32 	%r<209>;
+	.reg .s32 	%r<208>;
 	.reg .s16 	%rc<45>;
 
 _epimorph:
@@ -70,8 +70,8 @@ _epimorph:
 	add.u32 	%r3, %r3, %temp; 
 	} 
 	
-	mov.f32 	%f147, 0fBF7FE000;
-	mov.f32 	%f148, 0f3A800000;
+	mov.f32 	%f147, 0fBF7FEAAB;
+	mov.f32 	%f148, 0f3A2AAAAB;
 	cvt.rn.f32.s32 	%f149, %r4;
 	cvt.rn.f32.s32 	%f150, %r3;
 	mov.u32 	%r2, epimorph_param_5;
@@ -93,8 +93,8 @@ _epimorph:
 	add.s32 	%r51, %r45, 8;
 	add.s32 	%r52, %r45, 24;
 	mov.f32 	%f152, 0f00000000;
-	sub.rn.ftz.f32 	%f3, %f1339, 0f39800000;
-	sub.rn.ftz.f32 	%f5, %f1340, 0f39800000;
+	sub.rn.ftz.f32 	%f3, %f1339, 0f392AAAAB;
+	sub.rn.ftz.f32 	%f5, %f1340, 0f392AAAAB;
 	neg.f32 	%f19, %f15;
 	ld.const[1].f32 	%f18, [%r2+68];
 	ld.const[1].f32 	%f17, [%r2+76];
@@ -118,7 +118,7 @@ _epimorph:
 	ld.param.f32 	%f1, [epimorph_param_3];
 	ld.param.u32 	%r1, [epimorph_param_2];
 	mov.u32 	%r44, 0;
-	mov.u32 	%r207, %r44;
+	mov.u32 	%r206, %r44;
 	mov.f32 	%f1349, %f1327;
 	mov.f32 	%f1350, %f1328;
 	mov.f32 	%f1351, %f1327;
@@ -131,7 +131,7 @@ _epimorph:
 	mov.f32 	%f1358, %f1332;
 
 BB1_1:	// .thread453.outer
-	mov.u32 	%r11, %r207;
+	mov.u32 	%r11, %r206;
 	mov.f32 	%f1297, %f1349;
 	mov.f32 	%f1298, %f1350;
 	mov.f32 	%f1299, %f1351;
@@ -143,11 +143,11 @@ BB1_1:	// .thread453.outer
 	mov.f32 	%f1309, %f1357;
 	mov.f32 	%f1310, %f1358;
 	cvt.rn.f32.s32 	%f155, %r11;
-	mad.f32 	%f156, %f155, 0f3A000000, %f3;
+	mad.f32 	%f156, %f155, 0f39AAAAAB, %f3;
 	mul.rn.ftz.f32 	%f21, %f1346, %f156;
 	mul.rn.ftz.f32 	%f20, %f1345, %f156;
 	mov.u32 	%r53, 0;
-	mov.u32 	%r208, %r53;
+	mov.u32 	%r207, %r53;
 	mov.f32 	%f1359, %f1297;
 	mov.f32 	%f1360, %f1298;
 	mov.f32 	%f1361, %f1299;
@@ -160,7 +160,7 @@ BB1_1:	// .thread453.outer
 	mov.f32 	%f1368, %f1310;
 
 BB1_2:	// .thread453
-	mov.u32 	%r12, %r208;
+	mov.u32 	%r12, %r207;
 	mov.f32 	%f1237, %f1359;
 	mov.f32 	%f1238, %f1360;
 	mov.f32 	%f1285, %f1361;
@@ -172,7 +172,7 @@ BB1_2:	// .thread453
 	mov.f32 	%f1025, %f1367;
 	mov.f32 	%f1026, %f1368;
 	cvt.rn.f32.s32 	%f157, %r12;
-	mad.f32 	%f158, %f157, 0f3A000000, %f5;
+	mad.f32 	%f158, %f157, 0f39AAAAAB, %f5;
 	mul.rn.ftz.f32 	%f159, %f1346, %f158;
 	sub.rn.ftz.f32 	%f160, %f20, %f159;
 	mad.f32 	%f161, %f1345, %f158, %f21;
@@ -939,7 +939,7 @@ BB1_103:	// n_pow.exit18.i._crit_edge
 	add.rn.ftz.f32 	%f981, %f1025, %f1021;
 	add.rn.ftz.f32 	%f982, %f1026, %f1022;
 	setp.ne.s32 	%p54, %r14, 2;
-	mov.u32 	%r208, %r14;
+	mov.u32 	%r207, %r14;
 	mov.f32 	%f1359, %f1239;
 	mov.f32 	%f1360, %f1240;
 	mov.f32 	%f1361, %f1287;
@@ -955,7 +955,7 @@ BB1_103:	// n_pow.exit18.i._crit_edge
 BB1_104:	// 
 	add.s32 	%r15, %r11, 1;
 	setp.ne.s32 	%p55, %r15, 2;
-	mov.u32 	%r207, %r15;
+	mov.u32 	%r206, %r15;
 	mov.f32 	%f1349, %f1239;
 	mov.f32 	%f1350, %f1240;
 	mov.f32 	%f1351, %f1287;
@@ -2913,15 +2913,14 @@ BB1_369:	//
 	mul.rn.ftz.f32 	%f748, %f740, %f726;
 	mul.rn.ftz.f32 	%f749, %f739, %f726;
 	mul.rn.ftz.f32 	%f750, %f742, %f726;
-	shl.b32 	%r203, %r4, 11;
-	add.s32 	%r204, %r203, %r3;
+	mad.lo.s32 	%r203, %r4, 3072, %r3;
 	cvt.rzi.u8.f32 	%rc37, %f747;
 	cvt.rzi.u8.f32 	%rc38, %f748;
 	cvt.rzi.u8.f32 	%rc39, %f749;
 	cvt.rzi.u8.f32 	%rc40, %f750;
-	shl.b32 	%r205, %r204, 2;
-	add.s32 	%r206, %r1, %r205;
-	st.global.v4.u8 	[%r206], {%rc37, %rc38, %rc39, %rc40};
+	shl.b32 	%r204, %r203, 2;
+	add.s32 	%r205, %r1, %r204;
+	st.global.v4.u8 	[%r205], {%rc37, %rc38, %rc39, %rc40};
 	ret;
 }
 .global .texref get_image_param_0;
@@ -3524,7 +3523,7 @@ BB2_93:	// write_imageui.exit
 .maxntid 16,16,1
 {
 	.reg .f32 	%f<123>;
-	.reg .s32 	%r<61>;
+	.reg .s32 	%r<60>;
 	.reg .s16 	%rc<9>;
 
 _post_process:
@@ -3559,35 +3558,35 @@ _post_process:
 	mov.u32 	%r3, 4294967295;
 	mov.u32 	%r4, 0;
 	mov.u32 	%r5, 1;
-	add.s32 	%r31, %r2, %r3;
-	add.s32 	%r32, %r1, %r3;
-	add.s32 	%r35, %r2, %r3;
-	add.s32 	%r36, %r1, %r4;
-	add.s32 	%r39, %r2, %r3;
-	add.s32 	%r40, %r1, %r5;
-	cvt.rn.f32.s32 	%f1, %r32;
-	cvt.rn.f32.s32 	%f2, %r31;
-	add.s32 	%r43, %r2, %r4;
-	add.s32 	%r44, %r1, %r3;
+	add.s32 	%r30, %r2, %r3;
+	add.s32 	%r31, %r1, %r3;
+	add.s32 	%r34, %r2, %r3;
+	add.s32 	%r35, %r1, %r4;
+	add.s32 	%r38, %r2, %r3;
+	add.s32 	%r39, %r1, %r5;
+	cvt.rn.f32.s32 	%f1, %r31;
+	cvt.rn.f32.s32 	%f2, %r30;
+	add.s32 	%r42, %r2, %r4;
+	add.s32 	%r43, %r1, %r3;
 	mov.f32 	%f3, 0f00000000;
 	mov.f32 	%f4, 0fBF800000;
 	tex.2d.v4.f32.f32 	{ %f27, %f28, %f29, %f30 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f2, %f1}];
-	cvt.rn.f32.s32 	%f5, %r36;
-	cvt.rn.f32.s32 	%f6, %r35;
+	cvt.rn.f32.s32 	%f5, %r35;
+	cvt.rn.f32.s32 	%f6, %r34;
 	tex.2d.v4.f32.f32 	{ %f31, %f32, %f33, %f34 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f6, %f5}];
-	cvt.rn.f32.s32 	%f7, %r40;
-	cvt.rn.f32.s32 	%f8, %r39;
-	add.s32 	%r47, %r2, %r4;
-	add.s32 	%r48, %r1, %r5;
+	cvt.rn.f32.s32 	%f7, %r39;
+	cvt.rn.f32.s32 	%f8, %r38;
+	add.s32 	%r46, %r2, %r4;
+	add.s32 	%r47, %r1, %r5;
 	mad.f32 	%f43, %f31, %f4, %f3;
 	mad.f32 	%f44, %f32, %f4, %f3;
 	mad.f32 	%f45, %f33, %f4, %f3;
 	mad.f32 	%f46, %f34, %f4, %f3;
 	tex.2d.v4.f32.f32 	{ %f47, %f48, %f49, %f50 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f8, %f7}];
-	cvt.rn.f32.s32 	%f9, %r44;
-	cvt.rn.f32.s32 	%f10, %r43;
-	add.s32 	%r51, %r2, %r5;
-	add.s32 	%r52, %r1, %r3;
+	cvt.rn.f32.s32 	%f9, %r43;
+	cvt.rn.f32.s32 	%f10, %r42;
+	add.s32 	%r50, %r2, %r5;
+	add.s32 	%r51, %r1, %r3;
 	mov.f32 	%f11, 0f40A00000;
 	add.rn.ftz.f32 	%f51, %f43, %f3;
 	add.rn.ftz.f32 	%f52, %f44, %f3;
@@ -3596,29 +3595,29 @@ _post_process:
 	tex.2d.v4.f32.f32 	{ %f55, %f56, %f57, %f58 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f10, %f9}];
 	cvt.rn.f32.s32 	%f12, %r1;
 	cvt.rn.f32.s32 	%f13, %r2;
-	add.s32 	%r55, %r2, %r5;
-	add.s32 	%r56, %r1, %r4;
+	add.s32 	%r54, %r2, %r5;
+	add.s32 	%r55, %r1, %r4;
 	mad.f32 	%f59, %f55, %f4, %f51;
 	mad.f32 	%f60, %f56, %f4, %f52;
 	mad.f32 	%f61, %f57, %f4, %f53;
 	mad.f32 	%f62, %f58, %f4, %f54;
 	tex.2d.v4.f32.f32 	{ %f63, %f64, %f65, %f66 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f13, %f12}];
-	cvt.rn.f32.s32 	%f14, %r48;
-	cvt.rn.f32.s32 	%f15, %r47;
+	cvt.rn.f32.s32 	%f14, %r47;
+	cvt.rn.f32.s32 	%f15, %r46;
 	mad.f32 	%f71, %f63, %f11, %f59;
 	mad.f32 	%f72, %f64, %f11, %f60;
 	mad.f32 	%f73, %f65, %f11, %f61;
 	mad.f32 	%f74, %f66, %f11, %f62;
 	tex.2d.v4.f32.f32 	{ %f75, %f76, %f77, %f78 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f15, %f14}];
-	cvt.rn.f32.s32 	%f16, %r52;
-	cvt.rn.f32.s32 	%f17, %r51;
+	cvt.rn.f32.s32 	%f16, %r51;
+	cvt.rn.f32.s32 	%f17, %r50;
 	mad.f32 	%f79, %f75, %f4, %f71;
 	mad.f32 	%f80, %f76, %f4, %f72;
 	mad.f32 	%f81, %f77, %f4, %f73;
 	mad.f32 	%f82, %f78, %f4, %f74;
 	tex.2d.v4.f32.f32 	{ %f83, %f84, %f85, %f86 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f17, %f16}];
-	cvt.rn.f32.s32 	%f18, %r56;
-	cvt.rn.f32.s32 	%f19, %r55;
+	cvt.rn.f32.s32 	%f18, %r55;
+	cvt.rn.f32.s32 	%f19, %r54;
 	add.rn.ftz.f32 	%f87, %f79, %f3;
 	add.rn.ftz.f32 	%f88, %f80, %f3;
 	add.rn.ftz.f32 	%f89, %f81, %f3;
@@ -3637,20 +3636,19 @@ _post_process:
 	mul.rn.ftz.f32 	%f116, %f100, %f20;
 	mul.rn.ftz.f32 	%f117, %f99, %f20;
 	mul.rn.ftz.f32 	%f118, %f102, %f20;
-	add.s32 	%r59, %r2, %r5;
-	add.s32 	%r60, %r1, %r5;
-	shl.b32 	%r20, %r1, 11;
-	add.s32 	%r23, %r20, %r2;
+	add.s32 	%r58, %r2, %r5;
+	add.s32 	%r59, %r1, %r5;
+	mad.lo.s32 	%r22, %r1, 3072, %r2;
 	cvt.rzi.u8.f32 	%rc1, %f115;
 	cvt.rzi.u8.f32 	%rc2, %f116;
 	cvt.rzi.u8.f32 	%rc3, %f117;
 	cvt.rzi.u8.f32 	%rc4, %f118;
-	cvt.rn.f32.s32 	%f25, %r60;
-	cvt.rn.f32.s32 	%f26, %r59;
-	shl.b32 	%r24, %r23, 2;
-	ld.param.u32 	%r25, [post_process_param_1];
+	cvt.rn.f32.s32 	%f25, %r59;
+	cvt.rn.f32.s32 	%f26, %r58;
+	shl.b32 	%r23, %r22, 2;
+	ld.param.u32 	%r24, [post_process_param_1];
 	tex.2d.v4.f32.f32 	{ %f119, %f120, %f121, %f122 }, [post_process_param_0, %sam__25_sam_image_sampler_25_2_norm_0, {%f26, %f25}];
-	add.s32 	%r26, %r25, %r24;
-	st.global.v4.u8 	[%r26], {%rc1, %rc2, %rc3, %rc4};
+	add.s32 	%r25, %r24, %r23;
+	st.global.v4.u8 	[%r25], {%rc1, %rc2, %rc3, %rc4};
 	ret;
 }
