@@ -207,12 +207,6 @@ class CmdCenter(Animator, Archiver):
         if(self.app.exit):
             self.interface.renderer.stop()
 
-    def get_time(self):
-        if(self.app.fps_sync):
-            return self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
-        else:
-            return time.time() - self.t_start + self.t_phase
-
 
     def send_frame(self):
         ''' Generates and sends the current frame to the Engine '''
@@ -265,6 +259,15 @@ class CmdCenter(Animator, Archiver):
 
 
     # UTILITY FUNCTIONS
+    def get_time(self):
+        ''' Gets the current time '''
+
+        if(self.app.fps_sync):
+            return self.state.frame_cnt / float(self.app.fps_sync) + self.t_phase
+        else:
+            return time.time() - self.t_start + self.t_phase
+
+
     def set_val(self, val, var, idx):
         self.cmd("%s[%s] = %s" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx), val))
 

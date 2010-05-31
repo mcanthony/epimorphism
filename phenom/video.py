@@ -55,16 +55,16 @@ class VideoRenderer(object):
             self.capturing_event.set()
 
 
-        if(self.frame_num != 0):
-            self.capturing_event.wait()
-        self.capturing_event.clear()
+        #if(self.frame_num != 0):
+        #    self.capturing_event.wait()
+        #self.capturing_event.clear()
 
         # inc frame num
         self.frame_num += 1
 
         # async grab frame
-        self.cmdcenter.engine.do_get_fb = True
-        async(grab_image)
+        #self.cmdcenter.engine.do_get_fb = True
+        #async(grab_image)
 
 
     def start_video(self, video_name=None):
@@ -72,7 +72,7 @@ class VideoRenderer(object):
         info("Starting video renderer")
 
         # turn on fps sync
-        self.app.fps_sync = self.app.video_frame_rate
+        # self.app.fps_sync = self.app.video_frame_rate
 
         # set vars
         self.frame_num = 0

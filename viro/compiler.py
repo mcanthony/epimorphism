@@ -43,7 +43,7 @@ class Compiler():
             sys.exit(0)
 
 
-        t0 = time.time()
+        t0 = self.cmdcenter.get_time()
         prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
         prg.build()
 
@@ -62,8 +62,9 @@ class Compiler():
         #    self.app.exit = True
         #    sys.exit(0)
                        
-        self.cmdcenter.t_phase -= time.time()-t0
-        print time.time()-t0
+        t1 = self.cmdcenter.get_time()
+        self.cmdcenter.t_phase -= t1 - t0
+        print t1-t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
