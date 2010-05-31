@@ -16,14 +16,10 @@ _EPI_ float4 gbr_id(float4 v, float2 z_z, __constant float* par, float time){
 _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time){
   // hsv rotation
   // FULL, LIVE, DEV
-
   v = RGBtoHSV(v);
 
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
-
-  l = native_log(l);
-  l = 0.4f * l;
-
+  l = 0.4f * native_log(l);
   //l = (4.0f * _COLOR_LEN_SC + 1.0f) * l / (l + 4.0f * _COLOR_LEN_SC);
 
   float a = 0.0f;
@@ -31,8 +27,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
     a = atan2(z_z.y, z_z.x) * floor(8.0f * _COLOR_TH_EFF) / (2.0f * PI);
   }
 
-  float th =  (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
-
+  float th = (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * _GLOBAL_SPEED / 10.0f);
   v.x += th;
 
   if(_COLOR_18 < 0.99f){
@@ -48,8 +43,6 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
 _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time){
   // complex hsls rotation
   // FULL, LIVE, DEV
-  time = 2;
-  float4 z = v;
   v = RGBtoHSLs(v);
 
   //float lz = remf(z_z, 1.0f).x + 1.0f;//time;//z_z.x;//-0.2;//sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
@@ -60,7 +53,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
   l = native_divide((4.0f * _COLOR_LEN_SC + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC));
-  l = recover(log(l + 1.0f));
+  l = native_log(l + 1.0f);
 
   // compute a
   float a = 0.0f;

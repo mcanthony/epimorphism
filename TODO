@@ -27,6 +27,8 @@ Queue -
     linux binaries
 
   Optimization:
+    investing gamma correction artifacts?
+    move color axis to cpu
     optimize kernel
     scale performance to system
 

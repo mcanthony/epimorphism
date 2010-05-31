@@ -12,7 +12,7 @@ float2 M(float2 z0, float2 z1){
 
 float2 D(float2 z0, float2 z1){
   float r = dot(z1, z1);
-  return CX((z0.x * z1.x + z0.y * z1.y) / r, (z0.y * z1.x - z0.x * z1.y) / r);
+  return CX(native_divide((z0.x * z1.x + z0.y * z1.y), r), native_divide((z0.y * z1.x - z0.x * z1.y), r));
 }
 
 float recover(float x){
@@ -42,7 +42,7 @@ float4 recover4(float4 z){
 }
 
 float2 remf(float2 z, float m){
-  return z - m * floor(CX(z.x / m, z.y / m));
+  return z - m * floor(CX(native_divide(z.x, m), native_divide(z.y, m)));
 }
 
 float n_pow(float x, float y){

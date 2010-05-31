@@ -81,10 +81,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
     }
 
   // scale
-  const float i_n_sq = 1.0f / (FRACT * FRACT);
-  //v *= i_n_sq;
-  //v.w /= i_n_sq;
-  v = (float4)(i_n_sq * v.x, i_n_sq * v.y, i_n_sq * v.z, v.w);
+  v /= (FRACT * FRACT);
+  v.w *= (FRACT * FRACT);
 
   // compute color
   %COLOR%;

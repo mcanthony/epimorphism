@@ -3,16 +3,12 @@ float2 sqz(float2 z0){
 }
 
 float2 sinz(float2 z0){
-  //float s, c;
-  //s = sincos(z0.x, &c);
   float s = native_sin(z0.x);
   float c = native_cos(z0.x);
   return CX(s * cosh(z0.y), c * sinh(z0.y));
 }
 
 float2 cosz(float2 z0){
-  //float s, c;
-  //s = sincos(z0.x, &c);
   float s = native_sin(z0.x);
   float c = native_cos(z0.x);
   return CX(c * cosh(z0.y), -1.0f * s * sinh(z0.y));
