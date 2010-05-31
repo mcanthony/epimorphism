@@ -146,7 +146,6 @@ class CmdCenter(Animator, Archiver):
         debug("Start main loop")
 
         self.state.time = 0
-
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
@@ -159,10 +158,11 @@ class CmdCenter(Animator, Archiver):
             program.start()
 
         # component_automation
-#        self.toggle_component_automation(self.app.automating_components)
+        self.toggle_component_automation(self.app.automating_components)
 
         # start modules - DOESN'T RETURN
         self.engine.start()
+        self.t_start = time.time() + self.t_phase
         self.interface.start()
         
     def do(self):
@@ -210,7 +210,6 @@ class CmdCenter(Animator, Archiver):
 
     def send_frame(self):
         ''' Generates and sends the current frame to the Engine '''
-
 
         del self.frame[:]
         self.frame.append({"type": "float",         "val": self.time()})      
@@ -304,7 +303,7 @@ class CmdCenter(Animator, Archiver):
 
     def grab_image(self):
         ''' Gets the framebuffer and binds it to an Image. '''
-        info("Grab image")
+        debug("Grab image")
 
         try:
             self.app.next_frame = True
@@ -313,7 +312,7 @@ class CmdCenter(Animator, Archiver):
             info(str(err))
             sys.exit(0)
 
-        info("Done grab image")
+        debug("Done grab image")
 
         # img.show()
         return img
@@ -344,7 +343,7 @@ class CmdCenter(Animator, Archiver):
 
     def toggle_component_automation(self, switch=None):
         if(switch or not self.app.automating_components):
-            program = RandomComponents2({'interval': 25})
+            program = RandomComponents2({'interval': 15})
             program.start()
             self.state.programs.append(program)
             self.cmdcenter.interface.renderer.flash_message("Starting component automation")

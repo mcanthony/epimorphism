@@ -42,11 +42,9 @@ class Compiler():
             print stdout
             sys.exit(0)
 
-
         t0 = self.cmdcenter.get_time()
         prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
         prg.build()
-
 
         #   info("Compiling kernel - %s" % name)
         #kernel_contents = open("aeon/__kernel.cl").read()
@@ -64,7 +62,6 @@ class Compiler():
                        
         t1 = self.cmdcenter.get_time()
         self.cmdcenter.t_phase -= t1 - t0
-        print t1-t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

@@ -38,7 +38,6 @@ class Script():
 
         while(len(self.events) > 0 and not self.app.exit and not self.exit):
             next_event = self.events[0]
- #           print next_event["time"]
 
             t = next_event["time"] + self.phase - self.cmdcenter.time()
 #            print t

@@ -40,7 +40,7 @@ class Interface(object):
 
     def __del__(self):
         debug("Deleting Interface")
-        self.renderer.__del__()
+        # self.renderer.__del__()
         # kill server
         # if(self.server):
         #   self.server.__del___()

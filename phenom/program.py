@@ -45,7 +45,7 @@ class RandomComponents1(Program):
                 async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 1)"))
             elif(i == 2):
                 async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 1)"))
-            
+                        
             time.sleep(self.data["interval"] * 0.5 + rand.randint(0, self.data["interval"]))
 
 
@@ -67,4 +67,8 @@ class RandomComponents2(Program):
             elif(i == 5):
                 async(lambda :self.cmdcenter.cmd("inc_data('REDUCE', 1)"))
 
-            time.sleep(self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]))
+            # make this better
+            t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()
+            while(self.cmdcenter.time() < t):
+                time.sleep(0.1)
+            #time.sleep()

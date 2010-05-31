@@ -55,16 +55,16 @@ class VideoRenderer(object):
             self.capturing_event.set()
 
 
-        #if(self.frame_num != 0):
-        #    self.capturing_event.wait()
-        #self.capturing_event.clear()
+        if(self.frame_num != 0):
+            self.capturing_event.wait()
+        self.capturing_event.clear()
 
         # inc frame num
         self.frame_num += 1
 
         # async grab frame
-        #self.cmdcenter.engine.do_get_fb = True
-        #async(grab_image)
+        self.cmdcenter.engine.do_get_fb = True
+        async(grab_image)
 
 
     def start_video(self, video_name=None):
@@ -72,7 +72,7 @@ class VideoRenderer(object):
         info("Starting video renderer")
 
         # turn on fps sync
-        # self.app.fps_sync = self.app.video_frame_rate
+        self.app.fps_sync = self.app.video_frame_rate
 
         # set vars
         self.frame_num = 0
@@ -102,12 +102,12 @@ class VideoRenderer(object):
         self.app.render_video = False
 
         def compress():
-            cmd = "mencoder mf://video/%s/*.png -mf w=%d:h=%d:fps=%f:type=png -ovc lavc -lavcopts vbitrate=%d:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o %s.avi" % (self.video_name, self.cmdcenter.engine.profile.kernel_dim, self.cmdcenter.engine.profile.kernel_dim, self.app.video_frame_rate, 60 * 25 * self.cmdcenter.engine.profile.kernel_dim * self.cmdcenter.engine.profile.kernel_dim / 256, self.video_name)
+            cmd = "mencoder mf://video/%s/*.png -mf w=%d:h=%d:fps=%f:type=png -ovc lavc -lavcopts vbitrate=%d:mbd=2:keyint=132:v4mv:vqmin=3:lumi_mask=0.07:dark_mask=0.2:scplx_mask=0.1:tcplx_mask=0.1:naq:vhq -oac copy -o %s.avi" % (self.video_name, self.cmdcenter.engine.profile.kernel_dim, self.cmdcenter.engine.profile.kernel_dim, self.app.video_frame_rate, 60 * 20 * self.cmdcenter.engine.profile.kernel_dim * self.cmdcenter.engine.profile.kernel_dim / 256, self.video_name)
             info("Compressing with command - " + cmd)
             os.system(cmd)
             print "to add audio - mencoder %s.avi -oac copy -ovc copy -audiofile AUDIO.mp3 -o %s_audio.avi" % (self.video_name, self.video_name)
 
-#        async(compress)                           
+        async(compress)                           
 
         # turn off fps sync
         self.app.fps_sync = False

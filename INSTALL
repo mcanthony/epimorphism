@@ -2,8 +2,15 @@ Epimorphism Installation:
 
 1. Install python-opencl (cuda toolkit as well?)
 
-(optional?)2. Install packages - sudo apt-get install unclutter g++ python-pyrex python-dev libportmidi-dev timidity freepats libasound2-dev mencoder
+SDL, freetype
 
-(optional)3. Install pyport midi from sources/pypm
+Optional:
+  IMAGINE:
+    PIL
+  MIDI: 
+   g++ python-pyrex python-dev libportmidi-dev timidity freepats libasound2-dev 
    cd sources/pypm
    sudo python setup.py install
+
+  VIDEO:
+    mencoder

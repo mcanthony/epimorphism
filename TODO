@@ -1,5 +1,5 @@
 Queue - 
-  DONE - launch context  save image discontinuities	
+  DONE - launch context  
   DONE - auto automating_components
   DONE - remove messages
   DONE - remove console
@@ -10,62 +10,50 @@ Queue -
   DONE - remove midi  
   DONE - OpenCL  
 
-  render video
+  Video:
+    mencoder command
+    render video
 
-  optimize kernel:
+  Cross platform:
+    pyopengl bug?
+    replace pyopencl with custom libraries
 
-  OpenCL Bugs
+    OpenCL ATI Stream
+    OpenCL Mac
+    OpenCL CPUs - replace images with buffers
 
-  Final Non Launch Tasks
+    windows binaries
+    mac binaries
+    linux binaries
 
-  Bugs
+  Optimization:
+    optimize kernel
+    scale performance to system
 
-  keyboard
-  console
-  contents & launch state
-  periodically connect to server
-  get rid of mouse
-
-  OpenCL ATI Stream
-  OpenCL Mac
-  OpenCL CPUs - replace images with buffers
-
-  scale performance to system
-
-  windows binaries
-  mac binaries
-  linux binaries
-
-  multiplebanannas@epimorphism.com
-  transfer epimorphism.com dns
-
-  introduction
-  periodic craziness
-
-  obfsucate
-
-
-OpenCL Bugs:
-  async kernel compilation
-
-
-Bugs:
-  fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
-
-
-Final Non Launch Tasks:
-  move globals to config
-  sometimes variable are messed up on start
-  reset_hsls
-  state nonsense
-  cull mode - hsls & FRACT
+  Prepare for release:
+    fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo
+    multiplebanannas@epimorphism.com
+    transfer epimorphism.com dns
+    contents & launch state
+    periodically connect to server
+    get rid of mouse
+    introduction
+    periodic craziness
+    obfsucate
 
 
 Later:	
+  state nonsense
+  move globals to config
   cleaning/documention pass
 
   Archiving
 
+  plot fps
+
+  cull mode - hsls & FRACT?
+  sometimes variable are messed up on start
+  reset_hsls
   fix video scripts
 
   finish states:
