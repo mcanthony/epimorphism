@@ -167,7 +167,7 @@ class Renderer(object):
 
         # render text into llc
         glColor3ub(0xff, 0xff, 0xff)
-        self.echo_font.glPrint(6, 6, self.echo_string)
+        self.echo_font.glPrint(6, 6, "www.epimorphism.com")#self.echo_string)
 
     def main_toggle_console(self):
         ''' Main thread callback to toggle console '''
@@ -249,8 +249,8 @@ class Renderer(object):
             self.render_fps()
 
         # messages
-        if(self.context.echo and self.echo_string):
-            self.echo()
+        #if(self.context.echo and self.echo_string):
+        self.echo()
 
         # repost
         glutSwapBuffers()

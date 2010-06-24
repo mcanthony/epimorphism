@@ -238,7 +238,6 @@ static PyObject *
 compileKernel(PyObject *self, PyObject *args)
 {
   return Py_BuildValue("i", CL_SUCCESS);
-
 }
 
 

@@ -63,6 +63,10 @@ class Engine(object):
 
         self.frame_num = 0
 
+        # generate pbo & compile kernel
+        self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
+        self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo_ptr.value)
+
         return True
 
 
@@ -134,8 +138,6 @@ class Engine(object):
         self.new_fb_event.set()
 
 
-    ######################################### PUBLIC ##################################################
-
     def print_opencl_info(self):
         def print_info(obj, info_cls):
             for info_name in sorted(dir(info_cls)):
@@ -160,8 +162,8 @@ class Engine(object):
                 debug(75*"=")
                 print_info(device, cl.device_info)
 
-    def print_timings(self):
 
+    def print_timings(self):
         if(self.time_events):
             if(self.frame_num % self.profile.debug_freq == 0):
                 # get times
@@ -191,15 +193,12 @@ class Engine(object):
                 self.last_frame_time = time.time()
 
 
+    ######################################### PUBLIC ##################################################
     def start(self):
         ''' Start engine '''
         info("Starting engine")
 
-        # generate pbo
-        self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
-        self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo_ptr.value)
-
-        # compile
+        # compile kernel
         self.prg = self.compile()
 
 

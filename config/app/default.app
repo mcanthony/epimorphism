@@ -19,13 +19,13 @@
  'freeze': False,
 
  'render_video': False,
- 'max_video_frames': None,
+ 'max_video_frames': 10800,
  'video_frame_rate': 30.0,
 
  'state_switch_time': 4.0,
 
- 'automating_components': False,
- 'midi_enabled': True,
+ 'automating_components': True,
+ 'midi_enabled': False,
 
  'print_log': True
 }

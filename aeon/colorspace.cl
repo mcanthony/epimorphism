@@ -47,6 +47,7 @@ float4 HSVtoRGB(float4 val){
   }
 }
 
+
 float4 HSLstoRGB(float4 val){
 
   float s = native_sqrt(val.x * val.x + val.y * val.y);
@@ -80,6 +81,7 @@ float4 HSLstoRGB(float4 val){
 
   return HSVtoRGB((float4)(h, s, v, val.w));
 }
+
 
 float4 RGBtoHSLs(float4 val){
   float h, s, l;
