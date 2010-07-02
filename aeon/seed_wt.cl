@@ -32,3 +32,17 @@ _EPI_ float wt_inv_circular(float w){
 
   return 1.0f - native_sqrt(1.0f - (1.0f - w) * (1.0f - w));
 }
+
+_EPI_ float wt_gauss(float w){
+  // gaussian transform
+  // FULL, LIVE, DEV
+
+  return native_exp(-10.0f * (w - 1.0f) * (w - 1.0f));
+}
+
+_EPI_ float wt_inv_gauss(float w){
+  // inverse gaussian transform
+  // FULL, LIVE, DEV
+
+  return native_exp(-100.0f * w * w);
+}

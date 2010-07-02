@@ -3,7 +3,7 @@
 
 _EPI_ float4 simple(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   z = grid_reduce(z);
 

@@ -167,6 +167,11 @@ class KeyboardHandler(object):
                 i = ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"].index(key)
                 self.cmdcenter.cmd("inc_data('%s', -1)" % self.components[i])
 
+            # random component
+            elif(key in ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"]):
+                i = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"].index(key)
+                self.cmdcenter.cmd("inc_data('%s', 0)" % self.components[i])
+
             # increment zn_r
             elif(key in ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]):
                 i = ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"].index(key)

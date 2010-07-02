@@ -52,3 +52,16 @@ float n_pow(float x, float y){
 float4 _gamma3(float4 v, float gamma){
   return (float4)(n_pow(v.x, gamma), n_pow(v.y, gamma), n_pow(v.z, gamma), v.w);
 }
+
+
+float4 to_rpp(float4 v){
+  float r = native_sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+  float4 polar = (float4)(r, atan2(v.x, v.y), acos(v.z / r), v.w);
+  //  if(polar.z < 0.0f)
+  //    polar.z += 2.0f * PI;
+  return polar;
+}
+
+float4 to_xyz(float4 v){
+  return (float4)(v.x * native_cos(v.y) * native_sin(v.z), v.x * native_sin(v.y) * native_sin(v.z), v.x * native_cos(v.z), v.w);
+}
