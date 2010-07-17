@@ -13,7 +13,7 @@ _EPI_ float trans_w(float w, __constant float* par){
 
 _EPI_ float2 fade(float2 z, __constant float* par){
   // linear l-r gradient
-  // FULL, LIVE, DEV
+  // DEV
 
   z = grid_reduce(z);
   float w = (z.x + 1.0f) / 2.0f;
@@ -23,7 +23,7 @@ _EPI_ float2 fade(float2 z, __constant float* par){
 
 _EPI_ float2 wave(float2 z, __constant float* par){
   // sinousoid
-  // FULL, LIVE, DEV
+  // DEV
 
   float _clock = 0.0f;
 

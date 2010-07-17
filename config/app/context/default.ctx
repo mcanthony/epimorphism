@@ -6,10 +6,12 @@
  'midi_output': True,
  'server': False,
  'kbd_switch_spd' : 2.0,
- 'echo' : False,
+ 'echo' : True,
 
  'midi_controller': ['BCF2000', 'BCF_LIVE'],
  'midi_speed': 0.5,
+ 'last_midi_event': 0.0,
+
  'screen' : 'auto',
 
  'fps_frames' : 10,

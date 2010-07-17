@@ -81,21 +81,21 @@ class KeyboardHandler(object):
             self.cmdcenter.toggle_component_automation(not self.app.automating_components)
 
         # toggle recording events
-        elif(key == GLUT_KEY_F9):
-            self.cmdcenter.toggle_record()
+#        elif(key == GLUT_KEY_F9):
+#            self.cmdcenter.toggle_record()
 
         # switch_midi
-        if(key == GLUT_KEY_F10):
-            if(self.context.midi_controller[1] == "BCF_LIVE"):
-                self.cmdcenter.interface.renderer.flash_message("Switching to VJ bindings")
-                info("Switch to BCF_VJ bindings")
-                self.context.midi_controller[1] = "BCF_VJ"
-                self.cmdcenter.interface.midi.load_bindings()
-            elif(self.context.midi_controller[1] == "BCF_VJ"):
-                self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
-                info("Switch to BCF_LIVE bindings")
-                self.context.midi_controller[1] = "BCF_LIVE"
-                self.cmdcenter.interface.midi.load_bindings()
+#        if(key == GLUT_KEY_F10):
+#            if(self.context.midi_controller[1] == "BCF_LIVE"):
+#                self.cmdcenter.interface.renderer.flash_message("Switching to VJ bindings")
+#                info("Switch to BCF_VJ bindings")
+#                self.context.midi_controller[1] = "BCF_VJ"
+#                self.cmdcenter.interface.midi.load_bindings()
+#            elif(self.context.midi_controller[1] == "BCF_VJ"):
+#                self.cmdcenter.interface.renderer.flash_message("Switching to LIVE bindings")
+#                info("Switch to BCF_LIVE bindings")
+#                self.context.midi_controller[1] = "BCF_LIVE"
+#                self.cmdcenter.interface.midi.load_bindings()
 
         # toggle echo
         elif(key == GLUT_KEY_F11):

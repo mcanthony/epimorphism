@@ -68,7 +68,6 @@ class Script():
         self.exit = True
 
 
-
     def add_event(self, time, cmd):
         ''' Add an event to the collection of events '''
         debug("Adding event at %f" % time)

@@ -1,18 +1,20 @@
 # create device bindings for LIVE BCF2000
-BCF_LIVE = [{(0, 83): ["state.zn",  '0',  "radius", (1.0, 1.0)],
-             (0, 84): ["state.zn",  '2',  "radius", (1.0, 1.0)],
-             (0, 85): ["state.zn",  '8',  "radius", (1.0, 1.0)],
-             (0, 86): ["state.zn",  '9',  "radius", (1.0, 0.0)],
-             (0, 87): ["state.zn",  '10', "radius", (1.0, 1.0)],
-             (0, 88): ["state.zn",  '11', "radius", (1.0, 0.0)],
-             (0, 1) : ["state.par", 'self.state.par_idx("_SEED_W")',  "val",    (1.0, 0.0)],
-             (0, 2) : ["state.par", 'self.state.par_idx("_COLOR_PHI1")',  "val",    (1.0, 0.0)],
-             (0, 3) : ["state.par", 'self.state.par_idx("_COLOR_PSI1")',  "val",    (1.0, 0.0)],
-             (0, 4) : ["state.par", 'self.state.par_idx("_COLOR_BASE_PHI")',  "val",    (1.0, 0.0)],
-             (0, 5) : ["state.par", 'self.state.par_idx("_COLOR_BASE_PSI")',  "val",    (1.0, 0.0)],
-             (0, 6) : ["state.par", 'self.state.par_idx("_COLOR_A")',  "val",    (0.6, 0.4)],
-             (0, 7) : ["state.par", 'self.state.par_idx("_SEED_W_MIN")',  "val",    (0.5, 0.0)],
-             (0, 8) : ["state.zn",  '8',  "th",     (3.14, 0.0)]
+BCF_LIVE = [{(0, 81): ["state.zn",  '0',  "radius", (1.0, 1.0)],
+             (0, 82): ["state.zn",  '2',  "radius", (1.0, 1.0)],
+             (0, 83): ["state.zn",  '8',  "radius", (1.0, 1.0)],
+             (0, 84): ["state.zn",  '9',  "radius", (1.0, 0.0)],
+             (0, 85): ["state.zn",  '10', "radius", (1.0, 1.0)],
+             (0, 86): ["state.zn",  '11', "radius", (1.0, 0.0)],
+             (0, 87) : ["state.par", 'self.state.par_idx("_SEED_W")',  "val",    (1.0, 0.0)],
+             (0, 88) : ["state.par", 'self.state.par_idx("_COLOR_A")',  "val",    (0.6, 0.4)],
+             (0, 1) : ["state.par", 'self.state.par_idx("_COLOR_PHI1")',  "val",    (1.0, 0.0)],
+             (0, 2) : ["state.par", 'self.state.par_idx("_COLOR_PSI1")',  "val",    (1.0, 0.0)],
+             (0, 3) : ["state.par", 'self.state.par_idx("_COLOR_BASE_PHI")',  "val",    (1.0, 0.0)],
+             (0, 4) : ["state.par", 'self.state.par_idx("_COLOR_BASE_PSI")',  "val",    (1.0, 0.0)],
+             (0, 5) : ["state.par", 'self.state.par_idx("_SEED_W_MIN")',  "val",    (0.5, 0.0)],
+             (0, 6) : ["state.par", 'self.state.par_idx("_COLOR_S")',  "val",    (1.0, 0.0)],
+             (0, 7) : ["state.zn",  '8',  "th",     (3.14, 0.0)],
+             (0, 8) : ["state.zn",  '10',  "th",     (3.14, 0.0)]
              }]
 
 

@@ -135,6 +135,11 @@ if(config.app and config.app.midi_enabled):
                     time.sleep(0.01)
                 if(self.cmdcenter.app.exit) : exit()
 
+                if(len(self.state.scripts) != 0):
+                    self.state.paths=[]
+                    self.state.scripts=[]
+                self.context.last_midi_event = self.cmdcenter.time()
+
                 # read
                 data = self.midi_in.Read(1)
 
@@ -175,9 +180,9 @@ if(config.app and config.app.midi_enabled):
                     if val == 0 : self.binding_idx = 0
                     self.send_bindings()
 
-                #elif(channel >= 33 and channel <= 40):
-
-                #    self.binding_idx = (channel - 33) % len(self.bindings)
-
-                #    self.send_bindings()
+#                elif(channel >= 33 and channel <= 40):
+#
+#                    self.binding_idx = (channel - 33) % len(self.bindings)
+#
+#                    self.send_bindings()
 

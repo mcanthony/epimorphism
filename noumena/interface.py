@@ -68,12 +68,12 @@ class Interface(object):
         if(self.context.server):
             self.server = Server()
             self.server.start()
-
         else:
             self.server = None
 
         # start midi
         if(self.app.midi_enabled):
+            self.context.last_midi_event = self.cmdcenter.time()
             self.midi = MidiHandler()
 
             if(self.app.midi_enabled):
@@ -89,4 +89,11 @@ class Interface(object):
 
 
     def do(self):
+        # execute renderer
         self.renderer.do()
+
+        # ghetto rigged activate scripts
+        if(self.cmdcenter.time() - self.context.last_midi_event > 30 and len(self.state.scripts) == 0):
+            debug("starting roses")
+            self.state.scripts = [Script('roses')]
+            self.state.scripts[0].start()
