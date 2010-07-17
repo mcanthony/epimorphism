@@ -1,0 +1,11 @@
+{
+ 'name':'roses',
+ 'phase':0,
+ 'events':[{'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_SEED_W'), 20, {'a':0.3, 'b':0.5, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_A'), 25, {'a':0.3, 'b':0.7, 'th':3.14})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_PHI1'), 20, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_PSI1'), 25, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_BASE_PHI'), 30, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_BASE_PSI'), 35, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
+ ],
+}
