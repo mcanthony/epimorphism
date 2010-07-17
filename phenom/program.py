@@ -65,7 +65,7 @@ class RandomComponents2(Program):
             elif(i == 4):
                 async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 0)"))
             elif(i == 5):
-                async(lambda :self.cmdcenter.cmd("inc_data('REDUCE', 0)"))
+                async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)"))
 
             # make this better
             t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()

@@ -175,9 +175,9 @@ if(config.app and config.app.midi_enabled):
                     if val == 0 : self.binding_idx = 0
                     self.send_bindings()
 
-                elif(channel >= 33 and channel <= 40):
+                #elif(channel >= 33 and channel <= 40):
 
-                    self.binding_idx = (channel - 33) % len(self.bindings)
+                #    self.binding_idx = (channel - 33) % len(self.bindings)
 
-                    self.send_bindings()
+                #    self.send_bindings()
 

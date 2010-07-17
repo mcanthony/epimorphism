@@ -22,7 +22,7 @@
  'max_video_frames': 10800,
  'video_frame_rate': 30.0,
 
- 'state_switch_time': 4.0,
+ 'state_switch_time': 3.0,
 
  'automating_components': True,
  'midi_enabled': True,

@@ -84,6 +84,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   v /= (FRACT * FRACT);
   v.w *= (FRACT * FRACT);
 
+  v = recover4(v);
   // compute color
   %COLOR%;
 
@@ -111,20 +112,20 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
   write_imageui(out, p, convert_uint4(255.0 * frame).zyxw);
 }
 
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
+//__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+//void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
 
   // get coords
-  const int x = get_global_id(0);
-  const int y = get_global_id(1);
-  int2 p = (int2)(x, y);
+  //  const int x = get_global_id(0);
+  // const int y = get_global_id(1);
+  //int2 p = (int2)(x, y);
 
-  float4 v = read_imagef(fb, image_sampler, p);
-  float4 polar = to_rpp(v);
-  float z0 = to_xyz(polar + (float4)(0.0f, -1.0f * _POST_PHI0, PI / 2.0f + _POST_PSI0, 0.0f)).z;
+  //float4 v = read_imagef(fb, image_sampler, p);
+  //float4 polar = to_rpp(v);
+  //float z0 = to_xyz(polar + (float4)(0.0f, -1.0f * _POST_PHI0, PI / 2.0f + _POST_PSI0, 0.0f)).z;
   //v = to_xyz(to_rpp(v));
 
-  v = (float4)((z0 + 1.0f) / 2.0f, 0.0, 0.0,  v.w);
+  //v = (float4)((z0 + 1.0f) / 2.0f, 0.0, 0.0,  v.w);
 
   /*
   float4 axis0 = (float4)(_POST_PHI0, _POST_PSI0, 1f, 0.0f);
@@ -156,6 +157,6 @@ void post_process(read_only image2d_t fb, __global char4* pbo, float time, __con
 
   */
 
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
-}
+  //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
+//}
 

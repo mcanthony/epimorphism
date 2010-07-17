@@ -64,7 +64,7 @@ class Animator(object):
                 path.initialize_globals()
 
             # execute path
-            status = path.execute((t + path.phase - path.start) / path.spd)
+            status = path.execute((t + path.phase - path.start) / (1.2 * path.spd))
 
             # if necessary, remove path
             if(not status):
