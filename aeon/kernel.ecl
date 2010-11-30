@@ -49,10 +49,11 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
       // compute T      
       z = M(zn[2], z) + zn[3];
-      %REDUCE%
-      z = reduce;
       %T%
       z = t;
+      //      %REDUCE%
+      reduce = torus_reduce(z);
+      z = recover2(reduce);      
       z = M(zn[0], z) + zn[1];
       %REDUCE%
       z = recover2(reduce);      
@@ -83,14 +84,21 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   // scale
   v /= (FRACT * FRACT);
   v.w *= (FRACT * FRACT);
-
+  
   v = recover4(v);
   // compute color
   %COLOR%;
 
+
   color = recover4(color);
+
   // write to out
   write_imagef(out, p, color);
+  
+  
+
+  //  z = tri_reduce(4.0f*z);
+  //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
 
   // write to pbo
   if(_POST_PROCESSING == 0.0f)
@@ -116,8 +124,8 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
 //void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
 
   // get coords
-  //  const int x = get_global_id(0);
-  // const int y = get_global_id(1);
+  //const int x = get_global_id(0);
+  //const int y = get_global_id(1);
   //int2 p = (int2)(x, y);
 
   //float4 v = read_imagef(fb, image_sampler, p);
@@ -159,4 +167,26 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
 
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
 //}
+
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
+
+  // get coords
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  float4 v = read_imagef(fb, image_sampler, p);
+
+  v = RGBtoHSV(v);
+
+  float h = v.x / (2.0 * PI);
+
+  h = 5.9605 * h * h * h - 9.2925 * h * h + 3.332 * h;
+  v.x = 2.0 * PI * h;
+  v = HSVtoRGB(v);
+
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
+}
 

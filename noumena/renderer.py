@@ -68,14 +68,21 @@ class Renderer(object):
         # init gl
         glEnable(GL_TEXTURE_2D)
         glClearColor(0.0, 0.0, 0.0, 0.0)
-        glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST)
-        glShadeModel(GL_FLAT)
+        glShadeModel(GL_SMOOTH)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glClearDepth(1.0)			
+        glDepthFunc(GL_LESS)			
+        glEnable(GL_DEPTH_TEST)			
 
         # fps data
         self.d_time_start = self.d_time = self.d_timebase = 0
         self.frame_count = 0.0
+
+        # quadric
+        self.quad = gluNewQuadric()
+        gluQuadricNormals(self.quad, GLU_SMOOTH)
+	gluQuadricTexture(self.quad, GL_TRUE)        
 
         # misc variables
         self.show_console = False
@@ -147,7 +154,10 @@ class Renderer(object):
         # configure projection matrix
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
+        if(self.profile.sphere):
+            gluPerspective(90.0, w / h, 0.1, 100.0)
+        else:
+            glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
 
 
@@ -218,29 +228,38 @@ class Renderer(object):
         glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, 0)
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0)
 
-        # compute texture coordinates
-        x0 = .5 - self.context.viewport[2] / 2 - self.context.viewport[0] * self.aspect
-        x1 = .5 + self.context.viewport[2] / 2 - self.context.viewport[0] * self.aspect
-        y0 = .5 - self.context.viewport[2] / (2 * self.aspect) + self.context.viewport[1]
-        y1 = .5 + self.context.viewport[2] / (2 * self.aspect) + self.context.viewport[1]
-
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glClear(GL_COLOR_BUFFER_BIT)
+	glLoadIdentity();			
+        if(self.profile.sphere):
+            glTranslatef(0, 0, self.context.viewport[2])
+            glRotatef(100.0 * self.context.viewport[1] / self.context.screen[1],1.0,0.0,0.0)                      	
+            glRotatef(100.0 * self.context.viewport[0] / self.context.screen[0],0.0,1.0,0.0)                      	
 
-        # render texture
-        glBegin(GL_QUADS)
+            gluSphere(self.quad, 1.3, 256, 256);
 
-        glTexCoord2f(x0, y0)
-        glVertex3f(-1.0, -1.0, 0)
-        glTexCoord2f(x1, y0)
-        glVertex3f(1.0, -1.0, 0)
-        glTexCoord2f(x1, y1)
-        glVertex3f(1.0, 1.0, 0)
-        glTexCoord2f(x0, y1)
-        glVertex3f(-1.0, 1.0, 0)
+        else:
 
-        glEnd()
+            # compute texture coordinates
+            x0 = .5 - self.context.viewport[2] / 2 - self.context.viewport[0] * self.aspect
+            x1 = .5 + self.context.viewport[2] / 2 - self.context.viewport[0] * self.aspect
+            y0 = .5 - self.context.viewport[2] / (2 * self.aspect) + self.context.viewport[1]
+            y1 = .5 + self.context.viewport[2] / (2 * self.aspect) + self.context.viewport[1]
+
+            # render texture
+            glBegin(GL_QUADS)
+
+            glTexCoord2f(x0, y0)
+            glVertex3f(-1.0, -1.0, 0)
+            glTexCoord2f(x1, y0)
+            glVertex3f(1.0, -1.0, 0)
+            glTexCoord2f(x1, y1)
+            glVertex3f(1.0, 1.0, 0)
+            glTexCoord2f(x0, y1)
+            glVertex3f(-1.0, 1.0, 0)
+            glEnd()
+
 
         # render console
         if(self.show_console):

@@ -1,6 +1,7 @@
 // EPIMORPH library file
 // seed functions
 
+
 _EPI_ float4 simple(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
   // DEV

@@ -33,6 +33,47 @@ _EPI_ float2 torus_reduce(float2 z){
 }
 
 
+_EPI_ float2 tri_reduce(float2 z){
+  // reduction based on the reflective torus
+  // FULL, LIVE, DEV
+
+  z = (z + (float2)(1.0f, sqrt(3.0f) / 2.0f)) / 2.0f;
+
+  
+  float2 zi = floor((float2)(z.x - z.y * sqrt(3.0f) / 3.0f, z.y * 2.0f * sqrt(3.0f) / 3.0f));
+  float2 zr = z - (float2)(zi.x + zi.y / 2.0f, zi.y * sqrt(3.0f) / 2.0f);
+  //int a  = (int)remf(((int) (zi.x)), 3.0);
+  zi.x -= zi.y;
+  int a = (int)(zi.x - 3.0 * floor(zi.x / 3.0f));
+  int c = (zr.y > sqrt(3.0f) - zr.x * sqrt(3.0f));
+  
+  if(c){
+    zr.x -= 1.0f;
+
+    zr = -1.0f / 2.0f * (float2)(zr.x + zr.y * sqrt(3.0f), zr.x * sqrt(3.0f) - zr.y);
+
+    zr.x += 1.0f;    
+  }
+  
+  zr = 2.0f * zr - (float2)(1.0f, sqrt(3.0f) / 2.0f);
+
+  zr.y += sqrt(3.0f) / 6.0f;
+
+  if(a == 1){
+    zr = 1.0f / 2.0f * (float2)(-1.0f * zr.x - zr.y * sqrt(3.0f), zr.x * sqrt(3.0f) - zr.y);
+  }
+
+  if(a == 2){
+      zr = 1.0f / 2.0f * (float2)(-1.0f * zr.x + zr.y * sqrt(3.0f), -1.0f * zr.x * sqrt(3.0f) - zr.y);
+  }
+
+  zr.y -= sqrt(3.0f) / 6.0f;
+
+  return zr;
+
+}
+
+
 /*
 device__ float2 hex_reduce(float2 z){
   // hex reduce
