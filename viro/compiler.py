@@ -43,7 +43,7 @@ class Compiler():
             sys.exit(0)
 
         t0 = self.cmdcenter.get_time()
-        prg = cl.Program(self.ctx, cl.get_platforms()[0].get_devices(), [open("kernels/kernel.bcl").read()])
+        prg = cl.Program(self.ctx, [cl.get_platforms()[0].get_devices()[0]], [open("kernels/kernel.bcl").read()])
         prg.build()
 
         #   info("Compiling kernel - %s" % name)

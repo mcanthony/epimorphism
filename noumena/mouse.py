@@ -47,8 +47,9 @@ class MouseHandler(object):
 
     def motion(self, x, y):
         # drag center
-        self.context.viewport[0] = self.vp_start_x + self.context.viewport[2] * (x - self.mouse_start_x) / self.context.screen[0];
-        self.context.viewport[1] = self.vp_start_y + self.context.viewport[2] * (y - self.mouse_start_y) / self.context.screen[1];
+        self.state.sphere_rot[0] = self.context.viewport[0] = self.vp_start_x + self.context.viewport[2] * (x - self.mouse_start_x) / self.context.screen[0];
+        self.state.sphere_rot[1] = self.context.viewport[1] = self.vp_start_y + self.context.viewport[2] * (y - self.mouse_start_y) / self.context.screen[1];
+        # self.state.sphere_rot = self.context.viewport[0] + self.context.viewport[1] * 1j
 
 
 

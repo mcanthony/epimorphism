@@ -155,8 +155,7 @@ class Renderer(object):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
         if(self.profile.sphere):
-            5/0
-            gluPerspective(90.0, w / h, 0.1, 100.0)
+            gluPerspective(90.0, self.aspect, 0.1, 100.0)
         else:
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
@@ -235,8 +234,8 @@ class Renderer(object):
 	glLoadIdentity();			
         if(self.profile.sphere):
             glTranslatef(0, 0, -1.0 * self.context.viewport[2])
-            #glRotatef(100.0 * self.context.viewport[1] / self.context.screen[1],1.0,0.0,0.0)                      	
-            #glRotatef(100.0 * self.context.viewport[0] / self.context.screen[0],0.0,1.0,0.0)                      	
+            glRotatef(100.0 * self.state.sphere_rot[0], 1.0,0.0,0.0)                      	
+            glRotatef(100.0 * self.state.sphere_rot[1], 0.0,1.0,0.0)                      	
 
             gluSphere(self.quad, 1.3, 256, 256);
 

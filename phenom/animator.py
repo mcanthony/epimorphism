@@ -41,8 +41,8 @@ class Animator(object):
 
             self.state.paths.remove(active_path)            
 
-        if(obj):
-            eval("self."+obj).midi_echo = False
+#        if(obj):
+#            eval("self."+obj).midi_echo = False
 
         # add path
         path = Path(type, obj, idx, 0.0, self.time(), spd, **data)

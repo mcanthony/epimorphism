@@ -18,6 +18,7 @@
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
+ 'sphere_rot': [0.0,0.0],
  'zn': [(0.0+1.0j),
  (1.0+0.0j),
  (1.0+0j),

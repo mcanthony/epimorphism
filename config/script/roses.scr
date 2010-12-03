@@ -11,5 +11,7 @@
  {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_PSI1'), 25, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
  {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_BASE_PHI'), 30, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
  {'cmd':"animate_var('wave_1d', 'state.par', state.par_names.index('_COLOR_BASE_PSI'), 35, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.sphere_rot', 0, 20, {'a':2.0, 'b':0.0, 'th':0.0})", 'time':0.0},
+ {'cmd':"animate_var('wave_1d', 'state.sphere_rot', 1, 30, {'a':3.0, 'b':0.0, 'th':0.0})", 'time':0.0}
  ],
 }
