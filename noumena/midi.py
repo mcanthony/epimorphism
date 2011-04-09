@@ -152,7 +152,7 @@ if(config.app and config.app.midi_enabled):
                 f = val / 128.0
                 if(val == 127.0) : f = 1.0
 
-                # print "MIDI", bank, channel, val, f
+                print "MIDI", bank, channel, val, f
                 # print self.state.par[self.state.par_names.index("_COLOR_BASE_PHI")]
                 # check bindings
                 bindings = self.bindings[self.binding_idx]

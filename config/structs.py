@@ -31,8 +31,8 @@ class MidiList(list):
         # set value
         self.old_set(key, val)
 
-        if(self.midi_echo and hasattr(self, "midi")):
-            self.midi.mirror(self, key)
+#        if(self.midi_echo and hasattr(self, "midi")):
+#            self.midi.mirror(self, key)
 
 
 
