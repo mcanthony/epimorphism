@@ -31,6 +31,8 @@ class Engine(object):
         self.print_opencl_info()
 
         # OpenCL objects
+        print cl.get_platforms()[0].get_info(cl.platform_info.PROFILE)
+        sys.exit(0)
         self.device = cl.get_platforms()[0].get_devices()[0]
         self.ctx    = cl.Context([self.device])
         self.queue  = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
