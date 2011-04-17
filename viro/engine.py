@@ -163,47 +163,49 @@ class EngineCtypes(object):
         self.timings = [time.time()]
 
         # create args
-        args = [self.fb, self.out, self.pbo]
+        args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
+
         for data in self.frame:
             # convert to ctypes
             if(data["type"] == "float"):
-                args.append(numpy.float32(data["val"]))
+                args.append((byref(c_float(data["val"])), 4))
             elif(data["type"] == "float_array"):
-                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.float32)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_float * len(data["val"]))(data["val"]))
+                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
             elif(data["type"] == "int_array"):
-                args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(data["val"], dtype=numpy.int32)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_int * len(data["val"]))(data["val"]))
+                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
             elif(data["type"] == "complex_array"):
-               args.append(cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=numpy.array(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]])), dtype=numpy.float32)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))))
+                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
+
+        for i in xrange(len(args)):
+            err_num = openCL.clSetKernelArg(self.kernel, i, args[i][1], args[i][0])
+            self.catch_cl(err_num, "creating argument %d" % i)
 
         # execute kernel
         self.timings.append(time.time())
 
         event = create_string_buffer(8)
-        openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        self.catch_cl(err_num, "enque acquire pbo")
         err_num = openCL.clWaitForEvents(1, event)
-        if(err_num != 0):
-            error("acquire GL object: " + ERROR_CODES[err_num])
-            sys.exit(0)
+        self.catch_cl(err_num, "wating to acquire pbo")
+
                 
         self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                           *args, 
                           local_size=(block_size,block_size)).wait()
-
-
 
         self.timings.append(time.time())
 
         # copy out to fb
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), None, None, event)
-        if(err_num != 0):
-            error("copy image: " + ERROR_CODES[err_num])
-            sys.exit(0)
-
+        self.catch_cl(err_num, "enque copy fb")
         err_num = openCL.clWaitForEvents(1, event)        
-        if(err_num != 0):
-            error("wait for copy image: " + ERROR_CODES[err_num])
-            sys.exit(0)
+        self.catch_cl(err_num, "wating to copy fb")
+
 
         self.timings.append(time.time())
 
@@ -215,11 +217,10 @@ class EngineCtypes(object):
             self.timings.append(time.time())
 
         event = create_string_buffer(8)
-        openCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        err_numopenCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        self.catch_cl(err_num, "enque release pbo")
         err_num = openCL.clWaitForEvents(1, event)
-        if(err_num != 0):
-            error("release GL object: " + ERROR_CODES[err_num])
-            sys.exit(0)
+        self.catch_cl(err_num, "wating to release pbo")
 
         self.frame_num += 1
         self.print_timings()
