@@ -18,7 +18,7 @@ set_log("ENGINE")
 mf = cl.mem_flags
 block_size = 16
 
-class Engine(object):
+class EngineCtypes(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
         It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
         It communicates to out via a pbo  '''
@@ -31,13 +31,11 @@ class Engine(object):
         self.print_opencl_info()
 
         # OpenCL objects
-        print cl.get_platforms()[0].get_info(cl.platform_info.PROFILE)
-        sys.exit(0)
         self.device = cl.get_platforms()[0].get_devices()[0]
         self.ctx    = cl.Context([self.device])
         self.queue  = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 
-        self.compiler = Compiler(self.ctx)
+        self.compiler = CompilerCtypes(self.ctx)
 
         self.pbo = None
 

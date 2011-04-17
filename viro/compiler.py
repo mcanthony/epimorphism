@@ -8,7 +8,7 @@ from common.log import *
 from common.runner import *
 set_log("COMPILER")
 
-class Compiler():
+class CompilerCtypes():
     ''' OpenCL Program compiler '''
 
     def __init__(self, ctx):
@@ -28,9 +28,7 @@ class Compiler():
             os.system("rm aeon/.#*")
 
         # render ecu files
-        files = [file for file in os.listdir("aeon") if re.search("\.ecl$", file)]
-        for file in files:
-            self.render_file(file)
+        files = [self.render_file(file) for file in os.listdir("aeon") if re.search("\.ecl$", file)]
 
         # start subprocess
         os.system("rm kernels/kernel.bcl")
@@ -38,8 +36,8 @@ class Compiler():
         (stdout, stderr) = sub.communicate()
 
         if(len(stdout) != 0):
-            print "CRITICAL: Couldn't compile kernel"
-            print stdout
+            critical("CRITICAL: Couldn't compile kernel")
+            critical(stdout)
             sys.exit(0)
 
         t0 = self.cmdcenter.get_time()

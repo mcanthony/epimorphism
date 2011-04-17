@@ -13,7 +13,7 @@ glutCreateWindow("")
 
 device = cl.get_platforms()[0].get_devices()[0]
 ctx    = cl.Context([device])
-queue  = cl.CommandQueue(ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
+# queue  = cl.CommandQueue(ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
 prg = cl.Program(ctx, open("aeon/__kernel.cl").read())
 
 try:
