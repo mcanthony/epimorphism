@@ -10,7 +10,7 @@ import sys
 
 from common.runner import *
 
-import pygame
+#import pygame
 
 import common.glFreeType
 FONT_PATH = "common/FreeSansBold.ttf"
@@ -42,8 +42,8 @@ class Renderer(object):
 
         try:
             if(self.context.screen == "auto"):
-                pygame.init()
-                max = pygame.display.list_modes()[0]
+                # pygame.init()
+                max = (1920,1080) #pygame.display.list_modes()[0]
                 self.context.screen = [max[0], max[1], True]
 
             if(self.context.screen[2]):

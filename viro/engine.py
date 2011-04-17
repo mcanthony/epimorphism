@@ -2,7 +2,7 @@ from common.globals import *
 
 from viro.compiler import *
 
-import pyopencl as cl
+# import pyopencl as cl
 import numpy
 
 import sys
@@ -18,6 +18,12 @@ set_log("ENGINE")
 mf = cl.mem_flags
 block_size = 16
 
+
+from ctypes import *
+from opencl import *
+openCL = CDLL("libOpenCL.so")
+gl = CDLL("libGL.so.1")
+
 class EngineCtypes(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
         It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
@@ -27,27 +33,12 @@ class EngineCtypes(object):
         debug("Initializing Engine")
         Globals().load(self)
 
-        debug("Setting up OpenCL")
-        self.print_opencl_info()
+        # self.print_opencl_info()
 
         # OpenCL objects
-        self.device = cl.get_platforms()[0].get_devices()[0]
-        self.ctx    = cl.Context([self.device])
-        self.queue  = cl.CommandQueue(self.ctx, properties=cl.command_queue_properties.PROFILING_ENABLE)
+        self.initOpenCL()
 
-        self.compiler = CompilerCtypes(self.ctx)
-
-        self.pbo = None
-
-        # OpenCL buffers
-        data       = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
-        data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
-
-        self.fb  = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.out = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.aux = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.FLOAT), (self.profile.kernel_dim,)*2, hostbuf=data)
-        self.img = cl.Image(self.ctx, mf.READ_WRITE | mf.COPY_HOST_PTR | mf.ALLOC_HOST_PTR, cl.ImageFormat(cl.channel_order.BGRA, cl.channel_type.UNSIGNED_INT8), (self.profile.kernel_dim,)*2, hostbuf=data_uint8)
-        #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
+        self.compiler = CompilerCtypes(self.context, self.device)
 
         # timing vars
         num_time_events = 3
@@ -55,19 +46,109 @@ class EngineCtypes(object):
         self.event_accum_tmp = [0 for i in xrange(num_time_events)]
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
+        self.frame_num = 0
 
         # fb download vars
         self.new_fb_event = threading.Event()
         self.do_get_fb = False
-        self.fb_contents = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
 
-        self.frame_num = 0
-
-        # generate pbo & compile kernel
-        self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
-        self.pbo = cl.GLBuffer(self.ctx, mf.WRITE_ONLY, self.pbo_ptr.value)
 
         return True
+
+    def catch_cl(self, err_num, msg):
+        if(err_num != 0):
+            error(msg + ": " + ERROR_CODES[err_num])
+            sys.exit(0)
+
+    
+    def initOpenCL(self):
+        debug("Setting up OpenCL")
+
+        num_platforms = create_string_buffer(4)
+        err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
+        self.catch_cl(err_num, "counting platforms")
+        num_platforms = cast(num_platforms, POINTER(c_int)).contents.value
+
+        platforms = create_string_buffer(4 * num_platforms)
+        err_num = openCL.clGetPlatformIDs (num_platforms, platforms, None)
+        self.catch_cl(err_num, "getting platforms")
+        self.platform = cast(platforms, POINTER(c_int))[0]
+
+        num_devices = create_string_buffer(4)
+        err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, 0, None, num_devices);
+        self.catch_cl(err_num, "counting devices")
+        num_devices = cast(num_devices, POINTER(c_int)).contents.value
+
+        devices = create_string_buffer(4 * num_devices)
+        err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, num_devices, devices, None);
+        self.catch_cl(err_num, "getting devices")
+        self.device = cast(devices, POINTER(c_int))[0]
+
+        properties = (c_long * 7)(GL_CONTEXT_KHR, gl.glXGetCurrentContext(), GLX_DISPLAY_KHR, gl.glXGetCurrentDisplay(), CONTEXT_PLATFORM, self.platform, 0)
+        err_num = create_string_buffer(4)
+        self.context = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, byref(err_num));
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating context")
+
+        err_num = create_string_buffer(4)
+        self.queue = openCL.clCreateCommandQueue(self.context, self.device, 0, byref(err_num));
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating queue")
+
+        # create images
+        format = (c_uint * 2)(BGRA, FLOAT)
+
+        err_num = create_string_buffer(4)
+        self.fb = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating fb")
+
+        err_num = create_string_buffer(4)
+        self.out = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating out")
+
+        err_num = create_string_buffer(4)
+        self.aux = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating aux")
+
+        err_num = create_string_buffer(4)
+        format = (c_uint * 2)(BGRA, UNSIGNED_INT8)
+        self.img = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating img")
+
+        # create pbo
+        err_num = create_string_buffer(4)
+        self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
+        self.pbo = openCL.clCreateFromGLBuffer(self.context, MEM_WRITE_ONLY, self.pbo_ptr, byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "create_pbo")
+
+        # OpenCL buffers
+        #data       = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.float)
+        #data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
+        #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
+
+        contents = open("aeon/__kernel.cl").read()
+        contents = c_char_p(contents)
+        err_num = create_string_buffer(4)        
+        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating program")
+
+        err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        self.catch_cl(err_num, "building program")
+
+        err_num = create_string_buffer(4)        
+        self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating program")
+
+        sys.exit(0)
+
+
 
 
     def __del__(self):
@@ -96,14 +177,34 @@ class EngineCtypes(object):
 
         # execute kernel
         self.timings.append(time.time())
-        cl.enqueue_acquire_gl_objects(self.queue, [self.pbo]).wait()
+
+        event = create_string_buffer(8)
+        openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        err_num = openCL.clWaitForEvents(1, event)
+        if(err_num != 0):
+            error("acquire GL object: " + ERROR_CODES[err_num])
+            sys.exit(0)
+                
         self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
                           *args, 
                           local_size=(block_size,block_size)).wait()
+
+
+
         self.timings.append(time.time())
 
         # copy out to fb
-        cl.enqueue_copy_image(self.queue, self.out, self.fb, (0, 0), (0, 0), (self.profile.kernel_dim,) * 2).wait()
+        event = create_string_buffer(8)
+        err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), None, None, event)
+        if(err_num != 0):
+            error("copy image: " + ERROR_CODES[err_num])
+            sys.exit(0)
+
+        err_num = openCL.clWaitForEvents(1, event)        
+        if(err_num != 0):
+            error("wait for copy image: " + ERROR_CODES[err_num])
+            sys.exit(0)
+
         self.timings.append(time.time())
 
         # post processing
@@ -113,7 +214,12 @@ class EngineCtypes(object):
                                   local_size=(block_size,block_size)).wait()
             self.timings.append(time.time())
 
-        cl.enqueue_release_gl_objects(self.queue, [self.pbo]).wait()
+        event = create_string_buffer(8)
+        openCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        err_num = openCL.clWaitForEvents(1, event)
+        if(err_num != 0):
+            error("release GL object: " + ERROR_CODES[err_num])
+            sys.exit(0)
 
         self.frame_num += 1
         self.print_timings()

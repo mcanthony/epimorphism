@@ -9,7 +9,7 @@ formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s %(lineno)d
 
 # create console output
 ch = logging.StreamHandler()
-ch.setLevel(logging.INFO)
+ch.setLevel(logging.DEBUG)
 ch.setFormatter(formatter)
 
 # create file output

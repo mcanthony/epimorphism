@@ -1,6 +1,7 @@
 {
  'name': 'dev',
  '_state': 'dev',
+ '_context': 'dev',
 
- 'component_level': 'DEV'
+ 'component_level': 'FULL'
 }

@@ -8,15 +8,19 @@ from common.log import *
 from common.runner import *
 set_log("COMPILER")
 
+from ctypes import *
+from opencl import *
+openCL = CDLL("libOpenCL.so")
+
 class CompilerCtypes():
     ''' OpenCL Program compiler '''
 
-    def __init__(self, ctx):
+    def __init__(self, context, device):
         debug("Initializing Compiler")
         Globals().load(self)
 
+        self.context, self.device = context, device
         self.substitutions = {"KERNEL_DIM": self.profile.kernel_dim, "FRACT": self.profile.FRACT}
-        self.ctx = ctx
 
 
     def compile(self):
@@ -30,19 +34,33 @@ class CompilerCtypes():
         # render ecu files
         files = [self.render_file(file) for file in os.listdir("aeon") if re.search("\.ecl$", file)]
 
-        # start subprocess
-        os.system("rm kernels/kernel.bcl")
-        sub = subprocess.Popen("kernels/compile_kernel.py", stdout=subprocess.PIPE)
-        (stdout, stderr) = sub.communicate()
-
-        if(len(stdout) != 0):
-            critical("CRITICAL: Couldn't compile kernel")
-            critical(stdout)
+        contents = open("aeon/__kernel.cl").read()
+        contents = c_char_p(contents)
+        err_num = create_string_buffer(4)        
+        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        if(err_num != 0):
+            error("creating program: " + ERROR_CODES[err_num])
             sys.exit(0)
 
-        t0 = self.cmdcenter.get_time()
-        prg = cl.Program(self.ctx, [cl.get_platforms()[0].get_devices()[0]], [open("kernels/kernel.bcl").read()])
-        prg.build()
+        err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        if(err_num != 0):
+            error("building program: " + ERROR_CODES[err_num])
+            sys.exit(0)        
+
+        # start subprocess
+        #os.system("rm kernels/kernel.bcl")
+        #sub = subprocess.Popen("kernels/compile_kernel.py", stdout=subprocess.PIPE)
+        #(stdout, stderr) = sub.communicate()
+
+        #if(len(stdout) != 0):
+        #    critical("CRITICAL: Couldn't compile kernel")
+        #    critical(stdout)
+        #    sys.exit(0)
+
+        #t0 = self.cmdcenter.get_time()
+        #prg = cl.Program(self.ctx, [cl.get_platforms()[0].get_devices()[0]], [open("kernels/kernel.bcl").read()])
+        #prg.build()
 
         #   info("Compiling kernel - %s" % name)
         #kernel_contents = open("aeon/__kernel.cl").read()
@@ -64,7 +82,7 @@ class CompilerCtypes():
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
 
-        return prg
+        return self.program
 
 
     def render_file(self, name):
