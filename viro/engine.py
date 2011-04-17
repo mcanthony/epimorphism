@@ -131,22 +131,22 @@ class EngineCtypes(object):
         #data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
 
-        contents = open("aeon/__kernel.cl").read()
-        contents = c_char_p(contents)
-        err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating program")
+        #contents = open("aeon/__kernel.cl").read()
+        #contents = c_char_p(contents)
+        #err_num = create_string_buffer(4)        
+        #self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        #err_num = cast(err_num, POINTER(c_int)).contents.value
+        #self.catch_cl(err_num, "creating program")
 
-        err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        self.catch_cl(err_num, "building program")
+        #err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        #self.catch_cl(err_num, "building program")
 
-        err_num = create_string_buffer(4)        
-        self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating program")
+        #err_num = create_string_buffer(4)        
+        #self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
+        #err_num = cast(err_num, POINTER(c_int)).contents.value
+        #self.catch_cl(err_num, "creating program")
 
-        sys.exit(0)
+        #sys.exit(0)
 
 
 
@@ -190,12 +190,16 @@ class EngineCtypes(object):
         err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque acquire pbo")
         err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "wating to acquire pbo")
+        self.catch_cl(err_num, "waiting to acquire pbo")
 
-                
-        self.prg.epimorph(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
-                          *args, 
-                          local_size=(block_size,block_size)).wait()
+        event = create_string_buffer(8)
+        err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.kernel, 2, None, 
+                                                (c_uint * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
+                                                (c_uint * 2)(block_size, block_size), 
+                                                None, None, event)
+        self.catch_cl(err_num, "enque execute kernel")
+        err_num = openCL.clWaitForEvents(1, event)
+        self.catch_cl(err_num, "waiting to execute kernel")
 
         self.timings.append(time.time())
 
@@ -204,7 +208,7 @@ class EngineCtypes(object):
         err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), None, None, event)
         self.catch_cl(err_num, "enque copy fb")
         err_num = openCL.clWaitForEvents(1, event)        
-        self.catch_cl(err_num, "wating to copy fb")
+        self.catch_cl(err_num, "waiting to copy fb")
 
 
         self.timings.append(time.time())
@@ -220,7 +224,7 @@ class EngineCtypes(object):
         err_numopenCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque release pbo")
         err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "wating to release pbo")
+        self.catch_cl(err_num, "waiting to release pbo")
 
         self.frame_num += 1
         self.print_timings()
