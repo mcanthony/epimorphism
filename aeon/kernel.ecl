@@ -21,6 +21,14 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 #include "__seed.cl"
 #include "cull.cl"
 
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void test(__global int* out_buf){
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  out_buf[y * KERNEL_DIM + x] = 1;
+}
+
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
 	      __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
@@ -37,6 +45,7 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
   float2 z_z = z;
 
+  
   // internal antialiasing
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   const float i_k = (FRACT == 1 ? 0.0f : 0.5f / KERNEL_DIM);  
@@ -46,12 +55,12 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
     for(int i_y = 0; i_y < (int)FRACT; i_y++){
       z = CX(z_z.x - i_k + i_x * inc, z_z.y - i_k + i_y * inc);
       float2 z_c = z;
-
+      
       // compute T      
       z = M(zn[2], z) + zn[3];
       %T%
       z = t;
-      //      %REDUCE%
+      // %REDUCE%
       reduce = torus_reduce(z);
       z = recover2(reduce);      
       z = M(zn[0], z) + zn[1];
@@ -60,14 +69,15 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
       
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
-
-      // compute seed    
+     
+      // compute seed          
       z = M(zn[10], (z - zn[11]));           
       %T_SEED%
       z = t_seed;
       z = M(zn[8], (z - zn[9]));
       %REDUCE%
       z = recover2(reduce);
+      
       %SEED%
       seed = _gamma3(seed, _COLOR_GAMMA);      
 
@@ -83,29 +93,25 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
 
   // scale
   v /= (FRACT * FRACT);
-  v.w *= (FRACT * FRACT);
-  
+  v.w *= (FRACT * FRACT); 
   v = recover4(v);
-  // compute color
+
+  // compute color  
   %COLOR%;
-
-
   color = recover4(color);
 
   // write to out
-  write_imagef(out, p, color);
-  
-  
+  write_imagef(out, p, color);   
 
-  //  z = tri_reduce(4.0f*z);
+  //z = tri_reduce(4.0f*z);
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
 
   // write to pbo
-  if(_POST_PROCESSING == 0.0f)
-    pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  //if(_POST_PROCESSING == 0.0f)
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
   //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
-
+  //pbo[y * KERNEL_DIM + x] = (char4)(0,0,255,255);
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
