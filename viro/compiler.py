@@ -15,11 +15,11 @@ openCL = CDLL("libOpenCL.so")
 class CompilerCtypes():
     ''' OpenCL Program compiler '''
 
-    def __init__(self, context, device):
+    def __init__(self, context):
         debug("Initializing Compiler")
         Globals().load(self)
 
-        self.context, self.device = context, device
+        self.context = context
         self.substitutions = {"KERNEL_DIM": self.profile.kernel_dim, "FRACT": self.profile.FRACT}
 
 
@@ -32,6 +32,8 @@ class CompilerCtypes():
         ''' Executes the main Compiler sequence '''
         debug("Executing")
 
+        debug("c0")
+
         # remove emacs crap
         if(commands.getoutput("ls aeon/.#*").find("No such file or directory") == -1):
             os.system("rm aeon/.#*")
@@ -40,31 +42,28 @@ class CompilerCtypes():
         t0 = self.cmdcenter.get_time()
         files = [self.render_file(file) for file in os.listdir("aeon") if re.search("\.ecl$", file)]
 
+
+        debug("c1")
         contents = open("aeon/__kernel.cl").read()
         contents = c_char_p(contents)
         err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating program")
+        debug("c2")
 
-        err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        self.catch_cl(err_num, "building program")
+        debug("c2.1")
 
-        err_num = create_string_buffer(4)        
-        self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating kernel")
-
-        print "sleeping"
-        time.sleep(2)
-
-
-        
+        err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        #time.sleep(3)
+        #err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        debug("c2.2")
+        self.catch_cl(err_num, "building program")        
 
         #contents = open("aeon/__kernel.cl").read()
         #contents = c_char_p(contents)
         #err_num = create_string_buffer(4)        
-        #self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        #self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
         #err_num = cast(err_num, POINTER(c_int)).contents.value
         #self.catch_cl(err_num, "creating program")
 
@@ -105,7 +104,7 @@ class CompilerCtypes():
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
 
-        return self.kernel
+        return self.program
 
 
     def render_file(self, name):
@@ -145,7 +144,7 @@ class CompilerCtypes():
 
         # write file contents
         #name = "aeon/__%s" % (name.replace(".ecl", ".cl"))
-        #print name
+        #debug(name)
                               
         file = open("aeon/__%s" % (name.replace(".ecl", ".cl")), 'w')
         file.write(contents)

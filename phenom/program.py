@@ -52,6 +52,12 @@ class RandomComponents1(Program):
 class RandomComponents2(Program):
     def _execute(self):
         while(not self.exit and not self.app.exit):
+
+            # make this better
+            t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()
+            while(self.cmdcenter.time() < t and not self.app.exit):
+                time.sleep(0.1)
+            #time.sleep()
             
             i = random.randint(0,4)
             if(i == 0):
@@ -66,9 +72,4 @@ class RandomComponents2(Program):
                 async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 0)"))
             elif(i == 5):
                 async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)"))
-
-            # make this better
-            t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()
-            while(self.cmdcenter.time() < t and not self.app.exit):
-                time.sleep(0.1)
-            #time.sleep()
+        

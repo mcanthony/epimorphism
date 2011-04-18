@@ -113,16 +113,24 @@ class ComponentManager(object):
         ''' Switches the system to the new components specified in data '''
         debug("Switching components: %s" % str(data))
 
+        debug("sc-1")
+
         self.switching_components = True
+
+        debug("sc0")
 
         if(len(data) == 0):
             return True
 
+        debug("sc1")
+
         # create interpolation strings
         for component_name, val in data.items():
+            debug(component_name)
             if(len(data) == 1):
                 self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
 
+            debug("sc1.1")
             idx_idx = self.datamanager.component_names.index(component_name)
             components = self.datamanager.components[component_name]
             try:
@@ -130,6 +138,7 @@ class ComponentManager(object):
             except:
                 error("couldn't find val in components - %s, %s" % (component_name, val))
                 return False
+            debug("sc1.2")
 
             val_idx = components.index(component)
 
@@ -142,9 +151,13 @@ class ComponentManager(object):
             intrp += "\t\tintrp_t = (1.0 + erf(4.0f * intrp_t - 2.0f)) / 2.0;\n"
             intrp += "\t\t%s = ((1.0f - intrp_t) * (%s0) + intrp_t * (%s1));\n\t}" % (name, name, name)                
 
+            debug("sc1.3")
+
             self.state.components[component_name] = intrp
 
             self.component_idx[2 * idx_idx] = val_idx
+
+        debug("sc2")
 
         # compile engine
         self.engine.compile()        
