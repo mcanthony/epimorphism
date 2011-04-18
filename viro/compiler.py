@@ -109,7 +109,7 @@ class CompilerCtypes():
 
     def render_file(self, name):
         ''' Substitues escape sequences in a .ecu file with dynamic content '''
-        debug("Rendering: %s", name)
+        debug("Rendering: %s", name)        
 
         # open file & read contents
         file = open("aeon/" + name)

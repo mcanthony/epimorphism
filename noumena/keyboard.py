@@ -27,11 +27,15 @@ class KeyboardHandler(object):
 
 
     def keyboard(self, key, x, y):
+        print "keyboard start"
+
+        #self.engine.processing.wait()
 
         # get modifiers
         modifiers = glutGetModifiers()
         
         async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
+        #eval("self." + self.context.keyboard)(key, modifiers)
 
 
     def common(self, key, modifiers):
@@ -213,6 +217,8 @@ class KeyboardHandler(object):
             # minify par_scale
             elif(key == GLUT_KEY_PAGE_DOWN):
                 self.context.par_scale /= 2.0
+
+        print "keyboard end"
 
 
     def live(self, key, modifiers):

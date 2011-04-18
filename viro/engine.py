@@ -151,6 +151,13 @@ class EngineCtypes(object):
         
         self.timings = [time.time()]
 
+
+        event = create_string_buffer(8)
+        err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        self.catch_cl(err_num, "enque acquire pbo")
+        err_num = openCL.clWaitForEvents(1, event)
+        self.catch_cl(err_num, "waiting to acquire pbo")
+
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
         
@@ -205,17 +212,11 @@ class EngineCtypes(object):
         # execute kernel
         self.timings.append(time.time())
 
-        event = create_string_buffer(8)
-        err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
-        self.catch_cl(err_num, "enque acquire pbo")
-        err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "waiting to acquire pbo")
-
         # print("bp5")
 
-        #if(self.do_flash_fb):
-        #    self.upload_image(self.fb, self.empty)
-        #    self.do_flash_fb = False
+        if(self.do_flash_fb):
+            self.upload_image(self.fb, self.empty)
+            self.do_flash_fb = False
 
         
         event = create_string_buffer(8)
@@ -240,7 +241,6 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "enque copy fb")
         err_num = openCL.clWaitForEvents(1, event)        
         self.catch_cl(err_num, "waiting to copy fb")
-
 
         self.timings.append(time.time())
 
