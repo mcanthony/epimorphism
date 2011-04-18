@@ -64,6 +64,8 @@ class EngineCtypes(object):
     def initOpenCL(self):
         debug("Setting up OpenCL")
 
+        debug("bp1")
+
         num_platforms = create_string_buffer(4)
         err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
         self.catch_cl(err_num, "counting platforms")
@@ -131,23 +133,24 @@ class EngineCtypes(object):
         #data_uint8 = numpy.zeros((self.profile.kernel_dim, self.profile.kernel_dim, 4), dtype=numpy.uint8)
         #self.upload_image(self.fb, numpy.asarray(Image.open('test.png').convert("RGBA")))
 
-        #contents = open("aeon/__kernel.cl").read()
-        #contents = c_char_p(contents)
-        #err_num = create_string_buffer(4)        
-        #self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
-        #err_num = cast(err_num, POINTER(c_int)).contents.value
-        #self.catch_cl(err_num, "creating program")
+        contents = open("aeon/__kernel.cl").read()
+        contents = c_char_p(contents)
+        err_num = create_string_buffer(4)        
+        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating program")
 
-        #err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        #self.catch_cl(err_num, "building program")
+        err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        self.catch_cl(err_num, "building program")
 
-        #err_num = create_string_buffer(4)        
-        #self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
-        #err_num = cast(err_num, POINTER(c_int)).contents.value
-        #self.catch_cl(err_num, "creating program")
+        err_num = create_string_buffer(4)        
+        self.kernel = openCL.clCreateKernel(self.program, c_char_p("epimorph"), byref(err_num))
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating kernel")
 
         #sys.exit(0)
 
+        debug("bp2")
 
 
 
@@ -165,23 +168,31 @@ class EngineCtypes(object):
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
 
+
+        print("bp3")
+
         for data in self.frame:
             # convert to ctypes
             if(data["type"] == "float"):
                 args.append((byref(c_float(data["val"])), 4))
             elif(data["type"] == "float_array"):
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_float * len(data["val"]))(data["val"]))
-                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]))
+                args.append((byref(cast(buf, c_void_p)), 8))
             elif(data["type"] == "int_array"):
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_int * len(data["val"]))(data["val"]))
-                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]), (c_int * len(data["val"]))(*data["val"]))
+                args.append((byref(cast(buf, c_void_p)), 8))
             elif(data["type"] == "complex_array"):
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))))
-                args.append(cl.Buffer((byref(cast(buf, c_void_p)), 8)))
+                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY or MEM_COPY_HOST_PTR, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))))
+                args.append((byref(cast(buf, c_void_p)), 8))
+
+        print("bp3.5")
 
         for i in xrange(len(args)):
+            print args[i]
             err_num = openCL.clSetKernelArg(self.kernel, i, args[i][1], args[i][0])
             self.catch_cl(err_num, "creating argument %d" % i)
+
+        print("bp4")
 
         # execute kernel
         self.timings.append(time.time())
@@ -192,16 +203,23 @@ class EngineCtypes(object):
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to acquire pbo")
 
+        print("bp5")
+
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.kernel, 2, None, 
-                                                (c_uint * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
-                                                (c_uint * 2)(block_size, block_size), 
+                                                (c_long * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
+                                                (c_long * 2)(block_size, block_size), 
                                                 None, None, event)
         self.catch_cl(err_num, "enque execute kernel")
+
+        print("bp5.5")
+
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to execute kernel")
 
         self.timings.append(time.time())
+
+        print("bp6")
 
         # copy out to fb
         event = create_string_buffer(8)
@@ -221,7 +239,7 @@ class EngineCtypes(object):
             self.timings.append(time.time())
 
         event = create_string_buffer(8)
-        err_numopenCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
+        err_num = openCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque release pbo")
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to release pbo")
@@ -310,14 +328,13 @@ class EngineCtypes(object):
         info("Starting engine")
 
         # compile kernel
-        self.prg = self.compile()
+        self.compile()
 
 
     def compile(self):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
-        return self.compiler.compile()
-
+ #       self.kernel = self.compiler.compile()
 
     def upload_image(self, cl_image, data):
         ''' Upload an image to the DEVICE '''

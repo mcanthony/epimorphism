@@ -147,7 +147,7 @@ class ComponentManager(object):
             self.component_idx[2 * idx_idx] = val_idx
 
         # compile engine
-        self.engine.prg = self.engine.compile()        
+        self.engine.compile()        
 
         # set internal values
         for component_name, val in data.items():
