@@ -31,7 +31,7 @@ void test(){
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* pbo, float time, float switch_time,
-	      __constant float *par, __constant float *internal, __constant int *indices, __constant float2 *zn){
+	      __constant float *par, __constant float *internal, __constant float2 *zn){
   float intrp_t;
   float2 t, t0, t1, t_seed, t_seed0, t_seed1, reduce, reduce0, reduce1;
   float4 seed, seed0, seed1, color, color0, color1;

@@ -145,7 +145,12 @@ class EngineCtypes(object):
         #print cast(res1, POINTER(c_int)).contents.value
         #print cast(res2, POINTER(c_int)).contents.value
 
+
+        self.program = None
+
         self.empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
+        
+        self.buffers = {}
 
 
     def __del__(self):
@@ -159,6 +164,9 @@ class EngineCtypes(object):
 
         if(self.do_compile_flag):
             self.do_compile()
+
+        if(not self.program):
+            return
         
         self.timings = [time.time()]
 
@@ -182,44 +190,35 @@ class EngineCtypes(object):
             if(data["type"] == "float"):
                 args.append((byref(c_float(data["val"])), 4))
             elif(data["type"] == "float_array"):
-                err_num = create_string_buffer(4)
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 8 * len(data["val"]), None, err_num)
-                err_num = cast(err_num, POINTER(c_int)).contents.value
-                self.catch_cl(err_num, "create buf")
+                if(not self.buffers.has_key(data["name"])):
+                    err_num = create_string_buffer(4)
+                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
+                    err_num = cast(err_num, POINTER(c_int)).contents.value
+                    self.catch_cl(err_num, "create buf")
+
 
                 event = create_string_buffer(8)
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 8 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, event)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], FALSE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, event)
                 self.catch_cl(err_num, "write buf")
                 err_num = openCL.clWaitForEvents(1, event)
                 self.catch_cl(err_num, "waiting to upload var")
+                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
-                args.append((byref(cast(buf, c_void_p)), 8))
-            elif(data["type"] == "int_array"):
-                err_num = create_string_buffer(4)
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
-                err_num = cast(err_num, POINTER(c_int)).contents.value
-                self.catch_cl(err_num, "create buf")
-
-                event = create_string_buffer(8)
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 4 * len(data["val"]), (c_int * len(data["val"]))(*data["val"]), None, None, event)
-                self.catch_cl(err_num, "write buf")
-                err_num = openCL.clWaitForEvents(1, event)
-                self.catch_cl(err_num, "waiting to upload var")
-
-                args.append((byref(cast(buf, c_void_p)), 8))
             elif(data["type"] == "complex_array"):
-                err_num = create_string_buffer(4)
-                buf = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 8 * len(data["val"]) * 2, None, err_num)
-                err_num = cast(err_num, POINTER(c_int)).contents.value
-                self.catch_cl(err_num, "create buf")
+
+                if(not self.buffers.has_key(data["name"])):
+                    err_num = create_string_buffer(4)
+                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
+                    err_num = cast(err_num, POINTER(c_int)).contents.value
+                    self.catch_cl(err_num, "create buf")
 
                 event = create_string_buffer(8)
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 8 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, event)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], FALSE, 0, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, event)
                 self.catch_cl(err_num, "write buf")
                 err_num = openCL.clWaitForEvents(1, event)
                 self.catch_cl(err_num, "waiting to upload var")
 
-                args.append((byref(cast(buf, c_void_p)), 8))
+                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
                 
         # print("bp3.5")
@@ -274,9 +273,19 @@ class EngineCtypes(object):
 
         # post processing
         if(self.state.get_par("_POST_PROCESSING") != 0.0):
-            self.prg.post_process(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),
-                                  self.fb, self.pbo, args[3], args[5],
-                                  local_size=(block_size,block_size)).wait()
+            post_args = [args[0], args[2], args[3], args[5]]
+            for i in xrange(len(post_args)):
+                err_num = openCL.clSetKernelArg(self.post_process, i, post_args[i][1], post_args[i][0])
+                self.catch_cl(err_num, "creating post argument %d" % i)
+            event = create_string_buffer(8)
+            err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.post_process, 2, None, 
+                                                    (c_long * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
+                                                    (c_long * 2)(block_size, block_size), 
+                                                    None, None, event)
+            self.catch_cl(err_num, "enque post execute kernel")
+            err_num = openCL.clWaitForEvents(1, event)
+            self.catch_cl(err_num, "waiting to execute post kernel")
+
             self.timings.append(time.time())
 
         event = create_string_buffer(8)
@@ -381,14 +390,20 @@ class EngineCtypes(object):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
 
-        self.do_compile_flag = True
+        #self.do_compile_flag = True
+        self.do_compile()
 
 
     def do_compile(self):
         self.do_compile_flag = False
         
         # compiler
-        self.program = self.compiler.compile()
+        self.compiler.compile(self.compiler_callback)
+
+
+    def compiler_callback(self):
+        print "callback called"
+        self.program = self.compiler.program
 
         debug("c3")
         err_num = create_string_buffer(4)        
@@ -399,7 +414,12 @@ class EngineCtypes(object):
         err_num = create_string_buffer(4)        
         self.get_image = openCL.clCreateKernel(self.program, c_char_p("get_image"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating kernel")
+        self.catch_cl(err_num, "creating image kernel")
+
+        err_num = create_string_buffer(4)        
+        self.post_process = openCL.clCreateKernel(self.program, c_char_p("post_process"), err_num)
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating post process kernel")
 
         debug("c4")
 

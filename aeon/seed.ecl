@@ -2,7 +2,7 @@
 // seed functions
 
 
-_EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
+_EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -15,7 +15,7 @@ _EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant int* indic
 
 }
 
-_EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
+_EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
@@ -46,7 +46,7 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant int* indices,
 }
 
 
-_EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant int* indices, __constant float* internal, __constant float* par, float time, float switch_time){
+_EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time, float switch_time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 

@@ -28,7 +28,7 @@ class CompilerCtypes():
             error(msg + ": " + ERROR_CODES[err_num])
             sys.exit(0)
 
-    def compile(self):
+    def compile(self, callback):
         ''' Executes the main Compiler sequence '''
         debug("Executing")
 
@@ -42,61 +42,28 @@ class CompilerCtypes():
         t0 = self.cmdcenter.get_time()
         files = [self.render_file(file) for file in os.listdir("aeon") if re.search("\.ecl$", file)]
 
-
         debug("c1")
         contents = open("aeon/__kernel.cl").read()
         contents = c_char_p(contents)
+
         err_num = create_string_buffer(4)        
         self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating program")
         debug("c2")
 
-        debug("c2.1")
+        CBCKFUNC = CFUNCTYPE(None, c_long, c_void_p)
 
-        err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        #time.sleep(3)
-        #err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        def tmp_callback(program, data):
+            callback()
+
+        debug("c2.1")
+        err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-mad-enable -cl-no-signed-zeros"), None, None)
+        callback()
         debug("c2.2")
         self.catch_cl(err_num, "building program")        
 
-        #contents = open("aeon/__kernel.cl").read()
-        #contents = c_char_p(contents)
-        #err_num = create_string_buffer(4)        
-        #self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
-        #err_num = cast(err_num, POINTER(c_int)).contents.value
-        #self.catch_cl(err_num, "creating program")
 
-        #err_num = openCL.clBuildProgram(self.program, 1, (c_int * 1)(self.device), c_char_p("-I /home/gene/epimorphism/aeon -cl-unsafe-math-optimizations -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        #self.catch_cl(err_num, "building program")
-
-        # start subprocess
-        #os.system("rm kernels/kernel.bcl")
-        #sub = subprocess.Popen("kernels/compile_kernel.py", stdout=subprocess.PIPE)
-        #(stdout, stderr) = sub.communicate()
-
-        #if(len(stdout) != 0):
-        #    critical("CRITICAL: Couldn't compile kernel")
-        #    critical(stdout)
-        #    sys.exit(0)
-
-        #t0 = self.cmdcenter.get_time()
-        #prg = cl.Program(self.ctx, [cl.get_platforms()[0].get_devices()[0]], [open("kernels/kernel.bcl").read()])
-        #prg.build()
-
-        #   info("Compiling kernel - %s" % name)
-        #kernel_contents = open("aeon/__kernel.cl").read()
-        #prg = cl.Program(self.ctx, kernel_contents)
-        #try:
-        #    t1 = time.time()
-        #    prg.build(options="-I /home/gene/epimorphism/aeon")
-        #    t2 = time.time()
-        #    self.cmdcenter.t_phase -= (t2 - t1)
-        #except:
-        #    critical("Error:")
-        #    critical(prg.get_build_info(self.ctx.devices[0], cl.program_build_info.LOG))
-        #    self.app.exit = True
-        #    sys.exit(0)
                        
         t1 = self.cmdcenter.get_time()
         self.cmdcenter.t_phase -= t1 - t0
@@ -104,7 +71,7 @@ class CompilerCtypes():
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]
 
-        return self.program
+        #return self.program
 
 
     def render_file(self, name):
