@@ -144,7 +144,7 @@ class EngineCtypes(object):
 
 
     def do(self):
-        ''' Main event loop '''      
+        ''' Main event loop '''          
 
         if(self.do_compile_flag):
             self.do_compile()
@@ -215,7 +215,13 @@ class EngineCtypes(object):
         # print("bp5")
 
         if(self.do_flash_fb):
-            self.upload_image(self.fb, self.empty)
+            #self.upload_image(self.fb, self.empty)
+            format = (c_uint * 2)(BGRA, FLOAT)
+            err_num = create_string_buffer(4)
+            empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
+            self.fb = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
+            err_num = cast(err_num, POINTER(c_int)).contents.value
+            self.catch_cl(err_num, "creating fb")
             self.do_flash_fb = False
 
         
@@ -355,6 +361,7 @@ class EngineCtypes(object):
 
         self.do_compile_flag = True
 
+
     def do_compile(self):
         self.do_compile_flag = False
         
@@ -373,6 +380,7 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "creating kernel")
 
         debug("c4")
+
 
     def upload_image(self, cl_image, data):
         ''' Upload an image to the DEVICE '''
@@ -398,6 +406,6 @@ class EngineCtypes(object):
 
     def reset_fb(self):
         ''' Clear the current frame buffer '''
-        # self.do_flash_fb = True
-        self.upload_image(self.fb, self.empty)
-        # self.upload_image(self.fb, self.empty)
+        self.do_flash_fb = True
+        #self.upload_image(self.fb, self.empty)
+        #self.upload_image(self.fb, self.empty)

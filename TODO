@@ -10,11 +10,20 @@ Queue -
   DONE - remove midi  
   DONE - OpenCL  
 
+  Port:
+    Sporadic crash on compile
+    Asynchronous compiling
+    Asynchronous keyboard commands
+    Uploading images - problem & memory leak
+    Downloading images
+    Try texture instead of PBO
+
   Video:
     optimize mencoder command
     render video
 
   Cross platform:
+    remove pygame
     pyopengl bug?
     replace pyopencl with custom libraries
 
