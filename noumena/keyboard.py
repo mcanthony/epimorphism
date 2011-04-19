@@ -27,14 +27,18 @@ class KeyboardHandler(object):
 
 
     def keyboard(self, key, x, y):
-
+        #print key
         #self.engine.processing.wait()
 
         # get modifiers
         modifiers = glutGetModifiers()
         
-        #async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
-        eval("self." + self.context.keyboard)(key, modifiers)
+        async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
+        #eval("self." + self.context.keyboard)(key, modifiers)
+        #async(lambda : self.do_nothing())
+
+    def do_nothing(self):
+        print "a"
 
 
     def common(self, key, modifiers):
@@ -136,7 +140,6 @@ class KeyboardHandler(object):
             
 
     def full(self, key, modifiers):
-
         self.common(key, modifiers)
 
         # set pars if CTRL

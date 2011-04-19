@@ -23,10 +23,10 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(__global int* out_buf){
+void test(){
   const int x = get_global_id(0);
   const int y = get_global_id(1);
-  out_buf[y * KERNEL_DIM + x] = 1;
+  //out_buf[y * KERNEL_DIM + x] = 1;
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 

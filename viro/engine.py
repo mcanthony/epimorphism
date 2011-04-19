@@ -66,9 +66,7 @@ class EngineCtypes(object):
 
     
     def initOpenCL(self):
-        debug("Setting up OpenCL")
-
-        debug("bp1")
+        debug("Setting up OpenCL")        
 
         num_platforms = create_string_buffer(4)
         err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
@@ -132,7 +130,20 @@ class EngineCtypes(object):
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "create_pbo")
 
-        debug("bp2")
+        #from sources.OpenGL.GL import *
+        #err_num = create_string_buffer(4)
+        #self.tex = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
+        #self.pbo = openCL.clCreateFromGLTexture2D(self.context, MEM_READ_WRITE, GL_TEXTURE_2D, 0, self.tex, err_num)
+        #err_num = cast(err_num, POINTER(c_int)).contents.value
+        #self.catch_cl(err_num, "create pbo")
+
+        #res1 = create_string_buffer(4)
+        #res2 = create_string_buffer(4)
+        #err_num = create_string_buffer(4)
+        #err_num = openCL.clGetGLObjectInfo(self.pbo, res1, res2)
+        #self.catch_cl(err_num, "query pbo")
+        #print cast(res1, POINTER(c_int)).contents.value
+        #print cast(res2, POINTER(c_int)).contents.value
 
         self.empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
 
@@ -150,6 +161,8 @@ class EngineCtypes(object):
             self.do_compile()
         
         self.timings = [time.time()]
+
+        # print("bp2")
 
 
         event = create_string_buffer(8)
@@ -203,7 +216,7 @@ class EngineCtypes(object):
         # print("bp3.5")
 
         for i in xrange(len(args)):
-           # print args[i]
+            # print args[i]
             err_num = openCL.clSetKernelArg(self.epimorph, i, args[i][1], args[i][0])
             self.catch_cl(err_num, "creating argument %d" % i)
 

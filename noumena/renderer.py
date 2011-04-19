@@ -128,7 +128,8 @@ class Renderer(object):
         glBindBuffer(GL_ARRAY_BUFFER, 0)
 
         # generate texture & set parameters
-        self.display_tex = glGenTextures(1)
+        self.display_tex = GLuint()
+        glGenTextures(1, byref(self.display_tex))
         glBindTexture(GL_TEXTURE_2D, self.display_tex)
 
         glPixelStorei(GL_UNPACK_ALIGNMENT,1)
