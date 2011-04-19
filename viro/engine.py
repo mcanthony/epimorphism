@@ -187,8 +187,11 @@ class EngineCtypes(object):
                 err_num = cast(err_num, POINTER(c_int)).contents.value
                 self.catch_cl(err_num, "create buf")
 
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, TRUE, 0, 8 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
+                event = create_string_buffer(8)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 8 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, event)
                 self.catch_cl(err_num, "write buf")
+                err_num = openCL.clWaitForEvents(1, event)
+                self.catch_cl(err_num, "waiting to upload var")
 
                 args.append((byref(cast(buf, c_void_p)), 8))
             elif(data["type"] == "int_array"):
@@ -197,8 +200,11 @@ class EngineCtypes(object):
                 err_num = cast(err_num, POINTER(c_int)).contents.value
                 self.catch_cl(err_num, "create buf")
 
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, TRUE, 0, 4 * len(data["val"]), (c_int * len(data["val"]))(*data["val"]), None, None, None)
+                event = create_string_buffer(8)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 4 * len(data["val"]), (c_int * len(data["val"]))(*data["val"]), None, None, event)
                 self.catch_cl(err_num, "write buf")
+                err_num = openCL.clWaitForEvents(1, event)
+                self.catch_cl(err_num, "waiting to upload var")
 
                 args.append((byref(cast(buf, c_void_p)), 8))
             elif(data["type"] == "complex_array"):
@@ -207,8 +213,11 @@ class EngineCtypes(object):
                 err_num = cast(err_num, POINTER(c_int)).contents.value
                 self.catch_cl(err_num, "create buf")
 
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, TRUE, 0, 8 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, None)
+                event = create_string_buffer(8)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, buf, FALSE, 0, 8 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, event)
                 self.catch_cl(err_num, "write buf")
+                err_num = openCL.clWaitForEvents(1, event)
+                self.catch_cl(err_num, "waiting to upload var")
 
                 args.append((byref(cast(buf, c_void_p)), 8))
 
