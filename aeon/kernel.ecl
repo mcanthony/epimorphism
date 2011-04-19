@@ -26,7 +26,7 @@ __kernel __attribute__((reqd_work_group_size(16,16,1)))
 void test(){
   const int x = get_global_id(0);
   const int y = get_global_id(1);
-  //out_buf[y * KERNEL_DIM + x] = 1;
+  out_buf[y * KERNEL_DIM + x] = 1;
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
@@ -44,7 +44,6 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   // get z
   float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
   float2 z_z = z;
-
   
   // internal antialiasing
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
@@ -107,8 +106,8 @@ void epimorph(read_only image2d_t fb, write_only image2d_t out, __global char4* 
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
 
   // write to pbo
-  //if(_POST_PROCESSING == 0.0f)
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  if(_POST_PROCESSING == 0.0f)
+    pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
   //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
   //pbo[y * KERNEL_DIM + x] = (char4)(0,0,255,255);
