@@ -145,6 +145,7 @@ class EngineCtypes(object):
         #print cast(res1, POINTER(c_int)).contents.value
         #print cast(res2, POINTER(c_int)).contents.value
 
+        self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
 
         self.program = None        
         
@@ -428,21 +429,12 @@ class EngineCtypes(object):
         debug("c4")
 
 
-    def upload_image(self, cl_image, data_p):
+    def upload_image(self, cl_image, data):
         ''' Upload an image to the DEVICE '''
-        print data_p
-
         debug("Uploading image")
 
-        print cl_image
-        event = create_string_buffer(8)
-        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, FALSE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 16 * self.profile.kernel_dim, 0, self.empty, 0, None, event)
+        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, TRUE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 0, 0, cast(data, POINTER(c_float)), 0, None,None)
         self.catch_cl(err_num, "uploading image")
-        err_num = openCL.clWaitForEvents(1, event)        
-        self.catch_cl(err_num, "waiting to upload image")
-
-
-
 
 
     def get_fb(self):
@@ -459,9 +451,6 @@ class EngineCtypes(object):
 
     def reset_fb(self):
         ''' Clear the current frame buffer '''
-        #self.do_flash_fb = True        
-            
-        self.empty = cast((c_float * (4 * self.profile.kernel_dim ** 2))(), POINTER(c_float))
-        print self.empty
+        debug("Reset fb")
+
         self.upload_image(self.fb, self.empty)
-        #self.upload_image(self.fb, self.empty)
