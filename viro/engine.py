@@ -103,23 +103,23 @@ class EngineCtypes(object):
         format = (c_uint * 2)(BGRA, FLOAT)
 
         err_num = create_string_buffer(4)
-        self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating fb")
 
         err_num = create_string_buffer(4)
-        self.out = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.out = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating out")
 
         err_num = create_string_buffer(4)
-        self.aux = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.aux = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating aux")
 
         err_num = create_string_buffer(4)
         format = (c_uint * 2)(BGRA, UNSIGNED_INT8)
-        self.img = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.img = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating img")
 
@@ -146,9 +146,7 @@ class EngineCtypes(object):
         #print cast(res2, POINTER(c_int)).contents.value
 
 
-        self.program = None
-
-        self.empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
+        self.program = None        
         
         self.buffers = {}
 
@@ -162,11 +160,7 @@ class EngineCtypes(object):
     def do(self):
         ''' Main event loop '''          
 
-#        debug("start do")
-
-        if(self.do_compile_flag):
-            self.do_compile()
-
+       # debug("start do")
 
         if(not self.program):
             return
@@ -181,6 +175,21 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "enque acquire pbo")
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to acquire pbo")
+
+        if(self.do_compile_flag):
+            self.do_compile()
+
+
+        #if(self.do_flash_fb):
+            #self.upload_image(self.fb)
+            #format = (c_uint * 2)(BGRA, FLOAT)
+            #err_num = create_string_buffer(4)
+            #empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
+            #self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
+            #err_num = cast(err_num, POINTER(c_int)).contents.value
+            #self.catch_cl(err_num, "creating fb")
+            #self.do_flash_fb = False
+
 
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
@@ -237,16 +246,6 @@ class EngineCtypes(object):
         self.timings.append(time.time())
 
         # print("bp5")
-
-        if(self.do_flash_fb):
-            self.upload_image(self.fb, self.empty)
-            #format = (c_uint * 2)(BGRA, FLOAT)
-            #err_num = create_string_buffer(4)
-            #empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
-            #self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
-            #err_num = cast(err_num, POINTER(c_int)).contents.value
-            #self.catch_cl(err_num, "creating fb")
-            #self.do_flash_fb = False
 
         
         event = create_string_buffer(8)
@@ -429,13 +428,21 @@ class EngineCtypes(object):
         debug("c4")
 
 
-    def upload_image(self, cl_image, data):
+    def upload_image(self, cl_image, data_p):
         ''' Upload an image to the DEVICE '''
+        print data_p
+
         debug("Uploading image")
 
         print cl_image
-        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, TRUE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), self.profile.kernel_dim * 16, 0, data, 0, None, None)
+        event = create_string_buffer(8)
+        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, FALSE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 16 * self.profile.kernel_dim, 0, data_p, 0, None, event)
         self.catch_cl(err_num, "uploading image")
+        err_num = openCL.clWaitForEvents(1, event)        
+        self.catch_cl(err_num, "waiting to upload image")
+
+
+
 
 
     def get_fb(self):
@@ -452,6 +459,9 @@ class EngineCtypes(object):
 
     def reset_fb(self):
         ''' Clear the current frame buffer '''
-        self.do_flash_fb = True
-        #self.upload_image(self.fb, self.empty)
+        #self.do_flash_fb = True        
+            
+        self.empty = cast((c_float * (4 * self.profile.kernel_dim ** 2))(), POINTER(c_float))
+        print self.empty
+        self.upload_image(self.fb, self.empty)
         #self.upload_image(self.fb, self.empty)

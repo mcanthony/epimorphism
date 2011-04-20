@@ -31,8 +31,8 @@ class KeyboardHandler(object):
         # get modifiers
         modifiers = glutGetModifiers()
         
-        async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
-        # eval("self." + self.context.keyboard)(key, modifiers)
+        #async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
+        eval("self." + self.context.keyboard)(key, modifiers)
 
 
     def common(self, key, modifiers):
@@ -46,7 +46,8 @@ class KeyboardHandler(object):
 
         # reset fb
         elif(key == "\\"):
-            self.cmdcenter.cmd("reset_fb()")
+            #self.cmdcenter.cmd("reset_fb()")
+            self.engine.reset_fb()
 
         # inc current_state_idx
         elif(key == GLUT_KEY_PAGE_UP):
