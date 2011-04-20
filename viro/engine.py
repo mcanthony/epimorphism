@@ -170,7 +170,6 @@ class EngineCtypes(object):
 
         # print("bp2")
 
-
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque acquire pbo")
@@ -179,18 +178,6 @@ class EngineCtypes(object):
 
         if(self.do_compile_flag):
             self.do_compile()
-
-
-        #if(self.do_flash_fb):
-            #self.upload_image(self.fb)
-            #format = (c_uint * 2)(BGRA, FLOAT)
-            #err_num = create_string_buffer(4)
-            #empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
-            #self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
-            #err_num = cast(err_num, POINTER(c_int)).contents.value
-            #self.catch_cl(err_num, "creating fb")
-            #self.do_flash_fb = False
-
 
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
@@ -210,26 +197,20 @@ class EngineCtypes(object):
                     self.catch_cl(err_num, "create buf")
 
 
-                event = create_string_buffer(8)
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], FALSE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, event)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
                 self.catch_cl(err_num, "write buf")
-                err_num = openCL.clWaitForEvents(1, event)
-                self.catch_cl(err_num, "waiting to upload var")
+
                 args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
             elif(data["type"] == "complex_array"):
-
                 if(not self.buffers.has_key(data["name"])):
                     err_num = create_string_buffer(4)
                     self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
                     err_num = cast(err_num, POINTER(c_int)).contents.value
                     self.catch_cl(err_num, "create buf")
 
-                event = create_string_buffer(8)
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], FALSE, 0, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, event)
+                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]) * 2, (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, None)
                 self.catch_cl(err_num, "write buf")
-                err_num = openCL.clWaitForEvents(1, event)
-                self.catch_cl(err_num, "waiting to upload var")
 
                 args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
@@ -305,8 +286,8 @@ class EngineCtypes(object):
             self.do_get_fb = False
             self.get_fb_internal()
 
-        openCL.clFinish(self.queue)
-        openCL.clFlush(self.queue)
+        #openCL.clFinish(self.queue)
+        #openCL.clFlush(self.queue)
 
  #       debug("end do")
 
