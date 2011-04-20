@@ -436,7 +436,7 @@ class EngineCtypes(object):
 
         print cl_image
         event = create_string_buffer(8)
-        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, FALSE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 16 * self.profile.kernel_dim, 0, data_p, 0, None, event)
+        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, FALSE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 16 * self.profile.kernel_dim, 0, self.empty, 0, None, event)
         self.catch_cl(err_num, "uploading image")
         err_num = openCL.clWaitForEvents(1, event)        
         self.catch_cl(err_num, "waiting to upload image")
