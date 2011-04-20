@@ -154,7 +154,7 @@ class ComponentManager(object):
         for component_name, val in data.items():
             idx_idx = self.datamanager.component_names.index(component_name)
             self.state.internal[idx_idx] = self.cmdcenter.time()
-            # self.state.components[component_name] = val            
+            self.state.components[component_name] = val            
 
         # wait until interpolation is done
         time.sleep(self.app.state_switch_time)

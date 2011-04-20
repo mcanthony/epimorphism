@@ -39,7 +39,7 @@ class EngineCtypes(object):
         self.initOpenCL()
 
         # compiler        
-        self.compiler = CompilerCtypes(self.context)
+        self.compiler = CompilerCtypes(self.ctx)
 
         # timing vars
         num_time_events = 3
@@ -55,7 +55,7 @@ class EngineCtypes(object):
 
         self.do_flash_fb = False
         self.do_compile_flag = False
-
+        self.program = None
 
         return True
 
@@ -90,12 +90,12 @@ class EngineCtypes(object):
 
         properties = (c_long * 7)(GL_CONTEXT_KHR, gl.glXGetCurrentContext(), GLX_DISPLAY_KHR, gl.glXGetCurrentDisplay(), CONTEXT_PLATFORM, self.platform, 0)
         err_num = create_string_buffer(4)
-        self.context = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
+        self.ctx = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating context")
 
         err_num = create_string_buffer(4)
-        self.queue = openCL.clCreateCommandQueue(self.context, self.device, 0, err_num);
+        self.queue = openCL.clCreateCommandQueue(self.ctx, self.device, 0, err_num);
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating queue")
 
@@ -103,37 +103,37 @@ class EngineCtypes(object):
         format = (c_uint * 2)(BGRA, FLOAT)
 
         err_num = create_string_buffer(4)
-        self.fb = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating fb")
 
         err_num = create_string_buffer(4)
-        self.out = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.out = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating out")
 
         err_num = create_string_buffer(4)
-        self.aux = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.aux = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating aux")
 
         err_num = create_string_buffer(4)
         format = (c_uint * 2)(BGRA, UNSIGNED_INT8)
-        self.img = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
+        self.img = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating img")
 
         # create pbo
         err_num = create_string_buffer(4)
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
-        self.pbo = openCL.clCreateFromGLBuffer(self.context, MEM_WRITE_ONLY, self.pbo_ptr, err_num)
+        self.pbo = openCL.clCreateFromGLBuffer(self.ctx, MEM_WRITE_ONLY, self.pbo_ptr, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "create_pbo")
 
         #from sources.OpenGL.GL import *
         #err_num = create_string_buffer(4)
         #self.tex = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
-        #self.pbo = openCL.clCreateFromGLTexture2D(self.context, MEM_READ_WRITE, GL_TEXTURE_2D, 0, self.tex, err_num)
+        #self.pbo = openCL.clCreateFromGLTexture2D(self.ctx, MEM_READ_WRITE, GL_TEXTURE_2D, 0, self.tex, err_num)
         #err_num = cast(err_num, POINTER(c_int)).contents.value
         #self.catch_cl(err_num, "create pbo")
 
@@ -162,8 +162,11 @@ class EngineCtypes(object):
     def do(self):
         ''' Main event loop '''          
 
+#        debug("start do")
+
         if(self.do_compile_flag):
             self.do_compile()
+
 
         if(not self.program):
             return
@@ -192,7 +195,7 @@ class EngineCtypes(object):
             elif(data["type"] == "float_array"):
                 if(not self.buffers.has_key(data["name"])):
                     err_num = create_string_buffer(4)
-                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
+                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
                     err_num = cast(err_num, POINTER(c_int)).contents.value
                     self.catch_cl(err_num, "create buf")
 
@@ -208,7 +211,7 @@ class EngineCtypes(object):
 
                 if(not self.buffers.has_key(data["name"])):
                     err_num = create_string_buffer(4)
-                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.context, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
+                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
                     err_num = cast(err_num, POINTER(c_int)).contents.value
                     self.catch_cl(err_num, "create buf")
 
@@ -240,7 +243,7 @@ class EngineCtypes(object):
             format = (c_uint * 2)(BGRA, FLOAT)
             err_num = create_string_buffer(4)
             empty = (c_float * (4 * self.profile.kernel_dim ** 2))()
-            self.fb = openCL.clCreateImage2D(self.context, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
+            self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE or MEM_COPY_HOST_PTR or MEM_ALLOC_HOST_PTR, format, self.profile.kernel_dim, self.profile.kernel_dim, 16 * self.profile.kernel_dim, empty, err_num)
             err_num = cast(err_num, POINTER(c_int)).contents.value
             self.catch_cl(err_num, "creating fb")
             self.do_flash_fb = False
@@ -304,6 +307,8 @@ class EngineCtypes(object):
 
         openCL.clFinish(self.queue)
         openCL.clFlush(self.queue)
+
+ #       debug("end do")
 
 
     def get_fb_internal(self):
@@ -390,7 +395,7 @@ class EngineCtypes(object):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
 
-        #self.do_compile_flag = True
+        # self.do_compile_flag = True
         self.do_compile()
 
 
@@ -398,7 +403,7 @@ class EngineCtypes(object):
         self.do_compile_flag = False
         
         # compiler
-        self.compiler.compile(self.compiler_callback)
+        self.compiler.compile(self.device, self.compiler_callback)
 
 
     def compiler_callback(self):

@@ -13,16 +13,16 @@ Queue -
   PARTIALLY DONE - replace pyopencl with custom ctypes
     DONE - main engine
     DONE - asynchronous keyboard commands
+    DONE - post processing
+    DONE - better debug build program fail messages    
 
   Port:
     Sporadic crash on compile
     Asynchronous compiling
     Uploading images - problem & memory leak
     Downloading images
-    Try texture instead of PBO
-    better debug build program fail messages
-    post processing
-    print opencl info
+    Try texture instead of PBO 
+    fix automating components       
 
   Video:
     optimize mencoder command
@@ -45,6 +45,7 @@ Queue -
     investing gamma correction artifacts?
     move color axis to cpu
     optimize kernel
+    print opencl info
     scale performance to system
 
   Prepare for release:

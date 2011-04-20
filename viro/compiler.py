@@ -11,15 +11,16 @@ set_log("COMPILER")
 from ctypes import *
 from opencl import *
 openCL = CDLL("libOpenCL.so")
+gl = CDLL("libGL.so.1")
 
 class CompilerCtypes():
     ''' OpenCL Program compiler '''
 
-    def __init__(self, context):
+    def __init__(self, ctx):
         debug("Initializing Compiler")
         Globals().load(self)
 
-        self.context = context
+        self.ctx = ctx
         self.substitutions = {"KERNEL_DIM": self.profile.kernel_dim, "FRACT": self.profile.FRACT}
 
 
@@ -28,11 +29,13 @@ class CompilerCtypes():
             error(msg + ": " + ERROR_CODES[err_num])
             sys.exit(0)
 
-    def compile(self, callback):
+    def compile(self, device, callback):
         ''' Executes the main Compiler sequence '''
         debug("Executing")
 
         debug("c0")
+
+        self.device = device
 
         # remove emacs crap
         if(commands.getoutput("ls aeon/.#*").find("No such file or directory") == -1):
@@ -47,7 +50,7 @@ class CompilerCtypes():
         contents = c_char_p(contents)
 
         err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.context, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
+        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating program")
         debug("c2")
@@ -59,11 +62,15 @@ class CompilerCtypes():
 
         debug("c2.1")
         err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        callback()
+        if(err_num != 0):
+            log = create_string_buffer(500)
+            err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 500, log, None)
+            self.catch_cl(err_num, "getting log")        
+            error(log.value)
+            sys.exit(0)
         debug("c2.2")
-        self.catch_cl(err_num, "building program")        
-
-
+        callback()
+        debug("c2.3")
                        
         t1 = self.cmdcenter.get_time()
         self.cmdcenter.t_phase -= t1 - t0
