@@ -162,7 +162,7 @@ class EngineCtypes(object):
     def do(self):
         ''' Main event loop '''          
 
-        debug("start do")
+#        debug("start do")
 
         if(self.do_compile_flag):
             self.do_compile()
@@ -173,7 +173,7 @@ class EngineCtypes(object):
         
         self.timings = [time.time()]
 
-        print("bp2")
+        # print("bp2")
 
 
         event = create_string_buffer(8)
@@ -185,7 +185,7 @@ class EngineCtypes(object):
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
         
-        print("bp3")
+        # print("bp3")
 
         
         for data in self.frame:
@@ -224,19 +224,19 @@ class EngineCtypes(object):
                 args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
                 
-        print("bp3.5")
+        # print("bp3.5")
 
         for i in xrange(len(args)):
             # print args[i]
             err_num = openCL.clSetKernelArg(self.epimorph, i, args[i][1], args[i][0])
             self.catch_cl(err_num, "creating argument %d" % i)
 
-        print("bp4")
+        # print("bp4")
 
         # execute kernel
         self.timings.append(time.time())
 
-        print("bp5")
+        # print("bp5")
 
         if(self.do_flash_fb):
             #self.upload_image(self.fb, self.empty)
@@ -256,14 +256,14 @@ class EngineCtypes(object):
                                                 None, None, event)
         self.catch_cl(err_num, "enque execute kernel")
 
-        print("bp5.5")
+        # print("bp5.5")
 
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to execute kernel")
 
         self.timings.append(time.time())
 
-        print("bp6")
+        # print("bp6")
 
         # copy out to fb
         event = create_string_buffer(8)
@@ -308,7 +308,7 @@ class EngineCtypes(object):
         openCL.clFinish(self.queue)
         openCL.clFlush(self.queue)
 
-        debug("end do")
+ #       debug("end do")
 
 
     def get_fb_internal(self):
