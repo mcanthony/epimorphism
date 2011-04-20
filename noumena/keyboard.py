@@ -31,8 +31,8 @@ class KeyboardHandler(object):
         # get modifiers
         modifiers = glutGetModifiers()
         
-        #async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
-        eval("self." + self.context.keyboard)(key, modifiers)
+        async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
+        #eval("self." + self.context.keyboard)(key, modifiers)
 
 
     def common(self, key, modifiers):
