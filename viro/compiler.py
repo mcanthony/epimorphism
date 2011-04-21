@@ -50,10 +50,13 @@ class CompilerCtypes():
         contents = c_char_p(contents)
 
         err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, byref(contents), (c_long * 1)(len(contents.value)), err_num)
+        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating program")
         debug("c2")
+
+        print self.program
+        openCL.clRetainProgram(self.program)
 
         CBCKFUNC = CFUNCTYPE(None, c_long, c_void_p)
 
@@ -62,18 +65,18 @@ class CompilerCtypes():
 
         debug("c2.1")
         err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-mad-enable -cl-no-signed-zeros"), None, None)
-        if(err_num != 0):
-            log = create_string_buffer(500)
-            err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 500, log, None)
-            self.catch_cl(err_num, "getting log")        
-            error(log.value)
-            sys.exit(0)
+        #if(err_num != 0):
+        log = create_string_buffer(500)
+        err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 500, log, None)
+        self.catch_cl(err_num, "getting log")        
+        #error(log.value)
+        #    sys.exit(0)
         debug("c2.2")
         callback()
         debug("c2.3")
                        
         t1 = self.cmdcenter.get_time()
-        self.cmdcenter.t_phase -= t1 - t0
+        # self.cmdcenter.t_phase -= t1 - t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

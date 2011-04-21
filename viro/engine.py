@@ -145,6 +145,29 @@ class EngineCtypes(object):
         #print cast(res1, POINTER(c_int)).contents.value
         #print cast(res2, POINTER(c_int)).contents.value
 
+
+        def test():            
+            debug("c1")
+            contents = open("aeon/__kernel.cl").read()
+            contents = c_char_p(contents)
+
+            err_num = create_string_buffer(4)        
+            self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+            err_num = cast(err_num, POINTER(c_int)).contents.value
+            self.catch_cl(err_num, "creating program")
+            debug("c2")
+
+            print self.program
+            openCL.clRetainProgram(cast(self.program, c_void_p))
+            debug("c3")
+            sys.exit(0)
+
+        async(test)
+
+        time.sleep(0.5)
+        #sys.exit(0)
+
+
         self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
 
         self.program = self.new_program = None        
@@ -161,7 +184,8 @@ class EngineCtypes(object):
 
 
     def do(self):
-        return
+        if(self.do_compile_flag):
+            self.do_compile()
         ''' Main event loop '''          
 
         debug("start do")
@@ -181,9 +205,6 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "enque acquire pbo")
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to acquire pbo")
-
-        if(self.do_compile_flag):
-            self.do_compile()
 
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
@@ -382,7 +403,7 @@ class EngineCtypes(object):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
 
-        # self.do_compile_flag = True
+        #self.do_compile_flag = True
         self.do_compile()
 
 
@@ -410,6 +431,8 @@ class EngineCtypes(object):
         self.new_epimorph = openCL.clCreateKernel(self.new_program, c_char_p("epimorph"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating epimorph kernel")
+
+        print self.new_epimorph
 
         debug("c**")
         name = create_string_buffer(20)
