@@ -36,7 +36,7 @@ class EngineCtypes(object):
         # self.print_opencl_info()
 
         # OpenCL objects
-        # self.initOpenCL()
+        # self.initCL()
 
         # timing vars
         num_time_events = 3
@@ -54,9 +54,15 @@ class EngineCtypes(object):
         self.do_compile_flag = False
         self.program = None
 
+        self.do_compile_event = threading.Event()
+        self.compile_completed_event = threading.Event()
+
+        self.exit_opencl_loop = False
+        async(self.opencl_loop)
+        
 
         def test():    
-            self.initOpenCL()
+            self.initCL()
             debug("c1")
             contents = open("aeon/__kernel.cl").read()
             contents = c_char_p(contents)
@@ -75,7 +81,7 @@ class EngineCtypes(object):
 #        for i in xrange(500):
 #            async(test)
 
-        self.initOpenCL()
+#        self.initCL()
 
         return True
 
@@ -85,7 +91,7 @@ class EngineCtypes(object):
             sys.exit(0)
 
     
-    def initOpenCL(self):
+    def initCL(self):
         debug("Setting up OpenCL")        
 
         num_platforms = create_string_buffer(4)
@@ -185,14 +191,16 @@ class EngineCtypes(object):
 
 
     def __del__(self):
-        debug("Deleting Engine")
+        debug("Deleting Engine")    
+        self.do_compile_event.set()
+        self.exit_opencl_loop = True
         self.new_fb_event.set()
         self.pbo = None
 
 
     def do(self):
-        if(self.do_compile_flag):
-            self.do_compile()
+        #if(self.do_compile_flag):
+        #    self.do_compile()
         ''' Main event loop '''          
 
         debug("start do")
@@ -395,6 +403,16 @@ class EngineCtypes(object):
                 self.last_frame_time = time.time()
 
 
+
+
+    def opencl_loop(self):
+        self.initCL()
+        self.do_compile_event.wait()
+        while(not self.exit_opencl_loop):
+            self.do_compile()
+            self.do_compile_event.wait()
+
+
     ######################################### PUBLIC ##################################################
 
 
@@ -410,9 +428,11 @@ class EngineCtypes(object):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
 
+        self.do_compile_event.set()
+
         #self.do_compile_flag = True
         # 
-        self.do_compile()
+        #self.do_compile()
 
 
     def do_compile(self):
@@ -424,7 +444,6 @@ class EngineCtypes(object):
 
     def compiler_callback(self):
         print "callback called"
-        self.new_kernel = True
 
         debug("c3.0")
         if(self.new_program):
@@ -464,6 +483,7 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "creating post process kernel")
 
         debug("c4")
+        self.new_kernel = True
 
     def kernel_callback(self):
         print "kernel callback"
