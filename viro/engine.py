@@ -36,10 +36,7 @@ class EngineCtypes(object):
         # self.print_opencl_info()
 
         # OpenCL objects
-        self.initOpenCL()
-
-        # compiler        
-        self.compiler = CompilerCtypes(self.ctx)
+        # self.initOpenCL()
 
         # timing vars
         num_time_events = 3
@@ -56,6 +53,29 @@ class EngineCtypes(object):
         self.do_flash_fb = False
         self.do_compile_flag = False
         self.program = None
+
+
+        def test():    
+            self.initOpenCL()
+            debug("c1")
+            contents = open("aeon/__kernel.cl").read()
+            contents = c_char_p(contents)
+
+            err_num = create_string_buffer(4)        
+            self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), byref(err_num))
+            err_num = cast(err_num, POINTER(c_int)).contents.value
+            self.catch_cl(err_num, "creating program")
+            debug("c2")
+
+            print self.program
+            openCL.clRetainProgram(cast(self.program, c_void_p))
+            debug("c3")
+            #sys.exit(0)
+
+#        for i in xrange(500):
+#            async(test)
+
+        self.initOpenCL()
 
         return True
 
@@ -146,26 +166,10 @@ class EngineCtypes(object):
         #print cast(res2, POINTER(c_int)).contents.value
 
 
-        def test():            
-            debug("c1")
-            contents = open("aeon/__kernel.cl").read()
-            contents = c_char_p(contents)
 
-            err_num = create_string_buffer(4)        
-            self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), byref(err_num))
-            err_num = cast(err_num, POINTER(c_int)).contents.value
-            self.catch_cl(err_num, "creating program")
-            debug("c2")
 
-            print self.program
-            openCL.clRetainProgram(cast(self.program, c_void_p))
-            debug("c3")
-            sys.exit(0)
-
-        async(test)
-
-        time.sleep(0.5)
-        #sys.exit(0)
+#        time.sleep(0.2)
+#        sys.exit(0)
 
 
         self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
@@ -175,6 +179,9 @@ class EngineCtypes(object):
         self.buffers = {}
 
         self.new_kernel = False
+
+        # compiler        
+        self.compiler = CompilerCtypes(self.ctx)
 
 
     def __del__(self):
@@ -393,7 +400,7 @@ class EngineCtypes(object):
 
     def start(self):
         ''' Start engine '''
-        info("Starting engine")
+        info("Starting engine")        
 
         # compile kernel
         self.compile()
@@ -404,6 +411,7 @@ class EngineCtypes(object):
         debug("Compiling kernel")        
 
         #self.do_compile_flag = True
+        # 
         self.do_compile()
 
 

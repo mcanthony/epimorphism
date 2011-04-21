@@ -45,6 +45,25 @@ class CompilerCtypes():
         t0 = self.cmdcenter.get_time()
         files = [self.render_file(file) for file in os.listdir("aeon") if re.search("\.ecl$", file)]
 
+        # start subprocess
+        #sub = subprocess.Popen(["python", "viro/crazy.py", str(self.ctx)], stdout=subprocess.PIPE)
+        #(stdout, stderr) = sub.communicate()
+
+        #print stdout
+        #sys.exit(0)
+
+        #if(len(stdout) != 0):
+        #    print "CRITICAL: Couldn't compile kernel"
+        #    print stdout
+        #    sys.exit(0)
+
+
+        res = create_string_buffer(4)
+        err_num = openCL.clGetContextInfo(self.ctx, CONTEXT_REFERENCE_COUNT, 4, res, None)
+        self.catch_cl(err_num, "querying context")
+        print "ref count = ", cast(res, POINTER(c_int)).contents.value
+
+
         debug("c1")
         contents = open("aeon/__kernel.cl").read()
         contents = c_char_p(contents)
@@ -55,6 +74,7 @@ class CompilerCtypes():
         self.catch_cl(err_num, "creating program")
         debug("c2")
 
+        print self.ctx
         print self.program
         openCL.clRetainProgram(self.program)
 
