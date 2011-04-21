@@ -57,12 +57,19 @@ class EngineCtypes(object):
         self.do_compile_event = threading.Event()
         self.compile_completed_event = threading.Event()
 
-        self.exit_opencl_loop = False
-        async(self.opencl_loop)
+        self.current_display = gl.glXGetCurrentDisplay()
+        self.current_context = gl.glXGetCurrentContext()
         
+
+        #self.exit_opencl_loop = False
+        #async(lambda: self.opencl_loop(self))
+        
+
+        self.new_kernel = False
 
         def test():    
             self.initCL()
+            sys.exit(0)
             debug("c1")
             contents = open("aeon/__kernel.cl").read()
             contents = c_char_p(contents)
@@ -76,7 +83,9 @@ class EngineCtypes(object):
             print self.program
             openCL.clRetainProgram(cast(self.program, c_void_p))
             debug("c3")
-            #sys.exit(0)
+         
+        async(test)
+   
 
 #        for i in xrange(500):
 #            async(test)
@@ -93,6 +102,8 @@ class EngineCtypes(object):
     
     def initCL(self):
         debug("Setting up OpenCL")        
+
+        print "i0"
 
         num_platforms = create_string_buffer(4)
         err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
@@ -114,16 +125,22 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "getting devices")
         self.device = cast(devices, POINTER(c_int))[0]
 
-        properties = (c_long * 7)(GL_CONTEXT_KHR, gl.glXGetCurrentContext(), GLX_DISPLAY_KHR, gl.glXGetCurrentDisplay(), CONTEXT_PLATFORM, self.platform, 0)
+        debug("i0.1")
+
+        properties = (c_long * 7)(GL_CONTEXT_KHR, self.current_context, GLX_DISPLAY_KHR, self.current_display, CONTEXT_PLATFORM, self.platform, 0)
         err_num = create_string_buffer(4)
         self.ctx = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating context")
 
+        print "i0.2"
+
         err_num = create_string_buffer(4)
         self.queue = openCL.clCreateCommandQueue(self.ctx, self.device, 0, err_num);
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating queue")
+
+        print "i1"
 
         # create images
         format = (c_uint * 2)(BGRA, FLOAT)
@@ -148,6 +165,8 @@ class EngineCtypes(object):
         self.img = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.profile.kernel_dim, self.profile.kernel_dim, None, None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating img")
+
+        print "i2"
 
         # create pbo
         err_num = create_string_buffer(4)
@@ -183,8 +202,6 @@ class EngineCtypes(object):
         self.program = self.new_program = None        
         
         self.buffers = {}
-
-        self.new_kernel = False
 
         # compiler        
         self.compiler = CompilerCtypes(self.ctx)
@@ -405,10 +422,25 @@ class EngineCtypes(object):
 
 
 
-    def opencl_loop(self):
+    def opencl_loop(self, engine):
+        debug("Start OpenCL loop")
         self.initCL()
+        engine.compiler = self.compiler
+        engine.queue = self.queue
+        print "asdf"
+        print self.queue
+        print "asdf"
+        5/0
+        engine.fbo = self.fbo
+        engine.out = self.out
+        engine.pbo = self.pbo
+        engine.devie = self.device
+        engine.ctx = self.ctx
+        debug("Finish initCL")
         self.do_compile_event.wait()
         while(not self.exit_opencl_loop):
+            self.do_compile_event.clear()
+            debug("Do Compile")
             self.do_compile()
             self.do_compile_event.wait()
 
@@ -422,6 +454,9 @@ class EngineCtypes(object):
 
         # compile kernel
         self.compile()
+
+        while(not self.new_kernel):
+            time.sleep(0.2)
 
 
     def compile(self):
@@ -484,6 +519,7 @@ class EngineCtypes(object):
 
         debug("c4")
         self.new_kernel = True
+
 
     def kernel_callback(self):
         print "kernel callback"
