@@ -3,7 +3,7 @@ from common.globals import *
 from viro.compiler import *
 
 # import pyopencl as cl
-import numpy
+# import numpy
 
 import sys
 import itertools
@@ -15,7 +15,7 @@ import Image
 from common.log import *
 set_log("ENGINE")
 
-mf = cl.mem_flags
+# mf = cl.mem_flags
 block_size = 16
 
 
@@ -485,9 +485,9 @@ class EngineCtypes(object):
 
         #self.do_compile_event.set()
 
-        self.do_compile_flag = True
+        #self.do_compile_flag = True
         # 
-        #self.do_compile()
+        self.do_compile()
 
 
     def do_compile(self):

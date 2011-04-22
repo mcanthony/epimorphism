@@ -1,6 +1,6 @@
 from common.globals import *
 
-import pyopencl as cl
+# import pyopencl as cl
 
 import os, re, hashlib, time, commands, subprocess, sys
 
