@@ -32,7 +32,9 @@ class Renderer(object):
         self.screen = self.context.screen
 
         # initialize glut
+        print "aaaa"
         glutInit(1, [])
+        print "bbbb"
 
         # application will continue after glut exits
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)

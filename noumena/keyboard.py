@@ -29,10 +29,21 @@ class KeyboardHandler(object):
     def keyboard(self, key, x, y):
 
         # get modifiers
-        modifiers = glutGetModifiers()
-        
+        modifiers = glutGetModifiers()                
+
+        def tst():
+            time.sleep(1.0)
+
+        #async(tst)
+
+
         #async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
         eval("self." + self.context.keyboard)(key, modifiers)
+        #async(self.engine.compile)
+        #self.engine.compile()
+        #async(lambda: open("bs2.txt", "w").write("yes"))
+        #time.sleep(0.3)
+        #open("bs.txt", "w").write("yes")
 
 
     def common(self, key, modifiers):
@@ -162,6 +173,7 @@ class KeyboardHandler(object):
             if(key in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]):
                 i = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].index(key)
                 self.cmdcenter.cmd("inc_data('%s', 1)" % self.components[i])
+
 
             # decrement component
             elif(key in ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"]):

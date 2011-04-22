@@ -15,6 +15,7 @@ class Runner(threading.Thread):
 
         # call func
         self.func()
+        print "DONE!!!!!!!!!!!!!!!"
 
 
 def async(func):

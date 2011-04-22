@@ -57,13 +57,15 @@ class EngineCtypes(object):
         self.do_compile_event = threading.Event()
         self.compile_completed_event = threading.Event()
 
+        open("bs.txt", "w").write("no")
+
         #self.current_display = gl.glXGetCurrentDisplay()
         #self.current_context = gl.glXGetCurrentContext()
         
 
-#        self.exit_opencl_loop = False
-#        async(lambda: self.opencl_loop(self))
-        
+        #self.exit_opencl_loop = False
+        #async(lambda: self.opencl_loop(self))
+        #time.sleep(2.0)
 
         self.new_kernel = False
 
@@ -239,9 +241,10 @@ class EngineCtypes(object):
             self.compile()
         if(self.do_compile_flag):
             self.do_compile()
+        #return
         ''' Main event loop '''          
 
-        debug("start do")
+        #debug("start do")
 
         if(self.new_kernel):
             self.kernel_callback()
@@ -251,7 +254,7 @@ class EngineCtypes(object):
         
         self.timings = [time.time()]
 
-        print("bp2")
+        #print("bp2")
 
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
@@ -262,7 +265,7 @@ class EngineCtypes(object):
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
         
-        print("bp3")
+        #print("bp3")
 
         
         for data in self.frame:
@@ -295,19 +298,19 @@ class EngineCtypes(object):
                 args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
 
                 
-        print("bp3.5")
+        #print("bp3.5")
 
         for i in xrange(len(args)):
             # print args[i]
             err_num = openCL.clSetKernelArg(self.epimorph, i, args[i][1], args[i][0])
             self.catch_cl(err_num, "creating argument %d" % i)
 
-        print("bp4")
+        #print("bp4")
 
         # execute kernel
         self.timings.append(time.time())
 
-        print("bp5")
+        #print("bp5")
 
         
         event = create_string_buffer(8)
@@ -317,14 +320,14 @@ class EngineCtypes(object):
                                                 None, None, event)
         self.catch_cl(err_num, "enque execute kernel")
 
-        print("bp5.5")
+        #print("bp5.5")
 
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to execute kernel")
 
         self.timings.append(time.time())
 
-        print("bp6")
+        #print("bp6")
 
         # copy out to fb
         event = create_string_buffer(8)
@@ -369,7 +372,7 @@ class EngineCtypes(object):
         #openCL.clFinish(self.queue)
         #openCL.clFlush(self.queue)
 
-        debug("end do")
+        #debug("end do")
 
 
     def get_fb_internal(self):
@@ -445,14 +448,14 @@ class EngineCtypes(object):
 
     def opencl_loop(self, engine):
         debug("Start OpenCL loop")
+        self.interface.init()
         self.initCL()
         engine.compiler = self.compiler
         engine.queue = self.queue
         print "asdf"
         print self.queue
         print "asdf"
-        5/0
-        engine.fbo = self.fbo
+        engine.fb = self.fb
         engine.out = self.out
         engine.pbo = self.pbo
         engine.devie = self.device
@@ -477,17 +480,19 @@ class EngineCtypes(object):
 
         #while(not self.new_kernel):
         #    time.sleep(0.2)
+        #self.compile()
 
 
     def compile(self):
         ''' Compile the kernel'''
-        debug("Compiling kernel")        
+        #debug("Compiling kernel")        
 
         #self.do_compile_event.set()
 
-        #self.do_compile_flag = True
+        #open("bs.txt", "w").write("yes")
+        self.do_compile_flag = True
         # 
-        self.do_compile()
+        #self.do_compile()
 
 
     def do_compile(self):

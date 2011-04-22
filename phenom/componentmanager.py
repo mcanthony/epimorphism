@@ -121,8 +121,8 @@ class ComponentManager(object):
         # create interpolation strings
         for component_name, val in data.items():
             debug(component_name)
-            if(len(data) == 1):
-                self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
+            #if(len(data) == 1):
+            #    self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
 
             idx_idx = self.datamanager.component_names.index(component_name)
             components = self.datamanager.components[component_name]
@@ -157,6 +157,6 @@ class ComponentManager(object):
             self.state.components[component_name] = val            
 
         # wait until interpolation is done
-        time.sleep(self.app.state_switch_time)
+        #time.sleep(self.app.state_switch_time)
         self.switching_components = False
 

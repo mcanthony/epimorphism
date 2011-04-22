@@ -24,6 +24,8 @@ class CompilerCtypes():
         self.substitutions = {"KERNEL_DIM": self.profile.kernel_dim, "FRACT": self.profile.FRACT}
 
 
+        self.program = None
+
     def catch_cl(self, err_num, msg):
         if(err_num != 0):
             error(msg + ": " + ERROR_CODES[err_num])
@@ -65,13 +67,24 @@ class CompilerCtypes():
 
 
         debug("c1")
-        contents = open("aeon/__kernel.cl").read()
-        contents = c_char_p(contents)
+        
+        #time.sleep(2.0)
 
+        #f = open("kernels/kernel.bcl")
+        contents = open("kernels/kernel.bcl").read()
+        contents = c_char_p(contents)
         err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
+        self.program = openCL.clCreateProgramWithBinary(self.ctx, 1, (c_long * 1)(device), (c_long * 1)(len(contents.value)), byref(contents), None, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating program")
+        self.catch_cl(err_num, "loading program")
+
+
+        #contents = open("aeon/__kernel.cl").read()
+        #contents = c_char_p(contents)
+        #err_num = create_string_buffer(4)        
+        #self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
+        #err_num = cast(err_num, POINTER(c_int)).contents.value
+        #self.catch_cl(err_num, "creating program")
         debug("c2")
 
         print self.ctx
@@ -86,17 +99,22 @@ class CompilerCtypes():
         debug("c2.1")
         err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-mad-enable -cl-no-signed-zeros"), None, None)
         #if(err_num != 0):
-        log = create_string_buffer(500)
-        err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 500, log, None)
+        log = create_string_buffer(10000)
+        err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 10000, log, None)
         self.catch_cl(err_num, "getting log")        
         #error(log.value)
         #    sys.exit(0)
         debug("c2.2")
         callback()
         debug("c2.3")
+
+        #binaries = create_string_buffer(1000000)
+        #err_num = openCL.clGetProgramInfo(self.program, PROGRAM_BINARIES, 1000000, byref(cast(binaries, c_void_p)), None)
+        #self.catch_cl(err_num, "getting program binaries")        
+        #open("kernels/kernel.bcl", "w").write(binaries.value)
                        
         t1 = self.cmdcenter.get_time()
-        # self.cmdcenter.t_phase -= t1 - t0
+        self.cmdcenter.t_phase -= t1 - t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

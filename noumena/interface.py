@@ -34,7 +34,6 @@ class Interface(object):
         Globals().load(self)
 
         self.renderer = Renderer()
-
         return True
 
 
