@@ -1,7 +1,7 @@
 from common.globals import *
 
-from sources.OpenGL.GL import *
-from sources.OpenGL.GLUT import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 
 
 class MouseHandler(object):

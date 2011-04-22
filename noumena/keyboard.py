@@ -2,8 +2,8 @@ from common.globals import *
 
 from phenom.program import *
 
-from sources.OpenGL.GL import *
-from sources.OpenGL.GLUT import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
 
 from common.complex import *
 from common.runner import *

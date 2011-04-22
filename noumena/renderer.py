@@ -1,9 +1,9 @@
 from common.globals import *
 
 from ctypes import *
-from sources.OpenGL.GL import *
-from sources.OpenGL.GLUT import *
-from sources.OpenGL.GLU import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
 
 gl = CDLL("libGL.so.1")
 
