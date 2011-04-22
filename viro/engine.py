@@ -149,6 +149,7 @@ class EngineCtypes(object):
         self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
         self.buffers = {}
         self.cl_init = True
+        self.fb_contents = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
 
 
     def __del__(self):
@@ -282,14 +283,27 @@ class EngineCtypes(object):
 
     def get_fb_internal(self):
         debug("Get fb internal")
+        
+        # get args
+        image_args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.img, c_void_p)), 8)]
+        for i in xrange(len(post_args)):
+            err_num = openCL.clSetKernelArg(self.post_process, i, post_args[i][1], post_args[i][0])
+            self.catch_cl(err_num, "creating post argument %d" % i)
 
-        # compute image
-        self.prg.get_image(self.queue, (self.profile.kernel_dim, self.profile.kernel_dim),                       
-                           self.fb, self.img,
-                           local_size=(block_size,block_size)).wait()
+        #compute kernel
+        event = create_string_buffer(8)
+        err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.get_image, 2, None, 
+                                                (c_long * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
+                                                (c_long * 2)(block_size, block_size), 
+                                                None, None, event)
+        self.catch_cl(err_num, "enqueue image_get execute kernel")
+        err_num = openCL.clWaitForEvents(1, event)
+        self.catch_cl(err_num, "waiting to execute image_get kernel")
+        
 
-        # download image        
-        cl.enqueue_read_image(self.queue, self.img, (0,0,0), (self.profile.kernel_dim, self.profile.kernel_dim, 1), self.fb_contents, 0, 0, None, True).wait()    
+        # download image
+        err_num = openCL.clEnqueueReadImage(self.queue, self.img, TRUE, (c_long * 3)(0,0,0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), 0, 0, self.fb_contents, 0, None,None)
+        self.catch_cl(err_num, "downloading image")        
 
         self.new_fb_event.set()
 
