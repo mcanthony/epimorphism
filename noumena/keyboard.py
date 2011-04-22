@@ -31,20 +31,8 @@ class KeyboardHandler(object):
         # get modifiers
         modifiers = glutGetModifiers()                
 
-        def tst():
-            time.sleep(1.0)
-
-        #async(tst)
-
-
-        #async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
+        # SYNC HACK
         eval("self." + self.context.keyboard)(key, modifiers)
-        #async(self.engine.compile)
-        #self.engine.compile()
-        #async(lambda: open("bs2.txt", "w").write("yes"))
-        #time.sleep(0.3)
-        #open("bs.txt", "w").write("yes")
-
 
     def common(self, key, modifiers):
         # exit

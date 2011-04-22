@@ -2,9 +2,6 @@ from common.globals import *
 
 from viro.compiler import *
 
-# import pyopencl as cl
-# import numpy
-
 import sys
 import itertools
 import time
@@ -15,9 +12,7 @@ import Image
 from common.log import *
 set_log("ENGINE")
 
-# mf = cl.mem_flags
 block_size = 16
-
 
 from ctypes import *
 from opencl import *
@@ -35,9 +30,6 @@ class EngineCtypes(object):
 
         # self.print_opencl_info()
 
-        # OpenCL objects
-        # self.initCL()
-
         # timing vars
         num_time_events = 3
         self.time_events = False
@@ -51,54 +43,11 @@ class EngineCtypes(object):
         self.do_get_fb = False    
 
         self.do_flash_fb = False
-        self.do_compile_flag = False
         self.program = None
-
-        self.do_compile_event = threading.Event()
-        self.compile_completed_event = threading.Event()
-
-        open("bs.txt", "w").write("no")
-
-        #self.current_display = gl.glXGetCurrentDisplay()
-        #self.current_context = gl.glXGetCurrentContext()
-        
-
-        #self.exit_opencl_loop = False
-        #async(lambda: self.opencl_loop(self))
-        #time.sleep(2.0)
-
-        self.new_kernel = False
-
-        def test():    
-            self.initCL()
-            sys.exit(0)
-            debug("c1")
-            contents = open("aeon/__kernel.cl").read()
-            contents = c_char_p(contents)
-
-            err_num = create_string_buffer(4)        
-            self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), byref(err_num))
-            err_num = cast(err_num, POINTER(c_int)).contents.value
-            self.catch_cl(err_num, "creating program")
-            debug("c2")
-
-            print self.program
-            openCL.clRetainProgram(cast(self.program, c_void_p))
-            debug("c3")
-         
-        #async(test)
-
-        #time.sleep(1.0)
-        #sys.exit(0)
-   
-
-#        for i in xrange(500):
-#            async(test)
-
-#        self.initCL()
         self.cl_init = False
 
         return True
+
 
     def catch_cl(self, err_num, msg):
         if(err_num != 0):
@@ -109,36 +58,31 @@ class EngineCtypes(object):
     def initCL(self):
         debug("Setting up OpenCL")        
 
-        print "i0"
-
+        # print "i0"
         num_platforms = create_string_buffer(4)
         err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
         self.catch_cl(err_num, "counting platforms")
         num_platforms = cast(num_platforms, POINTER(c_int)).contents.value
 
-        print "i0.0"
-
+        # print "i0.0"
         platforms = create_string_buffer(4 * num_platforms)
         err_num = openCL.clGetPlatformIDs (num_platforms, platforms, None)
         self.catch_cl(err_num, "getting platforms")
         self.platform = cast(platforms, POINTER(c_int))[0]
 
-        print "i0.01"
-
+        # print "i0.01"
         num_devices = create_string_buffer(4)
         err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, 0, None, num_devices);
         self.catch_cl(err_num, "counting devices")
         num_devices = cast(num_devices, POINTER(c_int)).contents.value
 
-        print "i0.02"
-
+        # print "i0.02"
         devices = create_string_buffer(4 * num_devices)
         err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, num_devices, devices, None);
         self.catch_cl(err_num, "getting devices")
         self.device = cast(devices, POINTER(c_int))[0]
 
-        debug("i0.1")
-
+        # debug("i0.1")
         self.current_display = gl.glXGetCurrentDisplay()
         print self.current_display
         self.current_context = gl.glXGetCurrentContext()
@@ -149,15 +93,13 @@ class EngineCtypes(object):
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating context")
 
-        print "i0.2"
-
+        # print "i0.2"
         err_num = create_string_buffer(4)
         self.queue = openCL.clCreateCommandQueue(self.ctx, self.device, 0, err_num);
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating queue")
 
-        print "i1"
-
+        # print "i1"
         # create images
         format = (c_uint * 2)(BGRA, FLOAT)
 
@@ -182,16 +124,13 @@ class EngineCtypes(object):
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating img")
 
-        print "i2"
-
+        # print "i2"
         # create pbo
         err_num = create_string_buffer(4)
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
         self.pbo = openCL.clCreateFromGLBuffer(self.ctx, MEM_WRITE_ONLY, self.pbo_ptr, err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "create_pbo")
-
-        print "pbo_ptr =", self.pbo_ptr
 
         #from sources.OpenGL.GL import *
         #err_num = create_string_buffer(4)
@@ -208,22 +147,9 @@ class EngineCtypes(object):
         #print cast(res1, POINTER(c_int)).contents.value
         #print cast(res2, POINTER(c_int)).contents.value
 
-
-
-
-#        time.sleep(0.2)
-#        sys.exit(0)
-
-
-        self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
-
-        self.program = self.new_program = None        
-        
-        self.buffers = {}
-
-        # compiler        
         self.compiler = CompilerCtypes(self.ctx)
-
+        self.empty = cast(create_string_buffer(16 * self.profile.kernel_dim ** 2), POINTER(c_float))
+        self.buffers = {}
         self.cl_init = True
 
 
@@ -236,18 +162,12 @@ class EngineCtypes(object):
 
 
     def do(self):
+        ''' Main event loop '''          
+        #debug("start do")
+
         if(not self.cl_init):
             self.initCL()
             self.compile()
-        if(self.do_compile_flag):
-            self.do_compile()
-        #return
-        ''' Main event loop '''          
-
-        #debug("start do")
-
-        if(self.new_kernel):
-            self.kernel_callback()
 
         if(not self.program):
             return
@@ -255,7 +175,7 @@ class EngineCtypes(object):
         self.timings = [time.time()]
 
         #print("bp2")
-
+        # acquire pbo
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque acquire pbo")
@@ -265,11 +185,8 @@ class EngineCtypes(object):
         # create args
         args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
         
-        #print("bp3")
-
-        
+        #print("bp3")        
         for data in self.frame:
-            # convert to ctypes
             if(data["type"] == "float"):
                 args.append((byref(c_float(data["val"])), 4))
             elif(data["type"] == "float_array"):
@@ -278,7 +195,6 @@ class EngineCtypes(object):
                     self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
                     err_num = cast(err_num, POINTER(c_int)).contents.value
                     self.catch_cl(err_num, "create buf")
-
 
                 err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
                 self.catch_cl(err_num, "write buf")
@@ -299,20 +215,15 @@ class EngineCtypes(object):
 
                 
         #print("bp3.5")
-
         for i in xrange(len(args)):
-            # print args[i]
             err_num = openCL.clSetKernelArg(self.epimorph, i, args[i][1], args[i][0])
             self.catch_cl(err_num, "creating argument %d" % i)
 
         #print("bp4")
-
         # execute kernel
         self.timings.append(time.time())
 
-        #print("bp5")
-
-        
+        #print("bp5")        
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.epimorph, 2, None, 
                                                 (c_long * 2)(self.profile.kernel_dim, self.profile.kernel_dim), 
@@ -321,14 +232,12 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "enque execute kernel")
 
         #print("bp5.5")
-
         err_num = openCL.clWaitForEvents(1, event)
         self.catch_cl(err_num, "waiting to execute kernel")
 
         self.timings.append(time.time())
 
         #print("bp6")
-
         # copy out to fb
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.profile.kernel_dim, self.profile.kernel_dim, 1), None, None, event)
@@ -355,6 +264,7 @@ class EngineCtypes(object):
 
             self.timings.append(time.time())
 
+        # release pbo
         event = create_string_buffer(8)
         err_num = openCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
         self.catch_cl(err_num, "enque release pbo")
@@ -369,8 +279,7 @@ class EngineCtypes(object):
             self.do_get_fb = False
             self.get_fb_internal()
 
-        #openCL.clFinish(self.queue)
-        #openCL.clFlush(self.queue)
+        openCL.clFinish(self.queue)
 
         #debug("end do")
 
@@ -444,31 +353,6 @@ class EngineCtypes(object):
                 self.last_frame_time = time.time()
 
 
-
-
-    def opencl_loop(self, engine):
-        debug("Start OpenCL loop")
-        self.interface.init()
-        self.initCL()
-        engine.compiler = self.compiler
-        engine.queue = self.queue
-        print "asdf"
-        print self.queue
-        print "asdf"
-        engine.fb = self.fb
-        engine.out = self.out
-        engine.pbo = self.pbo
-        engine.devie = self.device
-        engine.ctx = self.ctx
-        debug("Finish initCL")
-        self.do_compile_event.wait()
-        while(not self.exit_opencl_loop):
-            self.do_compile_event.clear()
-            debug("Do Compile")
-            self.do_compile()
-            self.do_compile_event.wait()
-
-
     ######################################### PUBLIC ##################################################
 
 
@@ -476,83 +360,48 @@ class EngineCtypes(object):
         ''' Start engine '''
         info("Starting engine")        
 
-        # compile kernel
-
-        #while(not self.new_kernel):
-        #    time.sleep(0.2)
-        #self.compile()
-
 
     def compile(self):
         ''' Compile the kernel'''
-        #debug("Compiling kernel")        
+        debug("Compiling kernel")        
 
-        #self.do_compile_event.set()
-
-        #open("bs.txt", "w").write("yes")
-        #self.do_compile_flag = True
-        # 
-        self.do_compile()
-
-
-    def do_compile(self):
-        self.do_compile_flag = False
-        
-        # compiler
         self.compiler.compile(self.device, self.compiler_callback)
 
 
     def compiler_callback(self):
         print "callback called"
 
-        debug("c3.0")
-        if(self.new_program):
-            print self.new_program
-            err_num = openCL.clReleaseKernel(self.new_epimorph)
-            self.catch_cl(err_num, "release kernel")
+        # debug("c3.0")
+        self.program = self.compiler.program
 
-        self.new_program = self.compiler.program
-
-        debug("c3")
+        # debug("c3")
         err_num = create_string_buffer(4)        
-        self.new_epimorph = openCL.clCreateKernel(self.new_program, c_char_p("epimorph"), err_num)
+        self.epimorph = openCL.clCreateKernel(self.program, c_char_p("epimorph"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating epimorph kernel")
 
-        print self.new_epimorph
-
-        debug("c**")
+        #debug("c**")
         name = create_string_buffer(20)
-        err_num = openCL.clGetKernelInfo(self.new_epimorph, KERNEL_FUNCTION_NAME, 20, name, None)
+        err_num = openCL.clGetKernelInfo(self.epimorph, KERNEL_FUNCTION_NAME, 20, name, None)
         self.catch_cl(err_num, "query kernel")
         print name.value
         
-        debug("c3.1")
-        err_num = openCL.clRetainKernel(self.new_epimorph)
+        #debug("c3.1")
+        err_num = openCL.clRetainKernel(self.epimorph)
         self.catch_cl(err_num, "retain kernel")
-        debug("c3.2")
+        #debug("c3.2")
         
         err_num = create_string_buffer(4)        
-        self.new_get_image = openCL.clCreateKernel(self.new_program, c_char_p("get_image"), err_num)
+        self.get_image = openCL.clCreateKernel(self.program, c_char_p("get_image"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating image kernel")
 
         err_num = create_string_buffer(4)        
-        self.new_post_process = openCL.clCreateKernel(self.new_program, c_char_p("post_process"), err_num)
+        self.post_process = openCL.clCreateKernel(self.program, c_char_p("post_process"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating post process kernel")
 
-        debug("c4")
-        self.new_kernel = True
-
-
-    def kernel_callback(self):
-        print "kernel callback"
-        self.new_kernel = False
-        self.program = self.new_program
-        self.epimorph = self.new_epimorph
-        self.get_image = self.new_get_image
-        self.post_process = self.new_post_process
+        #debug("c4")
 
 
     def upload_image(self, cl_image, data):
@@ -580,3 +429,5 @@ class EngineCtypes(object):
         debug("Reset fb")
 
         self.upload_image(self.fb, self.empty)
+
+
