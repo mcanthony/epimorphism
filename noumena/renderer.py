@@ -5,8 +5,6 @@ from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
-gl = CDLL("libGL.so.1")
-
 import time
 import sys
 
@@ -32,9 +30,7 @@ class Renderer(object):
         self.screen = self.context.screen
 
         # initialize glut
-        print "aaaa"
         glutInit(1, [])
-        print "bbbb"
 
         # application will continue after glut exits
         glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
@@ -102,13 +98,6 @@ class Renderer(object):
         self.do_main_toggle_console = False
 
         self.pbo_ptr = None
-
-
-        self.current_display = gl.glXGetCurrentDisplay()
-        print self.current_display
-        self.current_context = gl.glXGetCurrentContext()
-        print self.current_context
-        print "done"
         
 
     def __del__(self):
@@ -333,8 +322,11 @@ class Renderer(object):
         self.console_keyboard = console_keyboard
 
 
+    # SYNC HACK - disabled
     def flash_message(self, msg, t=3):
         ''' Temporarily displays a message on the screen. '''
+
+        return
 
         self.echo_string = msg
 

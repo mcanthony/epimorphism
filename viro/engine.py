@@ -84,9 +84,7 @@ class EngineCtypes(object):
 
         # debug("i0.1")
         self.current_display = gl.glXGetCurrentDisplay()
-        print self.current_display
         self.current_context = gl.glXGetCurrentContext()
-        print self.current_context
         properties = (c_long * 7)(GL_CONTEXT_KHR, self.current_context, GLX_DISPLAY_KHR, self.current_display, CONTEXT_PLATFORM, self.platform, 0)
         err_num = create_string_buffer(4)
         self.ctx = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
@@ -155,8 +153,6 @@ class EngineCtypes(object):
 
     def __del__(self):
         debug("Deleting Engine")    
-        self.do_compile_event.set()
-        self.exit_opencl_loop = True
         self.new_fb_event.set()
         self.pbo = None
 
@@ -369,7 +365,6 @@ class EngineCtypes(object):
 
 
     def compiler_callback(self):
-        print "callback called"
 
         # debug("c3.0")
         self.program = self.compiler.program
@@ -384,7 +379,6 @@ class EngineCtypes(object):
         name = create_string_buffer(20)
         err_num = openCL.clGetKernelInfo(self.epimorph, KERNEL_FUNCTION_NAME, 20, name, None)
         self.catch_cl(err_num, "query kernel")
-        print name.value
         
         #debug("c3.1")
         err_num = openCL.clRetainKernel(self.epimorph)
