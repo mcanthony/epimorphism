@@ -15,11 +15,11 @@ Queue -
     DONE - asynchronous keyboard commands
     DONE - post processing
     DONE - better debug build program fail messages    
+    DONE - sporadic crash on compile
+    DONE - understand ctypes/OpenCL/GIL/clCreateProgram issue
+    DONE - uploading images - problem & memory leak
 
-  Port:
-    Sporadic crash on compile
-    Asynchronous compiling
-    Uploading images - problem & memory leak
+  Port:            
     Downloading images
     Try texture instead of PBO 
     fix automating components       
@@ -49,6 +49,7 @@ Queue -
     scale performance to system
 
   Prepare for release:
+    asynchronous compiling
     multiplebanannas@epimorphism.com
     transfer epimorphism.com dns
     contents & launch state

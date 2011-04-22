@@ -155,8 +155,8 @@ class CmdCenter(Animator, Archiver):
             script.start()
 
         # start programs
-        for program in self.state.programs:
-            program.start()
+        #for program in self.state.programs:
+        #    program.start()
 
         # component_automation
         self.toggle_component_automation(self.app.automating_components)
@@ -169,6 +169,7 @@ class CmdCenter(Animator, Archiver):
         self.t_start = time.time() + self.t_phase
         self.interface.start()
         
+
     def do(self):
         ''' Main application loop '''
 
@@ -191,6 +192,11 @@ class CmdCenter(Animator, Archiver):
 
             # execute animation paths
             self.execute_paths()
+            
+            # SYNC HACK - execute programs
+            for program in self.state.programs:
+                program._execute()
+            
 
             # render frame
             self.send_frame()
@@ -361,6 +367,7 @@ class CmdCenter(Animator, Archiver):
             debug("Stopping component automation")
 
             self.app.automating_components = False
+
 
     def save(self, name=None):
         ''' Grabs a screenshot and saves the current state. '''
