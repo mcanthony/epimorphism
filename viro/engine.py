@@ -490,9 +490,9 @@ class EngineCtypes(object):
         #self.do_compile_event.set()
 
         #open("bs.txt", "w").write("yes")
-        self.do_compile_flag = True
+        #self.do_compile_flag = True
         # 
-        #self.do_compile()
+        self.do_compile()
 
 
     def do_compile(self):

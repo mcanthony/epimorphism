@@ -71,20 +71,20 @@ class CompilerCtypes():
         #time.sleep(2.0)
 
         #f = open("kernels/kernel.bcl")
-        contents = open("kernels/kernel.bcl").read()
-        contents = c_char_p(contents)
-        err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithBinary(self.ctx, 1, (c_long * 1)(device), (c_long * 1)(len(contents.value)), byref(contents), None, err_num)
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "loading program")
-
-
-        #contents = open("aeon/__kernel.cl").read()
+        #contents = open("kernels/kernel.bcl").read()
         #contents = c_char_p(contents)
         #err_num = create_string_buffer(4)        
-        #self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
+        #self.program = openCL.clCreateProgramWithBinary(self.ctx, 1, (c_long * 1)(device), (c_long * 1)(len(contents.value)), byref(contents), None, err_num)
         #err_num = cast(err_num, POINTER(c_int)).contents.value
-        #self.catch_cl(err_num, "creating program")
+        #self.catch_cl(err_num, "loading program")
+
+
+        contents = open("aeon/__kernel.cl").read()
+        contents = c_char_p(contents)
+        err_num = create_string_buffer(4)        
+        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
+        err_num = cast(err_num, POINTER(c_int)).contents.value
+        self.catch_cl(err_num, "creating program")
         debug("c2")
 
         print self.ctx
