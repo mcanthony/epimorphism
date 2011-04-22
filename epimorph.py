@@ -61,6 +61,7 @@ def main():
     debug("Initializing modules")    
     interface, engine, cmdcenter = Interface(), EngineCtypes(), CmdCenter()
     Globals().init(app, cmdcenter, interface, engine)
+    #engine.init() and cmdcenter.init()
     interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop

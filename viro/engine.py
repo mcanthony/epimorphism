@@ -57,12 +57,12 @@ class EngineCtypes(object):
         self.do_compile_event = threading.Event()
         self.compile_completed_event = threading.Event()
 
-        self.current_display = gl.glXGetCurrentDisplay()
-        self.current_context = gl.glXGetCurrentContext()
+        #self.current_display = gl.glXGetCurrentDisplay()
+        #self.current_context = gl.glXGetCurrentContext()
         
 
-        #self.exit_opencl_loop = False
-        #async(lambda: self.opencl_loop(self))
+#        self.exit_opencl_loop = False
+#        async(lambda: self.opencl_loop(self))
         
 
         self.new_kernel = False
@@ -84,13 +84,17 @@ class EngineCtypes(object):
             openCL.clRetainProgram(cast(self.program, c_void_p))
             debug("c3")
          
-        async(test)
+        #async(test)
+
+        #time.sleep(1.0)
+        #sys.exit(0)
    
 
 #        for i in xrange(500):
 #            async(test)
 
 #        self.initCL()
+        self.cl_init = False
 
         return True
 
@@ -110,15 +114,21 @@ class EngineCtypes(object):
         self.catch_cl(err_num, "counting platforms")
         num_platforms = cast(num_platforms, POINTER(c_int)).contents.value
 
+        print "i0.0"
+
         platforms = create_string_buffer(4 * num_platforms)
         err_num = openCL.clGetPlatformIDs (num_platforms, platforms, None)
         self.catch_cl(err_num, "getting platforms")
         self.platform = cast(platforms, POINTER(c_int))[0]
 
+        print "i0.01"
+
         num_devices = create_string_buffer(4)
         err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, 0, None, num_devices);
         self.catch_cl(err_num, "counting devices")
         num_devices = cast(num_devices, POINTER(c_int)).contents.value
+
+        print "i0.02"
 
         devices = create_string_buffer(4 * num_devices)
         err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, num_devices, devices, None);
@@ -127,6 +137,10 @@ class EngineCtypes(object):
 
         debug("i0.1")
 
+        self.current_display = gl.glXGetCurrentDisplay()
+        print self.current_display
+        self.current_context = gl.glXGetCurrentContext()
+        print self.current_context
         properties = (c_long * 7)(GL_CONTEXT_KHR, self.current_context, GLX_DISPLAY_KHR, self.current_display, CONTEXT_PLATFORM, self.platform, 0)
         err_num = create_string_buffer(4)
         self.ctx = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
@@ -175,6 +189,8 @@ class EngineCtypes(object):
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "create_pbo")
 
+        print "pbo_ptr =", self.pbo_ptr
+
         #from sources.OpenGL.GL import *
         #err_num = create_string_buffer(4)
         #self.tex = self.interface.renderer.generate_pbo(self.profile.kernel_dim)
@@ -206,6 +222,8 @@ class EngineCtypes(object):
         # compiler        
         self.compiler = CompilerCtypes(self.ctx)
 
+        self.cl_init = True
+
 
     def __del__(self):
         debug("Deleting Engine")    
@@ -216,8 +234,11 @@ class EngineCtypes(object):
 
 
     def do(self):
-        #if(self.do_compile_flag):
-        #    self.do_compile()
+        if(not self.cl_init):
+            self.initCL()
+            self.compile()
+        if(self.do_compile_flag):
+            self.do_compile()
         ''' Main event loop '''          
 
         debug("start do")
@@ -453,19 +474,18 @@ class EngineCtypes(object):
         info("Starting engine")        
 
         # compile kernel
-        self.compile()
 
-        while(not self.new_kernel):
-            time.sleep(0.2)
+        #while(not self.new_kernel):
+        #    time.sleep(0.2)
 
 
     def compile(self):
         ''' Compile the kernel'''
         debug("Compiling kernel")        
 
-        self.do_compile_event.set()
+        #self.do_compile_event.set()
 
-        #self.do_compile_flag = True
+        self.do_compile_flag = True
         # 
         #self.do_compile()
 

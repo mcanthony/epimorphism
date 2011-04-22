@@ -5,6 +5,8 @@ from sources.OpenGL.GL import *
 from sources.OpenGL.GLUT import *
 from sources.OpenGL.GLU import *
 
+gl = CDLL("libGL.so.1")
+
 import time
 import sys
 
@@ -98,6 +100,13 @@ class Renderer(object):
         self.do_main_toggle_console = False
 
         self.pbo_ptr = None
+
+
+        self.current_display = gl.glXGetCurrentDisplay()
+        print self.current_display
+        self.current_context = gl.glXGetCurrentContext()
+        print self.current_context
+        print "done"
         
 
     def __del__(self):
