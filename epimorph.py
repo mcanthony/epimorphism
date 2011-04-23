@@ -79,7 +79,7 @@ def main():
 
 # start
 def start():
-    async(main, "main")
+    async(main)
 
 # autostart
 if(app.autostart):

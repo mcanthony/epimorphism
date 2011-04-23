@@ -46,7 +46,7 @@ class CompilerCtypes():
         # sub = subprocess.Popen(["python", "viro/crazy.py", str(self.ctx)], stdout=subprocess.PIPE)
         # (stdout, stderr) = sub.communicate()
 
-        # debug("c1")        
+        debug("c1")        
         # load program from source
         #contents = open("kernels/kernel.bcl").read()
         #contents = c_char_p(contents)
@@ -63,13 +63,13 @@ class CompilerCtypes():
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating program")
 
-        # debug("c2")
+        debug("c2")
         CBCKFUNC = CFUNCTYPE(None, c_long, c_void_p)
 
         def tmp_callback(program, data):
             callback()
 
-        # debug("c2.1")
+        debug("c2.1")
         err_num = openCL.clBuildProgram(self.program, 0, None, c_char_p("-I /home/gene/epimorphism/aeon -cl-mad-enable -cl-no-signed-zeros"), None, None)
         if(err_num != 0):
             log = create_string_buffer(10000)
@@ -78,9 +78,9 @@ class CompilerCtypes():
             error(log.value)
             sys.exit(0)
 
-        # debug("c2.2")
+        debug("c2.2")
         callback()
-        # debug("c2.3")
+        debug("c2.3")
 
         # save binaries
         #binaries = create_string_buffer(1000000)
@@ -89,7 +89,7 @@ class CompilerCtypes():
         #open("kernels/kernel.bcl", "w").write(binaries.value)
                        
         t1 = self.cmdcenter.get_time()
-        self.cmdcenter.t_phase -= t1 - t0
+#        self.cmdcenter.t_phase -= t1 - t0
 
         # remove tmp files
         files = [file for file in os.listdir("aeon") if re.search("\.ecu$", file)]

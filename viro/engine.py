@@ -380,24 +380,24 @@ class EngineCtypes(object):
 
     def compiler_callback(self):
 
-        # debug("c3.0")
+        debug("c3.0")
         self.program = self.compiler.program
 
-        # debug("c3")
+        debug("c3")
         err_num = create_string_buffer(4)        
         self.epimorph = openCL.clCreateKernel(self.program, c_char_p("epimorph"), err_num)
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating epimorph kernel")
 
-        #debug("c**")
+        debug("c**")
         name = create_string_buffer(20)
         err_num = openCL.clGetKernelInfo(self.epimorph, KERNEL_FUNCTION_NAME, 20, name, None)
         self.catch_cl(err_num, "query kernel")
         
-        #debug("c3.1")
+        debug("c3.1")
         err_num = openCL.clRetainKernel(self.epimorph)
         self.catch_cl(err_num, "retain kernel")
-        #debug("c3.2")
+        debug("c3.2")
         
         err_num = create_string_buffer(4)        
         self.get_image = openCL.clCreateKernel(self.program, c_char_p("get_image"), err_num)
@@ -409,7 +409,7 @@ class EngineCtypes(object):
         err_num = cast(err_num, POINTER(c_int)).contents.value
         self.catch_cl(err_num, "creating post process kernel")
 
-        #debug("c4")
+        debug("c4")
 
 
     def upload_image(self, cl_image, data):

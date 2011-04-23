@@ -32,7 +32,7 @@ class KeyboardHandler(object):
         modifiers = glutGetModifiers()                
 
         # SYNC HACK
-        async(eval("self." + self.context.keyboard)(key, modifiers), "shiz")
+        async(lambda : eval("self." + self.context.keyboard)(key, modifiers))
 
     def common(self, key, modifiers):
         # exit

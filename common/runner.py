@@ -1,19 +1,12 @@
 import threading
 
-from common.log import *
-set_log("RUNNER")
 
 class Runner(threading.Thread):
     ''' A runner object spawns a new thread to call a function '''
 
-    def __init__(self, func, s):
-        debug("init " + s)
-        if(s == 'shiz'):
-            debug("returning")
-            return
+    def __init__(self, func):
         self.func = func
 
-        debug("ASD " + str(func))
         # init thread
         threading.Thread.__init__(self)
 
@@ -24,9 +17,8 @@ class Runner(threading.Thread):
         self.func()
 
 
-def async(func, s):
-    print "as1"
+def async(func):
+
     # create and start thread
-    Runner(func, s).start()
-    print "as2"
+    Runner(func).start()
 
