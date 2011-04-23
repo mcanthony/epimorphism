@@ -10,6 +10,7 @@ Queue -
   DONE - remove midi  
   DONE - OpenCL  
   DONE - fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo(HOW?)
+  DONE - pyopengl bug
   PARTIALLY DONE - replace pyopencl with custom ctypes
     DONE - main engine
     DONE - asynchronous keyboard commands
@@ -18,11 +19,11 @@ Queue -
     DONE - sporadic crash on compile
     DONE - understand ctypes/OpenCL/GIL/clCreateProgram issue
     DONE - uploading images - problem & memory leak
+    DONE - fix automating components
 
-  Port:            
-    Downloading images
+  Port:                
     Try texture instead of PBO 
-    fix automating components       
+    
 
   Video:
     optimize mencoder command
@@ -30,8 +31,6 @@ Queue -
 
   Cross platform:
     remove pygame
-    pyopengl bug?
-    replace pyopencl with custom libraries
 
     OpenCL ATI Stream
     OpenCL Mac
@@ -49,7 +48,9 @@ Queue -
     scale performance to system
 
   Prepare for release:
+    make application multithreaded
     asynchronous compiling
+    downloading images broken
     multiplebanannas@epimorphism.com
     transfer epimorphism.com dns
     contents & launch state
@@ -107,8 +108,8 @@ Archiving -
 Contents:
   programs
   paths
-  color function
-  seed function
+  color functions
+  seed functions
   transformations - state machine?
   seed transformations
   animations

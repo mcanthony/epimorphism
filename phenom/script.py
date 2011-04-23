@@ -58,7 +58,7 @@ class Script():
         Globals().load(self)
 
         self.exit = False
-        async(self._execute)
+        async(self._execute, "scr")
 
 
     def stop(self):

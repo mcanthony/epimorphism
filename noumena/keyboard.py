@@ -22,17 +22,17 @@ class KeyboardHandler(object):
     def __init__(self):
         Globals().load(self)
 
-        #initialize component list
+        # initialize component list
         self.components = self.cmdcenter.componentmanager.component_list()
 
 
     def keyboard(self, key, x, y):
-
+        print key
         # get modifiers
         modifiers = glutGetModifiers()                
 
         # SYNC HACK
-        eval("self." + self.context.keyboard)(key, modifiers)
+        async(eval("self." + self.context.keyboard)(key, modifiers), "shiz")
 
     def common(self, key, modifiers):
         # exit
@@ -106,7 +106,6 @@ class KeyboardHandler(object):
         elif(key == GLUT_KEY_F12):
             self.cmdcenter.cmd("toggle_fps()")
      
-
         # save state
         elif(key == ' '): # space
             self.cmdcenter.cmd("save()")
@@ -217,7 +216,6 @@ class KeyboardHandler(object):
 
 
     def live(self, key, modifiers):
-
         self.common(key, modifiers)
 
         multiplier = 1
