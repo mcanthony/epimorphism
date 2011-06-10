@@ -126,7 +126,7 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
 }
 
 //__kernel __attribute__((reqd_work_group_size(16,16,1))) 
-//void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
+//void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __constant float* par){
 
   // get coords
   //const int x = get_global_id(0);
@@ -175,7 +175,7 @@ void get_image(read_only image2d_t fb, write_only image2d_t out){
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process(read_only image2d_t fb, __global char4* pbo, float time, __constant float* par){
+void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __constant float* par){
 
   // get coords
   const int x = get_global_id(0);

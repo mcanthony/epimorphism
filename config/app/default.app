@@ -25,7 +25,7 @@
  'state_switch_time': 3.0,
 
  'automating_components': True,
- 'midi_enabled': True,
+ 'midi_enabled': False,
 
  'print_log': True
 }
