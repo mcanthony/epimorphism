@@ -16,8 +16,8 @@ block_size = 16
 
 from ctypes import *
 from opencl import *
-openCL = CDLL("libOpenCL.so")
-gl = CDLL("libGL.so.1")
+openCL = PyDLL("libOpenCL.so")
+gl = PyDLL("libGL.so.1")
 
 class EngineCtypes(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.

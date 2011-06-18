@@ -8,7 +8,7 @@ set_log("COMPILER")
 
 from ctypes import *
 from opencl import *
-openCL = CDLL("libOpenCL.so")
+openCL = PyDLL("libOpenCL.so")
 
 class CompilerCtypes():
     ''' OpenCL Program compiler '''
