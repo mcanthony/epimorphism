@@ -103,12 +103,12 @@ void interference(__global uchar4* pbo, float time, float intrp_time,
 
   // get z
   float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
-
+  z_z = z;
   // compute val
   float waves[MAX_WAVES];
   for(int i = 0; i <= _SLICES; i++){
      float th = i * PI / _SLICES;
-
+     
      if(i < _SLICES / 2.0f){
        th -= 1 * (_SLICES / 2.0f - i) * time;
      }else if(i > _SLICES / 2.0f){
@@ -117,10 +117,13 @@ void interference(__global uchar4* pbo, float time, float intrp_time,
 
      float2 k = (float2)(cos(th), sin(th));
 
+     z = z_z;
+     z = M(zn[2], z) + zn[3];
      %T%
-     z_z = t;
+     z = t;
+     z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z_z, time, _N, 0.0f);
+     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time, _N, 0.0f);
   }
 
   float val = wrapn(waves, _SLICES + 1, _VAL_WRAP_TYPE);
@@ -137,10 +140,13 @@ void interference(__global uchar4* pbo, float time, float intrp_time,
 
      float2 k = (float2)(cos(th), sin(th));
 
+     z = z_z;
+     z = M(zn[2], z) + zn[3];
      %T%
-     z_z = t;
+     z = t;
+     z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z_z, 2.0f * time, _N, 0.0f) / 4.0f;
+     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time, _N, 0.0f) / 4.0f;
   }
 
   float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);

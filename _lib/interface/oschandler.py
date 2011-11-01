@@ -14,6 +14,9 @@ class OSCHandler(threading.Thread):
 
         Globals.load(self)            
 
+        # initialize component list
+        self.components = self.cmdcenter.componentmanager.component_list()
+
         # ghetto way to get ip address
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("gmail.com",80))
@@ -29,7 +32,7 @@ class OSCHandler(threading.Thread):
             if(func [0:4] == 'adr_'):
                 self.server.addMsgHandler('/' + func[4:], getattr(self, func))
 
-            #initialize thread
+        #initialize thread
         threading.Thread.__init__(self)
 
 
@@ -52,6 +55,8 @@ class OSCHandler(threading.Thread):
     def mirror_all(self):
         for name in self.state.par_names:
             self.mirror(self.state.par, self.state.par_idx(name), self.state.get_par(name))
+        for i in xrange(len(self.state.zn)):
+            self.mirror(self.state.zn, i, self.state.zn[i])
 
     def mirror(self, obj, key, val):
         pass

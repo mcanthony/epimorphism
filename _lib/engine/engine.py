@@ -14,10 +14,12 @@ set_log("ENGINE")
 
 block_size = 16
 
-from ctypes import *
-from opencl import *
-openCL = PyDLL("libOpenCL.so")
-gl = PyDLL("libGL.so.1")
+from pycl import *
+
+#from ctypes import *
+#from opencl import *
+#openCL = PyDLL("libOpenCL.so")
+#gl = PyDLL("libGL.so.1")
 
 class Engine(object):
     ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
@@ -64,73 +66,29 @@ class Engine(object):
     def initCL(self):
         debug("Setting up OpenCL")        
 
-        num_platforms = create_string_buffer(4)
-        err_num = openCL.clGetPlatformIDs(0, None, num_platforms)
-        self.catch_cl(err_num, "counting platforms")
-        num_platforms = cast(num_platforms, POINTER(c_int)).contents.value
-
-        platforms = create_string_buffer(4 * num_platforms)
-        err_num = openCL.clGetPlatformIDs (num_platforms, platforms, None)
-        self.catch_cl(err_num, "getting platforms")
-        self.platform = cast(platforms, POINTER(c_int))[0]
-
-        num_devices = create_string_buffer(4)
-        err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, 0, None, num_devices);
-        self.catch_cl(err_num, "counting devices")
-        num_devices = cast(num_devices, POINTER(c_int)).contents.value
-
-        devices = create_string_buffer(4 * num_devices)
-        err_num = openCL.clGetDeviceIDs(self.platform, DEVICE_TYPE_GPU, num_devices, devices, None);
-        self.catch_cl(err_num, "getting devices")
-        self.device = cast(devices, POINTER(c_int))[0]
-
-        self.current_display = gl.glXGetCurrentDisplay()
-        self.current_context = gl.glXGetCurrentContext()
-        properties = (c_long * 7)(GL_CONTEXT_KHR, self.current_context, GLX_DISPLAY_KHR, self.current_display, CONTEXT_PLATFORM, self.platform, 0)
-        err_num = create_string_buffer(4)
-        self.ctx = openCL.clCreateContext(properties, 1, (c_int * 1)(self.device), None, None, err_num);
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating context")
-
-        err_num = create_string_buffer(4)
-        self.queue = openCL.clCreateCommandQueue(self.ctx, self.device, 0, err_num);
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating queue")
+        self.ctx = clCreateContextFromType(CL_DEVICE_TYPE_GPU, None, gl_interop_ctx_props())
+        self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
         format = (c_uint * 2)(BGRA, FLOAT)
+        format = cl_image_format(CL_BGRA, CL_FLOAT)
 
         if(self.app.feedback_buffer):
-            # create fb
-            err_num = create_string_buffer(4)
-            self.fb = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.app.kernel_dim, self.app.kernel_dim, None, None, err_num)
-            err_num = cast(err_num, POINTER(c_int)).contents.value
-            self.catch_cl(err_num, "creating fb")
+            self.fb = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
+            self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
+            
+        self.aux = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
-            # creat out
-            err_num = create_string_buffer(4)
-            self.out = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.app.kernel_dim, self.app.kernel_dim, None, None, err_num)
-            err_num = cast(err_num, POINTER(c_int)).contents.value
-            self.catch_cl(err_num, "creating out")
 
-        # create auxiliary buffer
-        err_num = create_string_buffer(4)
-        self.aux = openCL.clCreateImage2D(self.ctx, MEM_READ_WRITE, format, self.app.kernel_dim, self.app.kernel_dim, None, None, err_num)
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating aux")
-
-        # create pbo
-        err_num = create_string_buffer(4)
+        # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
-        self.pbo = openCL.clCreateFromGLBuffer(self.ctx, MEM_WRITE_ONLY, self.pbo_ptr, err_num)
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "create_pbo")
+        self.pbo = clCreateFromGLBuffer(self.ctx, self.pbo_ptr, CL_MEM_WRITE_ONLY)       
     
         # create compiler & misc data
         self.compiler = Compiler(self.device, self.ctx, self.compiler_callback)
+        self.cl_initialized = True
         self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
         self.buffers = {}
-        self.cl_initialized = True
         self.fb_contents = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
 
 
@@ -157,6 +115,10 @@ class Engine(object):
             self.initCL()
             self.compiler.compile()
         
+        print self.pbo.value
+        print "success"
+        sys.exit(0)         
+
         self.timings = [time.time()]
 
         # acquire pbo
