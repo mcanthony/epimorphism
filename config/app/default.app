@@ -47,7 +47,7 @@
  'kernel_dim': 1536,
 
  'kernel': 'test',
- 'lib_prefix': '',
+ 'lib_prefix': 'def',
  'feedback_buffer': False,
  'substitutions': {}
 }
