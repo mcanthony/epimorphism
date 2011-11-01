@@ -1,3 +1,0 @@
-#! /bin/bash
-
-ipython ./epimorph.py name=live screen=[900,900,False] autostart=False

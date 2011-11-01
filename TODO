@@ -1,144 +1,25 @@
-Queue - 
-  DONE - launch context  
-  DONE - auto automating_components
-  DONE - remove messages
-  DONE - remove console
-  DONE - detect resolutions, choose max
-  DONE - SDL for cross platform resoltion detection
-  DONE - remove logger output
-  DONE - remove compiler output  
-  DONE - remove midi  
-  DONE - OpenCL  
-  DONE - fix seg fault on exit - glTexSubImage2D in renderer - copying from pbo(HOW?)
-  DONE - pyopengl bug
-  PARTIALLY DONE - replace pyopencl with custom ctypes
-    DONE - main engine
-    DONE - asynchronous keyboard commands
-    DONE - post processing
-    DONE - better debug build program fail messages    
-    DONE - sporadic crash on compile
-    DONE - understand ctypes/OpenCL/GIL/clCreateProgram issue
-    DONE - uploading images - problem & memory leak
-    DONE - fix automating components
-
-  Port:                
-    Try texture instead of PBO 
-    
-
-  Video:
-    optimize mencoder command
-    render video
-
-  Cross platform:
-    remove pygame
-
-    OpenCL ATI Stream
-    OpenCL Mac
-    OpenCL CPUs - replace images with buffers
-
-    windows binaries
-    mac binaries
-    linux binaries
-
-  Optimization:
-    investing gamma correction artifacts?
-    move color axis to cpu
-    optimize kernel
-    print opencl info
-    scale performance to system
-
-  Prepare for release:
-    make application multithreaded
-    asynchronous compiling
-    downloading images broken
-    multiplebanannas@epimorphism.com
-    transfer epimorphism.com dns
-    contents & launch state
-    periodically connect to server
-    get rid of mouse
-    introduction
-    periodic craziness
-    obfsucate
+DONE:
+  use input_handlers directory
+  fix state save/load
+  clean dictobj
+  make compiler only render the relevant files
+  reimplement feedback buffer
+  fix scripts
+  update component/datamanager
 
 
-Later:	
-  state nonsense
-  move globals to config
-  cleaning/documention pass
-
-  Archiving
-
-  plot fps
-
-  cull mode - hsls & FRACT?
-  reset_hsls
-
-  finish states:
-    paths
-    scripts
-    programs
-    variables
-
-    add image to state
-
-    make sure they save correctly
-    make sure they load correctly - startup & intermediate
-    DONE? - multiple component switching
-
-  don't route paths through cmd center.  all calls to animate_var through cmd_center
-
-  stop paths dicts & programs in load
-
-  make component switching a program
-
-  unify scripts?
-
-
-Documentation: 
-  readme, etc
-  add argument lists to help
-
-
-Archiving - 
-  MAYBE split state into sub states
-  archive feature for adding to archive or deleting
-  auto migrate feature
-
-
-Contents:
-  programs
-  paths
-  color functions
-  seed functions
-  transformations - state machine?
-  seed transformations
-  animations
-  w=-1 response
-  kernel optimization  
-  scripts
-
-
-Ideas -
-  figure out command recording
-  make components object
-  move interface to another thread  
-  metapaths 
-  opengl effects
-  better keyboard multipliers
-  when loading state, upload image too?
-  integrate ipython into console
-  quantize angles?
-  different reductions?
-  camera input
-  seed impulses
-  deal with state dumps that occur while blending
-  force fps
-  multiple gpu integration
-  Luv or Lab color space?
-
-Misc Tasks - 
-  color speeds & phases
-  ??configmanager dump object newline issues(only really relevant for scripts & paths)
-
-
+TODO:
+  problem with shift-8
+  smarter way of kernel substitutions
+  fix eventmanager
+  fix migrations
+  fix logging
+  clean cmdcenter
+  fix console
+  fix screenshot
   
+  implement epimorphism
+    mysterious segfault
+    implement post processing
+    reimplement cullmode
+    reimplement sphere mode

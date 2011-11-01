@@ -1,8 +1,0 @@
-{
- 'name': 'std',
- 'debug_freq': 1.0,
- 'ptxas_stats' : False,
- 'FRACT':2,
- 'kernel_dim': 1536,
- 'sphere': False
-}
