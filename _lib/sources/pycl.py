@@ -994,6 +994,17 @@ def _make_event_array(events):
         event_array[i] = e
     return (numevents, event_array)
 
+def _make_mem_array(mem_objects):
+    if not mem_objects: return (0, None)
+    if isinstance(mem_objects, cl_mem):
+        mem_objects = [mem_objects]
+    valid_mem_objects = [m for m in mem_objects if m]
+    nummem_objects = len(valid_mem_objects)
+    object_array = (cl_mem * nummem_objects)()
+    for i, m in enumerate(valid_mem_objects):
+        object_array[i] = m
+    return (nummem_objects, object_array)
+
 @_wrapdll(cl_uint, P(cl_event))
 def clWaitForEvents(*events):
     """
@@ -2138,6 +2149,43 @@ def clGetImageInfo(img, param_name):
                             byref(param_value), None)
         return param_value
 
+@_wrapdll(cl_command_queue, cl_mem, cl_mem, P(size_t), P(size_t), P(size_t), cl_uint, P(cl_event), cl_event)
+def clEnqueueCopyImage(queue, src, dst, src_origin=None, dst_origin=None, region=None, wait_for=None):
+    """
+    Copy an image.   
+    :param queue: :class:`cl_command_queue` to queue it on.
+    :param src: :class:`cl_mem` to read from. Must be an image.
+    :param dst: :class:`cl_mem` to read from. Must be an image.
+    :param src_origin: 2 or 3-tuple of src origin coordinates.  Defaults to zero.
+    :param dst_origin: 2 or 3-tuple of dst origin coordinates.  Defaults to zero.
+    :param region: 2 or 3-tuple containing size of region to be copied. Defaults to size of src
+    :param wait_for: :class:`cl_event` (or a list of them) that must complete
+      before the memory transfer will commence.
+    :returns: :class:`cl_event`
+    """
+
+    if region is None:        
+        region = (size_t * 3)(clGetImageInfo(src, CL_IMAGE_WIDTH), 
+                              clGetImageInfo(src, CL_IMAGE_HEIGHT), 
+                              clGetImageInfo(src, CL_IMAGE_DEPTH))
+        if(region[2] == 0):
+            region[2] = 1
+
+    if(src_origin is None):
+        src_origin = (0, 0, 0)
+    src_origin = (size_t * 3)(*src_origin)
+
+    if(dst_origin is None):
+        dst_origin = (0, 0, 0)
+    dst_origin = (size_t * 3)(*dst_origin)        
+        
+    nevents, wait_array = _make_event_array(wait_for)
+    out_event = cl_event()
+    clEnqueueCopyImage.call(queue, src, dst, src_origin, dst_origin, region,
+                            nevents, wait_array, byref(out_event))
+
+    return out_event    
+
 
 ###################
 # Program Objects #
@@ -2896,55 +2944,37 @@ def clCreateFromGLBuffer(context, bufobj, flags = cl_mem_flags.CL_MEM_READ_WRITE
 
 
 @_wrapdll(cl_command_queue, cl_uint, P(cl_mem), cl_uint, P(cl_event), P(cl_event))
-def clEnqueueAcquireGLObjects(queue, bufobjs, event_wait_list = None, event = None):
+def clEnqueueAcquireGLObjects(queue, gl_objs, wait_for=None):
     """
     :param queue: :class:`cl_command_queue` to which this action is to be added
     :param bufobjs: A list of previously allocated OpenGL buffer objects
-    :param event_wait_list:  A list of cl_events to execute before this action
-    :param event :class:'cl_event' which will identify when the action has completed
+    :param wait_for: :class:`cl_event` (or a list of them) that must complete
+      before the memory transfer will commence.
     """
 
-    num_buffers = len(bufobjs)
-    buffers = (cl_mem*num_buffers)()
-    for i,buf in enumerate(bufobjs):
-        buffers[i] = buf
+    ngl_objs, gl_obj_array = _make_mem_array(gl_objs)
+    nevents, wait_array = _make_event_array(wait_for)
 
-    if(event_wait_list != None):
-        num_events = len(event_wait_list)
-        events = (cl_event*num_events)()
-        for i,evt in enumerate(event_wait_list):
-            events[i] = evt
-    else:
-        num_events = 0
-        events = None
-
-    return clEnqueueAcquireGLObjects.call(queue, num_buffers, buffers, num_events, events, event)
+    out_event = cl_event()
+    clEnqueueAcquireGLObjects.call(queue, ngl_objs, gl_obj_array, nevents, wait_array, byref(out_event))
+    return out_event
 
 
 @_wrapdll(cl_command_queue, cl_uint, P(cl_mem), cl_uint, P(cl_event), P(cl_event))
-def clEnqueueReleaseGLObjects(queue, bufobjs, event_wait_list = None, event = None):
+def clEnqueueReleaseGLObjects(queue, gl_objs, wait_for=None):
     """
     :param queue: :class:`cl_command_queue` to which this action is to be added
     :param bufobjs: A list of previously allocated OpenGL buffer objects
-    :param event_wait_list:  A list of cl_events to execute before this action
-    :param event :class:'cl_event' which will identify when the action has completed
+    :param wait_for: :class:`cl_event` (or a list of them) that must complete
+      before the memory transfer will commence.
     """
 
-    num_buffers = len(bufobjs)
-    buffers = (cl_mem*num_buffers)()
-    for i,buf in enumerate(bufobjs):
-        buffers[i] = buf
+    ngl_objs, gl_obj_array = _make_mem_array(gl_objs)
+    nevents, wait_array = _make_event_array(wait_for)
 
-    if(event_wait_list != None):
-        num_events = len(event_wait_list)
-        events = (cl_event*num_events)()
-        for i,evt in enumerate(event_wait_list):
-            events[i] = evt
-    else:
-        num_events = 0
-        events = None
-
-    return clEnqueueReleaseGLObjects.call(queue, num_buffers, buffers, num_events, events, event)
+    out_event = cl_event()
+    clEnqueueReleaseGLObjects.call(queue, ngl_objs, gl_obj_array, nevents, wait_array, byref(out_event))
+    return out_event
 
 
 def buffer_from_ndarray(queue, ary, buf=None, **kw):

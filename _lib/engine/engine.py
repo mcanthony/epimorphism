@@ -24,8 +24,8 @@ from pycl import *
 #gl = PyDLL("libGL.so.1")
 
 class Engine(object):
-    ''' The Engine object is the applications interface, via cuda, to the graphics hardware.
-        It is responsible for the setup and maintenence of the cuda environment and the graphics kernel.
+    ''' The Engine object is the applications interface, via opencl, to the graphics hardware.
+        It is responsible for the setup and maintenence of the opencl environment and the graphics kernel.
         It communicates to out via a pbo  '''
 
     def init(self):
@@ -112,9 +112,7 @@ class Engine(object):
         self.timings = [time.time()]
 
         # acquire pbo
-        event = cl_event()
-        clEnqueueAcquireGLObjects(self.queue, [self.pbo], None, event)
-        event.wait()
+        clEnqueueAcquireGLObjects(self.queue, [self.pbo], None).wait()
         
         # create args
         if(self.app.feedback_buffer):
@@ -137,71 +135,25 @@ class Engine(object):
         self.main_kernel(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
         if(self.app.feedback_buffer):
+            clEnqueueCopyImage(self.queue, self.out, self.fb).wait()
             # copy out to fb
-            event = create_string_buffer(8)
-            err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.app.kernel_dim, self.app.kernel_dim, 1), None, None, event)
-            self.catch_cl(err_num, "enque copy fb")
-            err_num = openCL.clWaitForEvents(1, event)        
-            self.catch_cl(err_num, "waiting to copy fb")
+            #event = create_string_buffer(8)
+            #err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.app.kernel_dim, self.app.kernel_dim, 1), None, None, event)
+            #self.catch_cl(err_num, "enque copy fb")
+            #err_num = openCL.clWaitForEvents(1, event)        
+            #self.catch_cl(err_num, "waiting to copy fb")
 
             self.timings.append(time.time())
 
-
-
         # post processing
-#        if(self.state.get_par("_POST_PROCESSING") != 0.0):
-#            post_args = [args[0], args[2], args[3], args[5]]
-#            for i in xrange(len(post_args)):
-#                err_num = openCL.clSetKernelArg(self.post_process, i, post_args[i][1], post_args[i][0])
-#                self.catch_cl(err_num, "creating post argument %d" % i)
-#            event = create_string_buffer(8)
-#            err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.post_process, 2, None, 
-#                                                    (c_long * 2)(self.app.kernel_dim, self.app.kernel_dim), 
-#                                                    (c_long * 2)(block_size, block_size), 
-#                                                    None, None, event)
-#            self.catch_cl(err_num, "enque post execute kernel")
-#            err_num = openCL.clWaitForEvents(1, event)
-#            self.catch_cl(err_num, "waiting to execute post kernel")
-
-#            self.timings.append(time.time())
 
         # release pbo
-
-        event = cl_event()
-        clEnqueueReleaseGLObjects(self.queue, [self.pbo], None, event)
-        event.wait()
+        clEnqueueReleaseGLObjects(self.queue, [self.pbo], None).wait()
 
         self.frame_num += 1
         self.print_timings()
 
-        #openCL.clFinish(self.queue)
-
         #debug("end do")
-
-
-    def print_opencl_info(self):
-        def print_info(obj, info_cls):
-            for info_name in sorted(dir(info_cls)):
-                if not info_name.startswith("_") and info_name != "to_string":
-                    info = getattr(info_cls, info_name)
-                    try:
-                        info_value = obj.get_info(info)
-                    except:
-                        info_value = "<error>"
-
-                    debug("%s: %s" % (info_name, info_value))
-
-        for platform in cl.get_platforms():
-            debug(75*"=")
-            debug(platform)
-            debug(75*"=")
-            print_info(platform, cl.platform_info)
-
-            for device in platform.get_devices():
-                debug(75*"=")
-                debug(platform)
-                debug(75*"=")
-                print_info(device, cl.device_info)
 
 
     def print_timings(self):
@@ -220,8 +172,8 @@ class Engine(object):
                     print "event" + str(i) + "-" + str(i + 1) + "~ " + str(self.event_accum[i] / self.frame_num) + "ms"
 
                 # print totals
-                print "total cuda:", str(sum(self.event_accum_tmp) / self.app.debug_freq) + "ms"
-                print "total cuda~", str(sum(self.event_accum) / self.frame_num) + "ms"
+                print "total opencl:", str(sum(self.event_accum_tmp) / self.app.debug_freq) + "ms"
+                print "total opencl~", str(sum(self.event_accum) / self.frame_num) + "ms"
 
                 # print abs times
                 abs = 1000 * ((time.time() - self.last_frame_time) % 1) / self.app.debug_freq
