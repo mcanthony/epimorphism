@@ -42,7 +42,7 @@ for cmd in assignments:
 from common.log import *
 set_log(app.name.upper())
 
-info("STARTING " + app.name)
+info("STARTING " + app.app)
 if(len(sys.argv) != 1):
     debug("with args %s" % (str(sys.argv[1:])))
 

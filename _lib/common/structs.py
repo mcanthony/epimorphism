@@ -106,7 +106,7 @@ class DictObj(object):
     ''' A Dictionary Object is simply an object used solely as a
         dictionary for ease of use '''
 
-    def __init__(self, type, name):
+    def __init__(self, type, app, name):
         self.type, self.name = type, name
 
         if(not self.__dict__.has_key("extension")):
@@ -189,13 +189,12 @@ class App(DictObj):
 
     def __init__(self, app, name="default"):
         self.extension = "app"
-        DictObj.__init__(self, 'app', app + '_' + name)
+        DictObj.__init__(self, 'app', app, app + '_' + name)
 
     def get_state_name(self):
         return self.state.name
 
     def set_state(self, name):
-        print "!!!!!!!!!!!!!"
         self.state = State(self.app, name)
     
     state_name = property(get_state_name, set_state)
@@ -207,7 +206,7 @@ class State(DictObj):
     def __init__(self, app, name="default"):
         self.app, self.name = app, name
         self.extension = "est"
-        DictObj.__init__(self, 'state', app + '_' + name)
+        DictObj.__init__(self, 'state', app, app + '_' + name)
 
         # process pars & names
         self.par_names = self.par[::2]
