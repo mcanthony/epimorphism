@@ -38,6 +38,9 @@ for cmd in assignments:
     else:
         print "failed to parse argument:", cmd
 
+# make sure state is most recent value
+state = app.state
+
 # setup logging
 from common.log import *
 set_log(app.name.upper())

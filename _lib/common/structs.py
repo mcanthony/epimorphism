@@ -33,11 +33,11 @@ def save_obj(obj, type, extension, app=None, name=None):
     if(not name):
         type = app or Type
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
-        i = max([-1] + [int(file[(len(type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(type + '_(\d+)').match(file)]) + 1
-        name = "%s_%d" % (type, i)
+        idx = max([-1] + [int(file[(len(type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(type + '_(\d+)').match(file)]) + 1
+        name = "%s_%d" % (type, idx)
        
     try:
-        obj["name"] = name
+        obj["name"] = (app and idx or name)
     except:
         debug("couldn't set object name")
 
@@ -56,6 +56,7 @@ def save_obj(obj, type, extension, app=None, name=None):
 def load_obj(type, name, extension):
     ''' This method loads a serialized object from the filesystem. '''
 
+    # hack for scripts
     from cmdcenter.script import *
 
     # open file 
@@ -107,7 +108,7 @@ class DictObj(object):
         dictionary for ease of use '''
 
     def __init__(self, type, app, name):
-        self.type, self.name = type, name
+        self.type, self.app, self.name = type, app, name
 
         if(not self.__dict__.has_key("extension")):
             self.extension = "obj" 
@@ -115,15 +116,16 @@ class DictObj(object):
         global root
         self.path = root + "/" + self.type + "/"
             
-        # load default object & then update with actual object
+        # load default objects & then update with actual object
         try:
             data = load_obj(self.type, "default", self.extension)
+            data.update(load_obj(self.type, self.app + "_default", self.extension))
         except:
             critical("Couldn't initialize object: " + name)
             sys.exit(0)
 
-        if(self.name and self.name != "default"):
-            data.update(load_obj(self.type, self.name, self.extension))
+        if(self.name != None and self.name != "default"):
+            data.update(load_obj(self.type, self.app + '_' + str(self.name), self.extension))
 
         self.__dict__.update(data)
 
@@ -189,13 +191,14 @@ class App(DictObj):
 
     def __init__(self, app, name="default"):
         self.extension = "app"
-        DictObj.__init__(self, 'app', app, app + '_' + name)
+        DictObj.__init__(self, 'app', app, name)
 
     def get_state_name(self):
         return self.state.name
 
     def set_state(self, name):
         self.state = State(self.app, name)
+
     
     state_name = property(get_state_name, set_state)
 
@@ -206,7 +209,7 @@ class State(DictObj):
     def __init__(self, app, name="default"):
         self.app, self.name = app, name
         self.extension = "est"
-        DictObj.__init__(self, 'state', app, app + '_' + name)
+        DictObj.__init__(self, 'state', app, name)
 
         # process pars & names
         self.par_names = self.par[::2]
@@ -224,7 +227,7 @@ class State(DictObj):
             path.phase = self.time
 
     def __repr__(self):
-        return "%s(%s, %s)" % (self.__class__, self.app, self.name)
+        return "%s('%s', '%s')" % (self.__class__.__name__, self.app, self.name)
 
     def get_par(self, name):
         return self.par[self.par_idx(name)]

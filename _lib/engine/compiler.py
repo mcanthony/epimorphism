@@ -17,7 +17,6 @@ class Compiler():
 
         self.ctx, self.callback = ctx, callback
         self.substitutions = {"KERNEL_DIM": self.app.kernel_dim}
-        self.substitutions.update(self.app.substitutions)
         self.program = None        
 
     def compile(self):
@@ -67,6 +66,9 @@ class Compiler():
                 self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.state.components[component_name])
             else:
                 self.substitutions[component_name] = ""
+
+        # get substitutions from application
+        self.substitutions.update(self.app.substitutions)
 
         # bind PAR_NAMES
         par_name_str = ""
