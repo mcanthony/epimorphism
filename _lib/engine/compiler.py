@@ -6,8 +6,6 @@ from common.log import *
 from common.runner import *
 set_log("COMPILER")
 
-from ctypes import *
-
 from pycl import *
 
 class Compiler():
@@ -24,10 +22,11 @@ class Compiler():
 
     def compile(self):
         ''' Executes the main Compiler sequence '''
-        debug("Executing")
+        debug("Compiling")
+
+#        t0 = self.cmdcenter.get_time()
 
         # render ecu files
-#        t0 = self.cmdcenter.get_time()
         [self.render_file(file) for file in os.listdir("kernels") if re.search("^[^\.]*?\.ecl$", file)]
 
         # load program from binaries
@@ -44,6 +43,7 @@ class Compiler():
                      
 #        t1 = self.cmdcenter.get_time()
 #        self.cmdcenter.t_phase -= t1 - t0
+
         # remove tmp files
 #        files = [file for file in os.listdir("kernel") if re.search("\.ecu$", file)]
 

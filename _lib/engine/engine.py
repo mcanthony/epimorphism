@@ -1,27 +1,19 @@
 from common.globals import *
 
-from compiler import *
-
-import sys, gc
 import itertools
 import time
 import threading
 
+from pycl import *
+
 from array import array
 
-# import Image
+from compiler import *
 
 from common.log import *
 set_log("ENGINE")
 
 block_size = 16
-
-from pycl import *
-
-#from ctypes import *
-#from opencl import *
-#openCL = PyDLL("libOpenCL.so")
-#gl = PyDLL("libGL.so.1")
 
 class Engine(object):
     ''' The Engine object is the applications interface, via opencl, to the graphics hardware.
@@ -62,6 +54,7 @@ class Engine(object):
     def initCL(self):
         debug("Setting up OpenCL")        
 
+        # create basic structs
         self.ctx = clCreateContextFromType(CL_DEVICE_TYPE_GPU, None, gl_interop_ctx_props())
         self.queue = clCreateCommandQueue(self.ctx)
 
@@ -134,15 +127,9 @@ class Engine(object):
              
         self.main_kernel(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
+        # copy buffer if necessary
         if(self.app.feedback_buffer):
             clEnqueueCopyImage(self.queue, self.out, self.fb).wait()
-            # copy out to fb
-            #event = create_string_buffer(8)
-            #err_num = openCL.clEnqueueCopyImage(self.queue, self.out, self.fb, (c_long * 3)(0, 0, 0), (c_long * 3)(0, 0, 0), (c_long * 3)(self.app.kernel_dim, self.app.kernel_dim, 1), None, None, event)
-            #self.catch_cl(err_num, "enque copy fb")
-            #err_num = openCL.clWaitForEvents(1, event)        
-            #self.catch_cl(err_num, "waiting to copy fb")
-
             self.timings.append(time.time())
 
         # post processing
