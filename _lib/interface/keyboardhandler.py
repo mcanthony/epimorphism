@@ -19,11 +19,9 @@ class KeyboardHandler(object):
 
     def do_key(self, key, x, y):
         modifiers = glutGetModifiers()                
-        #import gc
-        #gc.collect()
         
-        #async(lambda : self.key_pressed(key, modifiers))
-        self.key_pressed(key, modifiers)
+        async(lambda : self.key_pressed(key, modifiers))
+        #self.key_pressed(key, modifiers)
 
     def key_pressed(self, key, modifiers):
         pass

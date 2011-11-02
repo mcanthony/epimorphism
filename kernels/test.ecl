@@ -16,8 +16,8 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(__global uchar4* pbo){//, float time, float intrp_time,
-  //__constant float *par, __constant float *internal, __constant float2 *zn){
+void test(__global uchar4* pbo, float time, float intrp_time, 
+	  __constant float *par, __constant float *internal, __constant float2 *zn){
   // get coords
   const int x = get_global_id(0);
   const int y = get_global_id(1);

@@ -7,6 +7,8 @@ import itertools
 import time
 import threading
 
+from array import array
+
 # import Image
 
 from common.log import *
@@ -69,29 +71,34 @@ class Engine(object):
         if(self.app.feedback_buffer):
             self.fb = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
             self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
-            
-        self.aux = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
+        # auxiliary buffer
+        self.aux = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
         self.pbo = clCreateFromGLBuffer(self.ctx, self.pbo_ptr, CL_MEM_WRITE_ONLY)       
-    
+            
+        self.arg_buffers = {}
+
         # create compiler & misc data
         self.compiler = Compiler(self.ctx, self.compiler_callback)
-        self.cl_initialized = True
         self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
-        self.buffers = {}
         self.fb_contents = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+
+        self.cl_initialized = True
 
 
     def compiler_callback(self, program):
 
         self.program = program
-
         self.main_kernel = self.program[self.app.kernel]
 
-        self.main_kernel.argtypes=(cl_mem,)
+        # initialize arguments
+        if(self.app.feedback_buffer):
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+        else:
+            self.main_kernel.argtypes=(cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
 
 
     def do(self):
@@ -110,52 +117,24 @@ class Engine(object):
         event.wait()
         
         # create args
-#        if(self.app.feedback_buffer):
-#            args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
-#        else:
-#            args = [(byref(cast(self.pbo, c_void_p)), 8)]    
-        
-#        for data in self.frame:
-#            if(data["type"] == "float"):
-#                args.append((byref(c_float(data["val"])), 4))
-#            elif(data["type"] == "float_array"):
-#                if(not self.buffers.has_key(data["name"])):
-#                    err_num = create_string_buffer(4)
-#                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
-#                    err_num = cast(err_num, POINTER(c_int)).contents.value
-#                    self.catch_cl(err_num, "create buf")
-
-#                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
-#                self.catch_cl(err_num, "write buf")
-
-#                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
-#            elif(data["type"] == "complex_array"):
-#                if(not self.buffers.has_key(data["name"])):
-#                    err_num = create_string_buffer(4)
-#                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
-#                    err_num = cast(err_num, POINTER(c_int)).contents.value
-#                    self.catch_cl(err_num, "create buf")
-
-#                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]) * 2, 
-#                                                      (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, None)
-#                self.catch_cl(err_num, "write buf")
-
-#                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
-                
-#        for i in xrange(len(args)):
-#            err_num = openCL.clSetKernelArg(self.main_kernel, i, args[i][1], args[i][0])
-#            self.catch_cl(err_num, "creating argument %d" % i)
-
-        # execute kernel
- #       self.timings.append(time.time())
- #       event = create_string_buffer(8)
-  #      err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.main_kernel, 2, None, 
-  #                                              (c_long * 2)(self.app.kernel_dim, self.app.kernel_dim), 
-  #                                              (c_long * 2)(block_size, block_size), 
-   #                                             None, None, event)
-
-        evt = self.main_kernel(self.pbo).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size))
-        evt.wait()
+        if(self.app.feedback_buffer):
+            args = [self.fb, self.out, self.pbo]
+        else:
+            args = [self.pbo]            
+        for data in self.frame:
+            if(data["type"] == "float"):
+                args.append(data["val"])
+            elif(data["type"] == "float_array"):
+                buf = self.arg_buffers.has_key(data["name"]) and self.arg_buffers[data["name"]] or None
+                self.arg_buffers[data["name"]] = buffer_from_pyarray(self.queue, array('f', data["val"]), buf)[0]
+                args.append(self.arg_buffers[data["name"]])
+            elif(data["type"] == "complex_array"):
+                buf = self.arg_buffers.has_key(data["name"]) and self.arg_buffers[data["name"]] or None
+                val = list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))
+                self.arg_buffers[data["name"]] = buffer_from_pyarray(self.queue, array('f', val), buf)[0]
+                args.append(self.arg_buffers[data["name"]])
+             
+        self.main_kernel(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
         if(self.app.feedback_buffer):
             # copy out to fb

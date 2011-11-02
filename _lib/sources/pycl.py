@@ -2378,8 +2378,6 @@ def clBuildProgram(program, options=None, devices=None):
         num_devices = 0
         dev_array = None
     try:
-        print "OPTIONS:", options.value
-
         clBuildProgram.call(program, 0, None,
                             options, None, None)
     except BuildProgramFailureError:
