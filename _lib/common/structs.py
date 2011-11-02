@@ -9,7 +9,6 @@ import re, os, traceback
 from migration import *
 
 from common.log import *
-from cmdcenter.script import *
 set_log("DictObj")
 
 
@@ -22,18 +21,17 @@ def set_root(new_root):
     root = new_root
 
 
-def save_obj(obj, type, extension, name=None):
+def save_obj(obj, type, extension, app=None, name=None):
     ''' This method serializes any object into the appropriate directory.  
         If no name is provided, the next available one will be generated '''
 
     path = root + "/" + type + "/" 
 
-    # hack for state
-    if(type == "state"):
-        type = obj["app"]
+    
 
     # set name if necessary
     if(not name):
+        type = app or Type
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
         i = max([-1] + [int(file[(len(type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(type + '_(\d+)').match(file)]) + 1
         name = "%s_%d" % (type, i)
@@ -57,6 +55,8 @@ def save_obj(obj, type, extension, name=None):
 
 def load_obj(type, name, extension):
     ''' This method loads a serialized object from the filesystem. '''
+
+    from cmdcenter.script import *
 
     # open file 
     try:
@@ -106,7 +106,7 @@ class DictObj(object):
     ''' A Dictionary Object is simply an object used solely as a
         dictionary for ease of use '''
 
-    def __init__(self, type, name="default"):
+    def __init__(self, type, name):
         self.type, self.name = type, name
 
         if(not self.__dict__.has_key("extension")):
@@ -114,7 +114,6 @@ class DictObj(object):
 
         global root
         self.path = root + "/" + self.type + "/"
-
             
         # load default object & then update with actual object
         try:
@@ -122,17 +121,20 @@ class DictObj(object):
         except:
             critical("Couldn't initialize object: " + name)
             sys.exit(0)
+
         if(self.name and self.name != "default"):
             data.update(load_obj(self.type, self.name, self.extension))
 
         self.__dict__.update(data)
 
 
-    def __setattr__(self, key, val):        
-        if(key == 'name' and self.__dict__.has_key('name') and self.name != val):
-            self.__dict__ = eval(self.type.capitalize())(val).__dict__
-        else:
-            object.__setattr__(self, key, val)                          
+    #def __setattr__(self, key, val):        
+    #    ''' If the obj.name attr is set, the object's contents are loaded from the appropriate 
+    #    file on disk'''
+    #    if(key == 'name' and self.__dict__.has_key('name') and self.name != val):
+    #        self.__dict__ = eval(self.type.capitalize())(val).__dict__
+    #    else:
+    #        object.__setattr__(self, key, val)                          
                  
 
     def save(self, name=None):
@@ -148,7 +150,7 @@ class DictObj(object):
             del(obj['par_names'])
 
         # save object
-        name = save_obj(obj, self.type, self.extension, name)
+        name = save_obj(obj, self.type, self.extension, self.app, name)
         object.__setattr__(self, 'name', name)
 
         return name
@@ -183,19 +185,29 @@ class DictObj(object):
 
 
 class App(DictObj):
-    ''' Configuration settings for the application. '''
+    ''' Configuration settings for an application. '''
 
-    def __init__(self, name="default"):
+    def __init__(self, app, name="default"):
         self.extension = "app"
-        DictObj.__init__(self, 'app', name)
+        DictObj.__init__(self, 'app', app + '_' + name)
+
+    def get_state_name(self):
+        return self.state.name
+
+    def set_state(self, name):
+        print "!!!!!!!!!!!!!"
+        self.state = State(self.app, name)
+    
+    state_name = property(get_state_name, set_state)
 
 
 class State(DictObj):
     ''' Configuration parameters for generating Frames. '''
 
-    def __init__(self, name="default"):
+    def __init__(self, app, name="default"):
+        self.app, self.name = app, name
         self.extension = "est"
-        DictObj.__init__(self, 'state', name)
+        DictObj.__init__(self, 'state', app + '_' + name)
 
         # process pars & names
         self.par_names = self.par[::2]
@@ -211,6 +223,9 @@ class State(DictObj):
         # set path phases
         for path in self.paths:
             path.phase = self.time
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (self.__class__, self.app, self.name)
 
     def get_par(self, name):
         return self.par[self.par_idx(name)]

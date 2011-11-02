@@ -9,7 +9,7 @@ from script import *
 from eventmanager import *
 from common.default import *
 from common.complex import *
-from config.structs import *
+from common.structs import *
 
 import StringIO
 import sys

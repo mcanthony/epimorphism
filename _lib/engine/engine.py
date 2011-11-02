@@ -76,8 +76,8 @@ class Engine(object):
 
         # create compiler & misc data
         self.compiler = Compiler(self.ctx, self.compiler_callback)
-        self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
-        self.fb_contents = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+        #self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+        #self.fb_contents = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
 
         self.cl_initialized = True
 

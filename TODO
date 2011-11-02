@@ -6,10 +6,17 @@ DONE:
   reimplement feedback buffer
   fix scripts
   update component/datamanager
+  epimorphism working!!
 
 
 TODO:
-  problem with shift-8
+  in dict_obj, saving?  
+  choose state from command line?
+
+  remove certain vars from dict_objs?
+
+  fix exception handling
+
   smarter way of kernel substitutions
   fix eventmanager
   fix migrations
@@ -17,9 +24,12 @@ TODO:
   clean cmdcenter
   fix console
   fix screenshot
-  
+
+  implement pfn_notify in compiler
+  do second stage compilation in componentmanager after first finished
+  figure out why app takes forever to exit  
+
   implement epimorphism
-    mysterious segfault
     implement post processing
     reimplement cullmode
     reimplement sphere mode

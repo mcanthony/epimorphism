@@ -1,5 +1,5 @@
 from common.globals import *
-from config.structs import *
+from common.structs import *
 from common.runner import *
 
 from common.log import *
@@ -11,10 +11,8 @@ import time
 class Script():
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
-
     def __init__(self, name = "default"):
         debug("Creating script")
-
         self.__dict__ = load_obj("script", name, "scr")
 
 

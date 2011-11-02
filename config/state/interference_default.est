@@ -1,5 +1,6 @@
 {
  'app': 'interference',
+ 'name': 'default',
  'VERSION': 1.0,
  'time': 0.0,
  't_phase': 0.0,

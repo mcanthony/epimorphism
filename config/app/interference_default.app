@@ -1,5 +1,7 @@
 {
- 'name': 'interference',
+ 'app': 'interference',
+ 'name': 'default',
+ 'state': State('interference', 'default'),
 
  'keyboard_handler': 'DefaultInterferenceKeyboard',
  'mouse_handler': 'DefaultInterferenceMouse',

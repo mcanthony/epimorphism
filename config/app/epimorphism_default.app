@@ -1,5 +1,7 @@
 {
- 'name': 'epimorphism',
+ 'app': 'epimorphism',
+ 'name': 'default',
+ 'state': State('epimorphism', 'default'),
 
  'keyboard_handler': 'DefaultEpimorphismKeyboard',
  'mouse_handler': 'DefaultEpimorphismMouse',

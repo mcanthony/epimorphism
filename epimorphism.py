@@ -6,38 +6,43 @@ sys.path.append("_lib/sources")
 
 # create configuration objects & execute command line arguments
 import config
-from _lib.config.structs import App, State
+from common.structs import State
+from config.applications import *
 
-app = App('default')
-config.app = app
+# sort arguments
+app_names = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 1]
+assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
 
-state = State('default')
+# create app
+if(len(app_names) == 0):
+    app = config.app = Test()
+elif(len(app_names) == 1):
+    app = config.app = eval(app_names[0].capitalize() + "()")
+elif(len(app_names) == 2):
+    app = config.app = eval(app_names[0].capitalize() + "('%s')" % app_names[1])
 
-for cmd in sys.argv[1:]:
+# create state
+state = app.state
+
+for cmd in assignments:
     cmd = cmd.split('=')
-    
-    if(len(cmd) == 1):
-        app.name = cmd[0]
-        state=State(app.name + "_default")
+    try:
+        val = eval(cmd[1])
+    except:
+        val = eval("'" + cmd[1] + "'")
+
+    if(hasattr(app, cmd[0])):
+        setattr(app, cmd[0], val)
+    elif(hasattr(state, cmd[0])):
+        setattr(state, cmd[0], val)
     else:
-        try:
-            val = eval(cmd[1])
-        except:
-            val = eval("'" + cmd[1] + "'")
-
-        if(hasattr(app, cmd[0])):
-            setattr(app, cmd[0], val)
-        elif(hasattr(state, cmd[0])):
-            setattr(state, cmd[0], val)
-        else:
-            print "failed to parse argument:", cmd
-
+        print "failed to parse argument:", cmd
 
 # setup logging
 from common.log import *
 set_log(app.name.upper())
 
-info("Starting " + app.name)
+info("STARTING " + app.name)
 if(len(sys.argv) != 1):
     debug("with args %s" % (str(sys.argv[1:])))
 

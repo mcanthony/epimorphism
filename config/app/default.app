@@ -1,5 +1,7 @@
 {
+ 'app': None,
  'name': 'default',
+ 'state': None,
 
  'autostart': True,
  'exit': False,
