@@ -56,12 +56,6 @@ class Engine(object):
         self.new_fb_event.set()
         self.pbo = None
 
-
-    def catch_cl(self, err_num, msg):
-        if(err_num != 0):
-            error(msg + ": " + ERROR_CODES[err_num])
-            sys.exit(0)
-
     
     def initCL(self):
         debug("Setting up OpenCL")        
@@ -70,7 +64,6 @@ class Engine(object):
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
-        format = (c_uint * 2)(BGRA, FLOAT)
         format = cl_image_format(CL_BGRA, CL_FLOAT)
 
         if(self.app.feedback_buffer):
@@ -85,7 +78,7 @@ class Engine(object):
         self.pbo = clCreateFromGLBuffer(self.ctx, self.pbo_ptr, CL_MEM_WRITE_ONLY)       
     
         # create compiler & misc data
-        self.compiler = Compiler(self.device, self.ctx, self.compiler_callback)
+        self.compiler = Compiler(self.ctx, self.compiler_callback)
         self.cl_initialized = True
         self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
         self.buffers = {}
@@ -96,15 +89,9 @@ class Engine(object):
 
         self.program = program
 
-        err_num = create_string_buffer(4)        
-        self.main_kernel = openCL.clCreateKernel(self.program, self.app.kernel, err_num)
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating main kernel")        
+        self.main_kernel = self.program[self.app.kernel]
 
-        #err_num = create_string_buffer(4)        
-        #self.post_process = openCL.clCreateKernel(self.program, "post_process", err_num)
-        #err_num = cast(err_num, POINTER(c_int)).contents.value
-        #self.catch_cl(err_num, "creating post process kernel")
+        self.main_kernel.argtypes=(cl_mem,)
 
 
     def do(self):
@@ -115,70 +102,60 @@ class Engine(object):
             self.initCL()
             self.compiler.compile()
         
-        print self.pbo.value
-        print "success"
-        sys.exit(0)         
-
         self.timings = [time.time()]
 
         # acquire pbo
-        event = create_string_buffer(8)
-        err_num = openCL.clEnqueueAcquireGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
-        self.catch_cl(err_num, "enque acquire pbo")
-        err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "waiting to acquire pbo")
+        event = cl_event()
+        clEnqueueAcquireGLObjects(self.queue, [self.pbo], None, event)
+        event.wait()
         
         # create args
-        if(self.app.feedback_buffer):
-            args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
-        else:
-            args = [(byref(cast(self.pbo, c_void_p)), 8)]    
+#        if(self.app.feedback_buffer):
+#            args = [(byref(cast(self.fb, c_void_p)), 8), (byref(cast(self.out, c_void_p)), 8), (byref(cast(self.pbo, c_void_p)), 8)]    
+#        else:
+#            args = [(byref(cast(self.pbo, c_void_p)), 8)]    
         
-        for data in self.frame:
-            if(data["type"] == "float"):
-                args.append((byref(c_float(data["val"])), 4))
-            elif(data["type"] == "float_array"):
-                if(not self.buffers.has_key(data["name"])):
-                    err_num = create_string_buffer(4)
-                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
-                    err_num = cast(err_num, POINTER(c_int)).contents.value
-                    self.catch_cl(err_num, "create buf")
+#        for data in self.frame:
+#            if(data["type"] == "float"):
+#                args.append((byref(c_float(data["val"])), 4))
+#            elif(data["type"] == "float_array"):
+#                if(not self.buffers.has_key(data["name"])):
+#                    err_num = create_string_buffer(4)
+#                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]), None, err_num)
+#                    err_num = cast(err_num, POINTER(c_int)).contents.value
+#                    self.catch_cl(err_num, "create buf")
 
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
-                self.catch_cl(err_num, "write buf")
+#                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]), (c_float * len(data["val"]))(*data["val"]), None, None, None)
+#                self.catch_cl(err_num, "write buf")
 
-                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
-            elif(data["type"] == "complex_array"):
-                if(not self.buffers.has_key(data["name"])):
-                    err_num = create_string_buffer(4)
-                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
-                    err_num = cast(err_num, POINTER(c_int)).contents.value
-                    self.catch_cl(err_num, "create buf")
+#                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
+#            elif(data["type"] == "complex_array"):
+#                if(not self.buffers.has_key(data["name"])):
+#                    err_num = create_string_buffer(4)
+#                    self.buffers[data["name"]] = openCL.clCreateBuffer(self.ctx, MEM_READ_ONLY, 4 * len(data["val"]) * 2, None, err_num)
+#                    err_num = cast(err_num, POINTER(c_int)).contents.value
+#                    self.catch_cl(err_num, "create buf")
 
-                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]) * 2, 
-                                                      (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, None)
-                self.catch_cl(err_num, "write buf")
+#                err_num = openCL.clEnqueueWriteBuffer(self.queue, self.buffers[data["name"]], TRUE, 0, 4 * len(data["val"]) * 2, 
+#                                                      (c_float * (len(data["val"]) * 2))(*list(itertools.chain(*[(z.real, z.imag) for z in data["val"]]))), None, None, None)
+#                self.catch_cl(err_num, "write buf")
 
-                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
+#                args.append((byref(cast(self.buffers[data["name"]], c_void_p)), 8))
                 
-        for i in xrange(len(args)):
-            err_num = openCL.clSetKernelArg(self.main_kernel, i, args[i][1], args[i][0])
-            self.catch_cl(err_num, "creating argument %d" % i)
+#        for i in xrange(len(args)):
+#            err_num = openCL.clSetKernelArg(self.main_kernel, i, args[i][1], args[i][0])
+#            self.catch_cl(err_num, "creating argument %d" % i)
 
         # execute kernel
-        self.timings.append(time.time())
-        event = create_string_buffer(8)
-        err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.main_kernel, 2, None, 
-                                                (c_long * 2)(self.app.kernel_dim, self.app.kernel_dim), 
-                                                (c_long * 2)(block_size, block_size), 
-                                                None, None, event)
-        # DO NOT MOVE THE gc.collect() LINE!  IT **MUST** BE BELOW THE KERNEL EXECUTION LINE!
-        gc.collect()
+ #       self.timings.append(time.time())
+ #       event = create_string_buffer(8)
+  #      err_num = openCL.clEnqueueNDRangeKernel(self.queue, self.main_kernel, 2, None, 
+  #                                              (c_long * 2)(self.app.kernel_dim, self.app.kernel_dim), 
+  #                                              (c_long * 2)(block_size, block_size), 
+   #                                             None, None, event)
 
-        self.catch_cl(err_num, "enque execute kernel")
-        err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "waiting to execute kernel")
-        self.timings.append(time.time())
+        evt = self.main_kernel(self.pbo).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size))
+        evt.wait()
 
         if(self.app.feedback_buffer):
             # copy out to fb
@@ -189,6 +166,7 @@ class Engine(object):
             self.catch_cl(err_num, "waiting to copy fb")
 
             self.timings.append(time.time())
+
 
 
         # post processing
@@ -209,16 +187,15 @@ class Engine(object):
 #            self.timings.append(time.time())
 
         # release pbo
-        event = create_string_buffer(8)
-        err_num = openCL.clEnqueueReleaseGLObjects(self.queue, 1, (c_int * 1)(self.pbo), None, None, event)
-        self.catch_cl(err_num, "enque release pbo")
-        err_num = openCL.clWaitForEvents(1, event)
-        self.catch_cl(err_num, "waiting to release pbo")
+
+        event = cl_event()
+        clEnqueueReleaseGLObjects(self.queue, [self.pbo], None, event)
+        event.wait()
 
         self.frame_num += 1
         self.print_timings()
 
-        openCL.clFinish(self.queue)
+        #openCL.clFinish(self.queue)
 
         #debug("end do")
 

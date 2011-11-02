@@ -1,33 +1,26 @@
 from common.globals import *
 
-import os, re, commands, sys, gc
+import os, re, sys
 
 from common.log import *
 from common.runner import *
 set_log("COMPILER")
 
 from ctypes import *
-from opencl import *
-openCL = PyDLL("libOpenCL.so")
+
+from pycl import *
 
 class Compiler():
     ''' OpenCL Program compiler '''
 
-    def __init__(self, device, ctx, callback):
+    def __init__(self, ctx, callback):
         debug("Initializing Compiler")
         Globals().load(self)
 
-        self.device, self.ctx, self.callback = device, ctx, callback
+        self.ctx, self.callback = ctx, callback
         self.substitutions = {"KERNEL_DIM": self.app.kernel_dim}
         self.substitutions.update(self.app.substitutions)
         self.program = None        
-
-
-    def catch_cl(self, err_num, msg):
-        if(err_num != 0):
-            error(msg + ": " + ERROR_CODES[err_num])
-            sys.exit(0)
-
 
     def compile(self):
         ''' Executes the main Compiler sequence '''
@@ -39,20 +32,12 @@ class Compiler():
 
         # load program from binaries
         contents = open("kernels/__" + self.app.kernel + ".cl").read()
-        contents = c_char_p(contents)
-        err_num = create_string_buffer(4)        
-        self.program = openCL.clCreateProgramWithSource(self.ctx, 1, pointer(contents), (c_long * 1)(len(contents.value)), err_num)
-        err_num = cast(err_num, POINTER(c_int)).contents.value
-        self.catch_cl(err_num, "creating program")
 
-        print "PROGRAM:", self.program
-
-        err_num = openCL.clBuildProgram(self.program, 0, None, "-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros", None, None)
-        if(err_num != 0):
-            log = create_string_buffer(100000)
-            err_num = openCL.clGetProgramBuildInfo(self.program, self.device, PROGRAM_BUILD_LOG, 10000, log, None)
-            self.catch_cl(err_num, "getting log")        
-            error(log.value)
+        try:
+            self.program = clCreateProgramWithSource(self.ctx, contents)
+            self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros")
+        except BuildProgramFailureError as e:
+            print e
             sys.exit(0)
   
         self.callback(self.program)
