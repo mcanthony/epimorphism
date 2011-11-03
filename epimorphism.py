@@ -4,12 +4,17 @@ import sys, atexit
 sys.path.append("_lib")
 sys.path.append("_lib/sources")
 
+# setup logging
+from common.log import *
+set_log("EPIMORPHISM", logging.DEBUG)
+
+info("STARTING")
+if(len(sys.argv) != 1):
+    info("with args %s" % (str(sys.argv[1:])))
+
 # create configuration objects & execute command line arguments
-import config
 from common.structs import State
 from config.applications import *
-
-import threading
 
 # sort arguments
 app_names = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 1]
@@ -23,9 +28,7 @@ elif(len(app_names) == 1):
 elif(len(app_names) == 2):
     app = eval(app_names[0].capitalize() + "('%s')" % app_names[1])
 
-# create state
-state = app.state
-
+# parse additional cmd line assignments
 for cmd in assignments:
     cmd = cmd.split('=')
     try:
@@ -35,28 +38,15 @@ for cmd in assignments:
 
     if(hasattr(app, cmd[0])):
         setattr(app, cmd[0], val)
-    elif(hasattr(state, cmd[0])):
-        setattr(state, cmd[0], val)
+    elif(hasattr(app.state, cmd[0])):
+        setattr(app.state, cmd[0], val)
     else:
         print "failed to parse argument:", cmd
 
-# make sure state is most recent value
-state = app.state
-
-# setup logging
-from common.log import *
-set_log(app.name.upper())
-
-info("STARTING " + app.app)
-if(len(sys.argv) != 1):
-    debug("with args %s" % (str(sys.argv[1:])))
-
-
 # define & register exit handler
 def exit():
-    debug("Running exit handler")
-#atexit.register(exit)
-
+    info("Running exit handler")
+atexit.register(exit)
 
 # create main application objects & initialize globals
 from common.globals import Globals
@@ -69,13 +59,13 @@ def main():
     info("Starting main loop")
 
     # initialize modules
-    debug("Initializing modules")    
+    info("Initializing modules")    
     interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
-    Globals().init(app, state, cmdcenter, interface, engine)
+    Globals().init(app, app.state, cmdcenter, interface, engine)
     interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop
-    debug("Starting CmdCenter")
+    info("Starting CmdCenter")
     cmdcenter.start()
 
     info("Main loop completed")

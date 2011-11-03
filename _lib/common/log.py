@@ -4,28 +4,32 @@ import logging.handlers
 
 import config
 
-# create formatter
-formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s %(lineno)d %(funcName)s() - %(message)s")
-
-# create console output
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(formatter)
-
-# create file output
-fh = logging.handlers.RotatingFileHandler('log/log.txt', maxBytes=1000*100, backupCount=5)
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(formatter)
-
-def set_log(name):
+def set_log(name, console_level=None):
     ''' Creates a loger object and adds its logging methods
         to the calling scope '''
+
+    # create formatter
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(name)s %(lineno)d %(funcName)s() - %(message)s")
+
+    # create console output
+    ch = logging.StreamHandler()
+    ch.setFormatter(formatter)
+    if(console_level):
+        ch.setLevel(console_level)
+    elif(hasattr(config, 'app')):
+        ch.setLevel(config.app.console_level)
+    else:
+        ch.setLevel(logging.WARNING)    
+
+    # create file output
+    fh = logging.handlers.RotatingFileHandler('log/log.txt', maxBytes=1000*100, backupCount=5)
+    fh.setLevel(logging.DEBUG)
+    fh.setFormatter(formatter)
 
     # create logger
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)
-    if(hasattr(config, 'app') and config.app and config.app.print_log):
-        logger.addHandler(ch)
+    logger.addHandler(ch)
     logger.addHandler(fh)
 
     # add logger to calling context
@@ -35,4 +39,3 @@ def set_log(name):
     sys._getframe(1).f_locals['error']     = logger.error
     sys._getframe(1).f_locals['critical']  = logger.critical
     sys._getframe(1).f_locals['exception'] = logger.exception
-

@@ -312,7 +312,7 @@ class CmdCenter(Animator, Archiver):
         try:
             self.app.next_frame = True
             pixels = self.interface.renderer.grab_pixels()
-            img = Image.frombuffer('RGBA', (self.app.kernel_dim, self.app.kernel_dim), pixels, 'raw', 'BGRA', 0, 1)
+            img = Image.frombuffer('RGBA', (self.app.kernel_dim, self.app.kernel_dim), pixels, 'raw', 'BGRA', 0, 1).transpose(Image.FLIP_TOP_BOTTOM)
         except Exception, err:
             info(str(err))
             sys.exit(0)

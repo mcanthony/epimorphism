@@ -8,8 +8,6 @@ import re, os, copy
 
 import config
 
-from common.log import *
-set_log("DictObj")
 
 #  setup root directory for serialization
 global root
@@ -176,6 +174,7 @@ class App(DictObj):
     ''' Configuration settings for an application. '''
 
     def __init__(self, app, name="default"):
+        info("loading app: %s %s" % (app, name))
         self.extension = "app"        
         config.app = self
         self.migrations = {}
@@ -199,6 +198,7 @@ class State(DictObj):
     VERSION = 1.0
 
     def __init__(self, app, name="default"):
+        info("loading state: %s %s" % (app, name))
         self.app, self.name = app, name
         self.extension = "est"
         DictObj.__init__(self, 'state', app, name)
@@ -252,3 +252,6 @@ def migrate_all_states():
 
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
 from cmdcenter.script import* 
+
+from common.log import *
+set_log("DictObj", logging.DEBUG)

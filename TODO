@@ -15,11 +15,13 @@ DONE:
   reimplement sphere mode
   reimplement post processing
   aux buffer & flush fb
+  fix logging
 
 TODO:
 
+  rotate saved images
+
   fix exception handling
-  fix logging
 
   fix eventmanager
 
@@ -27,7 +29,7 @@ TODO:
   remove certain vars from dict_objs? - extension, path, type
 
   clean cmdcenter
-
+  work on scripts
 
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished

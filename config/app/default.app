@@ -7,7 +7,7 @@
  'exit': False,
  'freeze': False,
 
- 'print_log': True,
+ 'console_level': 10,
 
  'manual_iter': False,
  'next_frame': False,

@@ -3,10 +3,9 @@ from common.structs import *
 from common.runner import *
 
 from common.log import *
-set_log("SCRIPT")
+set_log("SCRIPT", logging.WARNING)
 
 import time
-
 
 class Script():
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
