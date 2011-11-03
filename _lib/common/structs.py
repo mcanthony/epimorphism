@@ -26,11 +26,9 @@ def save_obj(obj, type, extension, app=None, name=None):
 
     path = root + "/" + type + "/" 
 
-    
-
     # set name if necessary
     if(not name):
-        type = app or Type
+        type = app or type
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
         idx = max([-1] + [int(file[(len(type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(type + '_(\d+)').match(file)]) + 1
         name = "%s_%d" % (type, idx)
@@ -56,8 +54,6 @@ def save_obj(obj, type, extension, app=None, name=None):
 def load_obj(type, name, extension):
     ''' This method loads a serialized object from the filesystem. '''
 
-    # hack for scripts
-    #from cmdcenter.script import *
     # open file 
     try:
         global root
@@ -111,7 +107,7 @@ class DictObj(object):
 
         if(not self.__dict__.has_key("extension")):
             self.extension = "obj" 
-
+            
         global root
         self.path = root + "/" + self.type + "/"
             
@@ -120,7 +116,7 @@ class DictObj(object):
             data = load_obj(self.type, "default", self.extension)
             data.update(load_obj(self.type, self.app + "_default", self.extension))
         except:
-            critical("Couldn't initialize object: " + name)
+            critical("Couldn't load defaults: " + name)
             sys.exit(0)
 
         if(self.name != None and self.name != "default"):
@@ -253,3 +249,6 @@ class State(DictObj):
 # TODO: increment through all states, migrate & save
 def migrate_all_states():
     pass
+
+# due to nonsense with dependancy ordering this has to go after the definition of load_obj
+from cmdcenter.script import* 
