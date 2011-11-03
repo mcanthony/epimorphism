@@ -14,4 +14,9 @@ class Interference(App):
 class Epimorphism(App):
     def __init__(self, name="default"):
         App.__init__(self, "epimorphism", name)
+
+    def get_substitutions(self):
+        cull_enabled = self.state.get_par('_CULL_DEPTH') != 0
+        subs = {'FRACT': self.fract, 'CULL_ENABLED': cull_enabled and "#define CULL_ENABLED" or ""}
+        return subs
     

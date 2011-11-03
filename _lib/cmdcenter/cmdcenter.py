@@ -366,17 +366,20 @@ class CmdCenter(Animator, Archiver):
     def save(self, name=None):
         ''' Grabs a screenshot and saves the current state. '''
 
-        name = self.state.save(name)
+        #name = self.state.save(name)
 
-        img = self.grab_image()
-
-        t0 = self.get_time()
-        self.app.freeze = True
-        img.save("image/image_%s.png" % name)
-        self.interface.renderer.flash_message("saved state as %s" % name)
-        self.app.freeze = False
-        t1 = self.get_time()
-        self.state.t_phase -= t1 - t0
+        #img = self.grab_image()
+        pixels = self.interface.renderer.grab_pixels()
+        #img = Image.fromarray(pixels, "RGBA")
+        img = Image.frombuffer("RGBA", (1536, 1536), pixels)
+        #t0 = self.get_time()
+        #self.app.freeze = True
+        name = "shiz"
+        img.save("media/image/image_%s.png" % name)
+        #self.interface.renderer.flash_message("saved state as %s" % name)
+        #self.app.freeze = False
+        #t1 = self.get_time()
+        #self.state.t_phase -= t1 - t0
 
         return name        
 

@@ -26,7 +26,7 @@ void test(__global uchar4* pbo, float time, float intrp_time,
   // get z
   float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
 
-  float4 color = HSVtoRGB((float4)(2 * PI * z.x, 1.0f, (z.y + 1.0) / 2.0, 1.0f));
+  float4 color = HSVtoRGB((float4)(2 * PI * z.x, 1.0f, (z.y + 1.0) / 2.0, 0.0f));
 
   // assign pbo
   pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);

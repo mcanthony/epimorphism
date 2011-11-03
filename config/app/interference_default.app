@@ -16,5 +16,4 @@
  
  'kernel': 'interference',
  'lib_prefix': 'int',
- 'substitutions': {}
 }

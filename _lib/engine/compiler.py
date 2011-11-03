@@ -68,7 +68,7 @@ class Compiler():
                 self.substitutions[component_name] = ""
 
         # get substitutions from application
-        self.substitutions.update(self.app.substitutions)
+        self.substitutions.update(self.app.get_substitutions())
 
         # bind PAR_NAMES
         par_name_str = ""

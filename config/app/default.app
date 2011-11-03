@@ -50,6 +50,5 @@
 
  'kernel': 'test',
  'lib_prefix': 'def',
- 'feedback_buffer': False,
- 'substitutions': {}
+ 'feedback_buffer': False
 }

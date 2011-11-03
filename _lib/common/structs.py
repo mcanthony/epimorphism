@@ -4,13 +4,12 @@
 #    App - configuration parameters for the application - ex: screen resolution, keyboard configuation, midi configuration
 #    State - configuration used to generate a graphical frames - ex: numerical parameters sent to the hardware
 
-import re, os, traceback
+import re, os
 
-from migration import *
+import config
 
 from common.log import *
 set_log("DictObj")
-
 
 #  setup root directory for serialization
 global root
@@ -57,8 +56,7 @@ def load_obj(type, name, extension):
     ''' This method loads a serialized object from the filesystem. '''
 
     # hack for scripts
-    from cmdcenter.script import *
-
+    #from cmdcenter.script import *
     # open file 
     try:
         global root
@@ -75,8 +73,8 @@ def load_obj(type, name, extension):
         obj = eval(contents)
         return obj
     except:
-         critical("couldn't read %s.%s" % (name, extension))
-         return None  
+        critical("couldn't read %s.%s" % (name, extension))
+        return None  
 
 
 class ObserverList(list):
@@ -130,15 +128,6 @@ class DictObj(object):
         self.__dict__.update(data)
 
 
-    #def __setattr__(self, key, val):        
-    #    ''' If the obj.name attr is set, the object's contents are loaded from the appropriate 
-    #    file on disk'''
-    #    if(key == 'name' and self.__dict__.has_key('name') and self.name != val):
-    #        self.__dict__ = eval(self.type.capitalize())(val).__dict__
-    #    else:
-    #        object.__setattr__(self, key, val)                          
-                 
-
     def save(self, name=None):
         ''' Dumps a dict to a file.  Adds newlines after commas for legibility. 
             NOTE:  A new object is created by default.'''
@@ -190,7 +179,9 @@ class App(DictObj):
     ''' Configuration settings for an application. '''
 
     def __init__(self, app, name="default"):
-        self.extension = "app"
+        self.extension = "app"        
+        config.app = self
+        self.migrations = {}
         DictObj.__init__(self, 'app', app, name)
 
     def get_state_name(self):
@@ -199,12 +190,16 @@ class App(DictObj):
     def set_state(self, name):
         self.state = State(self.app, name)
 
+    def get_substitutions(self):
+        return {}
     
     state_name = property(get_state_name, set_state)
 
 
 class State(DictObj):
     ''' Configuration parameters for generating Frames. '''
+
+    VERSION = 1.0
 
     def __init__(self, app, name="default"):
         self.app, self.name = app, name
@@ -215,8 +210,21 @@ class State(DictObj):
         self.par_names = self.par[::2]
         self.par = self.par[1::2]
 
-        # perform migration
-        self.__dict__ = migrate(self.__dict__)
+        migrations = config.app.migrations
+
+        # perform migrations
+        if(self.VERSION < getattr(self.__class__, "VERSION")):
+            
+            # get necessary migrations
+            versions = [version for version in migrations.keys() if version > old_version]
+            versions.sort()
+
+            # run migrations
+            for version in versions:
+                migrations[version]()
+
+            # update VERSION
+            self.VERSION = getattr(self.__class__, "VERSION")
 
         # make observer lists
         self.zn  = ObserverList(self.zn)
@@ -225,6 +233,7 @@ class State(DictObj):
         # set path phases
         for path in self.paths:
             path.phase = self.time
+
 
     def __repr__(self):
         return "%s('%s', '%s')" % (self.__class__.__name__, self.app, self.name)
@@ -237,3 +246,9 @@ class State(DictObj):
 
     def set_par(self, name, val):
         self.par[self.par_idx(name)] = val
+
+    
+
+# TODO: increment through all states, migrate & save
+def migrate_all_states():
+    pass

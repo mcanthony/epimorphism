@@ -13,9 +13,9 @@
 
  'screen': [800,800,False],
  'kernel_dim': 1536,
+ 'fract': 3,
  
  'kernel': 'epimorphism',
  'lib_prefix': 'epi',
- 'feedback_buffer': True,
- 'substitutions': {'FRACT':'3', 'CULL_ENABLED': "#define CULL_ENABLED"}
+ 'feedback_buffer': True
 }

@@ -1,7 +1,7 @@
 # The renderer is an OpenGL context, via GLUT, which is responsible for rendering the Engine's output
 # It is synchronized with the engine via a pbo
 
-import time, sys, os, commands
+import time, sys, os, commands, threading
 
 from common.globals import *
 from common.runner import *
@@ -10,6 +10,9 @@ from ctypes import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
+
+from ctypes import *
+import numpy as N
 
 import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
@@ -67,9 +70,6 @@ class Renderer(object):
             exception("Failed to create window")
             sys.exit()
 
-        # reshape
-        self.reshape(self.app.screen[0], self.app.screen[1])
-
         # register callbacks
         glutReshapeFunc(self.reshape)
 
@@ -101,6 +101,10 @@ class Renderer(object):
         self.do_main_toggle_console = False
 
         self.pbo_ptr = None
+
+        self.have_pixels = threading.Event()
+        self.have_pixels.set()
+        self.pixels = []
         
 
     def __del__(self):
@@ -157,6 +161,12 @@ class Renderer(object):
         glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
 
+        
+    def grab_pixels(self):
+        info("Grabbing pixels")
+        self.have_pixels.clear()
+        self.have_pixels.wait()
+        return self.pixels
 
     def render_fps(self):
         # if this isn't set font looks terrible
@@ -258,6 +268,23 @@ class Renderer(object):
         # messages
         if(self.app.echo and self.echo_string):
             self.echo()
+
+        if(not self.have_pixels.isSet()):
+            debug("internal grab pixels")
+            #print "a"
+            #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
+            #print "b"
+            #glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, self.pbo_ptr.value)
+            glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr.value)
+            #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
+            self.pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
+            self.pixels = cast(self.pixels, POINTER(c_char * self.app.kernel_dim))
+            self.pixels = cast(create_string_buffer(4 * self.app.kernel_dim ** 2), POINTER(c_char))
+            #print self.pixels[7][3]
+            glBindBuffer(GL_ARRAY_BUFFER, 0)
+            
+            self.have_pixels.set()
+
 
         # repost
         glutSwapBuffers()

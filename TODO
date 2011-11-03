@@ -8,27 +8,30 @@ DONE:
   update component/datamanager
   epimorphism working!!
   cleaned dict objs a bit
+  smarter way of kernel substitutions
+  reimplement cullmode
+  move migrations to applications.py
 
 TODO:
 
-  fix exception handling
-
-  smarter way of kernel substitutions
-  fix eventmanager
-  fix migrations
-  fix logging
-  clean cmdcenter
-  fix console
   fix screenshot
+  implement post processing
+  reimplement sphere mode
+  figure out why app takes forever to exit  
+  aux buffer & flush fb
 
   think more about dict objs
   remove certain vars from dict_objs? - extension, path, type
 
+  fix exception handling
+  fix logging
+
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished
-  figure out why app takes forever to exit  
 
-  implement epimorphism
-    implement post processing
-    reimplement cullmode
-    reimplement sphere mode
+  clean cmdcenter
+
+  fix eventmanager
+  fix console
+
+  more sophisticated application loading - switch apps on the fly

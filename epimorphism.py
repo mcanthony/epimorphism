@@ -15,11 +15,11 @@ assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
 
 # create app
 if(len(app_names) == 0):
-    app = config.app = Test()
+    app = Test()
 elif(len(app_names) == 1):
-    app = config.app = eval(app_names[0].capitalize() + "()")
+    app = eval(app_names[0].capitalize() + "()")
 elif(len(app_names) == 2):
-    app = config.app = eval(app_names[0].capitalize() + "('%s')" % app_names[1])
+    app = eval(app_names[0].capitalize() + "('%s')" % app_names[1])
 
 # create state
 state = app.state
