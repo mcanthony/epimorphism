@@ -9,6 +9,7 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 #define PI 3.1415926535f
 %PAR_NAMES%
 %CULL_ENABLED%
+%POST_PROCESS%
 #define $i (float2)(0.0, 1.0)
 #define $l (float2)(1.0, 0.0)
 #include "util.cl"
@@ -24,7 +25,7 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 #include "epi_cull.cl"
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void epimorphism(read_only image2d_t fb, write_only image2d_t out, __global uchar4* pbo, float time, float intrp_time,
+void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, float time, float intrp_time,
 		 __constant float *par, __constant float *internal, __constant float2 *zn){
   float intrp_t;
   float2 t, t0, t1, t_seed, t_seed0, t_seed1, reduce, reduce0, reduce1;
@@ -72,6 +73,10 @@ void epimorphism(read_only image2d_t fb, write_only image2d_t out, __global ucha
       z = recover2(reduce);
       
       %SEED%
+
+      //int4 aux_v = read_imagei(aux, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
+      //seed = convert_float4(aux_v) / 255.0f;
+
       seed = _gamma3(seed, _COLOR_GAMMA);      
 
       // cull & blending
@@ -93,18 +98,18 @@ void epimorphism(read_only image2d_t fb, write_only image2d_t out, __global ucha
   %COLOR%;
   color = recover4(color);
 
-  // write to out
-  write_imagef(out, p, color);   
-
   //z = tri_reduce(4.0f*z);
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
-
-  // write to pbo
-  if(_POST_PROCESSING == 0.0f)
-    pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
   //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
   //pbo[y * KERNEL_DIM + x] = (char4)(0,0,255,255);
+
+  // write out value
+  write_imagef(out, p, color);   
+  #ifndef POST_PROCESS
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  #endif
+
 }
 
 //__kernel __attribute__((reqd_work_group_size(16,16,1))) 
@@ -157,7 +162,7 @@ void epimorphism(read_only image2d_t fb, write_only image2d_t out, __global ucha
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __constant float* par){
+void post_process(__global uchar4* pbo, read_only image2d_t fb, float time, __constant float* par){
 
   // get coords
   const int x = get_global_id(0);

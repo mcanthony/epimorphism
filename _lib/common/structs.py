@@ -188,7 +188,7 @@ class App(DictObj):
         self.state = State(self.app, name)
 
     def get_substitutions(self):
-        return {}
+        return {'POST_PROCESS': self.state.post_process and "#define POST_PROCESS" or ""}
     
     state_name = property(get_state_name, set_state)
 

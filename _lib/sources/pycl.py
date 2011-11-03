@@ -2149,13 +2149,58 @@ def clGetImageInfo(img, param_name):
                             byref(param_value), None)
         return param_value
 
-@_wrapdll(cl_command_queue, cl_mem, cl_mem, P(size_t), P(size_t), P(size_t), cl_uint, P(cl_event), cl_event)
+@_wrapdll(cl_command_queue, cl_image, cl_bool, P(size_t), P(size_t),
+          size_t, size_t, void_p, cl_uint, P(cl_event), P(cl_event))
+def clEnqueueWriteImage(queue, dst, pointer, origin=None, region=None,
+                        row_pitch=None, slice_pitch=None, blocking=True, wait_for=None):
+    """
+    Write to a :class:`cl_image` from a location in host memory.
+    :param queue: :class:`cl_command_queue` to queue it on.
+    :param dst: :class:`cl_image` to write to.
+    :param pointer: :c:type:`void*` pointer, the address to start
+      reading from. (An integer representation of the pointer is fine).
+    :param origin: 2 or 3-tuple of destination origin coordinates.  Defaults to zero.
+    :param region: 2 or 3-tuple containing size of region to be copied. Defaults to size of dst
+    :param row_pitch: :class:`cl_int` the length of each row in bytes
+    :param slice_pitch: :class:`cl_int` the length of each plane in bytes
+    :param blocking: Wait for the transfer to complete. Default is True.
+      If False, you can use the returned event to check its status.
+    :param wait_for: :class:`cl_event` (or a list of them) that must complete
+      before the memory transfer will commence.
+    :returns: :class:`cl_event`
+    """
+
+    if(origin is None):
+        origin = (0, 0, 0)
+    origin = (size_t * 3)(*origin)        
+
+    if region is None:        
+        region = (size_t * 3)(clGetImageInfo(dst, CL_IMAGE_WIDTH), 
+                              clGetImageInfo(dst, CL_IMAGE_HEIGHT), 
+                              clGetImageInfo(dst, CL_IMAGE_DEPTH))
+        if(region[2] == 0):
+            region[2] = 1
+
+    if row_pitch is None:
+        row_pitch = clGetImageInfo(dst, CL_IMAGE_ROW_PITCH)
+
+    if slice_pitch is None:
+        slice_pitch = clGetImageInfo(dst, CL_IMAGE_SLICE_PITCH)
+
+    nevents, wait_array = _make_event_array(wait_for)
+    out_event = cl_event()
+    clEnqueueWriteImage.call(queue, dst, blocking, origin, region, row_pitch, slice_pitch, 
+                             pointer, nevents, wait_array, byref(out_event))
+    return out_event
+
+@_wrapdll(cl_command_queue, cl_image, cl_image, P(size_t), P(size_t), P(size_t), 
+          cl_uint, P(cl_event), cl_event)
 def clEnqueueCopyImage(queue, src, dst, src_origin=None, dst_origin=None, region=None, wait_for=None):
     """
     Copy an image.   
     :param queue: :class:`cl_command_queue` to queue it on.
-    :param src: :class:`cl_mem` to read from. Must be an image.
-    :param dst: :class:`cl_mem` to read from. Must be an image.
+    :param src: :class:`cl_image` to read from.
+    :param dst: :class:`cl_image` to write to.
     :param src_origin: 2 or 3-tuple of src origin coordinates.  Defaults to zero.
     :param dst_origin: 2 or 3-tuple of dst origin coordinates.  Defaults to zero.
     :param region: 2 or 3-tuple containing size of region to be copied. Defaults to size of src
@@ -2164,13 +2209,6 @@ def clEnqueueCopyImage(queue, src, dst, src_origin=None, dst_origin=None, region
     :returns: :class:`cl_event`
     """
 
-    if region is None:        
-        region = (size_t * 3)(clGetImageInfo(src, CL_IMAGE_WIDTH), 
-                              clGetImageInfo(src, CL_IMAGE_HEIGHT), 
-                              clGetImageInfo(src, CL_IMAGE_DEPTH))
-        if(region[2] == 0):
-            region[2] = 1
-
     if(src_origin is None):
         src_origin = (0, 0, 0)
     src_origin = (size_t * 3)(*src_origin)
@@ -2178,6 +2216,13 @@ def clEnqueueCopyImage(queue, src, dst, src_origin=None, dst_origin=None, region
     if(dst_origin is None):
         dst_origin = (0, 0, 0)
     dst_origin = (size_t * 3)(*dst_origin)        
+
+    if region is None:        
+        region = (size_t * 3)(clGetImageInfo(src, CL_IMAGE_WIDTH), 
+                              clGetImageInfo(src, CL_IMAGE_HEIGHT), 
+                              clGetImageInfo(src, CL_IMAGE_DEPTH))
+        if(region[2] == 0):
+            region[2] = 1
         
     nevents, wait_array = _make_event_array(wait_for)
     out_event = cl_event()
@@ -2932,12 +2977,6 @@ def get_gl_sharing_context_properties():
     elif sys.platform == "win32":
         props[GL_CONTEXT_KHR] = gl_platform.GetCurrentContext()
         props[WGL_HDC_KHR] = WGL.wglGetCurrentDC()
-
-        props.append(
-            (ctx_props.GL_CONTEXT_KHR, gl_platform.GetCurrentContext()))
-        props.append(
-                (ctx_props.WGL_HDC_KHR, 
-                    ))
     elif sys.platform == "darwin":
         props.append(
             (ctx_props.CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, cl.get_apple_cgl_share_group()))

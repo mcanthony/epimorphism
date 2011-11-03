@@ -7,7 +7,7 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 #define KERNEL_DIM %KERNEL_DIM%
 #define PI 3.1415926536f
 %PAR_NAMES%
-
+%POST_PROCESS%
 #define $i (float2)(0.0, 1.0)
 #define $l (float2)(1.0, 0.0)
 #include "util.cl"
@@ -90,7 +90,7 @@ float wrapn(float* vals, int num_vals, int TYPE){
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void interference(__global uchar4* pbo, float time, float intrp_time,
+void interference(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, float time, float intrp_time,
 	      __constant float *par, __constant float *internal, __constant float2 *zn){
 
   float intrp_t;
@@ -193,9 +193,12 @@ void interference(__global uchar4* pbo, float time, float intrp_time,
 
   float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
 
-  // assign pbo
+  // write out value
+  #ifdef POST_PROCESS
+  write_imagef(out, p, color);   
+  #else
   pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
-
+  #endif
 }
 
 

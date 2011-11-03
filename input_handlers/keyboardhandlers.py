@@ -50,6 +50,9 @@ class DefaultKeyboard(KeyboardHandler):
         # randomize archive
         elif(key == '+'):
             self.cmdcenter.cmd("inc_archive(0)")        
+        # reset fb
+        elif(key == "\\"):
+            self.cmdcenter.cmd("reset_fb()")
 
 
 class DefaultInterferenceKeyboard(DefaultKeyboard):
@@ -168,10 +171,6 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
             # minify par_scale
             elif(key == GLUT_KEY_PAGE_DOWN):
                 self.app.par_scale /= 2.0
-
-            # reset fb
-            elif(key == "\\"):
-                self.cmdcenter.cmd("reset_fb()")
 
             # inc current_state_idx
             elif(key == GLUT_KEY_PAGE_UP):

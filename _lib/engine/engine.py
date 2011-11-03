@@ -15,6 +15,8 @@ set_log("ENGINE")
 
 block_size = 16
 
+from ctypes import *
+
 class Engine(object):
     ''' The Engine object is the applications interface, via opencl, to the graphics hardware.
         It is responsible for the setup and maintenence of the opencl environment and the graphics kernel.
@@ -42,6 +44,8 @@ class Engine(object):
         self.program = None
         self.cl_initialized = False
 
+        self.post_process = None
+
         return True
 
 
@@ -61,12 +65,16 @@ class Engine(object):
         # create buffers
         format = cl_image_format(CL_BGRA, CL_FLOAT)
 
+        self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
+
         if(self.app.feedback_buffer):
             self.fb = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
-            self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
-        # auxiliary buffer
-        self.aux = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
+        #auxilary buffer
+        if(self.state.aux):
+            self.load_aux(self.state.aux)
+        else:
+            self.aux = clCreateImage2D(self.ctx, 1, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -76,8 +84,7 @@ class Engine(object):
 
         # create compiler & misc data
         self.compiler = Compiler(self.ctx, self.compiler_callback)
-        #self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
-        #self.fb_contents = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+        self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
 
         self.cl_initialized = True
 
@@ -87,11 +94,16 @@ class Engine(object):
         self.program = program
         self.main_kernel = self.program[self.app.kernel]
 
-        # initialize arguments
+        # initialize main_kernel arguments
         if(self.app.feedback_buffer):
-            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
         else:
-            self.main_kernel.argtypes=(cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+
+        # post processing kernel
+        if(self.state.post_process):
+            self.post_process = self.program[self.state.post_process]
+            self.post_process.argtypes = (cl_mem, cl_mem, cl_float, cl_mem)
 
 
     def do(self):
@@ -108,10 +120,10 @@ class Engine(object):
         clEnqueueAcquireGLObjects(self.queue, [self.pbo], None).wait()
         
         # create args
+        args = [self.pbo, self.out, self.aux]            
         if(self.app.feedback_buffer):
-            args = [self.fb, self.out, self.pbo]
-        else:
-            args = [self.pbo]            
+            args = [self.fb] + args
+            
         for data in self.frame:
             if(data["type"] == "float"):
                 args.append(data["val"])
@@ -133,6 +145,10 @@ class Engine(object):
             self.timings.append(time.time())
 
         # post processing
+        if(self.state.post_process):
+            i = (self.app.feedback_buffer and 1 or 0)
+            args = [args[0 + i], args[1 + i], args[2 + i], args[4 + i]] # maybe could use some work, if frame format ever changes
+            self.post_process(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
         # release pbo
         clEnqueueReleaseGLObjects(self.queue, [self.pbo], None).wait()
@@ -188,6 +204,24 @@ class Engine(object):
     def upload_image(self, cl_image, data):
         ''' Upload an image to the DEVICE '''
         debug("Uploading image")
+        clEnqueueWriteImage(self.queue, cl_image, data)
 
-        err_num = openCL.clEnqueueWriteImage(self.queue, cl_image, TRUE, (c_long * 3)(0,0,0), (c_long * 3)(self.app.kernel_dim, self.app.kernel_dim, 1), 0, 0, cast(data, POINTER(c_float)), 0, None,None)
-        self.catch_cl(err_num, "uploading image")
+
+    def reset_fb(self):
+        ''' Clear the current frame buffer '''
+        debug("Reset fb")
+        if(not self.app.feedback_buffer):
+            return
+
+        self.upload_image(self.fb, self.empty)
+
+
+    def load_aux(self, name):
+        ''' Loads an image into the auxilary buffer '''
+        from PIL import Image
+        img = Image.open(name).convert("RGBA")
+        self.aux = clCreateImage2D(self.ctx, img.size[0], img.size[1], cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
+
+        self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1))
+
+

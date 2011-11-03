@@ -17,6 +17,7 @@ class Epimorphism(App):
 
     def get_substitutions(self):
         cull_enabled = self.state.get_par('_CULL_DEPTH') != 0
-        subs = {'FRACT': self.fract, 'CULL_ENABLED': cull_enabled and "#define CULL_ENABLED" or ""}
+        subs = App.get_substitutions(self)
+        subs.update({'FRACT': self.fract, 'CULL_ENABLED': cull_enabled and "#define CULL_ENABLED" or ""})
         return subs
     

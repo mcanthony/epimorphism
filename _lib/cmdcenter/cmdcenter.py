@@ -289,6 +289,7 @@ class CmdCenter(Animator, Archiver):
         self.load(self.current_state_idx)
 
 
+    # borken
     def load_image(self, name, buffer_name):
         ''' Loads and image into the host memory
             and uploads it to a buffer.
