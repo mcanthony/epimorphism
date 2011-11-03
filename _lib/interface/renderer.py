@@ -271,18 +271,12 @@ class Renderer(object):
 
         if(not self.have_pixels.isSet()):
             debug("internal grab pixels")
-            #print "a"
-            #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
-            #print "b"
-            #glBindBuffer(GL_PIXEL_PACK_BUFFER_ARB, self.pbo_ptr.value)
             glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr.value)
             #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
             self.pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
-            self.pixels = cast(self.pixels, POINTER(c_char * self.app.kernel_dim))
-            self.pixels = cast(create_string_buffer(4 * self.app.kernel_dim ** 2), POINTER(c_char))
-            #print self.pixels[7][3]
+            self.pixels = cast(self.pixels, POINTER(c_ubyte * 4 * self.app.kernel_dim ** 2)).contents
+            glUnmapBuffer(GL_ARRAY_BUFFER)
             glBindBuffer(GL_ARRAY_BUFFER, 0)
-            
             self.have_pixels.set()
 
 

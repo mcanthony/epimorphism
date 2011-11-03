@@ -11,10 +11,10 @@ DONE:
   smarter way of kernel substitutions
   reimplement cullmode
   move migrations to applications.py
+  fix screenshot
 
 TODO:
 
-  fix screenshot
   implement post processing
   reimplement sphere mode
   figure out why app takes forever to exit  
@@ -33,5 +33,7 @@ TODO:
 
   fix eventmanager
   fix console
+
+  png screenshots  
 
   more sophisticated application loading - switch apps on the fly

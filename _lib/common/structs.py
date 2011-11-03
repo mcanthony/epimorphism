@@ -4,7 +4,7 @@
 #    App - configuration parameters for the application - ex: screen resolution, keyboard configuation, midi configuration
 #    State - configuration used to generate a graphical frames - ex: numerical parameters sent to the hardware
 
-import re, os
+import re, os, copy
 
 import config
 
@@ -37,6 +37,7 @@ def save_obj(obj, type, extension, app=None, name=None):
        
     try:
         obj["name"] = (app and idx or name)
+
     except:
         debug("couldn't set object name")
 
