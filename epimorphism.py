@@ -9,6 +9,8 @@ import config
 from common.structs import State
 from config.applications import *
 
+import threading
+
 # sort arguments
 app_names = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 1]
 assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
@@ -53,7 +55,7 @@ if(len(sys.argv) != 1):
 # define & register exit handler
 def exit():
     debug("Running exit handler")
-atexit.register(exit)
+#atexit.register(exit)
 
 
 # create main application objects & initialize globals
@@ -62,7 +64,6 @@ from interface.interface import Interface
 from engine.engine import Engine
 from cmdcenter.cmdcenter import CmdCenter
 from common.runner import *
-
 
 def main():
     info("Starting main loop")
@@ -85,11 +86,8 @@ def main():
     engine.__del__()
     cmdcenter.__del__()
 
-
 def start():
     async(main)
 
-
 if(app.autostart):
     start()
-

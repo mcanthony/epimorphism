@@ -20,5 +20,7 @@ class Runner(threading.Thread):
 def async(func):
 
     # create and start thread
-    Runner(func).start()
+    t = Runner(func)
+    t.start()
+    return t
 

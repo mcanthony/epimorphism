@@ -55,7 +55,7 @@ class Engine(object):
         debug("Setting up OpenCL")        
 
         # create basic structs
-        self.ctx = clCreateContextFromType(CL_DEVICE_TYPE_GPU, None, gl_interop_ctx_props())
+        self.ctx = clCreateContextFromType(CL_DEVICE_TYPE_GPU, None, get_gl_sharing_context_properties())
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers

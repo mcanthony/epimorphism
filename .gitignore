@@ -17,5 +17,3 @@ ptx
 est
 *.log
 sources/pypm/build/*
-config/app/state/*.est
-config/script/script_*

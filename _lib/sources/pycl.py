@@ -2917,12 +2917,43 @@ def clEnqueueNDRangeKernel(queue, kernel, gsize=(1,), lsize=None,
 
 class gluint(ctypes.c_uint32): pass
 
-def gl_interop_ctx_props():
-    if(os.name == "posix"):
-        gl = ctypes.cdll.LoadLibrary("libGL.so.1")
-        current_display = gl.glXGetCurrentDisplay()
-        current_context = gl.glXGetCurrentContext()
-        return {GL_CONTEXT_KHR: current_context, GLX_DISPLAY_KHR: current_display}
+# stolen & modified from PyOpenCL
+def get_gl_sharing_context_properties():
+
+    # should probably test if OpenGL exists or not
+    from OpenGL import platform as gl_platform, GLX, WGL
+
+    props = {}
+
+    import sys
+    if sys.platform == "linux2":
+        props[GL_CONTEXT_KHR] = gl_platform.GetCurrentContext()
+        props[GLX_DISPLAY_KHR] = ctypes.addressof(GLX.glXGetCurrentDisplay().contents)        
+    elif sys.platform == "win32":
+        props[GL_CONTEXT_KHR] = gl_platform.GetCurrentContext()
+        props[WGL_HDC_KHR] = WGL.wglGetCurrentDC()
+
+        props.append(
+            (ctx_props.GL_CONTEXT_KHR, gl_platform.GetCurrentContext()))
+        props.append(
+                (ctx_props.WGL_HDC_KHR, 
+                    ))
+    elif sys.platform == "darwin":
+        props.append(
+            (ctx_props.CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, cl.get_apple_cgl_share_group()))
+    else:
+        raise NotImplementedError("platform '%s' not yet supported" 
+                % sys.platform)
+
+    return props
+
+
+#def gl_interop_ctx_props():
+#    if(os.name == "posix"):
+#        gl = ctypes.cdll.LoadLibrary("libGL.so.1")
+#        current_display = gl.glXGetCurrentDisplay()
+#        current_context = gl.glXGetCurrentContext()
+#        return {GL_CONTEXT_KHR: current_context, GLX_DISPLAY_KHR: current_display}
 
 
 @_wrapdll(cl_context, cl_mem_flags, cl_uint, P(cl_errnum),

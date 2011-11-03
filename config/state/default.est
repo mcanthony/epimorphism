@@ -7,6 +7,8 @@
  'scripts': [],
  'paths': [],
  'programs': [],
+ 'render_mode': '2D',
+ 'sphere_rot': [0.0,0.0],
  'components': {},
  'par': ['dummy', 0.0],
  'zn': [0.0+0.0j],
