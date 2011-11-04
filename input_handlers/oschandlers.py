@@ -1,30 +1,88 @@
 from common.globals import *
 
+from common.complex import *
+
 from interface.oschandler import *
 
-import interface.OSC
+import OSC
 
 from common.log import *
 set_log("OSCHandler")
 
 class DefaultOSCHandler(OSCHandler):
-    def mirror_all(self):
-        OSCHandler.mirror_all(self)
+    def __init__(self):
+        self.regex_callbacks = {"/val_zn(\d+)": self.val_zn,
+                                "/val_zn_r(\d+)": self.val_zn_r,
+                                "/val_zn_th(\d+)": self.val_zn_th,
+                                "/val_par_(\w+)": self.val_par,
+                                "/inc_par_(\w+)": self.inc_par,
+                                "/inc_cmp_(\w+)": self.inc_cmp}
+                                
+        OSCHandler.__init__(self)
+
+
+    def val_zn(self, addr, tags, data, source):
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+
+        old = self.state.zn[idx]
+        val = complex(data[1], data[0])
+        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+
+
+    def val_zn_r(self, addr, tags, data, source):
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        old = self.state.zn[idx]
+        #val = complex(data[0], r_to_p(old)[1])
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+        val = (data[0], r_to_p(old)[1])
+        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed, r_to_p(old), val)
+
+
+    def val_zn_th(self, addr, tags, data, source):
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        old = self.state.zn[idx]
+        #val = complex(r_to_p(old)[0], data[0])
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+        val = (r_to_p(old)[0], data[0])
+        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed, r_to_p(old), val)
+
+
+    def val_par(self, addr, tags, data, source):
+        name = re.search("_([A-Z0-9_]+)$", addr).groups()[0]
+        self.cmdcenter.cmd("state.set_par('%s', %f)" % ('_' + name, data[0]))
+
+
+    def inc_par(self, addr, tags, data, source):
+        name = re.search("_([A-Z0-9_]+)$", addr).groups()[0]
+        self.cmdcenter.cmd("state.set_par('%s', %f)" % ('_' + name, self.state.get_par('_' + name) + data[0]))
+
+        
+    def inc_cmp(self, addr, tags, data, source):
+        name = re.search("_([A-Z0-9_]+)$", addr).groups()[0]
+        if(data[0] in {-1, 0, 1}):
+            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))        
+
+
+    # OSC device feedback
+    def mirror(self, obj, key, val):
+        if(obj == self.state.par):
+            self._send("/val_par_%s" % self.state.par_names[key][1:], [str(val)])
+            self._send("/txt_par_%s" % self.state.par_names[key][1:], [str(val)])
+        elif(obj == self.state.zn):
+            self._send("/val_zn%d" % key, [val.imag, val.real])
+            self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)])
+        elif(obj == self.state.components):
+            self._send("/txt_cmp_%s" % key, [str(val)])
+
 
 class DefaultInterferenceOSC(DefaultOSCHandler):    
 
-    # OSC address handers
-    def adr_num_waves(self, addr, tags, data, source):
-        num = self.state.get_par('_SLICES') + data[0]        
-        if(num > 0):
-            self.cmdcenter.cmd("state.set_par('_SLICES', %d)" % num)
+    def __init__(self):
+        DefaultOSCHandler.__init__(self)
 
-
-    def adr_wave_n(self, addr, tags, data, source):
-        self.cmdcenter.cmd("state.set_par('_N', %f)" % data[0])
-
-        
-    def adr_speed(self, addr, tags, data, source):
+    # OSC address handers        
+    def hnd_speed(self, addr, tags, data, source):
         v_new = 0.05 * data[0] + 0.00001
         v_old = self.state.t_speed
         
@@ -35,47 +93,7 @@ class DefaultInterferenceOSC(DefaultOSCHandler):
         self.cmdcenter.cmd("state.t_phase = %f" % (v_old * (self.state.time + self.state.t_phase) / v_new - self.state.time))
 
 
-    def adr_zn0(self, addr, tags, data, source):
-        self.cmdcenter.cmd("state.zn[0] = %f + %fj" % (data[1], data[0]))
-
-
-    def adr_zn1(self, addr, tags, data, source):
-        self.cmdcenter.cmd("state.zn[1] = %f + %fj" % (data[1], data[0]))
-
-
-    def adr_zn2(self, addr, tags, data, source):
-        self.cmdcenter.cmd("state.zn[2] = %f + %fj" % (data[1], data[0]))
-
-
-    def adr_zn3(self, addr, tags, data, source):
-        self.cmdcenter.cmd("state.zn[3] = %f + %fj" % (data[1], data[0]))
-
-        
-    def adr_T(self, addr, tags, data, source):
-        if data[0] == 0:
-            return
-        elif data[0] == 100:
-            v = 0
-        else:
-            v = data[0]
-
-        self.cmdcenter.cmd("inc_data('T', %d)" % v)
-
-
-    # OSC device feedback
-    def mirror(self, obj, key, val):
-        if(obj == self.state.par):
-            if(key == self.state.par_idx('_SLICES')):
-                self._send("/val_num_waves", [str(val)])
-            elif(key == self.state.par_idx('_N')):
-                 self._send("/val_wave_n", [str("%0.2f" % val)])
-                 self._send("/wave_n", [val])
-        elif(obj == self.state.zn):
-            self._send("/zn%d" % key, [val.imag, val.real])
-            self._send("/val_zn%d" % key, ["%f+%fi" % (val.imag, val.real)])
-
-
     def mirror_all(self):
-        DefaultOSCHandler.mirror_all(self)
         self._send("/speed", [(self.state.t_speed - 0.00001) / 0.05])
+        DefaultOSCHandler.mirror_all(self)
         

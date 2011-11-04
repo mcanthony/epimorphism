@@ -43,11 +43,6 @@ for cmd in assignments:
     else:
         print "failed to parse argument:", cmd
 
-# define & register exit handler
-def exit():
-    info("Running exit handler")
-atexit.register(exit)
-
 # create main application objects & initialize globals
 from common.globals import Globals
 from interface.interface import Interface
@@ -72,6 +67,7 @@ def main():
     app.exit = True
 
     # delete objects
+    #del interface, engine, cmdcenter
     interface.__del__()
     engine.__del__()
     cmdcenter.__del__()

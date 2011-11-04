@@ -12,7 +12,6 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 from ctypes import *
-import numpy as N
 
 import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
@@ -33,9 +32,6 @@ class Renderer(object):
 
         # initialize glut
         glutInit(1, [])
-
-        # application will continue after glut exits
-        glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
 
         # create window
         debug("Creating window")
@@ -69,6 +65,8 @@ class Renderer(object):
         except:
             exception("Failed to create window")
             sys.exit()
+
+        glutSetCursor(GLUT_CURSOR_NONE)
 
         # register callbacks
         glutReshapeFunc(self.reshape)

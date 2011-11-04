@@ -50,4 +50,3 @@ class DefaultEpimorphismMouse(DefaultMouse):
         # drag center
         self.state.sphere_rot[0] = self.app.viewport[0] = self.vp_start_x + self.app.viewport[2] * (x - self.mouse_start_x) / self.app.screen[0];
         self.state.sphere_rot[1] = self.app.viewport[1] = self.vp_start_y + self.app.viewport[2] * (y - self.mouse_start_y) / self.app.screen[1];
-        self.state.sphere_rot = self.app.viewport[0] + self.app.viewport[1] * 1j

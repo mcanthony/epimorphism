@@ -95,6 +95,30 @@ class ObserverList(list):
             observer(self, key, val)
 
 
+class ObserverDict(dict):
+    ''' This is an extension of the list class where observers can be registered to be notified of changes. '''
+
+    def __init__(self, vals):
+        dict.__init__(self, vals)
+        self.observers = []
+
+    def add_observer(self, observer):
+        ''' NOTE: An observer here is simply a function that is called when an element of the dict is modified.
+            It must take args (dict, key, val). '''
+        self.observers.append(observer)
+
+    # maintain copy of origonal setter
+    old_set = dict.__setitem__
+
+    def __setitem__(self, key, val):
+        # set value
+        self.old_set(key, val)
+
+        # notify observers
+        for observer in self.observers:
+            observer(self, key, val)
+
+
 class DictObj(object):
     ''' A Dictionary Object is simply an object used solely as a
         dictionary for ease of use '''
@@ -222,9 +246,10 @@ class State(DictObj):
             # update VERSION
             self.VERSION = getattr(self.__class__, "VERSION")
 
-        # make observer lists
+        # make observed objects
         self.zn  = ObserverList(self.zn)
         self.par = ObserverList(self.par)
+        self.components = ObserverDict(self.components)
 
         # set path phases
         for path in self.paths:

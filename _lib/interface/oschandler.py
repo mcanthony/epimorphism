@@ -4,7 +4,7 @@ from common.runner import *
 from common.log import *
 set_log("OSC")
 
-import socket, threading
+import socket, threading, re
 import OSC
 
 class OSCHandler(threading.Thread):
@@ -23,14 +23,16 @@ class OSCHandler(threading.Thread):
         ip = s.getsockname()[0]
            
         # create server & client
-        self.server = OSC.OSCServer((ip, 9000))
+        self.server = OSC.OSCServer((ip, self.app.OSC_input_port))
         self.client = OSC.OSCClient()    
 
         # add address handlers
-        self.server.addDefaultHandlers()            
         for func in dir(self):
-            if(func [0:4] == 'adr_'):
+            if(func [0:4] == 'hnd_'):
                 self.server.addMsgHandler('/' + func[4:], getattr(self, func))
+
+        for (regex, func) in iter(sorted(self.regex_callbacks.iteritems())):
+            self.server.addMsgHandler(re.compile(regex), func)
 
         #initialize thread
         threading.Thread.__init__(self)
@@ -49,7 +51,10 @@ class OSCHandler(threading.Thread):
         msg.setAddress(addr)
         for arg in args:
             msg.append(arg)
+            #try:
             self.client.sendto(msg, self.app.OSC_client_address)
+            #except OSC.OSCClientError:
+            #    debug("couldn't connect to OSC client")
 
 
     def mirror_all(self):
@@ -57,6 +62,9 @@ class OSCHandler(threading.Thread):
             self.mirror(self.state.par, self.state.par_idx(name), self.state.get_par(name))
         for i in xrange(len(self.state.zn)):
             self.mirror(self.state.zn, i, self.state.zn[i])
+        for (k,v) in  iter(sorted(self.state.components.iteritems())):
+            self.mirror(self.state.components, k, v)
+
 
     def mirror(self, obj, key, val):
         pass
