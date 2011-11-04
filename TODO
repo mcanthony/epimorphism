@@ -16,12 +16,10 @@ DONE:
   reimplement post processing
   aux buffer & flush fb
   fix logging
+  rotate saved images
+  component interpolation cleaner
 
 TODO:
-
-  rotate saved images
-
-  fix exception handling
 
   fix eventmanager
 

@@ -1,4 +1,5 @@
 // test
+#define intrp(from, to, time) (time >= 1.0f ? to : mix(from, to, (1.0 + erf(4.0f * time - 2.0f)) / 2.0));
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
@@ -16,8 +17,8 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, float time, float intrp_time, 
-	  __constant float *par, __constant float *internal, __constant float2 *zn){
+void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
+	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // get coords
   const int x = get_global_id(0);
   const int y = get_global_id(1);

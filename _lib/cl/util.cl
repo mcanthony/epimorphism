@@ -65,3 +65,6 @@ float4 to_rpp(float4 v){
 float4 to_xyz(float4 v){
   return (float4)(v.x * native_cos(v.y) * native_sin(v.z), v.x * native_sin(v.y) * native_sin(v.z), v.x * native_cos(v.z), v.w);
 }
+
+
+#define intrp(from, to, time) (time >= 1.0f ? to : mix(from, to, (1.0 + erf(4.0f * time - 2.0f)) / 2.0))

@@ -90,11 +90,10 @@ float wrapn(float* vals, int num_vals, int TYPE){
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void interference(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, float time, float intrp_time,
-	      __constant float *par, __constant float *internal, __constant float2 *zn){
+void interference(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
+	      __constant float *par, __constant float *internal, __constant float2 *zn, float time){
 
-  float intrp_t;
-  float2 t, t0, t1, z_z;
+  float2 t, z_z;
 
   // get coords
   const int x = get_global_id(0);
@@ -119,8 +118,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
 
      z = z_z;
      z = M(zn[2], z) + zn[3];
-     %T%
-     z = t;
+     z = %T%;     
      z = M(zn[0], z) + zn[1];
 
      waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time, _N, 0.0f);
@@ -141,9 +139,8 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      float2 k = (float2)(cos(th), sin(th));
 
      z = z_z;
-     z = M(zn[2], z) + zn[3];
-     %T%
-     z = t;
+     z = M(zn[2], z) + zn[3];     
+     z = %T%;
      z = M(zn[0], z) + zn[1];
 
      waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time, _N, 0.0f) / 4.0f;

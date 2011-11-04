@@ -216,11 +216,10 @@ class CmdCenter(Animator, Archiver):
         ''' Generates and sends the current frame to the Engine '''
 
         del self.frame[:]
-        self.frame.append({"name": "time",        "type": "float",         "val": self.state.t_speed * self.time()})      
-        self.frame.append({"name": "intrp_time",  "type": "float",         "val": self.app.state_intrp_time })  
         self.frame.append({"name": "par",         "type": "float_array",   "val": self.state.par})
         self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
         self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
+        self.frame.append({"name": "time",        "type": "float",         "val": self.state.t_speed * self.time()})      
 
 
     def cmd(self, code, capture=False):

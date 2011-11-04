@@ -63,7 +63,7 @@ class Compiler():
         # components
         for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
             if(component_name in self.state.components):
-                self.substitutions[component_name] = "%s = %s;" % (component_name.lower(),  self.state.components[component_name])
+                self.substitutions[component_name] = self.state.components[component_name]
             else:
                 self.substitutions[component_name] = ""
 

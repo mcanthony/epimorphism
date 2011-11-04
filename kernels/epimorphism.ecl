@@ -1,5 +1,4 @@
 // epimorphism
-
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
@@ -25,11 +24,10 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 #include "epi_cull.cl"
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, float time, float intrp_time,
-		 __constant float *par, __constant float *internal, __constant float2 *zn){
-  float intrp_t;
-  float2 t, t0, t1, t_seed, t_seed0, t_seed1, reduce, reduce0, reduce1;
-  float4 seed, seed0, seed1, color, color0, color1;
+void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
+		 __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+  float2 t, t_seed, reduce;
+  float4 seed, color;
 
   // get coords
   const int x = get_global_id(0);
@@ -52,27 +50,23 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       
       // compute T      
       z = M(zn[2], z) + zn[3];
-      %T%
-      z = t;
-      // %REDUCE%
-      reduce = torus_reduce(z);
-      z = recover2(reduce);      
+      z = %T%;
+
+      // reduce
+      reduce = recover2(torus_reduce(z));
       z = M(zn[0], z) + zn[1];
-      %REDUCE%
-      z = recover2(reduce);      
+      z = recover2(%REDUCE%);      
       
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
      
       // compute seed          
       z = M(zn[10], (z - zn[11]));           
-      %T_SEED%
-      z = t_seed;
+      z = %T_SEED%;
       z = M(zn[8], (z - zn[9]));
-      %REDUCE%
-      z = recover2(reduce);
+      z = recover2(%REDUCE%);
       
-      %SEED%
+      seed = %SEED%;
 
       //int4 aux_v = read_imagei(aux, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
       //seed = convert_float4(aux_v) / 255.0f;
@@ -95,8 +89,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   v = recover4(v);
 
   // compute color  
-  %COLOR%;
-  color = recover4(color);
+  color = recover4(%COLOR%);
 
   //z = tri_reduce(4.0f*z);
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
@@ -110,6 +103,27 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
   #endif
 
+}
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void post_process(__global uchar4* pbo, read_only image2d_t fb, float time, __constant float* par){
+
+  // get coords
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  float4 v = read_imagef(fb, image_sampler, p);
+
+  v = RGBtoHSV(v);
+
+  float h = v.x / (2.0 * PI);
+
+  h = 5.9605 * h * h * h - 9.2925 * h * h + 3.332 * h;
+  v.x = 2.0 * PI * h;
+  v = HSVtoRGB(v);
+
+  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
 }
 
 //__kernel __attribute__((reqd_work_group_size(16,16,1))) 
@@ -159,26 +173,3 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 
   //pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
 //}
-
-
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process(__global uchar4* pbo, read_only image2d_t fb, float time, __constant float* par){
-
-  // get coords
-  const int x = get_global_id(0);
-  const int y = get_global_id(1);
-  int2 p = (int2)(x, y);
-
-  float4 v = read_imagef(fb, image_sampler, p);
-
-  v = RGBtoHSV(v);
-
-  float h = v.x / (2.0 * PI);
-
-  h = 5.9605 * h * h * h - 9.2925 * h * h + 3.332 * h;
-  v.x = 2.0 * PI * h;
-  v = HSVtoRGB(v);
-
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
-}
-

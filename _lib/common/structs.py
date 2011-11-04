@@ -33,9 +33,8 @@ def save_obj(obj, type, extension, app=None, name=None):
        
     try:
         obj["name"] = (app and idx or name)
-
     except:
-        debug("couldn't set object name")
+        debug("couldn't set object name for saving")
 
     # open file & dump repr(obj)
     loc = path + "%s.%s" % (name, extension)
@@ -68,7 +67,7 @@ def load_obj(type, name, extension):
         obj = eval(contents)
         return obj
     except:
-        critical("couldn't read %s.%s" % (name, extension))
+        critical("couldn't parse %s.%s" % (name, extension))
         return None  
 
 

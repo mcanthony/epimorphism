@@ -6,7 +6,6 @@
  'autostart': True,
  'exit': False,
  'freeze': False,
-
  'console_level': 10,
 
  'manual_iter': False,

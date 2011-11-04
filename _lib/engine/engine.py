@@ -96,9 +96,9 @@ class Engine(object):
 
         # initialize main_kernel arguments
         if(self.app.feedback_buffer):
-            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
         else:
-            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_float, cl_float, cl_mem, cl_mem, cl_mem)
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
 
         # post processing kernel
         if(self.state.post_process):
