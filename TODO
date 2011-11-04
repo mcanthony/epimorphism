@@ -21,13 +21,13 @@ DONE:
 
 TODO:
 
-  fix eventmanager
 
   think more about dict objs
   remove certain vars from dict_objs? - extension, path, type
 
   clean cmdcenter
   work on scripts
+  fix eventmanager
 
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished
