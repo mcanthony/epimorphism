@@ -14,7 +14,8 @@
  'screen': [800,800,False],
  'kernel_dim': 1536,
  'fract': 3,
- 
+
+ 'sources': ['util', 'math', 'colorspace', '__epimorphism', ], 
  'kernel': 'epimorphism',
  'lib_prefix': 'epi',
  'feedback_buffer': True

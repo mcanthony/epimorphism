@@ -1,20 +1,12 @@
 // test
-#define intrp(from, to, time) (time >= 1.0f ? to : mix(from, to, (1.0 + erf(4.0f * time - 2.0f)) / 2.0));
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
-#define _EPI_
+#define _TST_
 #define KERNEL_DIM %KERNEL_DIM%
-#define PI 3.1415926536f
 %PAR_NAMES%
 %POST_PROCESS%
-#define $i (float2)(0.0, 1.0)
-#define $l (float2)(1.0, 0.0)
-#include "util.cl"
-#include "math.cl"
-#include "colorspace.cl"
-
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 

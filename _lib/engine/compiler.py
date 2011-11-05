@@ -23,24 +23,24 @@ class Compiler():
         ''' Executes the main Compiler sequence '''
         debug("Compiling")
 
-#        t0 = self.cmdcenter.get_time()
+#        t0 = self.cmdcenter.abs_time()
 
         # render ecu files
         [self.render_file(file) for file in os.listdir("kernels") if re.search("^[^\.]*?\.ecl$", file)]
 
         # load program from binaries
-        contents = open("kernels/__" + self.app.kernel + ".cl").read()
+        sources = [open("kernels/%s.cl" % source).read() for source in self.app.sources]
 
         try:
-            self.program = clCreateProgramWithSource(self.ctx, contents)
-            self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros")
+            self.program = clCreateProgramWithSource(self.ctx, sources)
+            self.program.build("-Ikernels -cl-mad-enable -cl-no-signed-zeros")
         except BuildProgramFailureError as e:
             print e
             sys.exit(0)
   
         self.callback(self.program)
                      
-#        t1 = self.cmdcenter.get_time()
+#        t1 = self.cmdcenter.abs_time()
 #        self.cmdcenter.t_phase -= t1 - t0
 
         # remove tmp files
@@ -55,8 +55,8 @@ class Compiler():
         contents = file.read()
         file.close()
 
-        if(not re.search(self.app.kernel, contents.split("\n")[0])):
-            return
+#        if(not re.search(self.app.kernel, contents.split("\n")[0])):
+#            return
 
         info("Rendering: %s", name)        
 

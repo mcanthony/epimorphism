@@ -1,6 +1,5 @@
-// epimorphism library file
+// EPIMORPH library file
 // seed functions
-
 
 _EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
@@ -70,3 +69,4 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant float* in
 
   return res;
 }
+

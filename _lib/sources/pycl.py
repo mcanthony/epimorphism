@@ -2431,16 +2431,22 @@ def clGetProgramBuildInfo(program, param_name, device=None):
 def clCreateProgramWithSource(context, source):
     """
     :param context: Context in which the program will exist
-    :param source: Source code, as a string.
+    :param source: Source code, as a string or a list of strings
 
     Remember to call :meth:`~cl_program.build` on the program.
     """
     if sys.version_info[0] > 2 and isinstance(source, str):
-        source = source.encode()            
-    c_source = char_p(source)
-    p = pointer(c_source)
+        source = source.encode()          
+  
+    if(not isinstance(source, list)):
+        source = [source]
+
+    p = (char_p * len(source))(*source)
+    #c_source = [char_p(s) for s in source]
+
+    #p = pointer(c_source)
     #import pdb; pdb.set_trace()
-    prg = clCreateProgramWithSource.call(context, 1, p,
+    prg = clCreateProgramWithSource.call(context, len(source), p,
                                          None, byref(cl_errnum()))
     prg._context = context
     return prg

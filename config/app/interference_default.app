@@ -13,7 +13,8 @@
 
  'screen': [800,800,False],
  'kernel_dim': 1536,
- 
+
+ 'sources': ['util', 'math', 'colorspace', '__interference'], 
  'kernel': 'interference',
  'lib_prefix': 'int',
 }

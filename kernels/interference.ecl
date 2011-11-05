@@ -5,14 +5,8 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 
 #define _INT_
 #define KERNEL_DIM %KERNEL_DIM%
-#define PI 3.1415926536f
 %PAR_NAMES%
 %POST_PROCESS%
-#define $i (float2)(0.0, 1.0)
-#define $l (float2)(1.0, 0.0)
-#include "util.cl"
-#include "math.cl"
-#include "colorspace.cl"
 
 #define MAX_WAVES 30
 
