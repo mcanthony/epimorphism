@@ -1621,7 +1621,7 @@ class OSCRequestHandler(DatagramRequestHandler):
 		  - data (list):  The message arguments
 		"""
 
-		print "DISPACTH: ", pattern
+		#print "DISPACTH: ", pattern
 
 		if len(tags) != len(data):
 			raise OSCServerError("Malformed OSC-message; got %d typetags [%s] vs. %d values" % (len(tags), tags, len(data)))

@@ -54,7 +54,7 @@ class Animator(object):
     def execute_paths(self):
 
         # get time
-        t = self.time()
+        t = self.time() * 100
 
         # execute paths
         for path in self.state.paths[::-1]:

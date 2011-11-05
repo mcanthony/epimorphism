@@ -137,7 +137,7 @@ class ComponentManager(object):
 
             name = component_name.lower()
 
-            intrp = "intrp(%s, %s, (time / %f - internal[%d]) / %f)" % (self.state.components[component_name], val, self.state.t_speed, idx_idx, self.app.state_intrp_time)        
+            intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)        
 
             self.state.components[component_name] = intrp
 

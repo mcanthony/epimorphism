@@ -145,6 +145,7 @@ class CmdCenter(Animator, Archiver):
         debug("Start main loop")
 
         self.state.t_phase += self.state.time
+        self.state.time = 0
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
@@ -172,15 +173,13 @@ class CmdCenter(Animator, Archiver):
             self.app.next_frame = False
 
             # get time
-            self.state.time = self.get_time()
+            self.state.time = self.abs_time()
 
             if(self.app.manual_iter):
-                d = self.time() - self.last_frame_time
-                self.state.time -= d
-                self.state.t_phase -= d
-                self.state.time += 1.0 / 30.0
+                d = self.abs_time() - self.last_frame_time
+                self.state.t_phase += 1.0 / 30.0 - d
 
-            self.last_frame_time = self.time()
+            self.last_frame_time = self.abs_time()
 
             #print str(self.state.time), str(self.t_phase)
 
@@ -219,7 +218,7 @@ class CmdCenter(Animator, Archiver):
         self.frame.append({"name": "par",         "type": "float_array",   "val": self.state.par})
         self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
         self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
-        self.frame.append({"name": "time",        "type": "float",         "val": self.state.t_speed * self.time()})      
+        self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      
 
 
     def cmd(self, code, capture=False):
@@ -260,7 +259,7 @@ class CmdCenter(Animator, Archiver):
 
 
     # UTILITY FUNCTIONS
-    def get_time(self):
+    def abs_time(self):
         ''' Returns the current absolute time '''
 
         if(self.app.fps_sync):
@@ -272,7 +271,7 @@ class CmdCenter(Animator, Archiver):
     def time(self):
         ''' Returns the current relative time '''
 
-        return self.state.time + self.state.t_phase
+        return self.state.t_speed * (self.abs_time() + self.state.t_phase)
 
 
     def set_val(self, val, var, idx):
@@ -370,14 +369,14 @@ class CmdCenter(Animator, Archiver):
         name = self.state.save(name)
 
         img = self.grab_image()
-        t0 = self.get_time()
+        t0 = self.abs_time()
         self.app.freeze = True
         #img.show()
         img.save("media/image/%s.jpg" % name)
         self.interface.renderer.flash_message("saved state as %s" % name)
         self.app.freeze = False
-        t1 = self.get_time()
-        self.state.t_phase -= t1 - t0
+        t1 = self.abs_time()
+        self.state.t_phase -= (t1 - t0)
 
         return name        
 
@@ -525,3 +524,13 @@ class CmdCenter(Animator, Archiver):
             info("Tempo: %s bmp" % self.state.bmp)
 
                
+    def reset_zn(self):
+        default = State(self.app.app)
+        for i in xrange(len(default.zn)):
+            self.cmdcenter.radial_2d('state.zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
+
+
+    def reset_par(self):
+        default = State(self.app.app)
+        for i in xrange(len(default.par)):
+            self.cmdcenter.linear_1d('state.par', i, 0.4, self.state.par[i], default.par[i])
