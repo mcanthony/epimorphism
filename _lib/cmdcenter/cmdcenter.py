@@ -485,7 +485,7 @@ class CmdCenter(Animator, Archiver):
             self.recorded_events = None
 
 
-    def manual(self):
+    def toggle_manual(self):
         ''' Toggles manual iteration. '''
 
         if(self.app.manual_iter):

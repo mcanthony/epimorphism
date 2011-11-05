@@ -51,10 +51,10 @@ class OSCHandler(threading.Thread):
         msg.setAddress(addr)
         for arg in args:
             msg.append(arg)
-            #try:
-            self.client.sendto(msg, self.app.OSC_client_address)
-            #except OSC.OSCClientError:
-            #    debug("couldn't connect to OSC client")
+            try:
+                self.client.sendto(msg, self.app.OSC_client_address)
+            except OSC.OSCClientError:
+                debug("couldn't connect to OSC client")
 
 
     def mirror_all(self):

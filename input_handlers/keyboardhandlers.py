@@ -33,7 +33,7 @@ class DefaultKeyboard(KeyboardHandler):
 
         # toggle manual iteration
         elif(key == "\011"): # tab
-            self.cmdcenter.cmd("manual()")
+            self.cmdcenter.cmd("toggle_manual()")
 
         # toggle next frame
         elif(key == "\015"): # enter

@@ -72,6 +72,8 @@ RELEASE QUEUE:
   optimize kernel
 
   contents & launch state/app
+  SEED_W_BASE, etc
+
 
   make par save & load as a dictionary
   synchronize available pars to comonents

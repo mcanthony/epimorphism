@@ -1652,8 +1652,9 @@ class OSCRequestHandler(DatagramRequestHandler):
 				elif reply != None:
 					raise TypeError("Message-callback %s did not return OSCMessage or None: %s" % (self.server.callbacks['default'], type(reply)))
 			else:
-				raise NoCallbackError(pattern)
-		
+				print "No Callback for:", pattern
+			#	raise NoCallbackError(pattern)
+
 		return replies
 		
 	def setup(self):

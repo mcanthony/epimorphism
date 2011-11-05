@@ -6,7 +6,7 @@ _EPI_ float trans_w(float w, __constant float* par){
   if(w < _SEED_W_MIN && w > 0.0f)
     w = 1.0f;
   if(_SEED_W_BASE != 0.0f && w < 0.0f)
-    w = _SEED_W_BASE / 20.0;
+    w = _SEED_W_BASE;
   return w;
 }
 
@@ -28,7 +28,7 @@ _EPI_ float2 wave(float2 z, __constant float* par){
   float _clock = 0.0f;
 
   z = grid_reduce(z);
-  float w = (2.0f + native_sin(2.0f * PI * (z.y + _clock * _GLOBAL_SPEED / 10.0f))) / 4.0f;
+  float w = (2.0f + native_sin(2.0f * PI * (z.y + _clock / 10.0f))) / 4.0f;
   return CX(trans_w(w, par), 1.0f);
 }
 
