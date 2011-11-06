@@ -45,10 +45,9 @@ DONE:
 RELEASE QUEUE:
 
   TouchOSC template & osc work
-  figure out osc delay
-  send messages to device as a bundle
+  make osc use paths
 
-  bundle pygame, PIL
+  bundle PIL
   update pyopengl lib
   freeglut  
 

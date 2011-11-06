@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import sys, atexit
+sys.path.insert(1, "_lib/sources")
 sys.path.append("_lib")
-sys.path.append("_lib/sources")
 
 # setup logging
 from common.log import *

@@ -13,7 +13,8 @@ from common.globals import *
 from renderer import Renderer
 
 from console import Console
-from server import Server
+
+from server import *
 from input_handlers.mousehandlers import *
 from input_handlers.keyboardhandlers import *
 from input_handlers.oschandlers import *

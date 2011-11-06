@@ -1,7 +1,7 @@
 # The renderer is an OpenGL context, via GLUT, which is responsible for rendering the Engine's output
 # It is synchronized with the engine via a pbo
 
-import time, sys, os, commands, threading
+import time, sys, threading
 
 from common.globals import *
 from common.runner import *
@@ -12,6 +12,8 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 
 from ctypes import *
+
+import pygame
 
 import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
@@ -38,33 +40,14 @@ class Renderer(object):
 
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
-        try:
-            if(self.app.screen == "auto"):
-                if(os.name == "posix"):
-                    # call xrandr & parse output
-                    output = commands.getstatusoutput("xrandr")[1].split("\n")[1]
-                    print output
-                    output = output[output.index("maximum") + 8:].split(" x ")                    
-                    print output
-                    max = (int(output[0]), int(output[1]))
-                    print str(max)
-                else:
-                    # TODO generalize to other operating systems
-                    max = (1024, 768) 
-                self.app.screen = [max[0], max[1], True]
-
-            if(self.app.screen[2]):
-                glutGameModeString(str(self.app.screen[0]) + "x" +
-                                   str(self.app.screen[1]) + ":24@60")
-                glutEnterGameMode()
-
-            else:
-                glutInitWindowSize(self.app.screen[0], self.app.screen[1])
-                glutInitWindowPosition(10, 10)
-                glutCreateWindow(self.app.name)
-        except:
-            exception("Failed to create window")
-            sys.exit()
+        if(self.app.screen == "auto"):
+            glutCreateWindow(self.app.name)
+            glutFullScreen()
+            self.app.screen=[0,0]
+        else:
+            glutInitWindowSize(self.app.screen[0], self.app.screen[1])
+            glutInitWindowPosition(10, 10)
+            glutCreateWindow(self.app.name)
 
         glutSetCursor(GLUT_CURSOR_NONE)
 

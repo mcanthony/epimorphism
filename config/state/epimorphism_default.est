@@ -5,7 +5,7 @@
  'image': None,
  'frame_cnt': 0,
  'bpm': 120,
- 'scripts': [],
+ 'scripts': [Script('roses')],
  'paths': [],
  'programs': [],
  'components': {
@@ -97,10 +97,10 @@
  0.0,
  '_COLOR_SPEED_TH':
  0.4,
+ '_COLOR_RESET_Z':
+ 0.5,
  '_GAMMA':
  2.2,
- '_HSLS_RESET_Z':
- 0.5,
  '_CULL_DEPTH':
  0.0
  }}
