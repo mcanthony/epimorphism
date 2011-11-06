@@ -34,6 +34,8 @@ class OSCHandler(threading.Thread):
         for (regex, func) in iter(sorted(self.regex_callbacks.iteritems())):
             self.server.addMsgHandler(re.compile(regex), func)
 
+        self.msg_bundle = None
+
         #initialize thread
         threading.Thread.__init__(self)
 
@@ -46,24 +48,31 @@ class OSCHandler(threading.Thread):
             self.server.handle_request()
             
 
-    def _send(self, addr, args):
+    def _send(self, addr, args, bundle = False):
+        if(bundle and not self.msg_bundle):
+            self.msg_bundle = OSC.OSCBundle()
         msg = OSC.OSCMessage()
         msg.setAddress(addr)
+
         for arg in args:
             msg.append(arg)
+            
+
+        if(bundle or self.msg_bundle):
+            self.msg_bundle.append(msg)
+
+        if(not bundle):
             try:
-                self.client.sendto(msg, self.app.OSC_client_address)
+                self.client.sendto(self.msg_bundle or msg, self.app.OSC_client_address)
             except OSC.OSCClientError:
                 debug("couldn't connect to OSC client")
+            
+            if(self.msg_bundle):
+                self.msg_bundle = None
 
 
     def mirror_all(self):
-        for (k,v) in iter(sorted(self.state.par.iteritems())):
-            self.mirror(self.state.par, k, v)
-        for i in xrange(len(self.state.zn)):
-            self.mirror(self.state.zn, i, self.state.zn[i])
-        for (k,v) in  iter(sorted(self.state.components.iteritems())):
-            self.mirror(self.state.components, k, v)
+        pass
 
 
     def mirror(self, obj, key, val):

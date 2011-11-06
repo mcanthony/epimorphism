@@ -91,6 +91,7 @@ class Interface(object):
                 self.cmdcenter.state.par.add_observer(self.osc.mirror)
                 self.cmdcenter.state.zn.add_observer(self.osc.mirror)            
                 self.cmdcenter.state.components.add_observer(self.osc.mirror)            
+                self.cmdcenter.state.add_observer(self.osc.mirror)            
 
         self.renderer.start()
 

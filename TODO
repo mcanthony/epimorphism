@@ -46,8 +46,6 @@ RELEASE QUEUE:
 
   TouchOSC template & osc work
   figure out osc delay
-  osc speed
-  overlaping issues with component names
   send messages to device as a bundle
 
   bundle pygame, PIL

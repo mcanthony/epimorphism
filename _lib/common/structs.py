@@ -145,6 +145,26 @@ class DictObj(object):
 
         self.__dict__.update(data)
 
+        self.observers = []
+
+
+    def add_observer(self, observer):
+        ''' NOTE: An observer here is simply a function that is called when an element of the dict is modified.
+            It must take args (dict, key, val). '''
+        self.observers.append(observer)
+
+    # maintain copy of origonal setter
+    old_set = dict.__setattr__
+
+    def __setattr__(self, name, val):
+        # set value
+        self.old_set(name, val)
+
+        # notify observers
+        if(hasattr(self, 'observers')):
+            for observer in self.observers:
+                observer(self, name, val)
+
 
     def save(self, name=None):
         ''' Dumps a dict to a file.  Adds newlines after commas for legibility. 
