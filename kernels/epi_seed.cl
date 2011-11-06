@@ -1,3 +1,5 @@
+const sampler_t fb_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
+
 // EPIMORPHISM library file
 // seed functions
 
@@ -23,14 +25,14 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant float* intern
   float seed_wt, seed_a;
   float2 seed_w, seed_w0, seed_w1;
   float4 seed_c;
-  float w = %SEED_W%.x;
+  float w = $SEED_W$.x;
 
   w = fmax(fmin(w, 1.0f), ep);
 
   if(w > 0.0f){   
-    w = %SEED_WT%;    
-    res = %SEED_C%;    
-    res.w = %SEED_A%;
+    w = $SEED_WT$;    
+    res = $SEED_C$;    
+    res.w = $SEED_A$;
   }else{
     res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   }
@@ -48,21 +50,21 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant float* in
   float seed_wt, seed_a;
   float2 seed_w, seed_w0, seed_w1;
   float4 seed_c;
-  float w = %SEED_W%.x;
+  float w = $SEED_W$.x;
 
   w = fmax(fmin(w, 1.0f), ep);
 
   z = torus_reduce(z);
 
   if(w > 0.0f){
-    w = %SEED_WT%;    
-    res = %SEED_C%;    
+    w = $SEED_WT$;    
+    res = $SEED_C$;    
 
     z /= w / w; //WTF is this?
-    float4 res2 = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));    
+    float4 res2 = read_imagef(fb, fb_sampler, (0.5f * z + (float2)(0.5f, 0.5f)));    
     res = (0.2f * res + 0.8f * res2);
 
-    res.w = %SEED_A%;
+    res.w = $SEED_A$;
   }else{
     res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   }

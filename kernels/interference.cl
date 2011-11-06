@@ -3,11 +3,6 @@
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
-#define _INT_
-#define KERNEL_DIM %KERNEL_DIM%
-%PAR_NAMES%
-%POST_PROCESS%
-
 #define MAX_WAVES 30
 
 #define SIN 0
@@ -95,7 +90,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   int2 p = (int2)(x, y);
 
   // get z
-  float2 z = (float2)(2.0f / KERNEL_DIM) * convert_float2(p) + (float2)(1.0f / KERNEL_DIM - 1.0f, 1.0f / KERNEL_DIM - 1.0f);
+  float2 z = (float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f);
   z_z = z;
   // compute val
   float waves[MAX_WAVES];
@@ -112,7 +107,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
 
      z = z_z;
      z = M(zn[2], z) + zn[3];
-     z = %T%;     
+     z = $T$;     
      z = M(zn[0], z) + zn[1];
 
      waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time, _N, 0.0f);
@@ -134,7 +129,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
 
      z = z_z;
      z = M(zn[2], z) + zn[3];     
-     z = %T%;
+     z = $T$;
      z = M(zn[0], z) + zn[1];
 
      waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time, _N, 0.0f) / 4.0f;
@@ -188,7 +183,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   #ifdef POST_PROCESS
   write_imagef(out, p, color);   
   #else
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0f * color.zyxw);
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
   #endif
 }
 
@@ -211,5 +206,5 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __co
   v.x = 2.0 * PI * h;
   v = HSVtoRGB(v);
 
-  pbo[y * KERNEL_DIM + x] = convert_uchar4(255.0 * v.zyxw);
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }

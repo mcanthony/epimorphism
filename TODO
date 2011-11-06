@@ -39,6 +39,8 @@ DONE:
     understand ctypes/OpenCL/GIL/clCreateProgram issue
     uploading images - problem & memory leak
     fix automating components
+    make kernel splices all use procompiler & #define?
+
 
 RELEASE QUEUE:
 
@@ -55,35 +57,38 @@ RELEASE QUEUE:
   windows build
   mac build
 
-  think more about dict objs
-  remove certain vars from dict_objs? - extension, path, type
-
   clean cmdcenter
   work on scripts
   fix eventmanager
 
-  fix console
-
   png screenshots  
+
+  make par save & load as a dictionary
     
-  Cross platform:
-    OpenCL ATI Stream??
-    OpenCL CPUs - replace images with buffers
+
+
+  OpenCL ATI Stream??
 
   scale performance to system
-  move color axis to cpu
   optimize kernel
+    move color axis to cpu
 
   contents & launch state/app
 
+  final testing & documentation
 
-  make par save & load as a dictionary
-  synchronize available pars to comonents
+  website & videos
 
-  make kernel splices all use procompiler & #define?
 
 
 LATER:
+  synchronize available pars to comonents
+  think more about dict objs
+  remove certain vars from dict_objs? - extension, path, type
+
+  OpenCL CPUs - replace images with buffers
+  fix console
+
   periodically connect to server ??
   more sophisticated application loading - switch apps on the fly
   figure out why app takes forever to exit - GLUT

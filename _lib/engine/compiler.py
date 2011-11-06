@@ -12,7 +12,7 @@ class Compiler():
     ''' OpenCL Program compiler '''
 
     def __init__(self, ctx, callback):
-        debug("Initializing Compiler")
+        info("Initializing Compiler")
         Globals().load(self)
 
         self.ctx, self.callback = ctx, callback
@@ -21,16 +21,9 @@ class Compiler():
 
     def compile(self):
         ''' Executes the main Compiler sequence '''
-        debug("Compiling")
+        info("Compiling")
 
-#        t0 = self.cmdcenter.get_time()
-
-        # render ecu files
-        [self.render_file(source[2:]) for source in self.app.sources if source[:2] == "__"]
-
-        # load program from binaries
-
-        contents = [open("kernels/%s.cl" % source).read() for source in self.app.sources]
+        contents = [self.get_definitions()] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
 
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
@@ -39,24 +32,15 @@ class Compiler():
             print e
             sys.exit(0)
   
-        self.callback(self.program)
-                     
-#        t1 = self.cmdcenter.get_time()
-#        self.cmdcenter.t_phase -= t1 - t0
-
-        # remove tmp files
-#        files = [file for file in os.listdir("kernel") if re.search("\.ecu$", file)]
+        self.callback(self.program)        
 
 
-    def render_file(self, name):
-        ''' Substitues escape sequences in a .ecu file with dynamic content '''
+    def get_definitions(self):
+        ''' Turn substutions into defines '''
 
-        # open file & read contents
-        file = open("kernels/%s.ecl" % name)
-        contents = file.read()
-        file.close()
+        info("Getting definitions")        
 
-        info("Rendering: %s", name)        
+        definitions = "#define _EPI_\n"
 
         # components
         for component_name in self.cmdcenter.componentmanager.datamanager.component_names:
@@ -68,6 +52,10 @@ class Compiler():
         # get substitutions from application
         self.substitutions.update(self.app.get_substitutions())
 
+        for (k,v) in  iter(sorted(self.substitutions.iteritems())):
+            if(v and v != ""):
+                definitions += "#define $%s$ %s\n" % (k, v)
+
         # bind PAR_NAMES
         par_name_str = ""
 
@@ -75,13 +63,4 @@ class Compiler():
             if(self.state.par_names[i] != ""):
                 par_name_str += "#define %s par[%d]\n" % (self.state.par_names[i], i)
 
-        self.substitutions["PAR_NAMES"] = par_name_str[0:-1]
-
-        # replace variables
-        for key in self.substitutions:
-            contents = re.compile("\%" + key + "\%").sub(str(self.substitutions[key]), contents)
-
-        # write file contents                             
-        file = open("kernels/__%s.cl" % name, 'w')
-        file.write(contents)
-        file.close()
+        return definitions + par_name_str

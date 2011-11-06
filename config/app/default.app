@@ -49,7 +49,7 @@
  'kernel_dim': 1536,
 
  'kernel': 'test',
- 'sources': ['util', 'math', 'colorspace', '__test'],
+ 'sources': ['util', 'math', 'colorspace', 'test'],
  'lib_prefix': 'def',
  'feedback_buffer': False
 }
