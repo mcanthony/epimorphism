@@ -16,8 +16,8 @@ class DefaultKeyboard(KeyboardHandler):
             self.engine.compile()
 
         # toggle console
-        elif(key == "`"):
-            self.cmdcenter.cmd("toggle_console()")
+        #elif(key == "`"):
+        #    self.cmdcenter.cmd("toggle_console()")
 
         # toggle echo
         elif(key == GLUT_KEY_F11):
@@ -58,29 +58,29 @@ class DefaultKeyboard(KeyboardHandler):
 class DefaultInterferenceKeyboard(DefaultKeyboard):
     def key_pressed(self, key, modifiers):
         if(key == '1'):
-            self.cmdcenter.cmd("state.set_par('_N', state.get_par('_N') + 1)")
+            self.cmdcenter.cmd("state.par['_N'] += 1")
         elif(key == 'q'):
-            self.cmdcenter.cmd("state.set_par('_N', state.get_par('_N') - 1)")
+            self.cmdcenter.cmd("state.par['_N'] -= 1")
         elif(key == '2'):
-            self.cmdcenter.cmd("state.set_par('_SLICES', state.get_par('_SLICES') + 1)")
+            self.cmdcenter.cmd("state.par['_SLICES'] += 1")
         elif(key == 'w'):
-            self.cmdcenter.cmd("state.set_par('_SLICES', state.get_par('_SLICES') - 1)")
+            self.cmdcenter.cmd("state.par['_SLICES'] -= 1")
         elif(key == 'a'):
-            self.cmdcenter.cmd("state.set_par('_VAL_TYPE', state.get_par('_VAL_TYPE') + 1)")
+            self.cmdcenter.cmd("state.par['_VAL_TYPE'] += 1")
         elif(key == 'z'):
-            self.cmdcenter.cmd("state.set_par('_VAL_TYPE', state.get_par('_VAL_TYPE') - 1)")
+            self.cmdcenter.cmd("state.par['_VAL_TYPE'] -= 1")
         elif(key == 's'):
-            self.cmdcenter.cmd("state.set_par('_HUE_TYPE', state.get_par('_HUE_TYPE') + 1)")
+            self.cmdcenter.cmd("state.par['_HUE_TYPE'] += 1")
         elif(key == 'x'):
-            self.cmdcenter.cmd("state.set_par('_HUE_TYPE', state.get_par('_HUE_TYPE') - 1)")
+            self.cmdcenter.cmd("state.par['_HUE_TYPE'] -= 1")
         elif(key == 'd'):
-            self.cmdcenter.cmd("state.set_par('_VAL_WRAP_TYPE', state.get_par('_VAL_WRAP_TYPE') + 1)")
+            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'] += 1")
         elif(key == 'c'):
-            self.cmdcenter.cmd("state.set_par('_VAL_WRAP_TYPE', state.get_par('_VAL_WRAP_TYPE') - 1)")
+            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'] -= 1")
         elif(key == 'f'):
-            self.cmdcenter.cmd("state.set_par('_HUE_WRAP_TYPE', state.get_par('_HUE_WRAP_TYPE') + 1)")
+            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'] += 1")
         elif(key == 'v'):
-            self.cmdcenter.cmd("state.set_par('_HUE_WRAP_TYPE', state.get_par('_HUE_WRAP_TYPE') - 1)")
+            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'] -= 1")
         elif(key in ["7", "8", "9", "0"]):
             i = ["7", "8", "9", "0"].index(key)
             self.cmdcenter.cmd("inc_data('%s', 1)" % self.components[i])
@@ -96,7 +96,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
         # set pars if CTRL
         if((modifiers & GLUT_ACTIVE_CTRL) == GLUT_ACTIVE_CTRL):
 
-            # increment par[i]
+            # increment par[i] - BORKEN
             if(ord(key) in [49, 0, 27, 28, 28, 30, 31, 127, 57, 48, 1, 19, 4, 6, 7, 8, 10, 11, 12, 59]): # row 1 & 3
                 i = [49, 0, 27, 28, 28, 30, 31, 127, 57, 48, 1, 19, 4, 6, 7, 8, 10, 11, 12, 59].index(ord(key))
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20
@@ -104,7 +104,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 x1 = self.state.par[i] + 0.05
                 self.cmdcenter.linear_1d('state.par', i, self.app.kbd_switch_spd, x0, x1)
 
-            # decrement par[i]
+            # decrement par[i] - BORKEN
             elif(ord(key) in [17, 23, 5, 18, 20, 25, 21, 9, 15, 16, 26, 24, 3, 22, 2, 14, 13, 44, 46, 31]): # row 2 & 4
                 i = [17, 23, 5, 18, 20, 25, 21, 9, 15, 16, 26, 24, 3, 22, 2, 14, 13, 44, 46, 31].index(ord(key))
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20

@@ -215,7 +215,9 @@ class CmdCenter(Animator, Archiver):
         ''' Generates and sends the current frame to the Engine '''
 
         del self.frame[:]
-        self.frame.append({"name": "par",         "type": "float_array",   "val": self.state.par})
+        keys = self.state.par.keys()
+        keys.sort()
+        self.frame.append({"name": "par",         "type": "float_array",   "val": [self.state.par[key] for key in keys]})
         self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
         self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
         self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      
@@ -323,9 +325,7 @@ class CmdCenter(Animator, Archiver):
 
     def pars(self):
         ''' Prints a list of paramaters, their bindings, and their values. '''
-
-        for i in xrange(len(self.state.par_names)):
-            print self.state.par_names[i], ":", i
+        print str(self.state.pars)
 
 
     def funcs(self):

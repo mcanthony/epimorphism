@@ -46,61 +46,61 @@
  0.0,
  0.0,
  0.0],
- 'par': [
- '_SEED_W',
+ 'par': {
+ '_SEED_W':
  0.1,
- '_SEED_W_BASE',
+ '_SEED_W_BASE':
  0.0,
- '_SEED_W_MIN',
+ '_SEED_W_MIN':
  0.0,
- '_SEED_COLOR_A',
+ '_SEED_COLOR_A':
  1.0,
- '_SEED_COLOR_S',
+ '_SEED_COLOR_S':
  1.0,
- '_SEED_COLOR_V',
+ '_SEED_COLOR_V':
  1.0,
- '_SEED_C_TH_EFF',
+ '_SEED_C_TH_EFF':
  0.0,
- '_SEED_CIRCLE_R',
+ '_SEED_CIRCLE_R':
  0.5,
- '_SEED_GRID_N',
+ '_SEED_GRID_N':
  0.5,
- '_SEED_COLOR_SPEED',
+ '_SEED_COLOR_SPEED':
  0.7,
- '_COLOR_PHI1',
+ '_COLOR_PHI1':
  1.0,
- '_COLOR_PSI1',
+ '_COLOR_PSI1':
  0.0,
- '_COLOR_PHI2',
+ '_COLOR_PHI2':
  0.0,
- '_COLOR_PSI2',
+ '_COLOR_PSI2':
  0.0,
- '_COLOR_BASE_PHI',
+ '_COLOR_BASE_PHI':
  0.0,
- '_COLOR_BASE_PSI',
+ '_COLOR_BASE_PSI':
  0.0,
- '_COLOR_BASE_R',
+ '_COLOR_BASE_R':
  1.0,
- '_COLOR_BASE_I',
+ '_COLOR_BASE_I':
  0.9,
- '_COLOR_I',
+ '_COLOR_I':
  1.0,
- '_COLOR_DHUE',
+ '_COLOR_DHUE':
  0.5,
- '_COLOR_LEN_SC',
+ '_COLOR_LEN_SC':
  0.5,
- '_COLOR_18',
+ '_COLOR_18':
  1.0,
- '_COLOR_19',
+ '_COLOR_19':
  0.0,
- '_COLOR_TH_EFF',
+ '_COLOR_TH_EFF':
  0.0,
- '_COLOR_SPEED_TH',
+ '_COLOR_SPEED_TH':
  0.4,
- '_GAMMA',
+ '_GAMMA':
  2.2,
- '_HSLS_RESET_Z',
+ '_HSLS_RESET_Z':
  0.5,
- '_CULL_DEPTH',
+ '_CULL_DEPTH':
  0.0
- ]}
+ }}

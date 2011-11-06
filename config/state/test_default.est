@@ -9,7 +9,7 @@
  'paths': [],
  'programs': [],
  'components': {},
- 'par': ['dummy', 0.0],
+ 'par': {'dummy': 0.0},
  'zn': [0.0+0.0j],
  'internal': [0.0,
  0.0,

@@ -51,12 +51,12 @@ class DefaultOSCHandler(OSCHandler):
 
     def val_par(self, addr, tags, data, source):
         name=addr[9:]
-        self.cmdcenter.cmd("state.set_par('%s', %f)" % ('_' + name, data[0]))
+        self.cmdcenter.cmd("state.par['%s'] = %f" % ('_' + name, data[0]))
 
 
     def inc_par(self, addr, tags, data, source):
         name=addr[9:]
-        self.cmdcenter.cmd("state.set_par('%s', %f)" % ('_' + name, self.state.get_par('_' + name) + data[0]))
+        self.cmdcenter.cmd("state.par['%s'] = %f" % ('_' + name, self.par['_' + name] + data[0]))
 
         
     def inc_cmp(self, addr, tags, data, source):
@@ -85,8 +85,8 @@ class DefaultOSCHandler(OSCHandler):
     # OSC device feedback
     def mirror(self, obj, key, val):
         if(obj == self.state.par):
-            self._send("/val_par_%s" % self.state.par_names[key][1:], [str(val)])
-            self._send("/txt_par_%s" % self.state.par_names[key][1:], ["%0.2f" % val])
+            self._send("/val_par_%s" % key, [str(val)])
+            self._send("/txt_par_%s" % key, ["%0.2f" % val])
         elif(obj == self.state.zn):
             self._send("/val_zn%d" % key, [val.imag, val.real])
             self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)])

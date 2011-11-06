@@ -40,7 +40,7 @@ DONE:
     uploading images - problem & memory leak
     fix automating components
     make kernel splices all use procompiler & #define?
-
+    state.par now a dictionary
 
 RELEASE QUEUE:
 
@@ -62,8 +62,6 @@ RELEASE QUEUE:
   fix eventmanager
 
   png screenshots  
-
-  make par save & load as a dictionary
     
 
 
@@ -82,6 +80,8 @@ RELEASE QUEUE:
 
 
 LATER:
+  fix MIDI
+
   synchronize available pars to comonents
   think more about dict objs
   remove certain vars from dict_objs? - extension, path, type

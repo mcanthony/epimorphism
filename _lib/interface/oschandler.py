@@ -58,8 +58,8 @@ class OSCHandler(threading.Thread):
 
 
     def mirror_all(self):
-        for name in self.state.par_names:
-            self.mirror(self.state.par, self.state.par_idx(name), self.state.get_par(name))
+        for (k,v) in iter(sorted(self.state.par.iteritems())):
+            self.mirror(self.state.par, k, v)
         for i in xrange(len(self.state.zn)):
             self.mirror(self.state.zn, i, self.state.zn[i])
         for (k,v) in  iter(sorted(self.state.components.iteritems())):

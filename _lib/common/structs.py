@@ -153,11 +153,6 @@ class DictObj(object):
         # copy object
         obj = copy.copy(self.__dict__)
 
-        # hack for state
-        if(self.type == "state"):
-            obj['par'] = list(reduce(lambda s,t: s + t, zip(obj['par_names'], obj['par']), ()))
-            del(obj['par_names'])
-
         # save object
         name = save_obj(obj, self.type, self.extension, self.app, name)
         object.__setattr__(self, 'name', name)
@@ -226,10 +221,6 @@ class State(DictObj):
         self.extension = "est"
         DictObj.__init__(self, 'state', app, name)
 
-        # process pars & names
-        self.par_names = self.par[::2]
-        self.par = self.par[1::2]
-
         migrations = config.app.migrations
 
         # perform migrations
@@ -248,7 +239,7 @@ class State(DictObj):
 
         # make observed objects
         self.zn  = ObserverList(self.zn)
-        self.par = ObserverList(self.par)
+        self.par = ObserverDict(self.par)
         self.components = ObserverDict(self.components)
 
         # set path phases
@@ -258,16 +249,6 @@ class State(DictObj):
 
     def __repr__(self):
         return "%s('%s', '%s')" % (self.__class__.__name__, self.app, self.name)
-
-    def get_par(self, name):
-        return self.par[self.par_idx(name)]
-
-    def par_idx(self, name):
-        return self.par_names.index(name)
-
-    def set_par(self, name, val):
-        self.par[self.par_idx(name)] = val
-
     
 
 # TODO: increment through all states, migrate & save

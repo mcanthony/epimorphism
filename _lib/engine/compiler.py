@@ -56,11 +56,10 @@ class Compiler():
             if(v and v != ""):
                 definitions += "#define $%s$ %s\n" % (k, v)
 
-        # bind PAR_NAMES
-        par_name_str = ""
+        # bind PAR_NAMES        
+        keys = self.state.par.keys()
+        keys.sort()
+        for i, k in enumerate(keys):
+            definitions += "#define %s par[%d]\n" % (k, i)
 
-        for i in xrange(len(self.state.par_names)):
-            if(self.state.par_names[i] != ""):
-                par_name_str += "#define %s par[%d]\n" % (self.state.par_names[i], i)
-
-        return definitions + par_name_str
+        return definitions
