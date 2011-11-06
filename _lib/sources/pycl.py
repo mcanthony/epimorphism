@@ -470,7 +470,7 @@ class cl_context_info(cl_uenum):
     GLX_DISPLAY_KHR =                      0x200A
     WGL_HDC_KHR =                          0x200B
     CGL_SHAREGROUP_KHR =                   0x200C
-
+    CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE = 0x10000000
 
 class cl_command_queue_info(cl_uenum):
     """
@@ -831,7 +831,10 @@ if not _dll_filename:
         pass
 if _dll_filename:
     try:
-        _dll = ctypes.cdll.LoadLibrary(_dll_filename)
+        if sys.platform == "win32":
+            _dll = ctypes.windll.LoadLibrary(_dll_filename)
+        else:
+            _dll = ctypes.cdll.LoadLibrary(_dll_filename)
     except:        
         raise RuntimeError('Could not load OpenCL dll: %s' % _dll_filename)
 else:
@@ -2984,21 +2987,13 @@ def get_gl_sharing_context_properties():
         props[GL_CONTEXT_KHR] = gl_platform.GetCurrentContext()
         props[WGL_HDC_KHR] = WGL.wglGetCurrentDC()
     elif sys.platform == "darwin":
-        props.append(
-            (ctx_props.CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE, cl.get_apple_cgl_share_group()))
+        context = gl_platform.GetCurrentContext()        
+        props[CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE] = gl_platform.CGL.CGLGetShareGroup(context)
     else:
         raise NotImplementedError("platform '%s' not yet supported" 
                 % sys.platform)
 
     return props
-
-
-#def gl_interop_ctx_props():
-#    if(os.name == "posix"):
-#        gl = ctypes.cdll.LoadLibrary("libGL.so.1")
-#        current_display = gl.glXGetCurrentDisplay()
-#        current_context = gl.glXGetCurrentContext()
-#        return {GL_CONTEXT_KHR: current_context, GLX_DISPLAY_KHR: current_display}
 
 
 @_wrapdll(cl_context, cl_mem_flags, cl_uint, P(cl_errnum),

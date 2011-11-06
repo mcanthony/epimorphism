@@ -43,7 +43,10 @@ DONE:
 RELEASE QUEUE:
 
   TouchOSC template & osc work
-  figure out osc delayx
+  figure out osc delay
+  osc speed
+  overlaping issues with component names
+  send messages to device as a bundle
 
   bundle pygame, PIL
   update pyopengl lib
@@ -72,7 +75,6 @@ RELEASE QUEUE:
   optimize kernel
 
   contents & launch state/app
-  SEED_W_BASE, etc
 
 
   make par save & load as a dictionary

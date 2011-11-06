@@ -67,7 +67,6 @@ class DefaultOSCHandler(OSCHandler):
 
     def cmd(self, addr, tags, data, source):
         cmd=addr[5:]
-        print cmd
         self.cmdcenter.cmd("%s()" % cmd)        
 
 

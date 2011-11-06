@@ -227,7 +227,7 @@ class CmdCenter(Animator, Archiver):
         if(self.app.record_events):
             self.recorded_events.push(self.time() - self.app.record_events, code)
 
-        #debug("Executing cmd: %s", code)
+        debug("Executing cmd: %s", code)
 
         # hijack stdout, if requested
         out = StringIO.StringIO()
@@ -534,3 +534,8 @@ class CmdCenter(Animator, Archiver):
         default = State(self.app.app)
         for i in xrange(len(default.par)):
             self.cmdcenter.linear_1d('state.par', i, 0.4, self.state.par[i], default.par[i])
+
+    
+    def quit(self):
+        self.app.exit = True
+        sys.exit(0)
