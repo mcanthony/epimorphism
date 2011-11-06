@@ -22,7 +22,7 @@ assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
 
 # create app
 if(len(app_names) == 0):
-    app = Test()
+    app = Epimorphism()
 elif(len(app_names) == 1):
     app = eval(app_names[0].capitalize() + "()")
 elif(len(app_names) == 2):
