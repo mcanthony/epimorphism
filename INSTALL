@@ -1,0 +1,15 @@
+WINDOWS:
+
+copy _lib\source\win\freeglut.dll to C:\WINDOWS\System32
+install the appropriate PIL package from _lib\source\win\
+
+
+
+LINUX:
+
+Dependencies - python2.7, distutils, PIL, freeglut
+python setup.py install
+
+
+
+OSX:
