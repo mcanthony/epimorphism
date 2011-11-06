@@ -87,7 +87,7 @@ class DefaultOSCHandler(OSCHandler):
     def mirror(self, obj, key, val):
         if(obj == self.state.par):
             self._send("/val_par_%s" % self.state.par_names[key][1:], [str(val)])
-            self._send("/txt_par_%s" % self.state.par_names[key][1:], [str(val)])
+            self._send("/txt_par_%s" % self.state.par_names[key][1:], ["%0.2f" % val])
         elif(obj == self.state.zn):
             self._send("/val_zn%d" % key, [val.imag, val.real])
             self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)])

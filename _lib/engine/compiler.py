@@ -26,10 +26,11 @@ class Compiler():
 #        t0 = self.cmdcenter.get_time()
 
         # render ecu files
-        [self.render_file(file) for file in os.listdir("kernels") if re.search("^[^\.]*?\.ecl$", file)]
+        [self.render_file(source[2:]) for source in self.app.sources if source[:2] == "__"]
 
         # load program from binaries
-        contents = open("kernels/__" + self.app.kernel + ".cl").read()
+
+        contents = [open("kernels/%s.cl" % source).read() for source in self.app.sources]
 
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
@@ -51,12 +52,9 @@ class Compiler():
         ''' Substitues escape sequences in a .ecu file with dynamic content '''
 
         # open file & read contents
-        file = open("kernels/" + name)
+        file = open("kernels/%s.ecl" % name)
         contents = file.read()
         file.close()
-
-#        if(not re.search(self.app.kernel, contents.split("\n")[0])):
-#            return
 
         info("Rendering: %s", name)        
 
@@ -84,6 +82,6 @@ class Compiler():
             contents = re.compile("\%" + key + "\%").sub(str(self.substitutions[key]), contents)
 
         # write file contents                             
-        file = open("kernels/__%s" % (name.replace(".ecl", ".cl")), 'w')
+        file = open("kernels/__%s.cl" % name, 'w')
         file.write(contents)
         file.close()

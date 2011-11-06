@@ -1,4 +1,4 @@
-// EPIMORPH library file
+// EPIMORPHISM library file
 // seed functions
 
 _EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time){
