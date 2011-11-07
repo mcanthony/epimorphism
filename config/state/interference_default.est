@@ -1,5 +1,5 @@
 {
- 'app': 'interference',
+ 'app_name': 'interference',
  'name': 'default',
  'VERSION': 1.0,
  'time': 0.0,

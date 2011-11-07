@@ -12,7 +12,7 @@ class Program(threading.Thread):
     def __init__(self, data):
 
         self.data = data
-        info("Starting program: %s", str(self))
+        info("Starting program: %s", self.__class__.__name__)
 
         self.exit = False
         self.freeze_event = threading.Event()

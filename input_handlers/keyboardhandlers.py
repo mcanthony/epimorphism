@@ -194,6 +194,10 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                     self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
                     self.app.midi_speed = 0.5
 
+            # record events
+            elif(key == GLUT_KEY_F8):
+                self.cmdcenter.toggle_record()
+
             # default
             else:
                 DefaultKeyboard.key_pressed(self, key, modifiers)

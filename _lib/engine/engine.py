@@ -58,6 +58,8 @@ class Engine(object):
 
         if(self.app.feedback_buffer):
             self.fb = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
+            self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+            self.reset_fb()
 
         #auxilary buffer
         self.aux = clCreateImage2D(self.ctx, 1, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
@@ -69,10 +71,8 @@ class Engine(object):
             
         self.arg_buffers = {}
 
-        # create compiler & misc data
+        # create compiler
         self.compiler = Compiler(self.ctx, self.compiler_callback)
-        self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
-
 
         # load aux image
         if(self.state.aux):

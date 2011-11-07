@@ -141,10 +141,6 @@ class CmdCenter(Animator, Archiver):
         self.t_start = time.time()
         self.state.frame_cnt = 0
 
-        # start scripts
-        for script in self.state.scripts:
-            script.start()
-
         # seed random
         random.seed(self.state.time + self.state.t_phase)
 
@@ -196,6 +192,10 @@ class CmdCenter(Animator, Archiver):
             self.programs_initialized = True        
             for program in self.state.programs:
                 program.start()
+
+            for script in self.state.scripts:
+                script.data["phase"] = self.time()
+                script.start()
 
 
     def send_frame(self):
@@ -409,10 +409,9 @@ class CmdCenter(Animator, Archiver):
         if(not self.app.record_events):
             info("Recording script")
             self.app.record_events = self.time()
-            
             self.recorded_events = Script()
-            self.state.scripts.append(self.recorded_events)
-            self.state.save(self.state.name + "_record")
+
+            self.record_state = State(self.state.app_name, self.state.save(self.state.name + "_record"))
 
             self.interface.renderer.flash_message("Recording script")
         else:            
@@ -420,10 +419,11 @@ class CmdCenter(Animator, Archiver):
             self.app.record_events = False
 
             self.recorded_events.save()   
-
-            self.state.update_record("scripts", self.state.scripts)
+            self.record_state.scripts.append(self.recorded_events)
+            self.record_state.save(self.record_state.name)
+            
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
-            info("Saved state as %s" % (self.state.name))
+            info("Saved state as %s" % (self.record_state.name))
             self.recorded_events = None
 
 

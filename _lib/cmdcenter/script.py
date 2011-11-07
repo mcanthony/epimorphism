@@ -1,3 +1,5 @@
+import config
+
 from common.globals import *
 from program import Program
 from common.structs import * 
@@ -8,18 +10,20 @@ set_log("SCRIPT")
 
 import time
 
-class Script(Program):
+class Script(DictObj, Program):
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
-    def __init__(self, name = "default"):
+    def __init__(self, app=None, name = "default"):
         info("Creating script")
-        self.data = load_obj("script", name, "scr")
+        self.extension = "scr"
+        Program.__init__(self, None)
+        DictObj.__init__(self, "script", app, name)
+        self.repr_blacklist += ["exit", "sleep_event", "freeze_event", "next_event_t"]
 
-        Program.__init__(self, self.data)
 
-
-    def __repr__(self):
-        return "Script('%s')" % self.data["name"]
+    #def __repr__(self):
+    #    return DictObj.__repr__(self)
+    #    return "Script('%s')" % self.data["name"]
 
 
     def _execute(self):
@@ -35,11 +39,6 @@ class Script(Program):
             return
 
         self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
-
-
-    def save(self, name = None):
-        self.data["name"] = save_obj(self.data, "script", "scr", self.app.app, name)
-        return self.data["name"]
 
 
     def add_event(self, time, cmd):

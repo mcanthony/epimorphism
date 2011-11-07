@@ -1,5 +1,5 @@
 {
- 'app': 'test',
+ 'app_name': 'test',
  'name': 'default',
  'VERSION': 1.0,
  'time': 0.0,

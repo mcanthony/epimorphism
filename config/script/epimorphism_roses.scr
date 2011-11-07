@@ -1,5 +1,6 @@
 {
  'name':'roses',
+ 'data':{
  'phase':0,
  'events':[{'cmd':"animate_var('rose', 'state.zn', 8, .20, {'a':0.4, 'b':6, 'c':1.3})", 'time':0.0},
  {'cmd':"animate_var('rose', 'state.zn', 9, .15, {'a':1.0, 'b':5, 'c':-0.7})", 'time':0.0},
@@ -13,5 +14,5 @@
  {'cmd':"animate_var('wave_1d', 'state.par', '_COLOR_BASE_PSI', .35, {'a':0.5, 'b':0.5, 'th':0.0})", 'time':0.0},
  {'cmd':"animate_var('wave_1d', 'state.sphere_rot', 0, .20, {'a':2.0, 'b':0.0, 'th':0.0})", 'time':0.0},
  {'cmd':"animate_var('wave_1d', 'state.sphere_rot', 1, .30, {'a':3.0, 'b':0.0, 'th':0.0})", 'time':0.0}
- ],
+ ]}
 }

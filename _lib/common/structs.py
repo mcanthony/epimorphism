@@ -18,7 +18,7 @@ def set_root(new_root):
     root = new_root
 
 
-def save_obj(obj, type, extension, app=None, name=None):
+def save_obj(obj, type, extension, app_name, name=None):
     ''' This method serializes any object into the appropriate directory.  
         If no name is provided, the next available one will be generated '''
 
@@ -26,18 +26,26 @@ def save_obj(obj, type, extension, app=None, name=None):
 
     # set name if necessary
     if(not name):
-        type = app or type
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
-        idx = max([-1] + [int(file[(len(type) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(type + '_(\d+)').match(file)]) + 1
-        name = "%s_%d" % (type, idx)
+        idx = max([-1] + [int(file[(len(app_name) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(app_name + '_(\d+)').match(file)]) + 1
+        name = idx
        
     try:
-        obj["name"] = (app and idx or name)
+        obj["name"] = name
     except:
         debug("couldn't set object name for saving")
 
+    # remove blacklisted data
+    if 'repr_blacklist' in obj:        
+        for data in obj["repr_blacklist"]:
+            del obj[data]
+        del obj["repr_blacklist"]
+        for data in [data for data in obj if data[:1] == "_"]:
+            del obj[data]
+            
+
     # open file & dump repr(obj)
-    loc = path + "%s.%s" % (name, extension)
+    loc = path + "%s_%s.%s" % (app_name, name, extension)
     file = open(loc, "w")
     file.write(repr(obj).replace(",", ",\n"))
     file.close()
@@ -126,8 +134,10 @@ class DictObj(object):
     ''' A Dictionary Object is simply an object used solely as a
         dictionary for ease of use '''
 
-    def __init__(self, type, app, name):
-        self.type, self.app, self.name = type, app, name
+    def __init__(self, type, app_name, name):
+        self.type, self.app_name, self.name = type, app_name, name
+
+        self.app_name = self.app_name or config.app.app_name
 
         if(not self.__dict__.has_key("extension")):
             self.extension = "obj" 
@@ -137,14 +147,20 @@ class DictObj(object):
             
         # load default objects & then update with actual object
         data = load_obj(self.type, "default", self.extension)
-        data.update(load_obj(self.type, self.app + "_default", self.extension))
+
+        try:
+            data.update(load_obj(self.type, self.app_name + "_default", self.extension))
+        except:
+            warning("failed to update object with %s", self.app_name + "_default." + self.extension) 
         
         if(self.name != None and self.name != "default"):
-            data.update(load_obj(self.type, self.app + '_' + str(self.name), self.extension))
+            data.update(load_obj(self.type, self.app_name + '_' + str(self.name), self.extension))
 
         self.__dict__.update(data)
 
         self.observers = []
+
+        self.repr_blacklist = ["observers", "path", "extension", "type"]
 
 
     def add_observer(self, observer):
@@ -173,7 +189,7 @@ class DictObj(object):
         obj = copy.copy(self.__dict__)
 
         # save object
-        name = save_obj(obj, self.type, self.extension, self.app, name)
+        name = save_obj(obj, self.type, self.extension, self.app_name, name)
         object.__setattr__(self, 'name', name)
 
         return name
@@ -193,15 +209,22 @@ class DictObj(object):
         self.__dict__.update(dict_obj.__dict__)
 
 
+    def __repr__(self):
+        return "%s('%s', '%s')" % (self.__class__.__name__, self.app_name, self.name)
+
+
 class App(DictObj):
     ''' Configuration settings for an application. '''
 
-    def __init__(self, app, name="default"):
-        info("loading app: %s %s" % (app, name))
+    def __init__(self, app_name, name="default"):
+        info("loading app: %s %s" % (app_name, name))
         self.extension = "app"        
         config.app = self
         self.migrations = {}
-        DictObj.__init__(self, 'app', app, name)
+
+        DictObj.__init__(self, 'app', app_name, name)
+
+        self.repr_blacklist.append("migrations")
 
 
     def get_state_name(self):
@@ -209,7 +232,7 @@ class App(DictObj):
 
 
     def set_state(self, name):
-        self.state = State(self.app, name)
+        self.state = State(self.app_name, name)
 
 
     def get_substitutions(self):
@@ -224,14 +247,13 @@ class State(DictObj):
 
     VERSION = 1.0
 
-    def __init__(self, app, name="default"):
-        info("loading state: %s %s" % (app, name))
-        self.app, self.name = app, name
+    def __init__(self, app_name, name="default"):
+        info("loading state: %s %s" % (app_name, name))
         self.extension = "est"
         if(not hasattr(config.app, 'state')):
             config.app.state = self
 
-        DictObj.__init__(self, 'state', app, name)
+        DictObj.__init__(self, 'state', app_name, name)
 
         migrations = config.app.migrations
 
@@ -253,10 +275,6 @@ class State(DictObj):
 
             # update VERSION
             self.VERSION = getattr(self.__class__, "VERSION")
-
-
-    def __repr__(self):
-        return "%s('%s', '%s')" % (self.__class__.__name__, self.app, self.name)
     
 
 # TODO: increment through all states, migrate & save
