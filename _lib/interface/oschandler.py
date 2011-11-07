@@ -31,7 +31,7 @@ class OSCHandler(threading.Thread):
             if(func [0:4] == 'hnd_'):
                 self.server.addMsgHandler('/' + func[4:], getattr(self, func))
 
-        for (regex, func) in iter(sorted(self.regex_callbacks.iteritems())):
+        for regex, func in self.regex_callbacks.items():
             self.server.addMsgHandler(re.compile(regex), func)
 
         self.msg_bundle = None

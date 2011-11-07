@@ -3,15 +3,16 @@ from common.globals import *
 from common.runner import *
 
 from video import *
-from program import *
 from animator import *
 from archiver import *
 from componentmanager import *
 from script import *
-from eventmanager import *
 from common.default import *
 from common.complex import *
 from common.structs import *
+
+from cmd.events import *
+from cmd.programs import *
 
 import StringIO, sys, traceback, random
 from PIL import Image
@@ -90,7 +91,7 @@ class CmdCenter(Animator, Archiver):
         func_blacklist = ['do', '__del__', '__init__', 'kernel', 'print_timings', 'record_event', 'start', 'switch_kernel',
                           'keyboard', 'console_keyboard', 'register_callbacks', 'render_console', 'capture', 'render_fps',
                           'video_time', 'set_inner_loop', 'time', 'cmd', 'execute_paths', 'echo', 'reshape',
-                          'set_component_indices'] + dir(object)
+                          'init_component_indices'] + dir(object)
 
         # extract non-blacklist functions & data from an object
         def get_funcs(obj):
@@ -151,7 +152,7 @@ class CmdCenter(Animator, Archiver):
             script.start()
 
         # seed random
-        random.seed()
+        random.seed(self.state.time + self.state.t_phase)
 
         # start programs
         for program in self.state.programs:
@@ -431,18 +432,16 @@ class CmdCenter(Animator, Archiver):
         ''' Toggles event recording '''
         
         if(not self.app.record_events):
+            info("Recording script")
             self.app.record_events = self.time()
             self.recorded_events = Script()
-            self.state.scripts.append(self.recorded_events)
-
-            self.save()
             self.interface.renderer.flash_message("Recording script")
-            info("Recording script")
         else:            
+            info("Saving recorded script")
             self.app.record_events = False
 
             self.recorded_events.save()   
-            print "aaa", repr(self.state.scripts)
+
             self.state.update_record("scripts", self.state.scripts)
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
             info("Saved state as %s" % (self.state.name))

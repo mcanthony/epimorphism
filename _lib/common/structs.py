@@ -278,8 +278,8 @@ def migrate_all_states():
     pass
 
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
-from cmdcenter.script import* 
-from cmdcenter.program import* 
+from cmdcenter.script import * 
+from cmd.programs import * 
 
 from common.log import *
 set_log("DictObj", logging.DEBUG)

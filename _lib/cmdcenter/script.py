@@ -3,7 +3,7 @@ from common.structs import *
 from common.runner import *
 
 from common.log import *
-set_log("SCRIPT", logging.WARNING)
+set_log("SCRIPT")
 
 import time
 

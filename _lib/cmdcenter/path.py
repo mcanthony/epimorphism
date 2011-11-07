@@ -1,6 +1,6 @@
 from common.globals import *
 
-from datapath import *
+from cmd.paths import *
 
 from common.log import *
 set_log("Path")

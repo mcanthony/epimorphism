@@ -52,7 +52,7 @@ class Compiler():
         # get substitutions from application
         self.substitutions.update(self.app.get_substitutions())
 
-        for (k,v) in  iter(sorted(self.substitutions.iteritems())):
+        for k, v in self.substitutions.items():
             if(v and v != ""):
                 definitions += "#define $%s$ %s\n" % (k, v)
 

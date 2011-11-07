@@ -106,11 +106,11 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def mirror_all(self):
-        for (k,v) in iter(sorted(self.state.par.iteritems())):
+        for k,v in self.state.par.items():
             self.mirror(self.state.par, k, v, True)
         for i in xrange(len(self.state.zn)):
             self.mirror(self.state.zn, i, self.state.zn[i], True)
-        for (k,v) in  iter(sorted(self.state.components.iteritems())):
+        for k,v in self.state.components.items():
             self.mirror(self.state.components, k, v, True)
         self._send("/val_speed", [(self.state.t_speed - 0.00001) / 0.05], True)
         self._send("/txt_speed", [str((self.state.t_speed - 0.00001) / 0.05)])
