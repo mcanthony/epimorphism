@@ -24,6 +24,7 @@ class Script(Program):
 
     def _execute(self):
         ''' Internal execution loop '''
+
         if(len(self.data["events"]) == 0):
             self.exit = True
             return
@@ -33,7 +34,7 @@ class Script(Program):
         if(self.next_event_t > 0):
             return
 
-        self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"])
+        self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
 
 
     def save(self, name = None):

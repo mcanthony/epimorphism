@@ -41,6 +41,7 @@ DONE:
     fix automating components
     make kernel splices all use procompiler & #define?
     state.par now a dictionary
+  added cmds dir
 
 RELEASE QUEUE:
 
@@ -48,8 +49,9 @@ RELEASE QUEUE:
   make osc use paths
 
   clean cmdcenter
-  work on scripts
-  fix eventmanager
+  work on scripts - single or multiple?
+  script, path & color phases?
+  option to randomize seed
 
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished

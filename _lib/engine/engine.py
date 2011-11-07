@@ -60,10 +60,7 @@ class Engine(object):
             self.fb = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
         #auxilary buffer
-        if(self.state.aux):
-            self.load_aux(self.state.aux)
-        else:
-            self.aux = clCreateImage2D(self.ctx, 1, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
+        self.aux = clCreateImage2D(self.ctx, 1, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -74,6 +71,11 @@ class Engine(object):
         # create compiler & misc data
         self.compiler = Compiler(self.ctx, self.compiler_callback)
         self.empty = cast(create_string_buffer(16 * self.app.kernel_dim ** 2), POINTER(c_float))
+
+
+        # load aux image
+        if(self.state.aux):
+            self.cmdcenter.load_image(self.state.aux)
 
         self.cl_initialized = True
 
@@ -205,10 +207,9 @@ class Engine(object):
         self.upload_image(self.fb, self.empty)
 
 
-    def load_aux(self, name):
+    def load_aux(self, img):
         ''' Loads an image into the auxilary buffer '''
-        from PIL import Image
-        img = Image.open(name).convert("RGBA")
+
         self.aux = clCreateImage2D(self.ctx, img.size[0], img.size[1], cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
 
         self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1))

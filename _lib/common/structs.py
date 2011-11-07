@@ -203,14 +203,18 @@ class App(DictObj):
         self.migrations = {}
         DictObj.__init__(self, 'app', app, name)
 
+
     def get_state_name(self):
         return self.state.name
+
 
     def set_state(self, name):
         self.state = State(self.app, name)
 
+
     def get_substitutions(self):
         return {'POST_PROCESS': self.state.post_process and "#define POST_PROCESS" or ""}
+
     
     state_name = property(get_state_name, set_state)
 
@@ -231,6 +235,11 @@ class State(DictObj):
 
         migrations = config.app.migrations
 
+        # make observed objects
+        self.zn  = ObserverList(self.zn)
+        self.par = ObserverDict(self.par)
+        self.components = ObserverDict(self.components)
+
         # perform migrations
         if(self.VERSION < getattr(self.__class__, "VERSION")):
             
@@ -244,15 +253,6 @@ class State(DictObj):
 
             # update VERSION
             self.VERSION = getattr(self.__class__, "VERSION")
-
-        # make observed objects
-        self.zn  = ObserverList(self.zn)
-        self.par = ObserverDict(self.par)
-        self.components = ObserverDict(self.components)
-
-        # set path phases
-        for path in self.paths:
-            path.phase = self.time
 
 
     def __repr__(self):

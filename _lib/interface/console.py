@@ -97,7 +97,7 @@ class Console(object):
             self.cursor_pos = 0
             self.cmd_queue.append(self.active_text)
             def send_cmd(text):
-                response = self.cmdcenter.cmd(text, True)
+                response = self.cmdcenter.cmd(text, True, True)
                 self.status_rows.append([text, 0])
                 for line in response[0].split("\n"):
                     if(line != ""):

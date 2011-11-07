@@ -27,7 +27,7 @@ if(config.app and config.app.server):
 
             # execute command
             info("executing: %s" % data.strip())
-            res = cmdcenter.cmd(data.strip(), True)
+            res = cmdcenter.cmd(data.strip(), True, True)
             # send response
             self.transport.write(str(res) + "\r\n")
 

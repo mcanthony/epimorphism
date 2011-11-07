@@ -25,6 +25,7 @@ class Animator(object):
         return self.animate_var("linear_1d", obj, idx, spd, {"s" : x0, "e" : x1}, None)
 
 
+    # TODO: make sense of this exclude bs
     def animate_var(self, type, obj, idx, spd, data, exclude="Exclude"):
         ''' Adds a path to the animator. '''
 
@@ -47,7 +48,6 @@ class Animator(object):
         return path
 
 
-    
     # do execution
     def execute_paths(self):
 

@@ -10,7 +10,7 @@
  'render_mode': '2D',
  'sphere_rot': [0.0,0.0],
  'post_process': None,
- 'aux': None,
+ 'aux': 'jolly-moose-cartoon.gif',
  'components': {},
  'par': {'dummy': 0.0},
  'zn': [0.0+0.0j],

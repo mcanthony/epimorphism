@@ -112,8 +112,8 @@ class CmdCenter(Animator, Archiver):
         self.tempo_events = []
         self.last_tempo_event_time = 0
 
+        # misc
         self.last_frame_time = 0
-
         self.programs_initialized = False
         
         return True
@@ -210,7 +210,7 @@ class CmdCenter(Animator, Archiver):
         self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      
 
 
-    def cmd(self, code, capture=False):
+    def cmd(self, code, record = True, capture=False):
         ''' Execute code in the CmdEnv environment '''
 
         if(self.app.record_events):
@@ -232,7 +232,6 @@ class CmdCenter(Animator, Archiver):
                 err = traceback.format_exc().split("\n")[-2]
         else:
             exec(code) in self.cmd_env
-
 
         # restore stdout
         sys.stdout = sys.__stdout__
@@ -272,20 +271,13 @@ class CmdCenter(Animator, Archiver):
         self.load(self.current_state_idx)
 
 
-    # borken
-    def load_image(self, name, buffer_name):
+    def load_image(self, name):
         ''' Loads and image into the host memory
             and uploads it to a buffer.
               buffer_name can be either fb or aux '''
         info("Load image: %s", name)
 
-        data = Image.open("image/input/" + name).convert("RGBA").tostring("raw", "RGBA", 0, -1)
-
-        if(buffer_name == "fb"):
-            self.engine.set_fb(data, True, False)
-
-        else:
-            self.engine.set_aux(data, True, False)
+        self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
 
 
     def grab_image(self):
@@ -342,12 +334,9 @@ class CmdCenter(Animator, Archiver):
     def load(self, name, immediate=False):
         ''' Loads and blends to the given state. '''
 
-        if(isinstance(name, int)):
-            name = "state_%d" % name
-
         info("Loading state: %s" % name)
 
-        new_state = State(name)
+        new_state = State(self.app.app, str(name))
         if(not new_state):
             return False
         
@@ -498,3 +487,4 @@ class CmdCenter(Animator, Archiver):
     def quit(self):
         self.app.exit = True
         sys.exit(0)
+
