@@ -113,6 +113,8 @@ class CmdCenter(Animator, Archiver):
         self.last_tempo_event_time = 0
 
         self.last_frame_time = 0
+
+        self.programs_initialized = False
         
         return True
 
@@ -153,10 +155,6 @@ class CmdCenter(Animator, Archiver):
 
         # seed random
         random.seed(self.state.time + self.state.t_phase)
-
-        # start programs
-        for program in self.state.programs:
-            program.start()
 
         # start modules - DOESN'T RETURN
         self.engine.start()
@@ -200,6 +198,12 @@ class CmdCenter(Animator, Archiver):
         # cleanup
         if(self.app.exit):
             self.interface.renderer.stop()
+
+        # start programs
+        if not self.programs_initialized:
+            self.programs_initialized = True        
+            for program in self.state.programs:
+                program.start()
 
 
     def send_frame(self):

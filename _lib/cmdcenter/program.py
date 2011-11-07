@@ -39,8 +39,6 @@ class Program(threading.Thread):
         if(not hasattr(self, 'app')):
             Globals.load(self)
         
-        time.sleep(5)
-        print self.app.exit, self.exit
         while(not self.app.exit and not self.exit):  
             self._execute()
             self.freeze_event.wait()

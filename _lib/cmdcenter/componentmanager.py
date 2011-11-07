@@ -99,15 +99,13 @@ class ComponentManager(object):
         for component_name, val in data.items():
             idx_idx = self.datamanager.component_names.index(component_name)
             self.state.internal[idx_idx] = self.cmdcenter.time()
-            
-        self.state.components.update(data)
+
 
         # wait until interpolation is done
         def finish():
-            for component_name, val in data.items():
-                self.state.components[component_name] = val            
             time.sleep(self.app.state_intrp_time)
             self.switching_components = False
+            self.state.components.update(data)
 
         async(finish)
 

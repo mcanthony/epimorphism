@@ -11,12 +11,12 @@ class Script():
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
     def __init__(self, name = "default"):
-        debug("Creating script")
+        info("Creating script")
         self.__dict__ = load_obj("script", name, "scr")
 
 
     def save(self, name = None):
-        self.name = save_obj({'name':name, 'events':self.events, 'phase':self.phase}, "script", "scr", name)
+        self.name = save_obj({'name':name, 'events':self.events, 'phase':self.phase}, "script", "scr", self.app.app, name)
         return self.name
 
 
@@ -43,12 +43,12 @@ class Script():
 
             self.events.pop(0)
 
-        debug("Finished executing script")
+        info("Finished executing script")
 
 
     def start(self):
         ''' Starts the script '''
-        debug("Start script")
+        info("Start script")
         Globals().load(self)
 
         self.exit = False
@@ -57,14 +57,14 @@ class Script():
 
     def stop(self):
         ''' Stops the script '''
-        debug("Stop script")
+        info("Stop script")
 
         self.exit = True
 
 
     def add_event(self, time, cmd):
         ''' Add an event to the collection of events '''
-        debug("Adding event at %f" % time)
+        info("Adding event at %f" % time)
 
         # compute insertion index
         lst = [(i == 0 or time >= self.events[i-1]["time"])
@@ -89,8 +89,3 @@ class Script():
         ''' Push an event to the top of the stack '''
 
         self.events.append({"time":time, "cmd":cmd})
-
-
-
-#    def __repr__(self):
-#        return "Script('%s')" % self.name
