@@ -1,11 +1,8 @@
 from common.globals import *
 
-import itertools
-import time
-import threading
-
+import itertools, time
 from pycl import *
-
+from ctypes import *
 from array import array
 
 from compiler import *
@@ -14,8 +11,6 @@ from common.log import *
 set_log("ENGINE")
 
 block_size = 16
-
-from ctypes import *
 
 class Engine(object):
     ''' The Engine object is the applications interface, via opencl, to the graphics hardware.
@@ -36,11 +31,6 @@ class Engine(object):
         self.last_frame_time = 0
         self.frame_num = 0
 
-        # fb download vars
-        self.new_fb_event = threading.Event()
-        self.do_get_fb = False    
-
-        self.do_flash_fb = False
         self.program = None
         self.cl_initialized = False
 
@@ -51,7 +41,6 @@ class Engine(object):
 
     def __del__(self):
         debug("Deleting Engine")    
-        self.new_fb_event.set()
         self.pbo = None
 
     

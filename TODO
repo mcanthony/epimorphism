@@ -47,20 +47,19 @@ RELEASE QUEUE:
   TouchOSC template & osc work
   make osc use paths
 
-  bundle PIL
-  update pyopengl lib
-  freeglut  
-
-  windows build
-  mac build
-
   clean cmdcenter
   work on scripts
   fix eventmanager
 
-  png screenshots  
-    
+  implement pfn_notify in compiler
+  do second stage compilation in componentmanager after first finished
 
+
+  update pyopengl lib
+
+  windows build
+  mac build
+    
 
   OpenCL ATI Stream??
 
@@ -77,10 +76,13 @@ RELEASE QUEUE:
 
 
 LATER:
+  reorganize module(cmdcenter, engine, interface) initialization
+
   fix MIDI
 
   synchronize available pars to comonents
-  think more about dict objs
+  clean globals
+  think more about dict objs & structs file
   remove certain vars from dict_objs? - extension, path, type
 
   OpenCL CPUs - replace images with buffers
@@ -91,17 +93,11 @@ LATER:
   figure out why app takes forever to exit - GLUT
   Try texture instead of PBO??? 
 
-  implement pfn_notify in compiler
-  do second stage compilation in componentmanager after first finished
-
   investing gamma correction artifacts?
 
   Video:
     optimize mencoder command
     make another video
-	
-  move globals to config
-  cleaning/documention pass
 
   Archiving
 

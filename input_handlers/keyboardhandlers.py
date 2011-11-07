@@ -11,10 +11,6 @@ class DefaultKeyboard(KeyboardHandler):
         if(key == "\033"):
             self.cmdcenter.app.exit = True
 
-        # dummy interface to reload kernel
-        elif(key == "?"):
-            self.engine.compile()
-
         # toggle console
         #elif(key == "`"):
         #    self.cmdcenter.cmd("toggle_console()")
@@ -49,10 +45,23 @@ class DefaultKeyboard(KeyboardHandler):
 
         # randomize archive
         elif(key == '+'):
-            self.cmdcenter.cmd("inc_archive(0)")        
+            self.cmdcenter.cmd("inc_archive(0)")   
+     
         # reset fb
         elif(key == "\\"):
             self.cmdcenter.cmd("reset_fb()")
+
+        # reset zn
+        elif(key == GLUT_KEY_HOME):
+            self.cmdcenter.cmd("reset_zn")
+            
+        # reset par
+        elif(key == GLUT_KEY_END):
+            self.cmdcenter.cmd("reset_par")
+
+        # tap tempo
+        elif(key == GLUT_KEY_F1):
+            self.cmdcenter.cmd("tap_tempo()")
 
 
 class DefaultInterferenceKeyboard(DefaultKeyboard):
@@ -176,18 +185,6 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
             elif(key == GLUT_KEY_PAGE_UP):
                 self.cmdcenter.update_current_state_idx()
 
-            # reset zn
-            elif(key == GLUT_KEY_HOME):
-                self.cmdcenter.cmd("reset_zn")
-
-            # reset par
-            elif(key == GLUT_KEY_END):
-                self.cmdcenter.cmd("reset_par")
-
-            # tap tempo
-            elif(key == GLUT_KEY_F1):
-                self.cmdcenter.cmd("tap_tempo()")
-
             # switch midi speed
             elif(key == GLUT_KEY_F7):
                 if(self.app.midi_speed >= 0.5):
@@ -196,10 +193,6 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 else:
                     self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
                     self.app.midi_speed = 0.5
-
-            # automate components
-            elif(key == GLUT_KEY_F8):        
-                self.cmdcenter.toggle_component_automation(not self.app.automating_components)
 
             # default
             else:

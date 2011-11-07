@@ -1,5 +1,7 @@
 from common.globals import *
 
+from common.runner import *
+
 from video import *
 from program import *
 from animator import *
@@ -11,17 +13,11 @@ from common.default import *
 from common.complex import *
 from common.structs import *
 
-import StringIO
-import sys
-import traceback
-import random
-
-import Image
+import StringIO, sys, traceback, random
+from PIL import Image
 
 from common.log import *
 set_log("CMDCENTER")
-
-from common.runner import *
 
 class CmdEnv(dict):
     ''' The CmdEnv object is a subclass of dict used as the execution
@@ -50,12 +46,12 @@ class CmdEnv(dict):
 
 class CmdCenter(Animator, Archiver):
     ''' The CmdCenter is the central control center for the engine and
-        renderer.  All systems generating signals live here, and the object
+        renderer.  All systems generating signals route through here, and the object
         provides an interface for executing code int the appropriate environment. '''
     
 
     def init(self):
-        debug("Initializing CmdCenter")
+        info("Initializing CmdCenter")
         Globals().load(self)
 
         # init animator
@@ -83,11 +79,8 @@ class CmdCenter(Animator, Archiver):
         # create video_renderer
         self.video_renderer = VideoRenderer()
 
-#        if(self.app.video_script):
-#            self.app.render_video = True
-#            self.initial_script = Script(self.app.video_script)
 #            self.app.max_video_frames = int(self.initial_script.last_event_time() * 1000 / self.app.video_frame_rate)
-#            debug("Setting max_video_frames to %d" % self.app.max_video_frames)
+#            info("Setting max_video_frames to %d" % self.app.max_video_frames)
 
         if(self.app.render_video):
             self.video_renderer.start_video()
@@ -125,7 +118,12 @@ class CmdCenter(Animator, Archiver):
 
     def __del__(self):
         ''' Exit handler '''
-        debug("Deleting Cmdcenter")
+        info("Deleting Cmdcenter")
+
+        # stop programs
+        for program in self.state.programs:
+            program.stop()
+            program.join()
 
         # stop video
         if(self.app.render_video):
@@ -142,7 +140,7 @@ class CmdCenter(Animator, Archiver):
 
     def start(self):
         ''' Start main loop '''
-        debug("Start main loop")
+        info("Start main loop")
 
         self.state.t_phase += self.state.time
         self.state.time = 0
@@ -153,12 +151,12 @@ class CmdCenter(Animator, Archiver):
         for script in self.state.scripts:
             script.start()
 
-        # start programs
-        #for program in self.state.programs:
-        #    program.start()
-
         # seed random
         random.seed()
+
+        # start programs
+        for program in self.state.programs:
+            program.start()
 
         # start modules - DOESN'T RETURN
         self.engine.start()
@@ -181,16 +179,10 @@ class CmdCenter(Animator, Archiver):
 
             self.last_frame_time = self.abs_time()
 
-            #print str(self.state.time), str(self.t_phase)
 
             # execute animation paths
             self.execute_paths()
             
-            # SYNC HACK - execute programs
-            for program in self.state.programs:
-                program._execute()
-            
-
             # render frame
             self.send_frame()
             self.engine.do()
@@ -206,7 +198,6 @@ class CmdCenter(Animator, Archiver):
             self.video_renderer.capture()
 
         # cleanup
-        self.engine.new_fb_event.set()
         if(self.app.exit):
             self.interface.renderer.stop()
 
@@ -229,7 +220,7 @@ class CmdCenter(Animator, Archiver):
         if(self.app.record_events):
             self.recorded_events.push(self.time() - self.app.record_events, code)
 
-        debug("Executing cmd: %s", code)
+#        debug("Executing cmd: %s", code)
 
         # hijack stdout, if requested
         out = StringIO.StringIO()
@@ -294,7 +285,7 @@ class CmdCenter(Animator, Archiver):
         ''' Loads and image into the host memory
             and uploads it to a buffer.
               buffer_name can be either fb or aux '''
-        debug("Load image: %s", name)
+        info("Load image: %s", name)
 
         data = Image.open("image/input/" + name).convert("RGBA").tostring("raw", "RGBA", 0, -1)
 
@@ -307,7 +298,7 @@ class CmdCenter(Animator, Archiver):
 
     def grab_image(self):
         ''' Gets the framebuffer and binds it to an Image. '''
-        debug("Grab image")
+        info("Grab image")
 
         try:
             self.app.next_frame = True
@@ -317,7 +308,7 @@ class CmdCenter(Animator, Archiver):
             info(str(err))
             sys.exit(0)
 
-        debug("Done grab image")
+        info("Done grab image")
 
         # img.show()
         return img
@@ -344,40 +335,13 @@ class CmdCenter(Animator, Archiver):
         self.componentmanager.print_components()
 
 
-    def toggle_component_automation(self, switch):
-        if(switch):
-            program = RandomComponents2({'interval': 15})
-            program.start()
-            self.state.programs.append(program)
-            self.cmdcenter.interface.renderer.flash_message("Starting component automation")
-            debug("Starting component automation")
-
-            self.app.automating_components = True
-        else:
-            for program in self.state.programs:
-                program.stop()
-            self.state.programs = []
-            self.cmdcenter.interface.renderer.flash_message("Stopping component automation")
-            debug("Stopping component automation")
-
-            self.app.automating_components = False
-
-
     def save(self, name=None):
         ''' Grabs a screenshot and saves the current state. '''
 
         name = self.state.save(name)
 
-        img = self.grab_image()
-        t0 = self.abs_time()
-        self.app.freeze = True
-        #img.show()
-        img.save("media/image/%s.jpg" % name)
+        self.grab_image().save("media/image/%s.png" % name)
         self.interface.renderer.flash_message("saved state as %s" % name)
-        self.app.freeze = False
-        t1 = self.abs_time()
-        self.state.t_phase -= (t1 - t0)
-
         return name        
 
 
@@ -412,7 +376,7 @@ class CmdCenter(Animator, Archiver):
             error("Failed to load state")
             return False
 
-        debug("Loading state, updating components: %s" % str(updates))
+        info("Loading state, updating components: %s" % str(updates))
 
         # stop paths, scripts & programs
         self.state.paths = []

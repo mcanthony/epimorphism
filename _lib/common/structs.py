@@ -4,7 +4,7 @@
 #    App - configuration parameters for the application - ex: screen resolution, keyboard configuation, midi configuration
 #    State - configuration used to generate a graphical frames - ex: numerical parameters sent to the hardware
 
-import re, os, copy
+import re, os, copy, traceback
 
 import config
 
@@ -60,7 +60,8 @@ def load_obj(type, name, extension):
         file.close()
     except:
          critical("couldn't open %s.%s" % (name, extension))
-         return None  
+         traceback.print_exc()
+         return None
 
     # creat object
     try:
@@ -68,7 +69,9 @@ def load_obj(type, name, extension):
         return obj
     except:
         critical("couldn't parse %s.%s" % (name, extension))
-        return None  
+        traceback.print_exc()
+        return None
+
 
 
 class ObserverList(list):
@@ -133,13 +136,9 @@ class DictObj(object):
         self.path = root + "/" + self.type + "/"
             
         # load default objects & then update with actual object
-        try:
-            data = load_obj(self.type, "default", self.extension)
-            data.update(load_obj(self.type, self.app + "_default", self.extension))
-        except:
-            critical("Couldn't load defaults: " + name)
-            sys.exit(0)
-
+        data = load_obj(self.type, "default", self.extension)
+        data.update(load_obj(self.type, self.app + "_default", self.extension))
+        
         if(self.name != None and self.name != "default"):
             data.update(load_obj(self.type, self.app + '_' + str(self.name), self.extension))
 
@@ -239,6 +238,9 @@ class State(DictObj):
         info("loading state: %s %s" % (app, name))
         self.app, self.name = app, name
         self.extension = "est"
+        if(not hasattr(config.app, 'state')):
+            config.app.state = self
+
         DictObj.__init__(self, 'state', app, name)
 
         migrations = config.app.migrations
@@ -277,6 +279,7 @@ def migrate_all_states():
 
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
 from cmdcenter.script import* 
+from cmdcenter.program import* 
 
 from common.log import *
 set_log("DictObj", logging.DEBUG)

@@ -1,33 +1,51 @@
 from common.globals import *
 
-import random
-import time
+import random, time, threading
 
 from common.runner import *
 
-class Program(object):
+from common.log import *
+set_log("Program")
+
+class Program(threading.Thread):
 
     def __init__(self, data):
-        self.data = data
-        self.phase = 0
-        self.exit = False
-        self.running = False
 
-        # SYNC HACK
-        self.t = 0
+        self.data = data
+        info("Starting program: %s", str(self))
+
+        self.exit = False
+        self.freeze_event = threading.Event()
+        self.freeze_event.set()
+        self.sleep_event = threading.Event()
+
+        # init thread
+        threading.Thread.__init__(self)
+
+
+    def freeze(do_freeze):
+        if(do_freeze):
+            self.freeze_event.set()
+        else:
+            self.freeze_event.clear()
 
     def stop(self):
         self.exit = True
-        self.running = False
-
-    
-    def start(self):
-        Globals().load(self)
-        self.running = True
-        async(self._execute)
+        self.sleep_event.set()
+        self.state.programs.remove(self)
 
 
-    def _execute(self):
+    def run(self):
+        if(not hasattr(self, 'app')):
+            Globals.load(self)
+        
+        time.sleep(5)
+        while(not self.app.exit and not self.exit):  
+            self.__execute()
+            self.freeze_event.wait()
+
+
+    def __execute(self):
         pass
 
 
@@ -36,62 +54,21 @@ class Program(object):
 
 
 
-# not working
-class RandomComponents1(Program):
-    def _execute(self):
-        #while(not self.exit and not self.app.exit):
-
-        i = random.randint(0,2)
+class RandomComponents(Program):
+    def __execute(self):
+        debug("Executing Random Components")
+        i = random.randint(0, self.data["scope"])            
         if(i == 0):
             async(lambda :self.cmdcenter.cmd("inc_data('T', 0)"))
         elif(i == 1):
             async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 0)"))
         elif(i == 2):
             async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 0)"))
-                        
-        #time.sleep(self.data["interval"] * 0.5 + rand.randint(0, self.data["interval"]))
-
-
-class RandomComponents2(Program):
-    def _execute(self):
-        
-        #while(not self.exit and not self.app.exit):
-
-        # make this better
-        if(self.t == 0):
-            self.t = self.cmdcenter.time() + 2
-            return
-        elif(self.cmdcenter.time() < self.t):
-            return
-        else:
-            self.t = self.data["interval"] * 0.5 + random.randint(0, self.data["interval"]) + self.cmdcenter.time()
-
-
-        #while(self.cmdcenter.time() < t and not self.app.exit):
-        #    time.sleep(0.1)
-
-        #if(self.exit or self.app.exit):
-        #    break
-
-            #time.sleep()
-            
-        i = random.randint(0,4)
-        if(i == 0):
-            #async(lambda :self.cmdcenter.cmd("inc_data('T', 0)"))
-            self.cmdcenter.cmd("inc_data('T', 0)")
-        elif(i == 1):
-            #async(lambda :self.cmdcenter.cmd("inc_data('T_SEED', 0)"))
-            self.cmdcenter.cmd("inc_data('T_SEED', 0)")
-        elif(i == 2):
-            #async(lambda :self.cmdcenter.cmd("inc_data('SEED_W', 0)"))
-            self.cmdcenter.cmd("inc_data('SEED_W', 0)")
         elif(i == 3):
-            #async(lambda :self.cmdcenter.cmd("inc_data('SEED_WT', 0)"))
-            self.cmdcenter.cmd("inc_data('SEED_WT', 0)")
+            async(lambda :self.cmdcenter.cmd("inc_data('SEED_WT', 0)"))
         elif(i == 4):
-            #async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 0)"))
-            self.cmdcenter.cmd("inc_data('SEED_A', 0)")
+            async(lambda :self.cmdcenter.cmd("inc_data('SEED_A', 0)"))
         elif(i == 5):
-            #async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)"))
-            self.cmdcenter.cmd("inc_data('SEED', 0)")
-        
+            async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)"))            
+
+        self.sleep_event.wait(self.data["interval"] * (0.5 + random.random()))

@@ -35,6 +35,9 @@ class Renderer(object):
         # initialize glut
         glutInit(1, [])
 
+        # application will continue after glut exits - make sure app is cleaned up
+        glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
+
         # create window
         debug("Creating window")
 

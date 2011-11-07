@@ -78,6 +78,8 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   //pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
   //pbo[y * $KERNEL_DIM$ + x] = (char4)(0,0,255,255);
 
+
+
   // write out value
   write_imagef(out, p, color);   
   #ifndef $POST_PROCESS$

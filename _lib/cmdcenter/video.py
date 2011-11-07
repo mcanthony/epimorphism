@@ -41,7 +41,7 @@ class VideoRenderer(object):
             padded = "".join(["0" for i in xrange(digit_size - int(math.log10(self.frame_num + 1)) - 1)]) + str(self.frame_num + 1)
 
             # save
-            image.save("video/%s/%s.png" % (self.video_name, padded))
+            image.save("media/video/%s/%s.png" % (self.video_name, padded))
 
             # stop video if necessary
             if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):
@@ -80,12 +80,12 @@ class VideoRenderer(object):
         # get video name if necessary
         if(not video_name):
             i = 0
-            while(os.path.exists("video/%d/" % i)):
+            while(os.path.exists("media/video/%d/" % i)):
                 i += 1
             video_name = str(i)
 
         # make directory
-        os.mkdir("video/%s/" % video_name)
+        os.mkdir("media/video/%s/" % video_name)
 
         # set video name
         self.video_name = video_name

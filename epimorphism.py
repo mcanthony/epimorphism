@@ -56,7 +56,7 @@ def main():
     # initialize modules
     info("Initializing modules")    
     interface, engine, cmdcenter = Interface(), Engine(), CmdCenter()
-    Globals().init(app, app.state, cmdcenter, interface, engine)
+    Globals().init(cmdcenter, interface, engine)
     interface.init() and engine.init() and cmdcenter.init()
 
     # start main loop

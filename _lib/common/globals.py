@@ -1,3 +1,5 @@
+import config
+
 class Globals(object):
     ''' Quite hacky way to have the main config & application objects available in any object without having to pass them around. '''
 
@@ -5,8 +7,8 @@ class Globals(object):
         return self
 
 
-    def init(self, app, state, cmdcenter, interface, engine):
-        self.app, self.state, self.cmdcenter, self.interface, self.engine = app, state, cmdcenter, interface, engine
+    def init(self, cmdcenter, interface, engine):
+        self.app, self.state, self.cmdcenter, self.interface, self.engine = config.app, config.app.state, cmdcenter, interface, engine
 
 
     def load(self, obj, access=["app", "state", "cmdcenter", "interface", "engine"]):

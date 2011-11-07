@@ -7,7 +7,7 @@
  'bpm': 120,
  'scripts': [Script('roses')],
  'paths': [],
- 'programs': [],
+ 'programs': [RandomComponents({'scope':5, 'interval': 10})],
  'components': {
  'SEED': 'seed_wca(fb, z, internal, par, time)',
  'SEED_W': 'lines_inner(z, par)',
@@ -84,7 +84,7 @@
  '_COLOR_BASE_I':
  0.9,
  '_COLOR_I':
- 1.0,
+ 0.9,
  '_COLOR_DHUE':
  0.5,
  '_COLOR_LEN_SC':
