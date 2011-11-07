@@ -81,8 +81,7 @@ class Engine(object):
         self.cl_initialized = True
 
 
-    def compiler_callback(self, program):
-
+    def compiler_callback(self, program, data):
         self.program = program
         self.main_kernel = self.program[self.app.kernel]
 
@@ -105,6 +104,9 @@ class Engine(object):
         if(not self.cl_initialized):
             self.initCL()
             self.compiler.compile()
+
+        if(not self.main_kernel):
+            return
         
         self.timings = [time.time()]
 

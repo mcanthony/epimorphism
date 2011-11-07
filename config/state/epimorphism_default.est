@@ -7,7 +7,7 @@
  'bpm': 120,
  'scripts': [Script('epimorphism', 'roses')],
  'paths': [],
- 'programs': [RandomComponents({'interval': 20, 'scope':5})],
+ 'programs': [],
  'components': {
  'SEED': 'seed_wca(fb, z, internal, par, time)',
  'SEED_W': 'lines_inner(z, par)',

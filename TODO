@@ -48,6 +48,7 @@ DONE:
   clean cmdcenter
   rescale time
 
+
 RELEASE QUEUE:
 
   TouchOSC template & osc work
@@ -60,6 +61,7 @@ RELEASE QUEUE:
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished
 
+  ping osc device - disable if not found
 
   update pyopengl lib
 
@@ -82,6 +84,7 @@ RELEASE QUEUE:
 
 
 LATER:
+
   make programs dict objs?
 
   merge scripts into 1 program

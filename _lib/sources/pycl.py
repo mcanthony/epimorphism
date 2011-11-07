@@ -2454,8 +2454,14 @@ def clCreateProgramWithSource(context, source):
     prg._context = context
     return prg
 
+
+# not sure if this works - GIL issues, maybe?
+CALLBACKFUNC=ctypes.CFUNCTYPE(None, cl_program, void_p)
+def create_build_callback(func):  # should probably test if function is valid
+    return CALLBACKFUNC(func)
+
 @_wrapdll(cl_program, cl_uint, P(cl_device), void_p, void_p, void_p) # changed P(char_p) to void_p.  Not sure why, but when passing arguments, P(char_p) was causing problems
-def clBuildProgram(program, options=None, devices=None):
+def clBuildProgram(program, options=None, devices=None, callback=None, usrdata=None):
     """
     Compiles a source program to run on one or more devices.
     
@@ -2481,7 +2487,7 @@ def clBuildProgram(program, options=None, devices=None):
         dev_array = None
     try:
         clBuildProgram.call(program, 0, None,
-                            options, None, None)
+                            options, callback, usrdata)
     except BuildProgramFailureError:
         # Re-raise with appropriate message
         for dev in devices:            
