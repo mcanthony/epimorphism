@@ -34,7 +34,7 @@ class VideoRenderer(object):
 
         # encapsulated for asynchronous execution
         def grab_image():
-            image = self.cmdcenter.grab_image()
+            image = self.grab_image()
 
             # pad frame_num
             digit_size = 5
@@ -104,7 +104,7 @@ class VideoRenderer(object):
             # example for cropping & adding audio track
             # ffmpeg -i 06\ Miss\ Rose.mp3 -ab 192k -ar 44100 -f image2 -r 30 -i video/3/%05d.png -vcodec libx264 -vpre fast  -bf 0 -crf 20 -threads 7 -croptop 484 -cropbottom 484 -cropleft 64 -cropright 64 -t 00:03:18 3_2c.mp4
 
-            cmd = "ffmpeg -f image2 -i video/%s/%%05d.png  -vcodec libx264 -vpre fast -r 30 -crf 22 -threads 7 %s.mp4" % (self.video_name)*2
+            cmd = "ffmpeg -f image2 -i media/video/%s/%%05d.png  -vcodec libx264 -vpre fast -r 30 -crf 22 -threads 7 %s.mp4" % (self.video_name)*2
 
             info("Compressing with command - " + cmd)
             os.system(cmd)

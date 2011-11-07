@@ -403,12 +403,6 @@ class CmdCenter(Animator, Archiver):
             self.app.state_intrp_time = old_intrp_time
 
 
-    def load_state(self, idx):
-        ''' Loads and blends to the state with the given id. '''
-
-        return self.load("state_%d" % idx)
-
-
     def toggle_record(self):
         ''' Toggles event recording '''
         
