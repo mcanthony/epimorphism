@@ -4,6 +4,7 @@
  'time': 0.0,
  't_phase': 0.0,
  't_speed': 0.01,
+ 'randomize_seed': False,
  'scripts': [],
  'paths': [],
  'programs': [],
