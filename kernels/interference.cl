@@ -82,6 +82,8 @@ __kernel __attribute__((reqd_work_group_size(16,16,1)))
 void interference(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
 	      __constant float *par, __constant float *internal, __constant float2 *zn, float time){
 
+  time /= 100.0f;
+
   float2 t, z_z;
 
   // get coords

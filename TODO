@@ -46,17 +46,16 @@ DONE:
   dict obj data blacklist
   option to randomize seed
   clean cmdcenter
-
+  rescale time
 
 RELEASE QUEUE:
 
   TouchOSC template & osc work
   make osc use paths
+  time 0-3
 
   path & color phases?
   load state
-
-  time from 0 to 3
 
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished

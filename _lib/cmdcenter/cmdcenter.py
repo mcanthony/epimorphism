@@ -142,7 +142,7 @@ class CmdCenter(Animator, Archiver):
         self.state.frame_cnt = 0
 
         # seed random
-        if(self.randomize_seed):
+        if(self.state.randomize_seed):
             random.seed(time.time())
         else:
             random.seed(self.state.time + self.state.t_phase)
@@ -156,7 +156,7 @@ class CmdCenter(Animator, Archiver):
         ''' Main application loop '''
 
         # execute engine
-        if((not (self.app.manual_iter and not selo`f.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
+        if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
             self.app.next_frame = False
 
             # get time

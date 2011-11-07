@@ -5,9 +5,9 @@
  'image': None,
  'frame_cnt': 0,
  'bpm': 120,
- 'scripts': [],
+ 'scripts': [Script('epimorphism', 'roses')],
  'paths': [],
- 'programs': [],
+ 'programs': [RandomComponents({'interval': 20, 'scope':5})],
  'components': {
  'SEED': 'seed_wca(fb, z, internal, par, time)',
  'SEED_W': 'lines_inner(z, par)',

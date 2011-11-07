@@ -27,7 +27,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
     a = atan2(z_z.y, z_z.x) * floor(8.0f * _COLOR_TH_EFF) / (2.0f * PI);
   }
 
-  float th = (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * 10.0f);
+  float th = (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * 0.1f);
   v.x += th;
 
   if(_COLOR_18 < 0.99f){
@@ -68,7 +68,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
 
   // compute rotation 1  
   float4 tmp = (float4)(v.x, v.y, v.z, 0.0f);
-  float th = 2.0f * PI * (a + l + time * _COLOR_SPEED_TH  * 10.0f);
+  float th = 2.0f * PI * (a + l + time * _COLOR_SPEED_TH  * 0.1f);
   th = remf(CX(th, 0.0f), 2.0f * PI).x;
   tmp = rotate3D(tmp, axis, th);
   
