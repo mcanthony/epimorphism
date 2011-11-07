@@ -13,7 +13,7 @@ class Archiver(object):
         self.current_archive_pos = None
         self.current_state_idx = None
 
-        Globals().load(self)
+        #Globals().load(self)
 
 
     def archive_size(self):

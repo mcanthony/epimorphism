@@ -10,10 +10,7 @@ class Animator(object):
         responsible for automation of data. '''
 
 
-    def __init__(self):
-        pass
-
-
+    # helpers
     def radial_2d(self, obj, idx, spd, z0, z1):
         ''' Helper function for creating radial_2d paths. '''
         debug("Radial 2d: %s %s %s %s %s", obj, idx, spd, str(z0), str(z1))
@@ -33,7 +30,7 @@ class Animator(object):
 
         if(not data.has_key("loop")): data["loop"] = False
 
-        active_paths = filter(lambda path: path.obj == obj and path.idx == idx, self.state.paths)
+        active_paths = [path for path in self.state.paths if (path.obj, path.idx) == (obj, idx)]
         if(len(active_paths) == 1):
             active_path = active_paths[0]
 
@@ -43,9 +40,6 @@ class Animator(object):
 
             self.state.paths.remove(active_path)            
 
-#        if(obj):
-#            eval("self."+obj).midi_echo = False
-
         # add path
         path = Path(type, obj, idx, 0.0, self.time(), spd, **data)
         self.state.paths.append(path)
@@ -53,6 +47,8 @@ class Animator(object):
         return path
 
 
+    
+    # do execution
     def execute_paths(self):
 
         # get time

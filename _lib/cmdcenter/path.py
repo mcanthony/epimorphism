@@ -12,13 +12,7 @@ class Path(object):
         self.data_keys = vars.keys()
         self.type, self.obj, self.idx, self.phase, self.start, self.spd = type, obj, idx, phase, start, spd
         self.__dict__.update(vars)
-        self.globals_initialized = False
         
-
-    def initialize_globals(self):
-        Globals().load(self)
-        self.globals_initialized = True
-
 
     def execute(self, t):
         (res, status) = eval(self.type)(self, t)
