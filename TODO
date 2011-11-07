@@ -52,6 +52,12 @@ RELEASE QUEUE:
   work on scripts - single or multiple?
   script, path & color phases?
   option to randomize seed
+  load state
+  record script
+
+
+  time from 0 to 3
+  time effect program
 
   implement pfn_notify in compiler
   do second stage compilation in componentmanager after first finished

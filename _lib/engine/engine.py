@@ -65,6 +65,7 @@ class Engine(object):
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
         self.pbo = clCreateFromGLBuffer(self.ctx, self.pbo_ptr, CL_MEM_WRITE_ONLY)       
+        #self.pbo = clCreateFromGLTexture2D(self.ctx, self.pbo_ptr, CL_MEM_READ_ONLY)       
             
         self.arg_buffers = {}
 

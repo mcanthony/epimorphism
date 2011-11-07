@@ -2971,6 +2971,8 @@ def clEnqueueNDRangeKernel(queue, kernel, gsize=(1,), lsize=None,
 
 class gluint(ctypes.c_uint32): pass
 
+class glenum(ctypes.c_uint): pass
+
 # stolen & modified from PyOpenCL
 def get_gl_sharing_context_properties():
 
@@ -3008,6 +3010,27 @@ def clCreateFromGLBuffer(context, bufobj, flags = cl_mem_flags.CL_MEM_READ_WRITE
     """
     bufobj = cl_uint(bufobj.value) # maybe flakey
     mem = clCreateFromGLBuffer.call(context, flags, bufobj, byref(cl_errnum()))
+    mem._context = context
+    mem._flags = flags
+    mem._type = CL_MEM_OBJECT_BUFFER
+    return mem
+
+
+GL_TEXTURE_2D = 0x0DE1
+@_wrapdll(cl_context, cl_mem_flags, cl_int, cl_uint, cl_uint, P(cl_errnum),
+          res=cl_buffer, err=_lastarg_errcheck)
+def clCreateFromGLTexture2D(context, texture, flags=cl_mem_flags.CL_MEM_READ_WRITE, target=GL_TEXTURE_2D, miplevel=0):
+    """
+    :param context: :class:`cl_context` that will own this memory.
+    :param bufobj: :class:`gluint` that is the name of the OpenGL buffer object.  
+       Must have previouly been created by OpenGL.
+    :param flags: :class:`cl_mem_flags` to control the memory.
+
+    """
+    print texture.value
+    texture = cl_uint(texture.value) # maybe flakey
+    #target = cl_int(target.value)
+    mem = clCreateFromGLTexture2D.call(context, flags, target, miplevel, 0, byref(cl_errnum()))
     mem._context = context
     mem._flags = flags
     mem._type = CL_MEM_OBJECT_BUFFER
