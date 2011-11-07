@@ -25,4 +25,4 @@ class RandomComponents(Program):
         elif(i == 5):
             async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)"))            
 
-        self.sleep_event.wait(self.data["interval"] * (0.5 + random.random()))
+        self.next_event_t = self.data["interval"] * (0.5 + random.random())

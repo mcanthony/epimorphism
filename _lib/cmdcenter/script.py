@@ -1,5 +1,6 @@
 from common.globals import *
-from common.structs import *
+from program import Program
+from common.structs import * 
 from common.runner import *
 
 from common.log import *
@@ -7,59 +8,37 @@ set_log("SCRIPT")
 
 import time
 
-class Script():
+class Script(Program):
     ''' Contains a timestamped sequence of commands which are executed in the Cmd environment '''
 
     def __init__(self, name = "default"):
         info("Creating script")
-        self.__dict__ = load_obj("script", name, "scr")
+        self.data = load_obj("script", name, "scr")
 
-
-    def save(self, name = None):
-        self.name = save_obj({'name':name, 'events':self.events, 'phase':self.phase}, "script", "scr", self.app.app, name)
-        return self.name
+        Program.__init__(self, self.data)
 
 
     def __repr__(self):
-        return "Script('%s')" % self.name
+        return "Script('%s')" % self.data["name"]
 
 
     def _execute(self):
         ''' Internal execution loop '''
+        if(len(self.data["events"]) == 0):
+            self.exit = True
+            return
 
-        if(not self.__dict__.has_key('cmdcenter')):
-            Globals().load(self)
+        self.next_event_t = self.data["events"][0]["time"] + self.data["phase"] - self.cmdcenter.time()
 
-        while(len(self.events) > 0 and not self.app.exit and not self.exit):
-            next_event = self.events[0]
+        if(self.next_event_t > 0):
+            return
 
-            t = next_event["time"] + self.phase - self.cmdcenter.time()
-            if(t > 0):
-                time.sleep(t)
-
-            cmd = next_event["cmd"]
-
-            self.cmdcenter.cmd(cmd)
-
-            self.events.pop(0)
-
-        info("Finished executing script")
+        self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"])
 
 
-    def start(self):
-        ''' Starts the script '''
-        info("Start script")
-        Globals().load(self)
-
-        self.exit = False
-        async(self._execute)
-
-
-    def stop(self):
-        ''' Stops the script '''
-        info("Stop script")
-
-        self.exit = True
+    def save(self, name = None):
+        self.data["name"] = save_obj(self.data, "script", "scr", self.app.app, name)
+        return self.data["name"]
 
 
     def add_event(self, time, cmd):
@@ -67,25 +46,22 @@ class Script():
         info("Adding event at %f" % time)
 
         # compute insertion index
-        lst = [(i == 0 or time >= self.events[i-1]["time"])
-               and (i >= len(self.events) or time <= self.events[i]["time"])
-               for i in xrange(len(self.events) + 1)]
+        lst = [(i == 0 or time >= self.data["events"][i-1]["time"])
+               and (i >= len(self.data["events"]) or time <= self.data["events"][i]["time"])
+               for i in xrange(len(self.data["events"]) + 1)]
         idx = lst.index(True)
 
         # insert event
-        self.events.insert(idx, {"time":time, "cmd":cmd})
-
-        # increment index if necessary
-        if(idx < self.current_idx): self.current_idx += 1
+        self.data["events"].insert(idx, {"time": time, "cmd": cmd})
 
 
     def last_event_time(self):
         ''' Returns the time of the last event '''
 
-        return self.events[-1]["time"]
+        return self.data["events"][-1]["time"]
 
 
     def push(self, time, cmd):
         ''' Push an event to the top of the stack '''
 
-        self.events.append({"time":time, "cmd":cmd})
+        self.data["events"].append({"time":time, "cmd":cmd})

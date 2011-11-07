@@ -1,5 +1,7 @@
 from path import *
 
+from cmd.paths import *
+
 from common.log import *
 set_log("ANIMATOR")
 
@@ -54,17 +56,13 @@ class Animator(object):
     def execute_paths(self):
 
         # get time
-        t = self.time() * 100
+        t = self.time()
 
-        # execute paths
+        # execute paths traverse list backward, in case we need to r
         for path in self.state.paths[::-1]:
 
-            # initialize path if necessary
-            if(not path.globals_initialized):
-                path.initialize_globals()
-
             # execute path
-            status = path.execute((t + path.phase - path.start) / (1.2 * path.spd))
+            status = path.execute((t + path.phase - path.start) / path.spd)
 
             # if necessary, remove path
             if(not status):

@@ -179,20 +179,6 @@ class DictObj(object):
         return name
 
 
-    def update_record(self, key, val):
-        ''' Updates the current hard disk record of a particular attribute of this object '''
-
-        # load & update self
-        old_self = load_obj(self.type, self.name, self.extension)
-        old_self[key] = val
-
-        # update file
-        loc = self.path + "%s.%s" % (self.name, self.extension)
-        file = open(loc, "w")
-        file.write(repr(old_self).replace(",", ",\n"))
-        file.close()        
-
-
     def rm(self):
         ''' Deletes an object from disk '''
 

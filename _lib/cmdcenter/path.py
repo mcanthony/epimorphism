@@ -25,7 +25,7 @@ class Path(object):
 
         # set result
         if(self.obj):
-            self.cmdcenter.set_val(res, self.obj, self.idx) 
+            eval('config.%s' % self.obj)[self.idx] = res
 
         return status
 

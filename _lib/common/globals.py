@@ -9,6 +9,8 @@ class Globals(object):
 
     def init(self, cmdcenter, interface, engine):
         self.app, self.state, self.cmdcenter, self.interface, self.engine = config.app, config.app.state, cmdcenter, interface, engine
+        config.state, config.cmdcenter, config.interface, config.engine = config.app.state, cmdcenter, interface, engine
+
 
 
     def load(self, obj, access=["app", "state", "cmdcenter", "interface", "engine"]):

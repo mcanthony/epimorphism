@@ -131,14 +131,6 @@ class CmdCenter(Animator, Archiver):
         if(self.app.render_video):
             self.video_renderer.stop_video()
 
-        # save events
-        if(self.app.record_events and self.recorded_events):
-            info("Saving events")
-            script_names = [script.name for script in self.state._script]
-            script_names.remove(self.recorded_events.name)
-            self.recorded_events.save()   
-            script_names.append(self.recorded_events.name)
-
 
     def start(self):
         ''' Start main loop '''
@@ -269,10 +261,6 @@ class CmdCenter(Animator, Archiver):
         ''' Returns the current relative time '''
 
         return self.state.t_speed * (self.abs_time() + self.state.t_phase)
-
-
-    def set_val(self, val, var, idx):
-        self.cmd("%s[%s] = %s" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx), val))
 
 
     def get_val(self, var, idx):
@@ -438,7 +426,11 @@ class CmdCenter(Animator, Archiver):
         if(not self.app.record_events):
             info("Recording script")
             self.app.record_events = self.time()
+            
             self.recorded_events = Script()
+            self.state.scripts.append(self.recorded_events)
+            self.state.save(self.state.name + "_record")
+
             self.interface.renderer.flash_message("Recording script")
         else:            
             info("Saving recorded script")
