@@ -40,12 +40,13 @@ class Program(threading.Thread):
             Globals.load(self)
         
         time.sleep(5)
+        print self.app.exit, self.exit
         while(not self.app.exit and not self.exit):  
-            self.__execute()
+            self._execute()
             self.freeze_event.wait()
 
 
-    def __execute(self):
+    def _execute(self):
         pass
 
 
@@ -55,7 +56,7 @@ class Program(threading.Thread):
 
 
 class RandomComponents(Program):
-    def __execute(self):
+    def _execute(self):
         debug("Executing Random Components")
         i = random.randint(0, self.data["scope"])            
         if(i == 0):

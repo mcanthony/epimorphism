@@ -123,7 +123,6 @@ class CmdCenter(Animator, Archiver):
         # stop programs
         for program in self.state.programs:
             program.stop()
-            program.join()
 
         # stop video
         if(self.app.render_video):
@@ -342,6 +341,7 @@ class CmdCenter(Animator, Archiver):
 
         self.grab_image().save("media/image/%s.png" % name)
         self.interface.renderer.flash_message("saved state as %s" % name)
+
         return name        
 
 
