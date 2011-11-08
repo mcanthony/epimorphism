@@ -107,6 +107,49 @@ class DefaultJuliaKeyboard(DefaultKeyboard):
             self.cmdcenter.cmd("inc_data('%s', 1)" % self.components[0])
         elif(key == 'q'):
             self.cmdcenter.cmd("inc_data('%s', -1)" % self.components[0])
+
+        # increment zn_r
+        elif(key in ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"]):
+            i = ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"].index(key)
+            z0 = r_to_p(self.state.zn[i])
+            z1 = [z0[0], z0[1]]
+            z1[0] += self.app.par_scale * 0.05
+            self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+
+        # decrement zn_r
+        elif(key in ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]):
+            i = ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"].index(key)
+            z0 = r_to_p(self.state.zn[i])
+            z1 = [z0[0], z0[1]]
+            z1[0] -= self.app.par_scale * 0.05
+            if(z1[0] < 0.0):
+                z1[0] = 0
+            self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+
+        # increment zn_th
+        elif(key in ["A", "S", "D", "F", "G", "H", "J", "K", "L", ":"]):
+            i = ["A", "S", "D", "F", "G", "H", "J", "K", "L", ":"].index(key)
+            z0 = r_to_p(self.state.zn[i])
+            z1 = [z0[0], z0[1]]
+            z1[1] += self.app.par_scale * 2.0 * pi / 32.0
+            self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+
+        # decrement zn_th
+        elif(key in ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"]):
+            i = ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"].index(key)
+            z0 = r_to_p(self.state.zn[i])
+            z1 = [z0[0], z0[1]]
+            z1[1] -= self.app.par_scale * 2.0 * pi / 32.0
+            self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0,  z1)
+
+        # magnify par_scale
+        elif(key == GLUT_KEY_PAGE_UP):
+            self.app.par_scale *= 2.0
+
+        # minify par_scale
+        elif(key == GLUT_KEY_PAGE_DOWN):
+            self.app.par_scale /= 2.0
+
         else:
             DefaultKeyboard.key_pressed(self, key, modifiers)
 

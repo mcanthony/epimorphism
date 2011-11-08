@@ -13,7 +13,7 @@
  'aux': 'jolly-moose-cartoon.gif',
  'components': {'T': 'z'},
  'par': {'dummy': 0.0},
- 'zn': [0.0+0.0j],
+ 'zn': [1.0+0.0j, 0.0+0.0j,1.0+0.0j, 0.0+0.0j],
  'internal': [0.0,
  0.0,
  0.0,

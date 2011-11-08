@@ -4,7 +4,7 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
 
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+__kernel 
 void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
 	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // get coords
@@ -13,25 +13,35 @@ void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t a
   int2 p = (int2)(x, y);
 
   // get z
-  float2 z = (float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f);
-
+  float2 z_c = 1.0 * ((float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f));
+  float2 z = z_c;
+  
   float4 color;
 
-  for(int i = 0; i < 50; i++){
-    z = M(z, z) - (float2)(cos(time / 5), sin(time / 5));
-    z = $T$;
-    if(hypot(z.x, z.y) >= 4.0){
-      color = (float4) (i / 50.0, 0.0, 0.0, 1.0);
-      pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
-      return;
-    }
-    
+  int i = 0;
+  int max_iter = 600;
+  float escape_rad = 4;
+
+  float fx = z.x;
+  float fy = z.y;
+  float t;
+
+  while(i < max_iter && fx * fx + fy * fy < escape_rad){
+    //z = M(z, z) + z_c;//(float2)(1.0, 0.0);// - (float2)(cos(time / 5), sin(time / 5));
+
+    t = fx * fx - fy * fy + fy + zn[0].x;
+    fy = 2.0 * fx * fy + fx + zn[0].y;
+    fx = t;
+    i += 1;
   }
 
+  float mu = i - (log (log (hypot(fx, fy))))/ log(2.0f);
 
-  color = (float4) (0.0f, 0.0, 0.0, 1.0);
+  if(i == max_iter)
+    color = (float4)(0.0,0.0,0.0,0.0);
+  else
+    color = HSVtoRGB((float4)(mu / 500 + 0.5, 1.0, 1.0, 1.0));
 
-  //float4 color = HSVtoRGB((float4)(2 * PI * z.x, 1.0f, (z.y + 1.0) / 2.0, 0.0f));
 
   // write out value
   #ifdef $POST_PROCESS$
