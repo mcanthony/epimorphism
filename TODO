@@ -58,17 +58,11 @@ RELEASE QUEUE:
   path & color phases?
   load state
 
-  implement pfn_notify in compiler
-  do second stage compilation in componentmanager after first finished
-
-  ping osc device - disable if not found
-
   update pyopengl lib
 
   windows build
   mac build
     
-
   OpenCL ATI Stream??
 
   scale performance to system
@@ -84,6 +78,11 @@ RELEASE QUEUE:
 
 
 LATER:
+
+  ping osc device - disable if not found
+
+  implement pfn_notify in compiler
+  do second stage compilation in componentmanager after first finished
 
   make programs dict objs?
 

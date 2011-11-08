@@ -42,7 +42,7 @@ class Animator(object):
             self.state.paths.remove(active_path)            
 
         # add path
-        path = Path(type, obj, idx, 0.0, self.time(), spd, **data)
+        path = Path(type, obj, idx, 0.0, self.time(), spd, data)
         self.state.paths.append(path)
 
         return path

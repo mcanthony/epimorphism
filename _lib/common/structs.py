@@ -190,7 +190,7 @@ class DictObj(object):
 
         # save object
         name = save_obj(obj, self.type, self.extension, self.app_name, name)
-        object.__setattr__(self, 'name', name)
+        self.name = name
 
         return name
 
@@ -275,6 +275,13 @@ class State(DictObj):
 
             # update VERSION
             self.VERSION = getattr(self.__class__, "VERSION")
+
+
+    def save(self, name=None):
+        for script in self.scripts:
+            script.save()
+
+        return DictObj.save(self, name)
     
 
 # TODO: increment through all states, migrate & save
@@ -284,6 +291,7 @@ def migrate_all_states():
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
 from cmdcenter.script import * 
 from cmd.programs import * 
+from cmdcenter.path import *
 
 from common.log import *
 set_log("DictObj", logging.DEBUG)

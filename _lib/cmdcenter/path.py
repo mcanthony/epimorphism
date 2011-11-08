@@ -8,9 +8,14 @@ set_log("Path")
 class Path(object):
 
 
-    def __init__(self, type, obj, idx, phase, start, spd, **vars):
+    def __init__(self, type, obj, idx, phase, start, spd, vars):
         self.data_keys = vars.keys()
         self.type, self.obj, self.idx, self.phase, self.start, self.spd = type, obj, idx, phase, start, spd
+        try:
+            self.idx = int(self.idx)
+        except:
+            pass
+        #print self.obj, self.idx, str(self)
         self.__dict__.update(vars)
         
 
@@ -25,4 +30,5 @@ class Path(object):
 
 
     def __repr__(self):
-        return "Path('%s', %s, %s, %f, %f, %f, %s)" % (self.type, self.obj and ("'" + self.obj + "'") or "None", self.idx or "None", self.phase, self.start, self.spd, str(self.data_keys))
+        vars = dict((k, getattr(self, k)) for k in self.__dict__.keys() if k in self.data_keys)
+        return "Path('%s', '%s', '%s', %f, %f, %f, %s)" % (self.type, str(self.obj), str(self.idx), self.phase, self.start, self.spd, str(vars))

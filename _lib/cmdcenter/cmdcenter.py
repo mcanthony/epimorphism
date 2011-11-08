@@ -327,8 +327,8 @@ class CmdCenter(Animator, Archiver):
 
         name = self.state.save(name)
 
-        self.grab_image().save("media/image/%s.png" % name)
-        self.interface.renderer.flash_message("saved state as %s" % name)
+        self.grab_image().save("media/image/%s_%s.png" % (self.app.app, name))
+        self.interface.renderer.flash_message("saved state as %s_%s" % (self.app.app, name))
 
         return name        
 

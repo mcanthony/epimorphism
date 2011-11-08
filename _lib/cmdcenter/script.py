@@ -30,6 +30,7 @@ class Script(DictObj, Program):
         ''' Internal execution loop '''
 
         if(len(self.data["events"]) == 0):
+            self.state.scripts.remove(self)
             self.exit = True
             return
 

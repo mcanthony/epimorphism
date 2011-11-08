@@ -14,6 +14,8 @@ from renderer import Renderer
 
 from console import Console
 
+import urllib
+
 from server import *
 from input_handlers.mousehandlers import *
 from input_handlers.keyboardhandlers import *
@@ -88,6 +90,7 @@ class Interface(object):
             self.osc.start()
             
             # sync par & zn lists to controller
+            
             if(self.app.OSC_echo):
                 self.cmdcenter.state.par.add_observer(self.osc.mirror)
                 self.cmdcenter.state.zn.add_observer(self.osc.mirror)            
