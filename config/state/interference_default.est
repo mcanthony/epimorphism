@@ -5,7 +5,6 @@
  'time': 0.0,
  't_phase': 0.0,
  't_speed': 1.0,
- 'scripts': [],
  'paths': [],
  'programs': [],
  'components': {'T': 'z'},

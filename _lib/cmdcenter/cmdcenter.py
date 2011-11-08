@@ -194,11 +194,9 @@ class CmdCenter(Animator, Archiver):
         if not self.programs_initialized:
             self.programs_initialized = True        
             for program in self.state.programs:
+                if isinstance(program, Script):
+                    program.data["phase"] = self.time()
                 program.start()
-
-            for script in self.state.scripts:
-                script.data["phase"] = self.time()
-                script.start()
 
 
     def send_frame(self):
@@ -366,9 +364,6 @@ class CmdCenter(Animator, Archiver):
         # stop paths, scripts & programs
         self.state.paths = []
 
-        for script in self.state._script:
-            script.stop()
-
         for program in self.state.programs:
             program.stop()
 
@@ -422,7 +417,7 @@ class CmdCenter(Animator, Archiver):
             self.app.record_events = False
 
             self.recorded_events.save()   
-            self.record_state.scripts.append(self.recorded_events)
+            self.record_state.programs.append(self.recorded_events)
             self.record_state.save(self.record_state.name)
             
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))

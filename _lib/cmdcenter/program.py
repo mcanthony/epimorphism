@@ -19,7 +19,7 @@ class Program(threading.Thread):
         self.freeze_event.set()
         self.sleep_event = threading.Event()
 
-        self.next_event_t = None
+        self.next_event_in = None
 
         # init thread
         threading.Thread.__init__(self)
@@ -44,7 +44,7 @@ class Program(threading.Thread):
         while(not self.app.exit and not self.exit):  
             self._execute()
             self.freeze_event.wait()
-            self.sleep_event.wait(self.next_event_t)
+            self.sleep_event.wait(self.next_event_in)
 
     def _execute(self):
         pass

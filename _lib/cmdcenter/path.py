@@ -20,7 +20,7 @@ class Path(object):
         
 
     def execute(self, t):
-        (res, status) = eval(self.type)(self, t)
+        (res, status) = self.do(t) 
 
         # set result
         if(self.obj):

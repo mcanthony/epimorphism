@@ -278,8 +278,9 @@ class State(DictObj):
 
 
     def save(self, name=None):
-        for script in self.scripts:
-            script.save()
+        for program in self.programs:
+            if isinstance(program, Script):
+                program.save()
 
         return DictObj.save(self, name)
     

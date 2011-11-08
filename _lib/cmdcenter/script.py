@@ -18,25 +18,20 @@ class Script(DictObj, Program):
         self.extension = "scr"
         Program.__init__(self, None)
         DictObj.__init__(self, "script", app, name)
-        self.repr_blacklist += ["exit", "sleep_event", "freeze_event", "next_event_t"]
-
-
-    #def __repr__(self):
-    #    return DictObj.__repr__(self)
-    #    return "Script('%s')" % self.data["name"]
+        self.repr_blacklist += ["exit", "sleep_event", "freeze_event", "next_event_in"]
 
 
     def _execute(self):
         ''' Internal execution loop '''
 
         if(len(self.data["events"]) == 0):
-            self.state.scripts.remove(self)
+            self.state.programs.remove(self)
             self.exit = True
             return
 
-        self.next_event_t = self.data["events"][0]["time"] + self.data["phase"] - self.cmdcenter.time()
+        self.next_event_in = self.data["events"][0]["time"] + self.data["phase"] - self.cmdcenter.time()
 
-        if(self.next_event_t > 0):
+        if(self.next_event_in > 0):
             return
 
         self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)

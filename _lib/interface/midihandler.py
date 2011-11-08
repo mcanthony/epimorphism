@@ -139,9 +139,9 @@ if(config.app and config.app.midi_enabled):
                     time.sleep(0.01)
                 if(self.cmdcenter.app.exit) : exit()
 
-                if(len(self.state.scripts) != 0):
-                    self.state.paths=[]
-                    self.state.scripts=[]
+                #if(len(self.state.scripts) != 0):
+                #    self.state.paths=[]
+                #    self.state.scripts=[]
                 self.app.last_midi_event = self.cmdcenter.time()
 
                 # read

@@ -5,7 +5,6 @@
  't_phase': 0.0,
  't_speed': 1.0,
  'randomize_seed': False,
- 'scripts': [],
  'paths': [],
  'programs': [],
  'render_mode': '2D',
