@@ -4,6 +4,7 @@ from common.runner import *
 
 from video import *
 from animator import *
+from path import *
 from archiver import *
 from componentmanager import *
 from script import *
@@ -106,7 +107,8 @@ class CmdCenter(Animator, Archiver):
         funcs.update(default_funcs)
 
         # generate cmd exec environment
-        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state, "app":self.app}, self.state.__dict__, self.interface.app.__dict__, self.app.__dict__], funcs)
+        paths = dict([(sub.__name__, sub) for sub in Path.__subclasses__()])
+        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state, "app":self.app}, self.state.__dict__, self.interface.app.__dict__, self.app.__dict__, paths], funcs)
 
         # tap tempo info
         self.tempo_events = []

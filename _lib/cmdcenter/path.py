@@ -8,27 +8,38 @@ set_log("Path")
 class Path(object):
 
 
-    def __init__(self, type, obj, idx, phase, start, spd, vars):
+    def __init__(self, obj, idx, spd, vars, phase=None):
         self.data_keys = vars.keys()
-        self.type, self.obj, self.idx, self.phase, self.start, self.spd = type, obj, idx, phase, start, spd
+        self.obj, self.idx, self.phase, self.spd = obj, idx, phase, spd
         try:
             self.idx = int(self.idx)
         except:
             pass
-        #print self.obj, self.idx, str(self)
+
+        if(not var.has_key("loop")): vars["loop"] = False
+
         self.__dict__.update(vars)
-        
 
-    def execute(self, t):
-        (res, status) = self.do(t) 
+        if(not self.phase):
+            self.phase = config.cmdcenter.time()
 
-        # set result
-        if(self.obj):
-            eval('config.%s' % self.obj)[self.idx] = res
+        # remove any previously existing paths for these vars
+        active_paths = [path for path in self.state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
+        if(len(active_paths) != 0):
+            config.state.paths.remove(active_paths[0])
 
-        return status
+        # add path to state
+        config.state.paths.append(self)
 
+
+    def do(self, t):
+        pass
+
+
+    def stop(self):
+        config.state.paths.remove(self)
+    
 
     def __repr__(self):
         vars = dict((k, getattr(self, k)) for k in self.__dict__.keys() if k in self.data_keys)
-        return "Path('%s', '%s', '%s', %f, %f, %f, %s)" % (self.type, str(self.obj), str(self.idx), self.phase, self.start, self.spd, str(vars))
+        return "%s('%s', '%s', %f, %s, %f)" % (type(self).__name__, self.obj, str(self.idx), self.spd, str(vars), self.phase)
