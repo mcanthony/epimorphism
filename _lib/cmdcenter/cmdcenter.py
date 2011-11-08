@@ -373,10 +373,9 @@ class CmdCenter(Archiver):
         #print "setting phase", self.state.t_phase
         #self.state.t_speed = new_state.t_speed
 
-
         # load evolution
         for path in new_state.paths:
-            #path.phase = new_state.time - self.time()
+            path.phase -= self.state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
             self.state.paths.append(path)
 
         for program in new_state.programs:

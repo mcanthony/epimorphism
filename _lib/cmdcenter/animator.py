@@ -19,7 +19,7 @@ class Animator(object):
         path = Radial2D(obj, idx, spd, {"s" : z0, "e" : z1})
 
         # remove any previously existing paths for these vars
-        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (path.obj, path.idx)]
+        [p.stop() for p in config.state.paths if (path.obj, path.idx) == (p.obj, p.idx)]
 
         # add path to state
         config.state.paths.append(path)
@@ -33,7 +33,7 @@ class Animator(object):
         path = Linear1D(obj, idx, spd, {"s" : x0, "e" : x1})
 
         # remove any previously existing paths for these vars
-        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (path.obj, path.idx)]
+        [p.stop() for p in config.state.paths if (path.obj, path.idx) == (p.obj, p.idx)]
 
         # add path to state
         config.state.paths.append(path)

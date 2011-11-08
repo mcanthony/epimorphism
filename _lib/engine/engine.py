@@ -104,7 +104,7 @@ class Engine(object):
         if(not self.cl_initialized):
             self.initCL()
             self.compiler.compile()
-            #self.cmdcenter.load(2)
+            #self.cmdcenter.load(5)
 
         if(not self.main_kernel):
             return

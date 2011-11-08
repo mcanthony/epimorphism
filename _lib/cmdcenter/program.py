@@ -1,3 +1,5 @@
+import config
+
 from common.globals import *
 
 import time, threading
@@ -34,7 +36,7 @@ class Program(threading.Thread):
     def stop(self):
         self.exit = True
         self.sleep_event.set()
-        self.state.programs.remove(self)
+        config.state.programs.remove(self)
 
 
     def run(self):
