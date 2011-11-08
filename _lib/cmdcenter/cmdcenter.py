@@ -288,24 +288,6 @@ class CmdCenter(Archiver):
         self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
 
 
-    def grab_image(self):
-        ''' Gets the framebuffer and binds it to an Image. '''
-        info("Grab image")
-
-        try:
-            self.app.next_frame = True
-            pixels = self.interface.renderer.grab_pixels()
-            img = Image.frombuffer('RGBA', (self.app.kernel_dim, self.app.kernel_dim), pixels, 'raw', 'BGRA', 0, 1).transpose(Image.FLIP_TOP_BOTTOM)
-        except Exception, err:
-            info(str(err))
-            sys.exit(0)
-
-        info("Done grab image")
-
-        # img.show()
-        return img
-
-
     def pars(self):
         ''' Prints a list of paramaters, their bindings, and their values. '''
         print str(self.state.pars)
@@ -332,7 +314,12 @@ class CmdCenter(Archiver):
 
         name = self.state.save(name)
 
-        self.grab_image().save("media/image/%s_%s.png" % (self.app.app, name))
+        self.app.next_frame = True
+        img = self.interface.renderer.grab_image()
+        #img.save("media/image/%s_%s.jpg" % (self.app.app, name))
+        img.convert("RGB").save("media/image/%s_%s.png" % (self.app.app, name))
+        #self.interface.renderer.grab_image().save("media/image/%s_%s.jpg" % (self.app.app, name))
+
         self.interface.renderer.flash_message("saved state as %s_%s" % (self.app.app, name))
 
         return name        

@@ -49,6 +49,8 @@ DONE:
   rescale time
   cleaned paths
   load state
+  pngs are corrupted
+
 
 RELEASE QUEUE:
 
@@ -61,9 +63,6 @@ RELEASE QUEUE:
 
   windows build
   mac build
-
-
-  pngs are corrupted
 
     
   OpenCL ATI Stream??

@@ -15,6 +15,8 @@ from ctypes import *
 
 import pygame
 
+from PIL import Image
+
 import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
 
@@ -91,9 +93,10 @@ class Renderer(object):
 
         self.pbo_ptr = None
 
-        self.have_pixels = threading.Event()
-        self.have_pixels.set()
-        self.pixels = []
+        self.have_image = threading.Event()
+        self.have_image.set()
+
+        self.image = None
         
 
     def __del__(self):
@@ -154,11 +157,12 @@ class Renderer(object):
         glMatrixMode(GL_MODELVIEW)
 
         
-    def grab_pixels(self):
+    def grab_image(self):
         info("Grabbing pixels")
-        self.have_pixels.clear()
-        self.have_pixels.wait()
-        return self.pixels
+        self.have_image.clear()
+        self.have_image.wait()
+        return self.image
+
 
     def render_fps(self):
         # if this isn't set font looks terrible
@@ -269,15 +273,17 @@ class Renderer(object):
         if(self.app.echo and self.echo_string):
             self.echo()
 
-        if(not self.have_pixels.isSet()):
-            debug("internal grab pixels")
+        # grab image
+        if(not self.have_image.isSet()):
+            debug("internal grab image")
             glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr.value)
             #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
-            self.pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
-            self.pixels = cast(self.pixels, POINTER(c_ubyte * 4 * self.app.kernel_dim ** 2)).contents
+            pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
+            pixels = cast(pixels, POINTER(c_ubyte * 4 * self.app.kernel_dim ** 2)).contents
+            self.image = Image.frombuffer('RGBA', (self.app.kernel_dim, self.app.kernel_dim), pixels, 'raw', 'BGRA', 0, 1).transpose(Image.FLIP_TOP_BOTTOM)
+            self.have_image.set()
             glUnmapBuffer(GL_ARRAY_BUFFER)
             glBindBuffer(GL_ARRAY_BUFFER, 0)
-            self.have_pixels.set()
 
 
         # repost
