@@ -251,7 +251,8 @@ class State(DictObj):
         info("loading state: %s %s" % (app_name, name))
         self.extension = "est"
         if(not hasattr(config.app, 'state')):
-            config.app.state = self
+            config.app.state = config.state = self
+            
 
         DictObj.__init__(self, 'state', app_name, name)
 
@@ -292,7 +293,7 @@ def migrate_all_states():
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
 from cmdcenter.script import * 
 from cmd.programs import * 
-from cmdcenter.path import *
+from cmd.paths import *
 
 from common.log import *
 set_log("DictObj", logging.DEBUG)

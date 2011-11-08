@@ -15,14 +15,11 @@ class Animator(object):
     # helpers
     def radial_2d(self, obj, idx, spd, z0, z1):
         ''' Helper function for creating radial_2d paths. '''
-        #debug("Radial 2d: %s %s %s %s %s", obj, idx, spd, str(z0), str(z1))
         return Radial2D(obj, idx, spd, {"s" : z0, "e" : z1})
 
 
     def linear_1d(self, obj, idx, spd, x0, x1):
         ''' Helper function for creating linear_1d paths. '''
-        #debug("Linear 1d: %s %s %s %s %s", obj, idx, spd, x0, x1)
-
         return Linear1D(obj, idx, spd, {"s" : x0, "e" : x1})
 
 
@@ -33,17 +30,17 @@ class Animator(object):
         t = config.cmdcenter.time()
 
         # execute paths traverse list backward, in case we need to r
-        for path in self.state.paths[::-1]:
+        for path in config.state.paths[::-1]:
 
             # execute path
             (res, status) = path.do((t - path.phase) / path.spd) 
 
             # set result
-            getattr(config.state, self.obj)[self.idx] = res
+            getattr(config.state, path.obj)[path.idx] = res
 
             # if necessary, remove path
             if(not status):
-                self.state.paths.remove(path)
+                config.state.paths.remove(path)
 
 
 

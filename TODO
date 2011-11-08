@@ -47,6 +47,7 @@ DONE:
   option to randomize seed
   clean cmdcenter
   rescale time
+  cleaned paths
 
 
 RELEASE QUEUE:
@@ -55,13 +56,16 @@ RELEASE QUEUE:
   make osc use paths
   time 0-3
 
-  path & color phases?
   load state
 
   update pyopengl lib
 
   windows build
   mac build
+
+
+  pngs are corrupted
+
     
   OpenCL ATI Stream??
 

@@ -46,7 +46,7 @@ class CmdEnv(dict):
                 d[key] = value
 
 
-class CmdCenter(Animator, Archiver):
+class CmdCenter(Archiver):
     ''' The CmdCenter is the central control center for the engine and
         renderer.  All systems generating signals route through here, and the object
         provides an interface for executing code int the appropriate environment. '''
@@ -57,7 +57,9 @@ class CmdCenter(Animator, Archiver):
         Globals().load(self)
 
         # init animator
-        Animator.__init__(self)
+        self.animator = Animator()
+        self.linear_1d = self.animator.linear_1d
+        self.radial_2d = self.animator.radial_2d
 
         # init archiver
         Archiver.__init__(self)
@@ -91,7 +93,7 @@ class CmdCenter(Animator, Archiver):
         # create cmd_env function blacklist
         func_blacklist = ['do', '__del__', '__init__', 'kernel', 'print_timings', 'record_event', 'start', 'switch_kernel',
                           'keyboard', 'console_keyboard', 'register_callbacks', 'render_console', 'capture', 'render_fps',
-                          'video_time', 'set_inner_loop', 'time', 'cmd', 'execute_paths', 'echo', 'reshape',
+                          'video_time', 'set_inner_loop', 'time', 'cmd', 'echo', 'reshape',
                           'init_component_indices'] + dir(object)
 
         # extract non-blacklist functions & data from an object
@@ -172,7 +174,7 @@ class CmdCenter(Animator, Archiver):
 
 
             # execute animation paths
-            self.execute_paths()
+            self.animator.execute_paths()
             
             # render frame
             self.send_frame()
@@ -341,41 +343,27 @@ class CmdCenter(Animator, Archiver):
 
         new_state = State(self.app.app, str(name))
         if(not new_state):
-            return False
-        
-        updates = {}
+            return False    
 
         # if immediate, change switch time
         if(immediate):
             old_intrp_time = self.app.state_intrp_time
             self.app.state_intrp_time = 0.000001            
 
-        # get update components
-        for name in self.componentmanager.component_list():
-            if(self.state.components[name] != new_state.components[name]):
-                updates[name] = new_state.components[name]
-
-            del(new_state.components[name])
-
-        if(not self.componentmanager.can_switch_to_components(updates)):
-            error("Failed to load state")
-            return False
-
         info("Loading state, updating components: %s" % str(updates))
 
         # stop paths, scripts & programs
-        self.state.paths = []
+        [path.stop() for path in self.state.paths]
 
-        for program in self.state.programs:
-            program.stop()
+        [program.stop() for program in self.state.programs]
 
         # blend to zns
         for i in xrange(len(new_state.zn)):
-            self.radial_2d('state.zn', i, self.app.state_intrp_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
+            self.radial_2d('zn', i, self.app.state_intrp_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
 
         # blend to pars
         for i in xrange(len(new_state.par)):
-            self.linear_1d('state.par', i, self.app.state_intrp_time, self.state.par[i], new_state.par[i])
+            self.linear_1d('par', i, self.app.state_intrp_time, self.state.par[i], new_state.par[i])
 
         # load evolution
         def load_paths():
@@ -394,9 +382,9 @@ class CmdCenter(Animator, Archiver):
                 script.start()
                 self.state._script.append(script)
 
-        async(load_paths)
+        #async(load_paths)
 
-        self.componentmanager.switch_components(updates)
+        self.componentmanager.switch_components(new_state.components)
 
         # if immediate, revert switch time
         if(immediate):
@@ -469,13 +457,13 @@ class CmdCenter(Animator, Archiver):
     def reset_zn(self):
         default = State(self.app.app)
         for i in xrange(len(default.zn)):
-            self.cmdcenter.radial_2d('state.zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
+            self.radial_2d('zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
 
 
     def reset_par(self):
         default = State(self.app.app)
         for i in xrange(len(default.par)):
-            self.cmdcenter.linear_1d('state.par', i, 0.4, self.state.par[i], default.par[i])
+            self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])
 
     
     def quit(self):

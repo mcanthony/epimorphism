@@ -28,7 +28,7 @@ class DefaultOSCHandler(OSCHandler):
 
         old = self.state.zn[idx]
         val = complex(data[1], data[0])
-        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
 
 
     def val_r_zn(self, addr, tags, data, source):
@@ -37,7 +37,7 @@ class DefaultOSCHandler(OSCHandler):
         val = p_to_r([data[0], r_to_p(old)[1]])
         self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, val.real, val.imag))        
 #        val = (data[0], r_to_p(old)[1])
-#        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
 
 
     def val_th_zn(self, addr, tags, data, source):
@@ -46,7 +46,7 @@ class DefaultOSCHandler(OSCHandler):
         val = p_to_r([r_to_p(old)[0], data[0]])
         self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, val.real, val.imag))        
 #        val = (r_to_p(old)[0], data[0])
-#        self.cmdcenter.radial_2d('state.zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
 
 
     def val_par(self, addr, tags, data, source):

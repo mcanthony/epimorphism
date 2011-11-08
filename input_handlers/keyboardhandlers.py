@@ -111,7 +111,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20
                 x0 = self.state.par[i]
                 x1 = self.state.par[i] + 0.05
-                self.cmdcenter.linear_1d('state.par', i, self.app.kbd_switch_spd, x0, x1)
+                self.cmdcenter.linear_1d('par', i, self.app.kbd_switch_spd, x0, x1)
 
             # decrement par[i] - BORKEN
             elif(ord(key) in [17, 23, 5, 18, 20, 25, 21, 9, 15, 16, 26, 24, 3, 22, 2, 14, 13, 44, 46, 31]): # row 2 & 4
@@ -119,7 +119,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 if(modifiers & GLUT_ACTIVE_SHIFT == GLUT_ACTIVE_SHIFT) : i += 20
                 x0 = self.state.par[i]
                 x1 = self.state.par[i] - 0.05
-                self.cmdcenter.linear_1d('state.par', i, self.app.kbd_switch_spd, x0, x1)
+                self.cmdcenter.linear_1d('par', i, self.app.kbd_switch_spd, x0, x1)
 
         else:
 
@@ -145,7 +145,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[0] += self.app.par_scale * 0.05
-                self.cmdcenter.radial_2d('state.zn', i, self.app.kbd_switch_spd, z0, z1)
+                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
 
             # decrement zn_r
             elif(key in ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]):
@@ -155,7 +155,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z1[0] -= self.app.par_scale * 0.05
                 if(z1[0] < 0.0):
                     z1[0] = 0
-                self.cmdcenter.radial_2d('state.zn', i, self.app.kbd_switch_spd, z0, z1)
+                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
 
             # increment zn_th
             elif(key in ["A", "S", "D", "F", "G", "H", "J", "K", "L", ":"]):
@@ -163,7 +163,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] += self.app.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.radial_2d('state.zn', i, self.app.kbd_switch_spd, z0, z1)
+                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
 
             # decrement zn_th
             elif(key in ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"]):
@@ -171,7 +171,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] -= self.app.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.radial_2d('state.zn', i, self.app.kbd_switch_spd, z0,  z1)
+                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0,  z1)
 
             # magnify par_scale
             elif(key == GLUT_KEY_PAGE_UP):

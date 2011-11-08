@@ -38,7 +38,7 @@ class EventManager(object):
         z0 = r_to_p(self.state.zn[component])
         z1 = [z0[0], z0[1]]
         z1[1] += 2.0 * pi
-        self.cmdcenter.cmd('radial_2d(zn, %d, %f, %s, %s)' % (component, time, str(z0), str(z1)))
+        self.cmdcenter.cmd('radial_2d("zn", %d, %f, %s, %s)' % (component, time, str(z0), str(z1)))
 
 
     @handle_event
@@ -48,7 +48,7 @@ class EventManager(object):
         z0 = r_to_p(self.state.zn[component])
         z1 = [z0[0], z0[1]]
         z1[1] += 2.0 * pi / 2
-        self.cmdcenter.cmd('radial_2d(zn, %d, %f, %s, %s)' % (component, time, str(z0), str(z1)))
+        self.cmdcenter.cmd('radial_2d("zn", %d, %f, %s, %s)' % (component, time, str(z0), str(z1)))
 
 
     @handle_event

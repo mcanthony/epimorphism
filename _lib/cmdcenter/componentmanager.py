@@ -77,6 +77,9 @@ class ComponentManager(object):
 
         # create interpolation strings
         for component_name, val in data.items():
+            if(self.state.components[component_name] == val):
+                continue
+
             if(len(data) == 1):
                 self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
 

@@ -1,4 +1,4 @@
-from cmdcenter.path import *
+from cmdcenter.path import Path
 
 from common.complex import *
 from common.runner import *
@@ -59,5 +59,5 @@ class WaveZR(Path):
 
 class Rose(Path):
     ''' a rose curve '''
-    def rose(self, t):
+    def do(self, t):
         return (p_to_r([self.a * cos(self.b * t) + self.c, t]), True)

@@ -1,6 +1,4 @@
-from common.globals import *
-
-from cmd.paths import *
+import config
 
 from common.log import *
 set_log("Path")
@@ -16,7 +14,7 @@ class Path(object):
         except:
             pass
 
-        if(not var.has_key("loop")): vars["loop"] = False
+        if(not vars.has_key("loop")): vars["loop"] = False
 
         self.__dict__.update(vars)
 
@@ -24,9 +22,7 @@ class Path(object):
             self.phase = config.cmdcenter.time()
 
         # remove any previously existing paths for these vars
-        active_paths = [path for path in self.state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
-        if(len(active_paths) != 0):
-            config.state.paths.remove(active_paths[0])
+        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
 
         # add path to state
         config.state.paths.append(self)
