@@ -84,12 +84,6 @@ class ComponentManager(object):
                 self.interface.renderer.flash_message("Switching %s to %s" % (component_name, val))
 
             idx_idx = self.datamanager.component_names.index(component_name)
-            components = self.datamanager.components[component_name]
-            try:
-                component = [c for c in components if c[0] == val][0]
-            except:
-                error("couldn't find val in components - %s, %s" % (component_name, val))
-                return False
 
             intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)        
 
@@ -105,10 +99,10 @@ class ComponentManager(object):
 
 
         # wait until interpolation is done
-        def finish():
-            time.sleep(self.app.state_intrp_time)
-            self.switching_components = False
-            self.state.components.update(data)
+        #def finish():
+        time.sleep(self.app.state_intrp_time)
+        self.switching_components = False
+        self.state.components.update(data)
 
-        async(finish)
+        #async(finish)
 

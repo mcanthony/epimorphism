@@ -12,8 +12,8 @@ class DefaultKeyboard(KeyboardHandler):
             self.cmdcenter.app.exit = True
 
         # toggle console
-        #elif(key == "`"):
-        #    self.cmdcenter.cmd("toggle_console()")
+        elif(key == "`"):
+            self.cmdcenter.cmd("toggle_console()")
 
         # toggle echo
         elif(key == GLUT_KEY_F11):

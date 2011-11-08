@@ -15,7 +15,7 @@ from common.structs import *
 from cmd.events import *
 from cmd.programs import *
 
-import StringIO, sys, traceback, random
+import StringIO, sys, traceback, random, copy
 from PIL import Image
 
 from common.log import *
@@ -165,6 +165,7 @@ class CmdCenter(Archiver):
 
             # get time
             self.state.time = self.abs_time()
+#            print "T", self.time()
 
             if(self.app.manual_iter):
                 d = self.abs_time() - self.last_frame_time
@@ -243,6 +244,8 @@ class CmdCenter(Archiver):
 
         # get result
         res = [out.getvalue(), err]
+
+        debug("console res: %s", str(res))
 
         # close StringIO
         out.close()
@@ -350,8 +353,6 @@ class CmdCenter(Archiver):
             old_intrp_time = self.app.state_intrp_time
             self.app.state_intrp_time = 0.000001            
 
-        info("Loading state, updating components: %s" % str(updates))
-
         # stop paths, scripts & programs
         [path.stop() for path in self.state.paths]
 
@@ -362,8 +363,8 @@ class CmdCenter(Archiver):
             self.radial_2d('zn', i, self.app.state_intrp_time, r_to_p(self.state.zn[i]), r_to_p(new_state.zn[i]))
 
         # blend to pars
-        for i in xrange(len(new_state.par)):
-            self.linear_1d('par', i, self.app.state_intrp_time, self.state.par[i], new_state.par[i])
+        for k in new_state.par.keys():
+            self.linear_1d('par', k, self.app.state_intrp_time, self.state.par[k], new_state.par[k])
 
         # load evolution
         def load_paths():
@@ -385,6 +386,11 @@ class CmdCenter(Archiver):
         #async(load_paths)
 
         self.componentmanager.switch_components(new_state.components)
+
+        # fix time
+        self.state.t_phase = new_state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
+        print "setting phase", self.state.t_phase
+        self.state.t_speed = new_state.t_speed
 
         # if immediate, revert switch time
         if(immediate):

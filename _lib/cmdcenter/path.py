@@ -22,10 +22,10 @@ class Path(object):
             self.phase = config.cmdcenter.time()
 
         # remove any previously existing paths for these vars
-        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
+        [path.stop() for path in config.recently_loaded_state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
 
         # add path to state
-        config.state.paths.append(self)
+        config.recently_loaded_state.paths.append(self)
 
 
     def do(self, t):

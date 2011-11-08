@@ -1,4 +1,4 @@
-//deactivated
+// EPIMORPH library file
 
 _EPI_ float4 reset_black(int x, int y, __constant float* par){
   // black reset function

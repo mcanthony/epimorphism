@@ -252,7 +252,7 @@ class State(DictObj):
         self.extension = "est"
         if(not hasattr(config.app, 'state')):
             config.app.state = config.state = self
-            
+        config.recently_loaded_state = self
 
         DictObj.__init__(self, 'state', app_name, name)
 
@@ -296,4 +296,4 @@ from cmd.programs import *
 from cmd.paths import *
 
 from common.log import *
-set_log("DictObj", logging.DEBUG)
+set_log("DICTOBJ", logging.DEBUG)
