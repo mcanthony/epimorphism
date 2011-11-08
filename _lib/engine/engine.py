@@ -21,20 +21,16 @@ class Engine(object):
         debug("Initializing Engine")
         Globals().load(self)
 
-        # self.print_opencl_info()
-
         # timing vars
-        num_time_events = 3
-        self.time_events = False
+        num_time_events = 10
         self.event_accum_tmp = [0 for i in xrange(num_time_events)]
         self.event_accum = [0 for i in xrange(num_time_events)]
         self.last_frame_time = 0
+
         self.frame_num = 0
 
         self.program = None
         self.cl_initialized = False
-
-        self.post_process = None
 
         return True
 
@@ -114,6 +110,8 @@ class Engine(object):
         # acquire pbo
         clEnqueueAcquireGLObjects(self.queue, [self.pbo], None).wait()
         
+        self.timings.append(time.time())
+
         # create args
         args = [self.pbo, self.out, self.aux]            
         if(self.app.feedback_buffer):
@@ -132,12 +130,16 @@ class Engine(object):
                 self.arg_buffers[data["name"]] = buffer_from_pyarray(self.queue, array('f', val), buf)[0]
                 args.append(self.arg_buffers[data["name"]])
              
+
+        self.timings.append(time.time())
         self.main_kernel(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
+        self.timings.append(time.time())
 
         # copy buffer if necessary
         if(self.app.feedback_buffer):
             clEnqueueCopyImage(self.queue, self.out, self.fb).wait()
             self.timings.append(time.time())
+        self.timings.append(time.time())
 
         # post processing
         if(self.state.post_process):
@@ -147,6 +149,7 @@ class Engine(object):
 
         # release pbo
         clEnqueueReleaseGLObjects(self.queue, [self.pbo], None).wait()
+        self.timings.append(time.time())
 
         self.frame_num += 1
         self.print_timings()
@@ -155,28 +158,30 @@ class Engine(object):
 
 
     def print_timings(self):
-        if(self.time_events):
+        if(self.app.print_timing_info):
+            # get times
+            times = [1000 * (self.timings[i + 1] - self.timings[i]) for i in xrange(len(self.timings) - 1)]
+
+            # set accumulators
+            self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
+            self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
+
+
             if(self.frame_num % self.app.debug_freq == 0):
-                # get times
-                times = [1000 * (self.timings[i + 1] - self.timings[i]) for i in xrange(len(self.timings) - 1)]
-
-                # set accumulators
-                self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
-                self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
-
                 # print times
                 for i in range(len(times)):
-                    print "event" + str(i) + "-" + str(i + 1) + ": " + str(self.event_accum_tmp[i] / self.app.debug_freq) + "ms"
-                    print "event" + str(i) + "-" + str(i + 1) + "~ " + str(self.event_accum[i] / self.frame_num) + "ms"
+                    print "event%d-%d: %0.5fms" % (i, i + 1, self.event_accum_tmp[i] / self.app.debug_freq)
+                    print "event%d-%d~ %0.5fms" % (i, i + 1, self.event_accum[i] / self.frame_num)
 
                 # print totals
-                print "total opencl:", str(sum(self.event_accum_tmp) / self.app.debug_freq) + "ms"
-                print "total opencl~", str(sum(self.event_accum) / self.frame_num) + "ms"
+                print "opencl:   %0.5fms" % (sum(self.event_accum_tmp) / self.app.debug_freq)
+                print "opencl~   %0.5fms" % (sum(self.event_accum) / self.frame_num)
 
                 # print abs times
                 abs = 1000 * ((time.time() - self.last_frame_time) % 1) / self.app.debug_freq
-                print "python:", abs - sum(self.event_accum_tmp) / self.app.debug_freq
-                print "abs:", abs
+                print "python:   %0.5fms" % (abs - sum(self.event_accum_tmp) / self.app.debug_freq)
+                print "total:    %0.5fms" % abs
+                print "***********************"
 
                 # reset tmp accumulator
                 self.event_accum_tmp = [0 for i in xrange(len(times))]

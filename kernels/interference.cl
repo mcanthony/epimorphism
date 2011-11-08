@@ -82,7 +82,6 @@ __kernel __attribute__((reqd_work_group_size(16,16,1)))
 void interference(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
 	      __constant float *par, __constant float *internal, __constant float2 *zn, float time){
 
-  time /= 100.0f;
 
   float2 t, z_z;
 
@@ -100,9 +99,9 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      float th = i * PI / _SLICES;
      
      if(i < _SLICES / 2.0f){
-       th -= 1 * (_SLICES / 2.0f - i) * time;
+       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;
      }else if(i > _SLICES / 2.0f){
-       th += 1 * (i - _SLICES / 2.0f) * time;
+       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;
      }
 
      float2 k = (float2)(cos(th), sin(th));
@@ -112,7 +111,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      z = $T$;     
      z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time, _N, 0.0f);
+     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time * 0.01, _N, 0.0f);
   }
 
   float val = wrapn(waves, _SLICES + 1, _VAL_WRAP_TYPE);
@@ -122,9 +121,9 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      float th = i * PI / _SLICES;
 
      if(i < _SLICES / 2.0f){
-       th -= 1 * (_SLICES / 2.0f - i) * time;
+       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;;
      }else if(i > _SLICES / 2.0f){
-       th += 1 * (i - _SLICES / 2.0f) * time;
+       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;;
      }
 
      float2 k = (float2)(cos(th), sin(th));
@@ -134,7 +133,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      z = $T$;
      z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time, _N, 0.0f) / 4.0f;
+     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time * 0.01, _N, 0.0f) / 4.0f;
   }
 
   float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);
@@ -189,7 +188,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   #endif
 }
 
-
+#ifdef $POSTPROCESS$
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __constant float* par){
 
@@ -210,3 +209,4 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __co
 
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }
+#endif

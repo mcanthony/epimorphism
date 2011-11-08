@@ -29,8 +29,8 @@ void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t a
   while(i < max_iter && fx * fx + fy * fy < escape_rad){
     //z = M(z, z) + z_c;//(float2)(1.0, 0.0);// - (float2)(cos(time / 5), sin(time / 5));
 
-    t = fx * fx - fy * fy + fy + zn[0].x;
-    fy = 2.0 * fx * fy + fx + zn[0].y;
+    t = fx * fx - fy * fy + -0.4f;//zn[0].x;
+    fy = 2.0 * fx * fy + 0.6;//zn[0].y;
     fx = t;
     i += 1;
   }
@@ -51,6 +51,8 @@ void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t a
   #endif
 }
 
+
+#ifdef $POST_PROCESS$
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void post_process(__global uchar4* pbo, read_only image2d_t out, float time, __constant float* par){
 
@@ -64,3 +66,4 @@ void post_process(__global uchar4* pbo, read_only image2d_t out, float time, __c
   float4 color = v;
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * color.xyzw);
 }
+#endif

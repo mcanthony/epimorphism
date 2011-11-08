@@ -1,8 +1,7 @@
+// EPIMORPHISM kernel file
+
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
-
-
-// EPIMORPHISM kernel file
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
@@ -88,6 +87,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 
 }
 
+#ifdef $POST_PROCESS$
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void post_process(__global uchar4* pbo, read_only image2d_t fb, float time, __constant float* par){
 
@@ -156,3 +156,4 @@ void post_process(__global uchar4* pbo, read_only image2d_t fb, float time, __co
 
   //pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 //}
+#endif
