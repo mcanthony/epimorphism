@@ -252,7 +252,6 @@ class State(DictObj):
         self.extension = "est"
         if(not hasattr(config.app, 'state')):
             config.app.state = config.state = self
-        config.recently_loaded_state = self
 
         DictObj.__init__(self, 'state', app_name, name)
 

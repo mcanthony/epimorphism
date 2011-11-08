@@ -366,31 +366,24 @@ class CmdCenter(Archiver):
         for k in new_state.par.keys():
             self.linear_1d('par', k, self.app.state_intrp_time, self.state.par[k], new_state.par[k])
 
-        # load evolution
-        def load_paths():
-            time.sleep(self.app.state_intrp_time)
-            self.state.paths = []
-            for path in new_state.paths:
-                path.phase = new_state.time - self.time()
-                self.state.paths.append(path)
-
-            for program in new_state.programs:
-                program.start()
-                self.state.programs.append(program)
-
-            for script in new_state._script:
-                script.phase += self.time()
-                script.start()
-                self.state._script.append(script)
-
-        #async(load_paths)
-
         self.componentmanager.switch_components(new_state.components)
 
         # fix time
-        self.state.t_phase = new_state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
-        print "setting phase", self.state.t_phase
-        self.state.t_speed = new_state.t_speed
+        #self.state.t_phase = new_state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
+        #print "setting phase", self.state.t_phase
+        #self.state.t_speed = new_state.t_speed
+
+
+        # load evolution
+        for path in new_state.paths:
+            #path.phase = new_state.time - self.time()
+            self.state.paths.append(path)
+
+        for program in new_state.programs:
+            program.start()
+            self.state.programs.append(program)
+            if isinstance(program, Script):
+                program.data["phase"] = self.time()
 
         # if immediate, revert switch time
         if(immediate):

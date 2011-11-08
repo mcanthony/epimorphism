@@ -21,12 +21,6 @@ class Path(object):
         if(not self.phase):
             self.phase = config.cmdcenter.time()
 
-        # remove any previously existing paths for these vars
-        [path.stop() for path in config.recently_loaded_state.paths if (path.obj, path.idx) == (self.obj, self.idx)]
-
-        # add path to state
-        config.recently_loaded_state.paths.append(self)
-
 
     def do(self, t):
         pass

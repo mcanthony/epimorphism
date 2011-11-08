@@ -15,12 +15,30 @@ class Animator(object):
     # helpers
     def radial_2d(self, obj, idx, spd, z0, z1):
         ''' Helper function for creating radial_2d paths. '''
-        return Radial2D(obj, idx, spd, {"s" : z0, "e" : z1})
+
+        path = Radial2D(obj, idx, spd, {"s" : z0, "e" : z1})
+
+        # remove any previously existing paths for these vars
+        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (path.obj, path.idx)]
+
+        # add path to state
+        config.state.paths.append(path)
+
+        return path
 
 
     def linear_1d(self, obj, idx, spd, x0, x1):
         ''' Helper function for creating linear_1d paths. '''
-        return Linear1D(obj, idx, spd, {"s" : x0, "e" : x1})
+
+        path = Linear1D(obj, idx, spd, {"s" : x0, "e" : x1})
+
+        # remove any previously existing paths for these vars
+        [path.stop() for path in config.state.paths if (path.obj, path.idx) == (path.obj, path.idx)]
+
+        # add path to state
+        config.state.paths.append(path)
+
+        return path
 
 
     # do execution
