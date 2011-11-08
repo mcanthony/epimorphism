@@ -68,6 +68,6 @@ class Compiler():
         keys = self.state.par.keys()
         keys.sort()
         for i, k in enumerate(keys):
-            definitions += "#define %s par[%d]\n" % (k, i)
+            definitions += "#define %s par[%d]\n" % (k, i)            
 
         return definitions

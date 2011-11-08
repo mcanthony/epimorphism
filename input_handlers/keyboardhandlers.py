@@ -100,6 +100,17 @@ class DefaultInterferenceKeyboard(DefaultKeyboard):
             DefaultKeyboard.key_pressed(self, key, modifiers)
 
 
+
+class DefaultJuliaKeyboard(DefaultKeyboard):
+    def key_pressed(self, key, modifiers):
+        if(key == '1'):
+            self.cmdcenter.cmd("inc_data('%s', 1)" % self.components[0])
+        elif(key == 'q'):
+            self.cmdcenter.cmd("inc_data('%s', -1)" % self.components[0])
+        else:
+            DefaultKeyboard.key_pressed(self, key, modifiers)
+
+
 class DefaultEpimorphismKeyboard(DefaultKeyboard):
     def key_pressed(self, key, modifiers):
         # set pars if CTRL

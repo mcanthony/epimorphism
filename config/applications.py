@@ -11,6 +11,11 @@ class Interference(App):
         App.__init__(self, "interference", name)
 
 
+class Julia(App):
+    def __init__(self, name="default"):
+        App.__init__(self, "julia", name)
+
+
 class Epimorphism(App):
     def __init__(self, name="default"):
         App.__init__(self, "epimorphism", name)

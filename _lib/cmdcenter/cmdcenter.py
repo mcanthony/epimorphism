@@ -110,7 +110,7 @@ class CmdCenter(Archiver):
 
         # generate cmd exec environment
         paths = dict([(sub.__name__, sub) for sub in Path.__subclasses__()])
-        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state, "app":self.app}, self.state.__dict__, self.interface.app.__dict__, self.app.__dict__, paths], funcs)
+        self.cmd_env = CmdEnv([{"cmd":self.__dict__, "state":self.state, "app":self.app}, self.state.__dict__, self.app.__dict__, paths], funcs)
 
         # tap tempo info
         self.tempo_events = []

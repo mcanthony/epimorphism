@@ -13,3 +13,13 @@ Dependencies - python2.7, distutils, PIL, freeglut
 
 
 OSX:
+
+
+
+
+
+NEW APP:
+ add $app object to config/applications.py
+ add config/app/$app_default.app
+ add config/state/$app_default.est
+ add kernels/$app_kerenls.cl
