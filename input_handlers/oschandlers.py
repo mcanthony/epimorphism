@@ -14,6 +14,9 @@ class DefaultOSCHandler(OSCHandler):
         self.regex_callbacks = {"/val_zn(\d+)": self.val_zn,
                                 "/val_r_zn(\d+)": self.val_r_zn,
                                 "/val_th_zn(\d+)": self.val_th_zn,
+                                "/set_r_zn(\d+)": self.val_r_zn,
+                                "/set_th_zn(\d+)": self.val_th_zn,
+                                "/qnt_th_zn(\d+)": self.qnt_th_zn,
                                 "/val_par_(\w+)": self.val_par,
                                 "/inc_par_(\w+)": self.inc_par,
                                 "/inc_cmp_(\w+)": self.inc_cmp,
@@ -32,21 +35,33 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def val_r_zn(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]        
-        val = p_to_r([data[0], r_to_p(old)[1]])
-        self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, val.real, val.imag))        
-#        val = (data[0], r_to_p(old)[1])
-#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        val = (data[0], r_to_p(old)[1])
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
 
 
     def val_th_zn(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]
-        val = p_to_r([r_to_p(old)[0], data[0]])
-        self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, val.real, val.imag))        
-#        val = (r_to_p(old)[0], data[0])
-#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        val = (r_to_p(old)[0], data[0] / 360.0 * 2 * 3.14159)
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+
+
+    def qnt_th_zn(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        old = self.state.zn[idx]
+        pi4 = 3.14159 / 4
+        th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
+        th += data[0] * pi4;
+        val = (r_to_p(old)[0], th)
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
 
 
     def val_par(self, addr, tags, data, source):
@@ -72,7 +87,7 @@ class DefaultOSCHandler(OSCHandler):
 
     # OSC address handers        
     def hnd_val_speed(self, addr, tags, data, source):
-        v_new = 0.05 * data[0] + 0.00001
+        v_new = data[0] + 0.00001
         v_old = self.state.t_speed
         
         # set val
@@ -93,16 +108,18 @@ class DefaultOSCHandler(OSCHandler):
             val = r_to_p(val)
             self._send("/val_r_zn%d" % key, [val[0]], True)
             self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], True)
-            self._send("/val_th_zn%d" % key, [val[1]], True)
-            self._send("/txt_th_zn%d" % key, ["%0.2f" % val[1]], bundle)
+            th = (val[1] + 0.0001) / (2 * 3.14159) * 360
+            self._send("/val_th_zn%d" % key, [str(th)], True)
+            self._send("/txt_th_zn%d" % key, [str(int(th))], bundle)
         elif(obj == self.state.components):
             if(re.match("intrp", val)):
                 val = "SWITCHING"
             self._send("/txt_cmp_%s" % key, [val], bundle)
         elif(obj == self.state):
             if(key == "t_speed"):
-                self._send("/val_speed", [(self.state.t_speed - 0.00001) / 0.05], True)
-                self._send("/txt_speed", [str((self.state.t_speed - 0.00001) / 0.05)], bundle)
+                print self.state.t_speed
+                self._send("/val_speed", [str(self.state.t_speed)], True)
+                self._send("/txt_speed", ["%0.2f" % self.state.t_speed], bundle)
 
 
     def mirror_all(self):
@@ -112,8 +129,8 @@ class DefaultOSCHandler(OSCHandler):
             self.mirror(self.state.zn, i, self.state.zn[i], True)
         for k,v in self.state.components.items():
             self.mirror(self.state.components, k, v, True)
-        self._send("/val_speed", [(self.state.t_speed - 0.00001) / 0.05], True)
-        self._send("/txt_speed", [str((self.state.t_speed - 0.00001) / 0.05)])
+        self._send("/val_speed", [self.state.t_speed], True)
+        self._send("/txt_speed", ["%0.2f" % self.state.t_speed])
 
 
 class DefaultInterferenceOSC(DefaultOSCHandler):    

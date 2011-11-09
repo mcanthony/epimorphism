@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
-import sys, atexit
+import sys, atexit, os
 sys.path.insert(1, "_lib/sources")
 sys.path.append("_lib")
 
 # setup logging
 from common.log import *
-set_log("EPIMORPHISM", logging.DEBUG)
+set_log("EPIMORPHISM", logging.WARNING)
 
 info("STARTING")
 if(len(sys.argv) != 1):
@@ -22,9 +22,30 @@ assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
 
 # create app
 if(len(app_names) == 0):
-    app = Epimorphism()
+    print "Choose an application:"
+    app_names = [app.__name__ for app in App.__subclasses__()]
+    app_names.sort()
+    for i, app in enumerate(app_names):
+        print "%d: %s" % (i+1, app)
+    input = raw_input('> ')
+    if(input == ""):
+        i = 1
+    else:
+        i = int(input)
+    app = eval(app_names[i - 1].capitalize())()
+    app_name = app.__class__.__name__.lower()
+    state_names = [filename[len(app_name) + 1:-4] for filename in os.listdir("config/state") if filename.startswith(app_name)]
+    print "Choose a program"
+    for i, state in enumerate(state_names):
+        print "%d: %s" % (i+1, state)
+    input = raw_input('> ')
+    if(input == ""):
+        i = 1
+    else:
+        i = int(input)
+    app.state = State(app_name, state_names[i - 1])
 elif(len(app_names) == 1):
-    app = eval(app_names[0].capitalize() + "()")
+    app = eval(app_names[0].capitalize())()
 elif(len(app_names) == 2):
     app = eval(app_names[0].capitalize() + "('%s')" % app_names[1])
 

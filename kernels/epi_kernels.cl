@@ -32,7 +32,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = $T$;
 
       // reduce
-      reduce = recover2(torus_reduce(z));
+      //reduce = recover2(torus_reduce(z));
       z = M(zn[0], z) + zn[1];
       z = recover2($REDUCE$);      
       

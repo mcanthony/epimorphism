@@ -58,7 +58,7 @@ class Animator(object):
 
             # if necessary, remove path
             if(not status):
-                config.state.paths.remove(path)
+                path.stop()
 
 
 

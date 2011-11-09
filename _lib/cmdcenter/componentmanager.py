@@ -1,5 +1,4 @@
 from common.globals import *
-from common.runner import *
 
 from datamanager import *
 
@@ -97,12 +96,9 @@ class ComponentManager(object):
             idx_idx = self.datamanager.component_names.index(component_name)
             self.state.internal[idx_idx] = self.cmdcenter.time()
 
-
         # wait until interpolation is done
-        #def finish():
         time.sleep(self.app.state_intrp_time)
         self.switching_components = False
-        self.state.components.update(data)
-
-        #async(finish)
+        for k,v in data.items():
+            self.state.components[k] = v
 

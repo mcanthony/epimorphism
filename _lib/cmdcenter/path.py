@@ -27,7 +27,8 @@ class Path(object):
 
 
     def stop(self):
-        config.state.paths.remove(self)
+        if(self in config.state.paths):
+            config.state.paths.remove(self)
     
 
     def __repr__(self):

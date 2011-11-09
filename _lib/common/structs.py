@@ -67,8 +67,7 @@ def load_obj(type, name, extension):
         contents = file.read().replace("\n", "")
         file.close()
     except:
-         critical("couldn't open %s.%s" % (name, extension))
-         traceback.print_exc()
+         warning("couldn't open %s.%s" % (name, extension))
          return None
 
     # creat object
@@ -76,7 +75,7 @@ def load_obj(type, name, extension):
         obj = eval(contents)
         return obj
     except:
-        critical("couldn't parse %s.%s" % (name, extension))
+        warning("couldn't parse %s.%s" % (name, extension))
         traceback.print_exc()
         return None
 
@@ -295,4 +294,4 @@ from cmd.programs import *
 from cmd.paths import *
 
 from common.log import *
-set_log("DICTOBJ", logging.DEBUG)
+set_log("DICTOBJ", logging.ERROR)

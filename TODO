@@ -50,29 +50,28 @@ DONE:
   cleaned paths
   load state
   pngs are corrupted
-
+  make osc use paths
+  time 0-3
+  prepare app for launch
 
 RELEASE QUEUE:
 
-  TouchOSC template & osc work
-  make osc use paths
-  time 0-3
-
-
-  update pyopengl lib
+  TouchOSC template 
 
   windows build
+    update pyopengl lib
   mac build
-
     
   OpenCL ATI Stream??
 
+  new application deploy script
+
+  detect if device available
   scale performance to system
-  optimize kernel
-    move color axis to cpu
 
-  contents & launch state/app
+  contents
 
+  keyboard bindings
   final testing & documentation
 
   website & videos
@@ -80,6 +79,9 @@ RELEASE QUEUE:
 
 
 LATER:
+  animation with touchosc
+
+  move color axis to cpu
 
   only one internal[] necessary
 

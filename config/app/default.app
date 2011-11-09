@@ -6,7 +6,7 @@
  'autostart': True,
  'exit': False,
  'freeze': False,
- 'console_level': 10,
+ 'console_level': 100,
 
  'manual_iter': False,
  'next_frame': False,
@@ -18,7 +18,7 @@
  'record_events': False,
 
  'component_level': 'FULL',
- 'state_intrp_time': 3.0,
+ 'state_intrp_time': 2.0,
 
  'server': False,
 

@@ -18,6 +18,9 @@ from cmd.programs import *
 import StringIO, sys, traceback, random, copy
 from PIL import Image
 
+#from opencv import highgui
+#import opencv
+
 from common.log import *
 set_log("CMDCENTER")
 
@@ -119,6 +122,8 @@ class CmdCenter(Archiver):
         # misc
         self.last_frame_time = 0
         self.programs_initialized = False
+
+#        self.camera = highgui.cvCreateCameraCapture(0)
         
         return True
 
@@ -204,6 +209,9 @@ class CmdCenter(Archiver):
                 program.start()
 
 
+#        self.upload_webcam_frame()
+
+
     def send_frame(self):
         ''' Generates and sends the current frame to the Engine '''
 
@@ -245,7 +253,8 @@ class CmdCenter(Archiver):
         # get result
         res = [out.getvalue(), err]
 
-        debug("console res: %s", str(res))
+        if(res != ["", ""]):
+            debug("console res: %s", str(res))
 
         # close StringIO
         out.close()
@@ -286,6 +295,10 @@ class CmdCenter(Archiver):
         info("Load image: %s", name)
 
         self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
+
+
+    def upload_webcam_frame(self):
+        self.engine.load_aux(opencv.adaptors.Ipl2PIL(highgui.cvQueryFrame(self.camera)).convert("RGBA"))         
 
 
     def pars(self):

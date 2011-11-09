@@ -82,12 +82,10 @@ class Renderer(object):
         self.show_console = False
         self.show_fps = False
         self.fps = self.fps_avg = 100
-        self.fps_font_size = 16
+        self.fps_font_size = 20
         self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
 
         self.echo_string = None
-        self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
-        self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
 
         self.do_main_toggle_console = False
 
@@ -155,6 +153,10 @@ class Renderer(object):
         else:
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
+        
+        # create echo font 
+        self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
+        self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
 
         
     def grab_image(self):
@@ -178,9 +180,9 @@ class Renderer(object):
         # if this isn't set font looks terrible
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
 
-        # render text into llc
+        # render text into ulc
         glColor3ub(0xff, 0xff, 0xff)
-        self.echo_font.glPrint(6, 6, self.echo_string)
+        self.fps_font.glPrint(6, 6, self.echo_string)
 
 
     def main_toggle_console(self):
