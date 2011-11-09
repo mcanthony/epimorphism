@@ -2975,8 +2975,6 @@ def clEnqueueNDRangeKernel(queue, kernel, gsize=(1,), lsize=None,
 # GL Interop #
 ##############
 
-class gluint(ctypes.c_uint32): pass
-
 class glenum(ctypes.c_uint): pass
 
 # stolen & modified from PyOpenCL
@@ -3014,7 +3012,6 @@ def clCreateFromGLBuffer(context, bufobj, flags = cl_mem_flags.CL_MEM_READ_WRITE
     :param flags: :class:`cl_mem_flags` to control the memory.
 
     """
-    bufobj = cl_uint(bufobj.value) # maybe flakey
     mem = clCreateFromGLBuffer.call(context, flags, bufobj, byref(cl_errnum()))
     mem._context = context
     mem._flags = flags

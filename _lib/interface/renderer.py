@@ -109,8 +109,7 @@ class Renderer(object):
         self.buffer_dim = buffer_dim
 
         # generate pbo
-        self.pbo_ptr = GLuint()
-        glGenBuffers(1, byref(self.pbo_ptr))
+        self.pbo_ptr = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
 
         num_texels = self.buffer_dim ** 2
@@ -225,7 +224,7 @@ class Renderer(object):
                 self.d_timebase = self.d_time
 
         # copy texture from pbo
-        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo_ptr.value)
+        glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo_ptr)
         glBindTexture(GL_TEXTURE_2D, self.display_tex)
         glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, self.buffer_dim, self.buffer_dim,
                         GL_BGRA, GL_UNSIGNED_BYTE, None)
@@ -278,7 +277,7 @@ class Renderer(object):
         # grab image
         if(not self.have_image.isSet()):
             debug("internal grab image")
-            glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr.value)
+            glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
             #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
             pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
             pixels = cast(pixels, POINTER(c_ubyte * 4 * self.app.kernel_dim ** 2)).contents
