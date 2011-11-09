@@ -85,16 +85,11 @@ def main():
     cmdcenter.start()
 
     info("Main loop completed")
-    app.exit = True
 
-    # delete objects
-    #del interface, engine, cmdcenter
-    interface.__del__()
-    engine.__del__()
-    cmdcenter.__del__()
+#def start():
+#    async(main)
 
-def start():
-    async(main)
+#if(app.autostart):
+#    start()
 
-if(app.autostart):
-    start()
+main()

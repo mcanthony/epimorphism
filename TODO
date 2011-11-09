@@ -59,7 +59,10 @@ RELEASE QUEUE:
   TouchOSC template 
 
   windows build
-    update pyopengl lib
+    remove PIL dependency
+
+  remove freeglut dependencies
+
   mac build
     
   OpenCL ATI Stream??

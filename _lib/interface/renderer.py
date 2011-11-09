@@ -38,7 +38,7 @@ class Renderer(object):
         glutInit(1, [])
 
         # application will continue after glut exits - make sure app is cleaned up
-        glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
+        #glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
 
         # create window
         debug("Creating window")
@@ -52,7 +52,7 @@ class Renderer(object):
         else:
             glutInitWindowSize(self.app.screen[0], self.app.screen[1])
             glutInitWindowPosition(10, 10)
-            glutCreateWindow(self.app.name)
+            self.window = glutCreateWindow(self.app.name)
 
         glutSetCursor(GLUT_CURSOR_NONE)
 
@@ -313,8 +313,9 @@ class Renderer(object):
     def stop(self):
         ''' Stops the main glut loop '''
         debug("Stop GLUT main loop")
-
-        glutLeaveMainLoop()
+        glutDestroyWindow(self.window)
+        self.app.exit = True
+        #sys.exit(0)
 
 
     def register_callbacks(self, keyboard, mouse, motion):

@@ -466,5 +466,8 @@ class CmdCenter(Archiver):
     
     def quit(self):
         self.app.exit = True
+        self.interface.__del__()
+        self.engine.__del__()
+        self.cmdcenter.__del__()
         sys.exit(0)
 

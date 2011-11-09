@@ -9,7 +9,7 @@ class DefaultKeyboard(KeyboardHandler):
     def key_pressed(self, key, modifiers):
         # exit
         if(key == "\033"):
-            self.cmdcenter.app.exit = True
+            self.cmdcenter.quit()#app.exit = True
 
         # toggle console
         elif(key == "`"):

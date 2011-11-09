@@ -1,13 +1,14 @@
 WINDOWS:
 
-copy _lib\source\win\freeglut.dll to C:\WINDOWS\System32
+copy epimorphism\_lib\source\win\freeglut.dll to C:\WINDOWS\System32
+copy epimorphism\_lib\source\win\msvcr32.dll to C:\WINDOWS\System32
 install the appropriate PIL package from _lib\source\win\
 
 
 
 LINUX:
 
-Dependencies - python2.7, distutils, PIL, freeglut
+Dependencies - python2.7, distutils, PIL, freeglut, python-opengl
 
 ./epimorphism
 
