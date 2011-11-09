@@ -1,0 +1,105 @@
+{'app_name': 'epimorphism',
+ 'name': 'default',
+ 'VERSION': 1.0,
+ 'time': 0.0,
+ 'image': None,
+ 'frame_cnt': 0,
+ 'bpm': 120,
+ 'paths': [],
+ 'programs': [Script('epimorphism', 'roses')],
+ 'components': {
+ 'SEED': 'seed_wca(fb, z, internal, par, time)',
+ 'SEED_W': 'lines_inner(z, par)',
+ 'SEED_WT': 'wt_gauss(w)',
+ 'SEED_C': 'simple_color(z, w, par, time)',
+ 'SEED_A': 'solid_alpha(w, par)',
+ 'T': 'sinz(z)',
+ 'T_SEED': 'cosz(z)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
+ 'REDUCE': 'torus_reduce(z)',
+ 'RESET': 'reset_hsls(x, y, par)'
+ },
+ 'zn': [(0.0+1.0j),
+ (1.0+0.0j),
+ (1.0+0j),
+ 0j,
+ 0j,
+ 0j,
+ 0j,
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ 0j,
+ 0j,
+ 0j,
+ 0j],
+ 'internal': [0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0],
+ 'par': {
+ '_SEED_W':
+ 0.1,
+ '_SEED_W_BASE':
+ 0.0,
+ '_SEED_W_MIN':
+ 0.0,
+ '_SEED_COLOR_A':
+ 1.0,
+ '_SEED_COLOR_S':
+ 1.0,
+ '_SEED_COLOR_V':
+ 1.0,
+ '_SEED_C_TH_EFF':
+ 0.0,
+ '_SEED_CIRCLE_R':
+ 0.5,
+ '_SEED_GRID_N':
+ 0.5,
+ '_SEED_COLOR_SPEED':
+ 0.7,
+ '_COLOR_PHI1':
+ 1.0,
+ '_COLOR_PSI1':
+ 0.0,
+ '_COLOR_PHI2':
+ 0.0,
+ '_COLOR_PSI2':
+ 0.0,
+ '_COLOR_BASE_PHI':
+ 0.0,
+ '_COLOR_BASE_PSI':
+ 0.0,
+ '_COLOR_BASE_R':
+ 1.0,
+ '_COLOR_BASE_I':
+ 0.9,
+ '_COLOR_I':
+ 0.9,
+ '_COLOR_DHUE':
+ 0.5,
+ '_COLOR_LEN_SC':
+ 0.5,
+ '_COLOR_18':
+ 1.0,
+ '_COLOR_19':
+ 0.0,
+ '_COLOR_TH_EFF':
+ 0.0,
+ '_COLOR_SPEED_TH':
+ 0.4,
+ '_COLOR_RESET_Z':
+ 0.5,
+ '_GAMMA':
+ 2.2,
+ '_CULL_DEPTH':
+ 0.0
+ }}

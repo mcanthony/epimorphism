@@ -166,7 +166,6 @@ class Engine(object):
             self.event_accum_tmp = [self.event_accum_tmp[i] + times[i] for i in xrange(len(times))]
             self.event_accum = [self.event_accum[i] + times[i] for i in xrange(len(times))]
 
-
             if(self.frame_num % self.app.debug_freq == 0):
                 # print times
                 for i in range(len(times)):

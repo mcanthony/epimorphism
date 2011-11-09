@@ -20,13 +20,12 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   
   // internal antialiasing
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  const float i_k = ($FRACT$ == 1 ? 0.0f : 0.5f / $KERNEL_DIM$);  
-  const float inc = 1.0f / ($KERNEL_DIM$ * ($FRACT$ - 1.0f));  
+  const float i_k = ($FRACT$ == 1 ? 0.0f : 1.0f / $KERNEL_DIM$);  
+  const float inc = ($FRACT$ == 1 ? 0.0f : 2.0f / ($KERNEL_DIM$ * ($FRACT$ - 1.0f)));  
 
   for(int i_x = 0; i_x < (int)$FRACT$; i_x++)
     for(int i_y = 0; i_y < (int)$FRACT$; i_y++){
       z = CX(z_z.x - i_k + i_x * inc, z_z.y - i_k + i_y * inc);
-      float2 z_c = z;
       
       // compute T      
       z = M(zn[2], z) + zn[3];
@@ -60,13 +59,12 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       v += seed.w * seed + (1.0 - seed.w) * frame;      
       #endif
 
-      z = z_c;
     }
 
   // scale
-  v /= ($FRACT$ * $FRACT$);
-  v.w *= ($FRACT$ * $FRACT$); 
+  v = (float4)(v.xyz / ($FRACT$ * $FRACT$), v.w);
   v = recover4(v);
+
 
   // compute color  
   color = recover4($COLOR$);

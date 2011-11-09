@@ -4,7 +4,7 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
 
-__kernel 
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
 	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // get coords
@@ -26,16 +26,14 @@ void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t a
   float fy = z.y;
   float t;
 
-  while(i < max_iter && fx * fx + fy * fy < escape_rad){
-    //z = M(z, z) + z_c;//(float2)(1.0, 0.0);// - (float2)(cos(time / 5), sin(time / 5));
 
-    t = fx * fx - fy * fy + -0.4f;//zn[0].x;
-    fy = 2.0 * fx * fy + 0.6;//zn[0].y;
-    fx = t;
+  while(i < max_iter && z.x * z.x + z.y * z.y < escape_rad){
+    z = M(z, z) + CX(-0.4f, 0.6f);
+
     i += 1;
   }
 
-  float mu = i - (log (log (hypot(fx, fy))))/ log(2.0f);
+  float mu = i - (native_log(native_log(native_sqrt(z.x * z.x + z.y * z.y))))/ native_log(2.0f);
 
   if(i == max_iter)
     color = (float4)(0.0,0.0,0.0,0.0);
