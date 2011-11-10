@@ -4,6 +4,7 @@
  'time': 0.0,
  'image': None,
  'frame_cnt': 0,
+ 'randomize_seed': True,
  'bpm': 120,
  'paths': [],
  'programs': [Script('epimorphism', 'roses'), RandomComponents({'scope': 5, 'interval':20})],

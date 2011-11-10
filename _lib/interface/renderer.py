@@ -47,7 +47,7 @@ class Renderer(object):
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
         if(self.app.screen == "auto"):
-            glutCreateWindow(self.app.name)
+            self.window = glutCreateWindow(self.app.name)
             glutFullScreen()
             self.app.screen=[0,0]
         else:
@@ -76,7 +76,6 @@ class Renderer(object):
 	gluQuadricTexture(self.quad, GL_TRUE)        
 
         # fps data
-        self.d_time_start = self.d_time = self.d_timebase = 0
         self.frame_count = 0.0
 
         # misc variables
@@ -178,7 +177,6 @@ class Renderer(object):
         # render text into ulc
         glColor3ub(0xff, 0xff, 0xff)
         self.fps_font.glPrint(6, self.app.screen[1] - self.fps_font_size - 6, "fps: %.2f" % (1000.0 / self.fps))
-        self.fps_font.glPrint(6, self.app.screen[1] - 2 * self.fps_font_size - 10, "avg: %.2f" % (1000.0 / self.fps_avg))
 
 
     def echo(self):
@@ -217,17 +215,12 @@ class Renderer(object):
         # main thread toggle_console
         if(self.do_main_toggle_console) : self.main_toggle_console()
 
+        self.frame_count += 1
         # compute frame rate
-        if(self.d_time == 0):
-            self.frame_count = 0
-            self.d_time_start = self.d_time = self.d_timebase = glutGet(GLUT_ELAPSED_TIME)
-        else:
-            self.frame_count += 1
-            self.d_time = glutGet(GLUT_ELAPSED_TIME)
-            if(self.frame_count % 10 == 0):
-                self.fps = (1.0 * self.d_time - self.d_timebase) / 10
-                self.fps_avg = (1.0 * self.d_time - self.d_time_start) / self.frame_count
-                self.d_timebase = self.d_time
+        if(self.frame_count % 60 == 0):            
+            cur_time = glutGet(GLUT_ELAPSED_TIME)
+            self.fps = (cur_time - self.d_timebase) / 60.0
+            self.d_timebase = cur_time
 
         # copy texture from pbo
         glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, self.pbo_ptr)
@@ -313,6 +306,7 @@ class Renderer(object):
         ''' Starts the main glut loop '''
         info("Start GLUT main loop")
 
+        self.d_timebase = glutGet(GLUT_ELAPSED_TIME)
         glutMainLoop()
 
 
@@ -364,9 +358,6 @@ class Renderer(object):
     def toggle_fps(self):
         ''' Toggles the fps display '''
         info("Toggle FPS")
-
-        # reset debug information
-        self.d_time = 0
 
         # toggle fps display
         self.show_fps = not self.show_fps

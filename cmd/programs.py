@@ -11,6 +11,7 @@ set_log("Program")
 class RandomComponents(Program):
     def _execute(self):
         debug("Executing Random Components")
+        print "random component!"
         i = random.randint(0, self.data["scope"])            
         if(i == 0):
             async(lambda :self.cmdcenter.cmd("inc_data('T', 0)", False))
@@ -25,4 +26,5 @@ class RandomComponents(Program):
         elif(i == 5):
             async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)", False))            
 
-        self.next_event_t = self.data["interval"] * (0.5 + random.random())
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+        self.next_event_in = 5

@@ -38,7 +38,7 @@ class Compiler():
         t1 = self.cmdcenter.abs_time()
 
         #self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - t0))
-        #print t1-t0
+        print t1-t0
 
         self.callback(self.program, None)        
 
