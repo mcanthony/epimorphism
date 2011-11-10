@@ -13,9 +13,10 @@ from OpenGL.GLU import *
 
 from ctypes import *
 
-import pygame
+import config
 
-from PIL import Image
+if config.PIL_available:
+    from PIL import Image
 
 import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
@@ -159,6 +160,10 @@ class Renderer(object):
 
         
     def grab_image(self):
+        if not config.PIL_available:
+            warning("PIL is not available")
+            return None
+
         info("Grabbing pixels")
         self.have_image.clear()
         self.have_image.wait()
@@ -315,7 +320,6 @@ class Renderer(object):
         debug("Stop GLUT main loop")
         glutDestroyWindow(self.window)
         self.app.exit = True
-        #sys.exit(0)
 
 
     def register_callbacks(self, keyboard, mouse, motion):

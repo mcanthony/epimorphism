@@ -1,8 +1,18 @@
 #!/usr/bin/env python
 
-import sys, atexit, os
-sys.path.insert(1, "_lib/sources")
+import sys, os
+sys.path.append("_lib/sources")
 sys.path.append("_lib")
+
+os.environ['PATH'] = '_lib/sources/win' + ';' + os.environ['PATH']
+
+import config
+try: 
+    import PIL
+    config.PIL_available = True 
+except ImportError: 
+    config.PIL_available = False 
+
 
 # setup logging
 from common.log import *

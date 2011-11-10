@@ -1,3 +1,5 @@
+import config
+
 from common.globals import *
 
 from common.runner import *
@@ -16,7 +18,9 @@ from cmd.events import *
 from cmd.programs import *
 
 import StringIO, sys, traceback, random, copy
-from PIL import Image
+
+if config.PIL_available:
+    from PIL import Image
 
 #from opencv import highgui
 #import opencv
@@ -292,13 +296,17 @@ class CmdCenter(Archiver):
         ''' Loads and image into the host memory
             and uploads it to a buffer.
               buffer_name can be either fb or aux '''
+        if not config.PIL_available:
+            warning("PIL not available")
+            return None
+
         info("Load image: %s", name)
 
         self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
 
 
     def upload_webcam_frame(self):
-        self.engine.load_aux(opencv.adaptors.Ipl2PIL(highgui.cvQueryFrame(self.camera)).convert("RGBA"))         
+       if config.PIL_available: self.engine.load_aux(opencv.adaptors.Ipl2PIL(highgui.cvQueryFrame(self.camera)).convert("RGBA"))         
 
 
     def pars(self):
@@ -326,6 +334,10 @@ class CmdCenter(Archiver):
         ''' Grabs a screenshot and saves the current state. '''
 
         name = self.state.save(name)
+
+        if not config.PIL_available:
+            warning("PIL not available")
+            return name
 
         self.app.next_frame = True
         img = self.interface.renderer.grab_image()
@@ -466,8 +478,5 @@ class CmdCenter(Archiver):
     
     def quit(self):
         self.app.exit = True
-        self.interface.__del__()
-        self.engine.__del__()
-        self.cmdcenter.__del__()
         sys.exit(0)
 

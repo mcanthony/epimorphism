@@ -53,15 +53,14 @@ DONE:
   make osc use paths
   time 0-3
   prepare app for launch
+  remove freeglut dependencies
 
 RELEASE QUEUE:
 
   TouchOSC template 
 
   windows build
-    remove PIL dependency
-
-  remove freeglut dependencies
+    optional PIL dependency
 
   mac build
     
