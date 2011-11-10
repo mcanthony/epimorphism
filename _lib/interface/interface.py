@@ -7,6 +7,7 @@
 # corresponding normally either to real numbers, or components(r, th, x, y) of complex numbers.  The discrete variables simply 
 # choose one value from a collection of possibilities.
 
+import config
 
 from common.globals import *
 
@@ -29,7 +30,7 @@ set_log("INTERFACE")
 class Interface(object):
 
     def init(self):
-        debug("Initializing interface")
+        info("Initializing interface")
         Globals().load(self)
 
         self.renderer = Renderer()
@@ -37,7 +38,7 @@ class Interface(object):
 
 
     def __del__(self):
-        debug("Deleting Interface")
+        info("Deleting Interface")
 
         self.renderer.__del__()
 
@@ -46,18 +47,19 @@ class Interface(object):
 
 
     def start(self):
-        debug("Starting interface")
+        info("Starting interface")
 
         # create input handlers
         self.mouse_handler = eval(self.app.mouse_handler + "()")
         self.keyboard_handler = eval(self.app.keyboard_handler + "()")
 
         # create_console
-        console = Console()
+        if config.PIL_available:
+            console = Console()
+            self.renderer.register_console_callbacks(console.render_console, console.console_keyboard)
 
         # register callbacks & console with Renderer
         self.renderer.register_callbacks(self.keyboard_handler.do_key, self.mouse_handler.do_button, self.mouse_handler.do_motion)
-        self.renderer.register_console_callbacks(console.render_console, console.console_keyboard)
 
         # register cmdcenter with renderer
         self.renderer.cmdcenter = self.cmdcenter

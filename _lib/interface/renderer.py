@@ -29,7 +29,7 @@ class Renderer(object):
     ''' The Renderer object is responsible for displaying the system via OpenGL/GLUT '''
 
     def __init__(self):
-        debug("Initializing Renderer")
+        info("Initializing Renderer")
         Globals().load(self)
 
         # set variables
@@ -42,7 +42,7 @@ class Renderer(object):
         #glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION)
 
         # create window
-        debug("Creating window")
+        info("Creating window")
 
         glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
 
@@ -83,8 +83,6 @@ class Renderer(object):
         self.show_console = False
         self.show_fps = False
         self.fps = self.fps_avg = 100
-        self.fps_font_size = 20
-        self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
 
         self.echo_string = None
 
@@ -99,7 +97,7 @@ class Renderer(object):
         
 
     def __del__(self):
-        debug("Deleting Renderer")
+        info("Deleting Renderer")
 
         self.pbo_ptr = None
 
@@ -137,7 +135,7 @@ class Renderer(object):
 
 
     def reshape(self, w, h):
-        debug("Reshape %dx%d" % (w, h))
+        info("Reshape %dx%d" % (w, h))
 
         # set viewport
         self.app.screen[0] = w
@@ -155,8 +153,11 @@ class Renderer(object):
         glMatrixMode(GL_MODELVIEW)
         
         # create echo font 
-        self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
-        self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
+        if config.PIL_available:
+            self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
+            self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
+            self.fps_font_size = 20
+            self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
 
         
     def grab_image(self):
@@ -272,11 +273,11 @@ class Renderer(object):
             self.render_console()
 
         # render fps
-        if(self.show_fps):
+        if(self.show_fps and config.PIL_available):
             self.render_fps()
 
         # messages
-        if(self.app.echo and self.echo_string):
+        if(self.app.echo and self.echo_string and config.PIL_available):
             self.echo()
 
         # grab image
@@ -310,21 +311,21 @@ class Renderer(object):
 
     def start(self):
         ''' Starts the main glut loop '''
-        debug("Start GLUT main loop")
+        info("Start GLUT main loop")
 
         glutMainLoop()
 
 
     def stop(self):
         ''' Stops the main glut loop '''
-        debug("Stop GLUT main loop")
+        info("Stop GLUT main loop")
         glutDestroyWindow(self.window)
         self.app.exit = True
 
 
     def register_callbacks(self, keyboard, mouse, motion):
         ''' Registers input & console callbacks with openGL '''
-        debug("Registering input callbacks")
+        info("Registering input callbacks")
 
         self.keyboard = keyboard
         glutKeyboardFunc(keyboard)
@@ -335,7 +336,7 @@ class Renderer(object):
 
     def register_console_callbacks(self, render_console, console_keyboard):
         ''' Registers console callbacks '''
-        debug("Registering console callbacks")
+        info("Registering console callbacks")
 
         self.render_console = render_console
         self.console_keyboard = console_keyboard
@@ -355,14 +356,14 @@ class Renderer(object):
 
     def toggle_console(self):
         ''' Toggles the interactive console '''
-        debug("Toggle console")
+        info("Toggle console")
 
         self.do_main_toggle_console = True
 
 
     def toggle_fps(self):
         ''' Toggles the fps display '''
-        debug("Toggle FPS")
+        info("Toggle FPS")
 
         # reset debug information
         self.d_time = 0
