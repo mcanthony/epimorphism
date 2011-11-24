@@ -11,6 +11,8 @@
  'OSC_client_address': ('192.168.200.3', 9000),
  'OSC_echo': True,
 
+ 'state_intrp_time': 3.0,
+
  'screen': [800,800,False],
  'kernel_dim': 1536,
  'fract': 2,

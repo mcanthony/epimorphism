@@ -47,9 +47,6 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       
       seed = $SEED$;
 
-      //int4 aux_v = read_imagei(aux, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
-      //seed = convert_float4(aux_v) / 255.0f;
-
       seed = _gamma3(seed, _GAMMA);      
 
       // cull & blending

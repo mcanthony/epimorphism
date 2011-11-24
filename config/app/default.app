@@ -18,7 +18,7 @@
  'record_events': False,
 
  'component_level': 'FULL',
- 'state_intrp_time': 2.0,
+ 'state_intrp_time': 3.0,
 
  'server': False,
 
@@ -42,6 +42,8 @@
 
  'screen' : [800,800,False],
  'echo' : True,
+
+ 'camera_enabled': False,
 
  'viewport' : [0.0, 0.0, 1.0],
 

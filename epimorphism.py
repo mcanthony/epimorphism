@@ -45,14 +45,17 @@ if(len(app_names) == 0):
     app = eval(app_names[i - 1].capitalize())()
     app_name = app.__class__.__name__.lower()
     state_names = [filename[len(app_name) + 1:-4] for filename in os.listdir("config/state") if filename.startswith(app_name)]
-    print "Choose a program"
-    for i, state in enumerate(state_names):
-        print "%d: %s" % (i+1, state)
-    input = raw_input('> ')
-    if(input == ""):
-        i = 1
+    if len(state_names) != 1:
+        print "Choose a preset"
+        for i, state in enumerate(state_names):
+            print "%d: %s" % (i+1, state)
+        input = raw_input('> ')
+        if(input == ""):
+            i = 1
+        else:
+            i = int(input)
     else:
-        i = int(input)
+        i = 1
     app.state = State(app_name, state_names[i - 1])
 elif(len(app_names) == 1):
     app = eval(app_names[0].capitalize())()

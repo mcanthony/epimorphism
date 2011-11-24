@@ -1,6 +1,12 @@
+import config
+
 from common.globals import *
 
 from common.complex import *
+
+from common.runner import *
+
+import random
 
 class EventManager(object):
 
@@ -89,3 +95,4 @@ class EventManager(object):
         z1 = [z0[0], z0[1]]
         z1[0] += 2.0
         self.cmdcenter.cmd("Radial2D('zn', %d, %s, {'s' : %s, 'e' : %s, 'loop' : True})" % (component, 8.0 * time, str(z0), str(z1)))
+

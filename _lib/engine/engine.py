@@ -202,7 +202,7 @@ class Engine(object):
 
     def upload_image(self, cl_image, data):
         ''' Upload an image to the DEVICE '''
-        debug("Uploading image")
+        # debug("Uploading image")
         clEnqueueWriteImage(self.queue, cl_image, data)
 
 

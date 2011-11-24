@@ -22,8 +22,9 @@ import StringIO, sys, traceback, random, copy
 if config.PIL_available:
     from PIL import Image
 
-#from opencv import highgui
-#import opencv
+if config.app.camera_enabled:
+    from opencv import highgui
+    import opencv
 
 from common.log import *
 set_log("CMDCENTER")
@@ -101,7 +102,7 @@ class CmdCenter(Archiver):
         func_blacklist = ['do', '__del__', '__init__', 'kernel', 'print_timings', 'record_event', 'start', 'switch_kernel',
                           'keyboard', 'console_keyboard', 'register_callbacks', 'render_console', 'capture', 'render_fps',
                           'video_time', 'set_inner_loop', 'time', 'cmd', 'echo', 'reshape',
-                          'init_component_indices'] + dir(object)
+                          'init_component_indices', 'handle_event'] + dir(object)
 
         # extract non-blacklist functions & data from an object
         def get_funcs(obj):
@@ -113,6 +114,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.video_renderer))
         funcs.update(get_funcs(self.engine))
         funcs.update(get_funcs(self.componentmanager))
+        funcs.update(get_funcs(self.eventmanager))
         funcs.update(default_funcs)
 
         # generate cmd exec environment
@@ -127,7 +129,9 @@ class CmdCenter(Archiver):
         self.last_frame_time = 0
         self.programs_initialized = False
 
-#        self.camera = highgui.cvCreateCameraCapture(0)
+        # camera
+        if config.app.camera_enabled and config.state.camera_id:
+            self.camera = highgui.cvCreateCameraCapture(config.state.camera_id)
         
         return True
 
@@ -153,6 +157,8 @@ class CmdCenter(Archiver):
         self.state.time = 0
         self.t_start = time.time()
         self.state.frame_cnt = 0
+
+        config.last_frame_time = self.time()
 
         # seed random
         if(self.state.randomize_seed):
@@ -180,6 +186,7 @@ class CmdCenter(Archiver):
                 d = self.abs_time() - self.last_frame_time
                 self.state.t_phase += 1.0 / 30.0 - d
 
+
             self.last_frame_time = self.abs_time()
 
 
@@ -191,6 +198,7 @@ class CmdCenter(Archiver):
             self.engine.do()
 
             self.state.frame_cnt += 1
+            #print "t elapsed:", self.abs_time() - self.last_frame_time
         
 
         # execute interface
@@ -211,9 +219,10 @@ class CmdCenter(Archiver):
                 if isinstance(program, Script):
                     program.data["phase"] = self.time()
                 program.start()
-
-
-#        self.upload_webcam_frame()
+        
+        # upload frame
+        if config.app.camera_enabled and config.state.camera_id:
+            self.upload_webcam_frame()
 
 
     def send_frame(self):
@@ -226,6 +235,8 @@ class CmdCenter(Archiver):
         self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
         self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
         self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      
+
+        config.last_frame_time = self.time()
 
 
     def cmd(self, code, record = True, capture=False):
@@ -479,4 +490,6 @@ class CmdCenter(Archiver):
     def quit(self):
         self.app.exit = True
         sys.exit(0)
+
+
 

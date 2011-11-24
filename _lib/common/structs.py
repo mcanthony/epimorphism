@@ -28,7 +28,7 @@ def save_obj(obj, type, extension, app_name, name=None):
     if(not name):
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
         idx = max([-1] + [int(file[(len(app_name) + 1):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(app_name + '_(\d+)').match(file)]) + 1
-        name = idx
+        name = "save_" + str(idx)
        
     try:
         obj["name"] = name

@@ -54,13 +54,13 @@ DONE:
   time 0-3
   prepare app for launch
   remove freeglut dependencies
+  windows build
+    optional PIL dependency
+
 
 RELEASE QUEUE:
 
   TouchOSC template 
-
-  windows build
-    optional PIL dependency
 
   mac build
     
@@ -89,7 +89,8 @@ LATER:
 
   ping osc device - disable if not found
 
-  implement pfn_notify in compiler
+  implement pfn_notify in compiler necessar???
+  gpu freezes when compiling?
   do second stage compilation in componentmanager after first finished
 
   make programs dict objs?

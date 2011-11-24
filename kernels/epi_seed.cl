@@ -3,7 +3,7 @@ const sampler_t fb_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CL
 // EPIMORPHISM library file
 // seed functions
 
-_EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time){
+_EPI_ float4 seed_simple(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -16,7 +16,17 @@ _EPI_ float4 seed_simple(read_only image2d_t fb, float2 z, __constant float* int
 
 }
 
-_EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time){
+
+_EPI_ float4 seed_aux(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+  // width, color, alpha, width_trans templated seed family
+  // FULL, LIVE, DEV
+
+  return convert_float4(read_imagei(aux, fb_sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
+
+}
+
+
+_EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
@@ -41,7 +51,7 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, float2 z, __constant float* intern
 }
 
 
-_EPI_ float4 seed_texture(read_only image2d_t fb, float2 z, __constant float* internal, __constant float* par, float time){
+_EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 

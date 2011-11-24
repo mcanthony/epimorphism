@@ -38,7 +38,7 @@ class ComponentManager(object):
             print i+1, ":", keys[i], "-", component, "-", self.datamanager.comment(keys[i], component)
 
 
-    def inc_data(self, name, ofs):
+    def inc_data(self, name, ofs, return_result=False):
         ''' Increments a component index '''
         info("Inc data: %s, %s" % (name, ofs))
 
@@ -60,15 +60,18 @@ class ComponentManager(object):
         else:
             idx += ofs
 
-        # get component
-        self.switch_components({name: components[idx % len(components)][0]})
-
+        new_component = components[idx % len(components)]
+        if(return_result):
+            return new_component[0]
+        # switch component
+        self.switch_components({name: new_component[0]})
 
 
     def switch_components(self, data):
         ''' Switches the system to the new components specified in data '''
         info("Switching components: %s" % str(data))
 
+#        self.cmdcenter.freeze=True
         self.switching_components = True
 
         if(len(data) == 0):
@@ -98,7 +101,12 @@ class ComponentManager(object):
 
         # wait until interpolation is done
         time.sleep(self.app.state_intrp_time)
-        self.switching_components = False
         for k,v in data.items():
             self.state.components[k] = v
+        
+        # recompile without interpolation
+        self.engine.compile()
 
+        self.switching_components = False
+
+            #self.cmdcenter.freeze=False

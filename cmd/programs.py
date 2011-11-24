@@ -11,7 +11,20 @@ set_log("Program")
 class RandomComponents(Program):
     def _execute(self):
         debug("Executing Random Components")
-        print "random component!"
+
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+
+        # update all components if necessary
+        if(not hasattr(self, "initialized")):
+            self.initialized = True
+            update = {}
+            for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A'][0:self.data["scope"]]:
+                update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
+        
+            print "UPDATE", update
+            config.cmdcenter.componentmanager.switch_components(update)
+            return
+
         i = random.randint(0, self.data["scope"])            
         if(i == 0):
             async(lambda :self.cmdcenter.cmd("inc_data('T', 0)", False))
@@ -26,5 +39,15 @@ class RandomComponents(Program):
         elif(i == 5):
             async(lambda :self.cmdcenter.cmd("inc_data('SEED', 0)", False))            
 
+
+class RandomAllComponents(Program):
+    def _execute(self):
+        debug("Execute random All Components")
+
         self.next_event_in = self.data["interval"] * (0.5 + random.random())
-        self.next_event_in = 5
+
+        update = {}
+        for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A'][0:self.data["scope"]]:
+            update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
+        
+        config.cmdcenter.componentmanager.switch_components(update)

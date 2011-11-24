@@ -1,6 +1,8 @@
+import config
+
 from common.globals import *
 
-import os, re, sys
+import os, re, sys, time
 
 from common.log import *
 from common.runner import *
@@ -25,22 +27,18 @@ class Compiler():
 
         contents = [self.get_definitions()] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
 
-        t0 = self.cmdcenter.abs_time()
-
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
             #self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros", callback=create_build_callback(self.callback))
             self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros")
+
+            t1 = self.cmdcenter.time()
         except BuildProgramFailureError as e:
             print e
             sys.exit(0)
-  
-        t1 = self.cmdcenter.abs_time()
-
-        #self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - t0))
-        print t1-t0
 
         self.callback(self.program, None)        
+        self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - config.last_frame_time))
 
 
     def get_definitions(self):
