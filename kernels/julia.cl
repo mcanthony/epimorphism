@@ -28,7 +28,7 @@ void julia(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t a
 
 
   while(i < max_iter && z.x * z.x + z.y * z.y < escape_rad){
-    z = M(z, z) + CX(-0.4f, 0.6f);
+    z = M(z, z) + zn[0];
 
     i += 1;
   }

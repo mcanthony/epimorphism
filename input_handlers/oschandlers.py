@@ -71,7 +71,7 @@ class DefaultOSCHandler(OSCHandler):
 
     def inc_par(self, addr, tags, data, source):
         name=addr[9:]
-        self.cmdcenter.cmd("state.par['%s'] = %f" % ('_' + name, self.par['_' + name] + data[0]))
+        self.cmdcenter.cmd("state.par['%s'] = %f" % ('_' + name, self.state.par['_' + name] + data[0]))
 
         
     def inc_cmp(self, addr, tags, data, source):

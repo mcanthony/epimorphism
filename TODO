@@ -62,6 +62,8 @@ RELEASE QUEUE:
 
   TouchOSC template 
 
+  only one internal[] necessary
+
   mac build
     
   OpenCL ATI Stream??
@@ -81,11 +83,12 @@ RELEASE QUEUE:
 
 
 LATER:
+  constraints on incremental par[] variables
+
   animation with touchosc
 
   move color axis to cpu
 
-  only one internal[] necessary
 
   ping osc device - disable if not found
 

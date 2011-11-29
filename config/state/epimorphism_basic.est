@@ -7,8 +7,9 @@
  'bpm': 120,
  'paths': [],
  'programs': [],
+ 'camera_id': 1,
  'components': {
- 'SEED': 'seed_wca(fb, z, internal, par, time)',
+ 'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
  'SEED_W': 'lines_box(z, par)',
  'SEED_WT': 'wt_gauss(w)',
  'SEED_C': 'simple_color(z, w, par, time)',

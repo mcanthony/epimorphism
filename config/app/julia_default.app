@@ -45,7 +45,7 @@
 
  'viewport' : [0.0, 0.0, 1.0],
 
- 'print_timing_info': True,
+ 'print_timing_info': False,
  'debug_freq': 10.0,
  'kernel_dim': 1536,
 
