@@ -1,8 +1,7 @@
 WINDOWS:
 
-copy epimorphism\_lib\source\win\freeglut.dll to C:\WINDOWS\System32
-copy epimorphism\_lib\source\win\msvcr32.dll to C:\WINDOWS\System32
-install the appropriate PIL package from _lib\source\win\
+install python-opengl package
+click on epimorphism.py?
 
 LINUX:
 

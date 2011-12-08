@@ -17,4 +17,5 @@
  'sources': ['util', 'math', 'colorspace', 'interference'], 
  'kernel': 'interference',
  'lib_prefix': 'int',
+ 'feedback_buffer': False
 }

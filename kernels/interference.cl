@@ -93,6 +93,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   // get z
   float2 z = (float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f);
   z_z = z;
+
   // compute val
   float waves[MAX_WAVES];
   for(int i = 0; i <= _SLICES; i++){
@@ -179,6 +180,83 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   */
 
   float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
+
+  // write out value
+  #ifdef POST_PROCESS
+  write_imagef(out, p, color);   
+  #else
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
+  #endif
+}
+
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void interference_fb(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
+		     __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+
+
+  float2 t, z_z;
+
+  // get coords
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  // get z
+  float2 z = (float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f);
+  z_z = z;
+
+  // compute val
+  float waves[MAX_WAVES + 1];
+  for(int i = 0; i <= _SLICES; i++){
+     float th = i * PI / _SLICES;
+     
+     if(i < _SLICES / 2.0f){
+       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;
+     }else if(i > _SLICES / 2.0f){
+       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;
+     }
+
+     float2 k = (float2)(cos(th), sin(th));
+
+     z = z_z;
+     z = M(zn[2], z) + zn[3];
+     z = $T$;     
+     z = M(zn[0], z) + zn[1];
+
+     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time * 0.01, _N, 0.0f);
+  }
+
+  waves[MAX_WAVES] = read_imagef(fb, sampler, (0.5f * z_z + (float2)(0.5f, 0.5f))).x;
+
+  float val = wrapn(waves, _SLICES + 2, _VAL_WRAP_TYPE);
+
+/*
+
+  // compute hue
+  for(int i = 0; i <= _SLICES; i++){
+     float th = i * PI / _SLICES;
+
+     if(i < _SLICES / 2.0f){
+       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;;
+     }else if(i > _SLICES / 2.0f){
+       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;;
+     }
+
+     float2 k = (float2)(cos(th), sin(th));
+
+     z = z_z;
+     z = M(zn[2], z) + zn[3];     
+     z = $T$;
+     z = M(zn[0], z) + zn[1];
+
+     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time * 0.01, _N, 0.0f) / 4.0f;
+  }
+
+  float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);
+  float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
+  */
+
+  float4 color = (float4)(val, val, val, 1.0);
 
   // write out value
   #ifdef POST_PROCESS
