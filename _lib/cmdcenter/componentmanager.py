@@ -106,7 +106,8 @@ class ComponentManager(object):
         
         # recompile without interpolation
         self.engine.compile()
-
+        
+        print "done switching"
         self.switching_components = False
 
             #self.cmdcenter.freeze=False

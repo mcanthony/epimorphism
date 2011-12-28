@@ -5,7 +5,8 @@ from ctypes import *
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 
-import common.glFreeType
+if config.PIL_available:
+    import common.glFreeType
 FONT_PATH = "_lib/common/FreeSansBold.ttf"
 
 class Console(object):

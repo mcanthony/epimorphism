@@ -8,7 +8,7 @@
 
  'OSC_enabled': False,
  'OSC_handler': 'DefaultEpimorphismOSC',
- 'OSC_client_address': ('192.168.200.3', 9000),
+ 'OSC_client_address': ('10.42.43.57', 9000),
  'OSC_echo': True,
 
  'state_intrp_time': 3.0,
