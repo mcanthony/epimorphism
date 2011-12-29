@@ -81,6 +81,8 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def cmd(self, addr, tags, data, source):
+        if(data[0] != 1):
+            return
         cmd=addr[5:]
         self.cmdcenter.cmd("%s()" % cmd)        
 
