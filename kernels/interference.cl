@@ -115,8 +115,21 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
      waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time * 0.01, _N, 0.0f);
   }
 
-  float val = wrapn(waves, _SLICES + 1, _VAL_WRAP_TYPE);
 
+  float j = 0.0;
+  for(int i = 0; i <= _SLICES; i++){
+    j+=waves[i];
+  }
+
+  float val;
+  if(j > 0)
+    val = 1.0;
+  else
+    val = 0.0;
+
+
+  //  float val = wrapn(waves, _SLICES + 1, _VAL_WRAP_TYPE);
+  /*
   // compute hue
   for(int i = 0; i <= _SLICES; i++){
      float th = i * PI / _SLICES;
@@ -138,7 +151,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   }
 
   float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);
-
+  */
   /*
   // compute rotation
   for(int i = 0; i <= _SLICES; i++){
@@ -179,7 +192,7 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   color = HSVtoRGB(color);
   */
 
-  float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
+  float4 color = HSVtoRGB((float4)(0, 0.0f, val, 1.0f));
 
   // write out value
   #ifdef POST_PROCESS

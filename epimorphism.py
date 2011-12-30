@@ -44,7 +44,7 @@ if(len(app_names) == 0):
         i = int(input)
     app = eval(app_names[i - 1].capitalize())()
     app_name = app.__class__.__name__.lower()
-    state_names = [filename[len(app_name) + 1:-4] for filename in os.listdir("config/state") if filename.startswith(app_name)]
+    state_names = sorted([filename[len(app_name) + 1:-4] for filename in os.listdir("config/state") if filename.startswith(app_name)])
     if len(state_names) != 1:
         print "Choose a preset"
         for i, state in enumerate(state_names):
