@@ -193,6 +193,8 @@ void interference(__global uchar4* pbo, write_only image2d_t out, read_only imag
   color = HSVtoRGB(color);
   */
 
+  hue += (M(z, z) + 5 * (cos(time / 2) + 0.5) * cosz(z)).x / 5.0;
+
   float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
 
   // write out value
