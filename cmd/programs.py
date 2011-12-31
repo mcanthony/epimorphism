@@ -18,10 +18,10 @@ class RandomComponents(Program):
         if(not hasattr(self, "initialized")):
             self.initialized = True
             update = {}
-            for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A'][0:self.data["scope"]]:
+            for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A', 'SEED'][0:self.data["scope"]]:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
         
-            print "UPDATE", update
+            # print "UPDATE", update
             config.cmdcenter.componentmanager.switch_components(update)
             return
 
@@ -47,7 +47,7 @@ class RandomAllComponents(Program):
         self.next_event_in = self.data["interval"] * (0.5 + random.random())
 
         update = {}
-        for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A'][0:self.data["scope"]]:
+        for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A', 'SEED'][0:self.data["scope"]]:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
         
         config.cmdcenter.componentmanager.switch_components(update)

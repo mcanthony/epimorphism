@@ -19,7 +19,7 @@ _EPI_ float4 seed_simple(read_only image2d_t fb, read_only image2d_t aux, float2
 
 _EPI_ float4 seed_aux(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   return convert_float4(read_imagei(aux, fb_sampler, (0.5f * z + (float2)(0.5f, 0.5f)))) / 255.0f;
 
@@ -48,6 +48,35 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z,
   }
 
   return res;
+}
+
+_EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+  // width, color, alpha, width_trans templated seed family
+  // FULL, LIVE, DEV
+
+  /*
+  float4 res;
+  float ep = -0.0000001;
+  float seed_wt, seed_a;
+  float2 seed_w, seed_w0, seed_w1;
+  float4 seed_c;
+  float w = $SEED_W$.x;
+
+  w = fmax(fmin(w, 1.0f), ep);
+
+  if(w > 0.0f){   
+    w = $SEED_WT$;    
+    res = $SEED_C$;    
+    res.w = $SEED_A$;
+  }else{
+    res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+  }
+
+  */
+
+  float hue = (M(z, z) + 5 * (cos(time / 2) + 0.5) * cosz(z)).x / 5.0;
+
+  return HSVtoRGB((float4)(hue, 1.0, 1.0, 0.5));
 }
 
 
