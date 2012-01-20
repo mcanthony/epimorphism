@@ -4,15 +4,20 @@ import sys, os
 sys.path.append("_lib/sources")
 sys.path.append("_lib")
 
-os.environ['PATH'] = '_lib/sources/win' + ';' + os.environ['PATH']
+# add location of dlls to path if windows
+if sys.platform == "win32":
+    if 'PROGRAMFILES(X86)' in os.environ:  # 64 bit windows
+        os.environ['PATH'] = '_lib/sources/win64' + ';' + os.environ['PATH']
+    else:
+        os.environ['PATH'] = '_lib/sources/win32' + ';' + os.environ['PATH']
 
+# test for availability of PIL
 import config
 try: 
     import PIL
     config.PIL_available = True 
 except ImportError: 
     config.PIL_available = False 
-
 
 # setup logging
 from common.log import *
@@ -29,6 +34,13 @@ from config.applications import *
 # sort arguments
 app_names = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 1]
 assignments = [arg for arg in sys.argv[1:] if len(arg.split('=')) == 2]
+
+# create new application if requested
+from config.generator import *
+if len(app_names) == 2 and app_names[0] == "generate":
+    generate_application(app_names[1])
+    print "%s application successfully generated\nMain kernel file is kernels/%s.cl" % (app_names[1].capitalize(), app_names[1])
+    sys.exit(0)
 
 # create app
 if(len(app_names) == 0):
@@ -99,10 +111,8 @@ def main():
 
     info("Main loop completed")
 
-#def start():
-#    async(main)
+def start():
+    async(main)
 
-#if(app.autostart):
-#    start()
-
-main()
+if(app.autostart):
+    start()

@@ -25,8 +25,4 @@ class Epimorphism(App):
         subs = App.get_substitutions(self)
         subs.update({'FRACT': self.fract, 'CULL_ENABLED': cull_enabled and "1" or ""})
         return subs
-
-
-class Lissajous(App):
-    def __init__(self, name='default'):
-        App.__init__(self, 'lissajous', name)
+    

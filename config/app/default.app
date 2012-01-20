@@ -49,10 +49,10 @@
 
  'print_timing_info': False,
  'debug_freq': 10,
- 'kernel_dim': 1536,
+ 'kernel_dim': 1024,
 
  'kernel': 'test',
- 'sources': ['util', 'math', 'colorspace', 'test'],
+ 'sources': ['util', 'math', 'colorspace'],
  'lib_prefix': 'def',
  'feedback_buffer': False
 }
