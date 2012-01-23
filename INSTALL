@@ -3,21 +3,25 @@ WINDOWS:
 install python 2.7
 click on epimorphism.py or run with python 2.7 via a console
 
+to take screenshots & onscreen text, install PIL(optional)
+
+
 LINUX:
 
-Dependencies - python2.7, distutils, PIL, freeglut, python-opengl
+Dependencies - python2.7, freeglut, PIL(optional)
 
 ./epimorphism
 
 
 OSX:
 
+borken
 
 
+IF THE APPLICATION RUNS SLOWLY:
+  try each of(default is 1536):
+  ./epimorphism kernel_dim=1024
+  ./epimorphism kernel_dim=512
+  ./epimorphism kernel_dim=256
 
-
-NEW APP:
- add $app object to config/applications.py
- add config/app/$app_default.app
- add config/state/$app_default.est
- add kernels/$app_kerenls.cl
+  until you get acceptable performance

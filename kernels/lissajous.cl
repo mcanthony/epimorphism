@@ -1,11 +1,11 @@
-// test
+// lissajous
 
 const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
+void lissajous(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
 	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // get coords
   const int x = get_global_id(0);
@@ -17,6 +17,17 @@ void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t au
 
   // generate color(z)
   float4 color = HSVtoRGB((float4)(2 * PI * z.x, 1.0f, (z.y + 1.0) / 2.0, 0.0f));
+
+  float total = 1;
+  for(int i = 0; i < 7; i++)
+    total += i;
+
+  float total2 = 0;
+
+  for(int j = 0; j < total; j++)
+    total2 += j;
+
+  color.x = total2;
 
   // write out color
   #ifdef $POST_PROCESS$
