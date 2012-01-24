@@ -7,7 +7,7 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void test(__global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux, 
 	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
-  // get coords
+  // get p in [0..$KERNEL_DIM]x[0..$KERNEL_DIM]
   const int x = get_global_id(0);
   const int y = get_global_id(1);
   int2 p = (int2)(x, y);

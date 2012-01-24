@@ -1,5 +1,5 @@
 {
- 'app_name': 'default',
+ 'app_name': 'lissajousglitch',
  'VERSION': 1.0,
  'randomize_seed': False,
  'aux': None,

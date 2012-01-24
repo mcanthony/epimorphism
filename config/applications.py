@@ -27,6 +27,6 @@ class Epimorphism(App):
         return subs
 
 
-class Lissajous(App):
+class Lissajousglitch(App):
     def __init__(self, name='default'):
-        App.__init__(self, 'lissajous', name)
+        App.__init__(self, 'lissajousglitch', name)
