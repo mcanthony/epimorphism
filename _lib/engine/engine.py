@@ -48,7 +48,10 @@ class Engine(object):
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
-        format = cl_image_format(CL_BGRA, CL_FLOAT)
+        if(self.app.feedback_buffer and str(self.app.feedback_buffer) == '1'):
+            format = cl_image_format(CL_R, CL_FLOAT)
+        else:
+            format = cl_image_format(CL_BGRA, CL_FLOAT)
 
         self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 

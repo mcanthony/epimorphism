@@ -101,3 +101,48 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   return HSLstoRGB(v);
 }
 
+_EPI_ float4 color1d(float v, float2 z, float2 z_z, __constant float* par, float time){
+  // identity
+  // FULL, LIVE, DEV
+
+	int n = 3;
+	float a[3];
+
+	a[0] = a[1] = a[2] = 0.0;
+
+
+  float l = native_sqrt(z.x * z.x + z.y * z.y);
+  l = native_divide((4.0f * _COLOR_LEN_SC + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC));
+  l = native_log(l + 1.0f);
+
+	float th = (_COLOR_DHUE + time * _COLOR_SPEED_TH * 0.1f);
+
+	v = remf1(v + l + th, 1.0f);
+	
+	if(0.0f / n <= v && v < 1.0f / n)
+		a[0] = 1.0f - n * (v - 0.0f / n);
+	else if(2.0f / n <= v && v < 3.0f / n)
+		a[0] = n * (v - 2.0 / n);
+
+	if(1.0f / n <= v && v < 2.0f / n)
+		a[1] = 1.0f - n * (v - 1.0f / n);
+	else if(0.0f / n <= v && v < 1.0f / n)
+		a[1] = n * (v - 0.0 / n);
+
+	if(2.0f / n <= v && v < 3.0f / n)
+		a[2] = 1.0f - n * (v - 2.0f / n);
+	else if(1.0f / n <= v && v < 2.0f / n)
+		a[2] = n * (v - 1.0 / n); 
+
+
+	float4 colors[3] = {(float4)(1.0, 0.1, 0.0, 0.0), (float4)(0.8, 0.0, 0.3, 0.0), (float4)(1.0, 1.0, 1.0, 0.0)};
+		
+	float4 color = a[0] * colors[0] + a[1] * colors[1] + a[2] * colors[2];
+
+	float b = remf1(z.x + time, 1.0f);
+
+	color = b * color + (1.0 - b) * (float4)(0.2,0.0,0.7, 0.0);
+	
+	
+  return color;
+}

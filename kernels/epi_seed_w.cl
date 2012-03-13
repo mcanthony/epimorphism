@@ -17,7 +17,7 @@ _EPI_ float2 fade(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = (z.x + 1.0f) / 2.0f;
-  return CX(trans_w(w, par), 1.0f);
+  return CX(trans_w(w, par), w);
 }
 
 

@@ -41,6 +41,10 @@ float4 recover4(float4 z){
   return z;
 }
 
+float remf1(float z, float m){
+  return z - m * floor(native_divide(z, m));
+}
+
 float2 remf(float2 z, float m){
   return z - m * floor(CX(native_divide(z.x, m), native_divide(z.y, m)));
 }

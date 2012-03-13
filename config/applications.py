@@ -35,3 +35,14 @@ class Lissajousglitch(App):
 class Integralcurves(App):
     def __init__(self, name='default'):
         App.__init__(self, 'integralcurves', name)
+
+
+class Epimorph1d(App):
+    def __init__(self, name='default'):
+        App.__init__(self, 'epimorph1d', name)
+
+    def get_substitutions(self):
+        cull_enabled = self.state.par['_CULL_DEPTH'] != 0
+        subs = App.get_substitutions(self)
+        subs.update({'FRACT': self.fract, 'CULL_ENABLED': cull_enabled and "1" or ""})
+        return subs
