@@ -21,8 +21,8 @@ void lissajousglitch(__global uchar4* pbo, write_only image2d_t out, read_only i
   int nrParticles = 50;
   float dist[50];
 
-  float glitch_f = 50;  // the larger this is, the more inaccurate the distance calculation will be.
-  float scale = 1.0;    // increase to 'zoom' out, decrease for in
+  float glitch_f = 100;  // the larger this is, the more inaccurate the distance calculation will be.
+  float scale = 0.2;    // increase to 'zoom' out, decrease for in
 
   // compute distances
   for(int i = 0; i< nrParticles; i++){
@@ -46,8 +46,8 @@ void lissajousglitch(__global uchar4* pbo, write_only image2d_t out, read_only i
 
   // generate color(z)
   // float4 color = (float4)(dist[0] - floor(dist[0]),c,dist[18] - floor(dist[18]),1.0);
-  // float4 color = (float4)(dist[0] - floor(dist[0]),dist[25] - floor(dist[25]),dist[18] - floor(dist[18]),1.0);
-  float4 color = (float4)(c,c,c,1.0);
+   float4 color = (float4)(dist[0] - floor(dist[0]),dist[25] - floor(dist[25]),dist[18] - floor(dist[18]),1.0);
+  //float4 color = (float4)(c,c,c,1.0);
 
   // write out color
   #ifdef $POST_PROCESS$

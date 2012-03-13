@@ -12,6 +12,7 @@
  'sphere_rot': [0.0,0.0],
  'post_process': None,
  'camera_id': None,
+ 'bpm': 120,
  'components': {},
  'par': {'dummy': 0.0},
  'zn': [0.0+0.0j],

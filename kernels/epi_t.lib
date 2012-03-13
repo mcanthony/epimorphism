@@ -1,4 +1,4 @@
-z		                         :
+z									                       :
 D($l, z)                                 :
 expz(z)                                  :
 sinz(z)                                  :
@@ -8,10 +8,10 @@ $l - sqz(z)                              :
 sinhz(z)                                 :
 coshz(z)                                 :
 tanhz(z)                                 :
-D($i, sinhz(z))				 :
-0.5f * (sinz(z) + D($i, sinhz(z)))	 :
-$l - 0.5f * (sqz(z) + tanhz(z))		 :
-D($i, tanhz(z))				 :
+D($i, sinhz(z))													 :
+0.5f * (sinz(z) + D($i, sinhz(z)))	     :
+$l - 0.5f * (sqz(z) + tanhz(z))		       :
+D($i, tanhz(z))				                   :
 cosz(z) - tanhz(z)			 :
 0.5f * (z + expz(z))			 :
 0.5f * (z + sqz(z))			 :

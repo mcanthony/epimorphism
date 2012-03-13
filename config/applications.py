@@ -30,3 +30,8 @@ class Epimorphism(App):
 class Lissajousglitch(App):
     def __init__(self, name='default'):
         App.__init__(self, 'lissajousglitch', name)
+
+
+class Integralcurves(App):
+    def __init__(self, name='default'):
+        App.__init__(self, 'integralcurves', name)

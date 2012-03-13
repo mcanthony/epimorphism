@@ -8,7 +8,7 @@
  'randomize_seed': True,
  'bpm': 120,
  'paths': [],
- 'programs': [Script('epimorphism', 'roses'), RandomAllComponents({'scope': 6, 'interval':40})],
+ 'programs': [Script('epimorphism', 'roses'), RandomAllComponents({'scope': 6, 'interval':20})],
  'components': {
  'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
  'SEED_W': 'lines_inner(z, par)',

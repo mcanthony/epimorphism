@@ -34,7 +34,7 @@
  'midi_speed': 0.5,
  'last_midi_event': 0.0,
 
- 'OSC_enabled': True,
+ 'OSC_enabled': False,
  'OSC_handler': 'DefaultOSCHandler',
  'OSC_input_port': 8000,
  'OSC_client_address': ('10.42.43.57', 9000),

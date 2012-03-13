@@ -19,7 +19,13 @@ def generate_application(name):
     f.close()
 
     # create default application state
-    copyfile("config/state/default.est", "config/state/%s_default.est" % name)
+    f = open("config/state/default.est", "r")
+    contents = f.read()
+    f.close()
+    contents = contents.replace("default", name)
+    f = open("config/state/%s_default.est" % name, 'w')
+    f.write(contents)
+    f.close()
 
     # create default kernel
     f = open("kernels/test.cl", "r")
