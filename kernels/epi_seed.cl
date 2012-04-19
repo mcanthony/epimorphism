@@ -50,33 +50,9 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z,
   return res;
 }
 
-_EPI_ float4 seed_wca1d(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
-  // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
-
-  float4 res;
-  float ep = -0.0000001;
-  float seed_wt, seed_a;
-  float2 seed_w, seed_w0, seed_w1;
-  float4 seed_c;
-  float w = $SEED_W$.x;
-
-  w = fmax(fmin(w, 1.0f), ep);
-
-  if(w > 0.0f){   
-    w = $SEED_WT$;    
-    res.x = w;
-    res.w = $SEED_A$;
-  }else{
-    res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  }
-
-  return res;
-}
-
 _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   /*
   float4 res;
@@ -99,14 +75,15 @@ _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z
   */
 
   float hue = (M(z, z) + 5 * (cos(time / 2) + 0.5) * cosz(z)).x / 5.0;
+	float val = (M(z, z) + 5 * (sin(time / 2) + 0.5) * sinz(z)).x / 5.0;
 
-  return HSVtoRGB((float4)(hue, 1.0, 1.0, 0.5));
+  return HSVtoRGB((float4)(hue, 1.0, val, 0.5));
 }
 
 
 _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   float4 res;
   float ep = -0.0000001;
@@ -135,3 +112,26 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float
   return res;
 }
 
+_EPI_ float4 seed_wca1d(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+  // width, color, alpha, width_trans templated seed family
+  // DEV
+
+  float4 res;
+  float ep = -0.0000001;
+  float seed_wt, seed_a;
+  float2 seed_w, seed_w0, seed_w1;
+  float4 seed_c;
+  float w = $SEED_W$.x;
+
+  w = fmax(fmin(w, 1.0f), ep);
+
+  if(w > 0.0f){   
+		w = $SEED_WT$;    
+    res.x = w;
+    res.w = $SEED_A$;
+  }else{
+    res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+  }
+
+  return res;
+}

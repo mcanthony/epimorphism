@@ -56,11 +56,14 @@ DONE:
   remove freeglut dependencies
   windows build
     optional PIL dependency
+	in generator, fix default state application name
+	new application deploy script
+	
 
 
 RELEASE QUEUE:
 
-  in generator, fix default state application name
+	nove state_intrp_time to state
 
   TouchOSC template 
 
@@ -68,9 +71,7 @@ RELEASE QUEUE:
 
   mac build
     
-  OpenCL ATI Stream??
-
-  new application deploy script
+  OpenCL ATI Stream?? 
 
   detect if device available 
   scale performance to system

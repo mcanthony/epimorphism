@@ -12,7 +12,6 @@ def generate_application(name):
 
     f.close()
     
-
     # create default application configuration
     f = open("config/app/%s_default.app" % name, "w")
     f.write("{'app':'%s',\n 'state': State('%s', 'default'),\n 'sources': ['util', 'math', 'colorspace', '%s'],\n 'kernel': '%s'}" % (name, name, name, name))

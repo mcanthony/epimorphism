@@ -5,7 +5,7 @@
  'image': None,
  'frame_cnt': 0,
  'randomize_seed': True,
- 'programs': [],
+   'programs': [],
  'paths': [],
  'camera_id': 1,
  'components': {
@@ -13,7 +13,7 @@
  'SEED_W': 'lines_box(z, par)',
  'SEED_WT': 'wt_id(w)',
  'SEED_C': 'simple_color(z, w, par, time)',
- 'SEED_A': 'linear_alpha(w, par)',
+ 'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',
  'COLOR': 'color1d(v, z, z_z, par, time)',

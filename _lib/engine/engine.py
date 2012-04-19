@@ -49,7 +49,7 @@ class Engine(object):
 
         # create buffers
         if(self.app.feedback_buffer and str(self.app.feedback_buffer) == '1'):
-            format = cl_image_format(CL_R, CL_FLOAT)
+            format = cl_image_format(CL_RA, CL_FLOAT)
         else:
             format = cl_image_format(CL_BGRA, CL_FLOAT)
 

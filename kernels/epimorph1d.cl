@@ -9,6 +9,10 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   float2 t, t_seed, reduce;
   float4 seed, color;
 
+	color = (float4)(0.0,0.0,0.0,0.0);
+
+	float4 color2 = (float4)(0.0,0.0,0.0,0.0);
+	
   // get coords
   const int x = get_global_id(0);
   const int y = get_global_id(1);
@@ -19,7 +23,8 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   float2 z_z = z;
   
   // internal antialiasing
-  float v = 0.0;
+  float2 v = (float2)(0.0,0.0);
+	float nv = 0;
   const float i_k = ($FRACT$ == 1 ? 0.0f : 1.0f / $KERNEL_DIM$);  
   const float inc = ($FRACT$ == 1 ? 0.0f : 2.0f / ($KERNEL_DIM$ * ($FRACT$ - 1.0f)));  
 
@@ -37,7 +42,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = recover2($REDUCE$);      
       
       // get frame
-      float frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f))).x;
+      float2 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f))).xw;
      
       // compute seed          
       z = M(zn[10], (z - zn[11]));           
@@ -45,7 +50,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = M(zn[8], (z - zn[9]));
       z = recover2($REDUCE$);
       
-      seed = $SEED$;
+      seed = $SEED$.xxyw;
 
       // seed = _gamma3(seed, _GAMMA);      
 
@@ -62,20 +67,34 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // cull & blending
       #ifdef $CULL_ENABLED$
       //v = cull(v, seed, frame, par);
-      #else      
-      v += seed.w * seed.x + (1.0 - seed.w) * frame;      
+      #else			
+      v.y = seed.w * seed.y + (1.0 - seed.w) * frame.y;
+			v.x = frame.x;
+			color2 = $COLOR$;
+			v.x = 0;
+			color += (1.0 - seed.w) * color2 + seed.w * $COLOR$;
+			nv += (1.0 - seed.w) * color2.w;
       #endif
 
     }
 
   // scale
-  v = v / ($FRACT$ * $FRACT$);
+	//  v = v / ($FRACT$ * $FRACT$);
+	nv = nv / ($FRACT$ * $FRACT$);
+	color = color / ($FRACT$ * $FRACT$);
+	
   //v = recover(v);
 
   // compute color  
-  color = recover4($COLOR$);
+  // color = recover4($COLOR$);
 
-	color = _gamma3(color, _GAMMA);      
+	//color = _gamma3(color, _GAMMA);
+
+	//float nv = color.w;
+
+	//v.x = 0;
+
+	//color = w * $COLOR$;
 
   //z = tri_reduce(4.0f*z);
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
@@ -85,8 +104,10 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 
   //color.w = 1.0f;
 
+	//	v.x = nv;
+
   // write out value
-  write_imagef(out, p, v);   
+  write_imagef(out, p, (float4)(nv, 0.0, 0.0, v.y));   
   #ifndef $POST_PROCESS$
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
   #endif

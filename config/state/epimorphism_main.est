@@ -8,7 +8,7 @@
  'randomize_seed': True,
  'bpm': 120,
  'paths': [],
- 'programs': [Script('epimorphism', 'roses'), RandomAllComponents({'scope': 6, 'interval':20})],
+ 'programs': [Script('epimorphism', 'roses'), RandomAllComponents({'scope': 6, 'interval':40})],
  'components': {
  'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
  'SEED_W': 'lines_inner(z, par)',
@@ -17,7 +17,7 @@
  'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',
- 'COLOR': 'rotate_hsls(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsls(v, z, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
@@ -67,7 +67,7 @@
  '_SEED_GRID_N':
  0.5,
  '_SEED_COLOR_SPEED':
- 0.7,
+ 0.35,
  '_COLOR_PHI1':
  1.0,
  '_COLOR_PSI1':
@@ -97,11 +97,13 @@
  '_COLOR_TH_EFF':
  0.0,
  '_COLOR_SPEED_TH':
- 0.4,
+ 0.2,
  '_COLOR_RESET_Z':
  0.5,
+  '_COLOR_Z_RST':
+ 0.0,
  '_GAMMA':
  2.2,
  '_CULL_DEPTH':
- 0.0
+ 0.0,
  }}

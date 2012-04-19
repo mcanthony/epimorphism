@@ -6,7 +6,7 @@ const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
 		 __constant float *par, __constant float *internal, __constant float2 *zn, float time){
-  float2 t, t_seed, reduce;
+  float2 t_seed, reduce;
   float4 seed, color;
 
   // get coords
@@ -38,6 +38,22 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
+
+			// compute T      
+      z = M(zn[2], z) + zn[3];
+      z = $T$;
+
+			// compute T      
+      z = M(zn[2], z) + zn[3];
+      z = $T$;
+
+			// compute T      
+      z = M(zn[2], z) + zn[3];
+      z = $T$;
+
+			// compute T      
+      z = M(zn[2], z) + zn[3];
+      z = $T$;
      
       // compute seed          
       z = M(zn[10], (z - zn[11]));           
@@ -52,8 +68,8 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // cull & blending
       #ifdef $CULL_ENABLED$
       v = cull(v, seed, frame, par);
-      #else      
-      v += seed.w * seed + (1.0 - seed.w) * frame;      
+      #else
+			v += seed.w * seed + (1.0 - seed.w) * frame;			
       #endif
 
     }
@@ -66,6 +82,11 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   // compute color  
   color = recover4($COLOR$);
 
+	//	float s = color.x;
+	//	color.x = (1.0 + native_sin(PI * color.z)) / 2.0;
+  //color.z = (1.0 + native_sin(PI * color.y)) / 2.0;
+  //color.y = (1.0 + native_cos(PI * s)) / 2.0;
+
   //z = tri_reduce(4.0f*z);
   //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
   //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
@@ -77,7 +98,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   // write out value
   write_imagef(out, p, color);   
   #ifndef $POST_PROCESS$
-  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
+	pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
   #endif
 
 }
