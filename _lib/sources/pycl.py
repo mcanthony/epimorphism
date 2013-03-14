@@ -2993,8 +2993,29 @@ def get_gl_sharing_context_properties():
         props[GL_CONTEXT_KHR] = gl_platform.GetCurrentContext()
         props[WGL_HDC_KHR] = WGL.wglGetCurrentDC()
     elif sys.platform == "darwin":
-        context = gl_platform.GetCurrentContext()        
-        props[CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE] = gl_platform.CGL.CGLGetShareGroup(context)
+        # context = gl_platform.GetCurrentContext()
+
+        # GetShareGroup = gl_platform.createBaseFunction( 
+        #     'CGLGetShareGroup', dll=gl_platform.GL, resultType=ctypes.c_void_p, 
+        #     argTypes=[ctypes.c_void_p],
+        #     doc='CGLGetShareGroup(CGLContext) -> ShareGroup', 
+        #     argNames=(),
+        # )
+        
+        # props[CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE] = GetShareGroup(ctypes.c_void_p(context))
+        context_func = gl_platform.GL.CGLGetCurrentContext
+        context_func.restype = ctypes.c_void_p
+
+        context = context_func()    
+        share_func = gl_platform.GL.CGLGetShareGroup
+
+        share_func.restype = ctypes.c_void_p
+        share_func.argtypes = [ctypes.c_void_p]
+        share_group = share_func(context)
+
+        print share_group
+        
+        props[CL_CONTEXT_PROPERTY_USE_CGL_SHAREGROUP_APPLE] = share_group
     else:
         raise NotImplementedError("platform '%s' not yet supported" 
                 % sys.platform)

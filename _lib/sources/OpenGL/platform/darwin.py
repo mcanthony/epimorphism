@@ -57,6 +57,8 @@ class DarwinPlatform( baseplatform.BasePlatform ):
         CGL.CGLGetCurrentContext 
     )
 
+    ########
+
     def getGLUTFontPointer( self, constant ):
         """Platform specific function to retrieve a GLUT font pointer
         

@@ -112,7 +112,7 @@ def main():
     info("Main loop completed")
 
 def start():
-    async(main)
+    main()
 
 if(app.autostart):
     start()
