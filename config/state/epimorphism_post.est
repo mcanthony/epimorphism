@@ -12,7 +12,7 @@
  'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
  'SEED_W': 'lines_box(z, par)',
  'SEED_WT': 'wt_gauss(w)',
- 'SEED_C': 'simple_color(z, w, par, time)',
+ 'SEED_C': 'simple_color(aux, z, seed, par, time)',
  'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',

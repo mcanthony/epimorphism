@@ -10,10 +10,10 @@
  'paths': [],
  'programs': [Script('epimorphism', 'roses'), RandomAllComponents({'scope': 1, 'interval':40})],
  'components': {
- 'SEED': 'seed_aux(fb, aux, z, internal, par, time)',
- 'SEED_W': 'lines_inner(z, par)',
+ 'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
+ 'SEED_W': 'solid(z, par)',
  'SEED_WT': 'wt_gauss(w)',
- 'SEED_C': 'simple_color(z, w, par, time)',
+ 'SEED_C': 'tex_color(aux, z, seed, par, time)',
  'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',
@@ -68,6 +68,8 @@
  0.5,
  '_SEED_COLOR_SPEED':
  0.7,
+ '_SEED_TEX_SC':
+ 1.0, 
  '_COLOR_PHI1':
  1.0,
  '_COLOR_PSI1':
