@@ -30,7 +30,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
     a = atan2(z_z.y, z_z.x) * floor(8.0f * _COLOR_TH_EFF) / (2.0f * PI);
   }
 
-  float th = (_COLOR_DHUE + l + a + time * _COLOR_SPEED_TH * 0.1f);
+  float th = (_COLOR_DHUE + a + time * _COLOR_SPEED_TH * 0.1f);
   v.x += th;
 
   if(_COLOR_18 < 0.99f){

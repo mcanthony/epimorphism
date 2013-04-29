@@ -17,7 +17,7 @@
  'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',
- 'COLOR': 'rotate_hsv(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
@@ -103,5 +103,11 @@
  '_GAMMA':
  2.2,
  '_CULL_DEPTH':
- 0.0
+ 0.0,
+  '_PC3_HUE':
+ 0.33,
+ '_PC3_SPREAD':
+ 0.8,
+ '_PC3_LGV':
+ 0.7
  }}

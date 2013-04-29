@@ -62,7 +62,6 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   v = (float4)(v.xyz / ($FRACT$ * $FRACT$), v.w);
   v = recover4(v);
 
-
   // compute color  
   color = recover4($COLOR$);
 

@@ -1,5 +1,5 @@
 {'app_name': 'epimorphism',
- 'name': 'default',
+ 'name': 'epimorphism_post',
  'VERSION': 1.0,
  'time': 0.0,
  'image': None,
@@ -16,11 +16,11 @@
  'SEED_A': 'solid_alpha(w, par)',
  'T': 'z',
  'T_SEED': 'z',
- 'COLOR': 'bgr_id(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsv(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
- 'zn': [(1.0+0.0j),
+ 'zn': [(1.2+0.0j),
  (0.0+0.0j),
  (1.0+0j),
  0j,
@@ -103,7 +103,7 @@
  2.2,
  '_CULL_DEPTH':
  0.0,
-  '_PC3_HUE':
+ '_PC3_HUE':
  0.33,
  '_PC3_SPREAD':
  0.8,

@@ -47,22 +47,10 @@ float4 HSVtoRGB(float4 val){
   }
 }
 
+float4 HSLtoRGB(float4 val){
 
-float4 HSLstoRGB(float4 val){
-
-  float s = native_sqrt(val.x * val.x + val.y * val.y);
-  float h;
-
-  if(s == 0.0f){
-    h = 0.0f;
-  }else{
-    h = atan2(val.y, val.x);
-  }
-
-  if(h <= 0.0f)
-    h += 2.0f * 3.14159f;
-  h /= (2.0f * 3.14159f);
-
+  float h = val.x;
+	float s = val.y;
   float l = val.z;
 
   if(s == 0.0f)
@@ -80,6 +68,29 @@ float4 HSLstoRGB(float4 val){
   s = 1.0f - native_divide(min, v);
 
   return HSVtoRGB((float4)(h, s, v, val.w));
+}
+
+
+
+float4 HSLstoRGB(float4 val){
+
+  float s = native_sqrt(val.x * val.x + val.y * val.y);
+  float h;
+
+  if(s == 0.0f){
+    h = 0.0f;
+  }else{
+    h = atan2(val.y, val.x);
+  }
+
+  if(h <= 0.0f)
+    h += 2.0f * 3.14159f;
+  h /= (2.0f * 3.14159f);
+
+	val.x = h;
+	val.y = s;
+
+	return HSLtoRGB(val);
 }
 
 

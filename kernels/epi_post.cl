@@ -72,7 +72,7 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
 //}
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process_colors(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
+void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
   // get coords
   const int x = get_global_id(0);
   const int y = get_global_id(1);
@@ -82,23 +82,45 @@ void post_process_colors(read_only image2d_t fb, __global uchar4* pbo, __constan
 
   v = RGBtoHSV(v);
 
+	float4 c0 = HSLtoRGB((float4)(_PC3_HUE, 1.0, 0.5, 0.0));
+	float4 c1 = HSLtoRGB((float4)(_PC3_HUE + _PC3_SPREAD / 2.0, 1.0, _PC3_LGV, 0.0));
+	float4 c2 = HSLtoRGB((float4)(_PC3_HUE - _PC3_SPREAD / 2.0, 1.0, -1.0 * _PC3_LGV, 0.0));
+
+	/*
 	float4 c0 = (float4)(1.0,1.0,0.0,0.0);
 	float4 c1 = (float4)(1.0,0.27,0.0,0.0);
 	float4 c2 = (float4)(0.04,0.37,0.65,0.0);
+	*/
+	
+	/*
+	float4 c0 = (float4)(1.0,0.0,0.0,0.0);
+	float4 c1 = (float4)(1.0,0.27,0.0,0.0);
+	float4 c2 = (float4)(1.0,0.00,0.35,0.0);
+	*/
 
-	float4 res;
+	float4 res, r0, r1;
 
 	float f;
 	if(v.x < 1.0 / 3.0){
 		f = 3.0 * v.x;
-		res = (1.0 - f) * c0 + f * c1;
+		r0 = c0;
+		r1 = c1;
 	}else if(v.x < 2.0 / 3.0){
 		f = 3.0 * v.x - 1.0;
-		res = (1.0 - f) * c1 + f * c2;
+		r0 = c1;
+		r1 = c2;
 	}else{
 		f = 3.0 * v.x - 2.0;
-		res = (1.0 - f) * c2 + f * c0;
+		r0 = c2;
+		r1 = c0;
 	}
+	res = (1.0 - f) * r0 + f * r1;
+	//res = intrp(r0, r1, f);
+	/*if(f < 0.5)
+		res = (1.0 - f / 2.0) * r0 + f / 2.0 * r1;
+	else
+		res = (0.5 - f / 2.0) * r0 + (0.5 + f / 2.0) * r1;
+	*/
 	
   res = RGBtoHSV(res);
 

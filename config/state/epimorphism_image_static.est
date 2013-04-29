@@ -2,14 +2,14 @@
  'name': 'default',
  'VERSION': 1.0,
  'time': 0.0,
- 'image': None,
+ 'aux': "paisley_star.png",
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],
  'programs': [],
  'camera_id': 1,
  'components': {
- 'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
+ 'SEED': 'seed_aux(fb, aux, z, internal, par, time)',
  'SEED_W': 'lines_box(z, par)',
  'SEED_WT': 'wt_gauss(w)',
  'SEED_C': 'simple_color(z, w, par, time)',
@@ -108,5 +108,5 @@
  '_PC3_SPREAD':
  0.8,
  '_PC3_LGV':
- 0.7
+ 0.7 
  }}

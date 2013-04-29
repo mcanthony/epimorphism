@@ -48,13 +48,13 @@ class Radial2DStep(Path):
 class Wave1D(Path):
     ''' 1 dimensional sinousoidal path '''
     def do(self, t):
-        return (self.a * sin(2.0 * pi * t + self.th) + self.b, True)
+        return (self.a * sin(2.0 * pi * (t + self.th)) + self.b, True)
 
 
 class WaveZR(Path):
     ''' complex sinousoidal radius path '''       
     def do(self, t):
-        return (p_to_r([self.a * sin(2.0 * pi * t + self.th) + self.b, 0]), True)
+        return (p_to_r([self.a * sin(2.0 * pi * (t + self.th)) + self.b, 0]), True)
 
 
 class Rose(Path):
