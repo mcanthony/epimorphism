@@ -17,3 +17,4 @@ ptx
 est
 *.log
 sources/pypm/build/*
+.directory
