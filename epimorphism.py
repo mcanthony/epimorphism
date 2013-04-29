@@ -16,7 +16,7 @@ import config
 try: 
     import PIL
     config.PIL_available = True 
-except ImportError: 
+except ImportError:
     config.PIL_available = False 
 
 # setup logging
