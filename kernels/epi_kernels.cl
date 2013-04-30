@@ -45,9 +45,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = M(zn[8], (z - zn[9]));
       z = recover2($REDUCE$);
       
-      seed = $SEED$;
-
-						seed = _gamma3(seed, _GAMMA);      
+      seed = $SEED$;			
 
       // cull & blending
       #ifdef $CULL_ENABLED$
