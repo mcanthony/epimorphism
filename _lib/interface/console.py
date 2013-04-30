@@ -33,25 +33,25 @@ class Console(object):
 
         # don't render pbo
         glBindTexture(GL_TEXTURE_2D, 0)
-
+        
         # compute num_rows
         num_rows = min(len(self.status_rows), self.max_num_status_rows)
 
         # calculate dimensions
-        dims = [1.0 - 2.0 * self.console_width / self.app.screen[0],
-                -1.0 + 2.0 * (10 + (self.console_font_size + 4) * (1 + num_rows)) / self.app.screen[0]]
+        dims = [2.0 * float(self.console_width) / self.app.screen[0],
+                2.0 * (10 + (self.console_font_size + 4) * (1 + num_rows)) / float(self.app.screen[0])]
 
         dims_v = [self.app.screen[0] - self.console_width, 0]
 
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND)
+        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE)
         # draw box
-        glColor4f(1.0, 0.2, 1.0, 0.85)
+        glColor4f(0.15, 0.15, 0.15, 0.75)
 
         glBegin(GL_QUADS)
-        glVertex3f(dims[0], dims[1], 0.0)
-        glVertex3f(1.0, dims[1], 0.0)
-        glVertex3f(1.0, -1.0, 0.0)
-        glVertex3f(dims[0], -1.0, 0.0)
+        glVertex3f(-1.0, -1.0, 0.1)
+        glVertex3f(-1.0 + dims[0], -1.0, 0.1)
+        glVertex3f(-1.0 + dims[0], -1.0 + dims[1], 0.1)
+        glVertex3f(-1.0, -1.0 + dims[1], 0.1)
         glEnd()
 
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
@@ -60,7 +60,7 @@ class Console(object):
         glColor3ub(0xff, 0xff, 0xff)
         tmp = self.active_text
         self.active_text = self.active_text[0:self.cursor_pos] + '|' + self.active_text[self.cursor_pos:]
-        self.font.glPrint(dims_v[0] + 6 + 5, 5, self.active_text)
+        self.font.glPrint(6, 5, self.active_text)
         self.active_text = tmp
 
         # render status
@@ -72,7 +72,7 @@ class Console(object):
                 glColor3ub(0, 0xff, 0)
             elif(row[1] == 2):
                 glColor3ub(0xff, 0, 0)
-            self.font.glPrint(dims_v[0] + 6 + 5, 5 + (4 + self.console_font_size) * (i + 1), row[0])
+            self.font.glPrint(6, 5 + (4 + self.console_font_size) * (i + 1), row[0])
 
 
     def console_keyboard(self, key, x, y):

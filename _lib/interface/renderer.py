@@ -241,7 +241,6 @@ class Renderer(object):
             gluSphere(self.quad, 1.3, 256, 256);
 
         else:
-
             # compute texture coordinates
             x0 = .5 - self.app.viewport[2] / 2 - self.app.viewport[0] * self.aspect
             x1 = .5 + self.app.viewport[2] / 2 - self.app.viewport[0] * self.aspect
