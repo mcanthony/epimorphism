@@ -1,6 +1,19 @@
 // EPIMORPH library file
 // seed alpha functions for the seed_wca seed function
 
+_EPI_ float no_alpha(float w, __constant float* par){
+  // solid
+  // FULL, LIVE, DEV
+
+  return 1.0;
+}
+
+_EPI_ float id_alpha(float w, __constant float* par){
+  // solid
+  // FULL, LIVE, DEV
+
+  return -1.0;
+}
 
 _EPI_ float solid_alpha(float w, __constant float* par){
   // solid

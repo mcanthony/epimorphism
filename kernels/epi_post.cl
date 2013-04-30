@@ -129,6 +129,20 @@ void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }
 
+__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+void post_gamma(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
+  // get coords
+  const int x = get_global_id(0);
+  const int y = get_global_id(1);
+  int2 p = (int2)(x, y);
+
+  float4 v = read_imagef(fb, post_sampler, p);
+
+	v = _gamma3(v, _GAMMA / 1.5);      
+	
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
+}
+
 #endif
 
 

@@ -32,8 +32,10 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z,
 
   if(w > 0.0f){   
 		w = $SEED_WT$;    
-    res = $SEED_C$;    
-    res.w = $SEED_A$;
+    res = $SEED_C$;
+		float a = $SEED_A$;
+		if(a > 0)
+			res.w = $SEED_A$;
   }else{
     res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   }
@@ -43,7 +45,7 @@ _EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z,
 
 _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   /*
   float4 res;
@@ -74,7 +76,7 @@ _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z
 // refactor later
 _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
-  // FULL, LIVE, DEV
+  // DEV
 
   float4 res;
 	float ep = -0.0000001;
