@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.7,
- 'aux': 'tile_vasarely4.png',
+ 'aux': 'tile_vasarely2.png',
  'frame_cnt': 0,
  'randomize_seed': True,
  'bpm': 120,

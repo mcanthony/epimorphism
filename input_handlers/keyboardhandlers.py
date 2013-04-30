@@ -16,6 +16,10 @@ class DefaultKeyboard(KeyboardHandler):
             self.cmdcenter.cmd("toggle_console()")
 
         # toggle echo
+        elif(key == GLUT_KEY_F10):
+            self.cmdcenter.cmd("state.paths=[]")
+            
+        # toggle echo
         elif(key == GLUT_KEY_F11):
             self.cmdcenter.cmd("toggle_echo()")
 

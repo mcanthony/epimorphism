@@ -3,14 +3,14 @@
 
 _EPI_ float no_alpha(float w, __constant float* par){
   // solid
-  // FULL, LIVE, DEV
+  // DEV
 
   return 1.0;
 }
 
 _EPI_ float id_alpha(float w, __constant float* par){
   // solid
-  // FULL, LIVE, DEV
+  // DEV
 
   return -1.0;
 }
