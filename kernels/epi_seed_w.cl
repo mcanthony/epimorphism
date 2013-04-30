@@ -55,7 +55,7 @@ _EPI_ float4 circle(float2 z, __constant float* par){
 	float wy = 0.0;
 	if(r > _SEED_CIRCLE_R - _SEED_W / 2.0f && r  < _SEED_CIRCLE_R + _SEED_W / 2.0f){
     w = (1.0f - 2.0f * fabs(r - _SEED_CIRCLE_R) / _SEED_W);
-		wy = (r - _SEED_CIRCLE_R - _SEED_W / 2.0f) / _SEED_W;
+		wy = (r - _SEED_CIRCLE_R - _SEED_W / 2.0f) / (_SEED_W);
 	}
   w = trans_w(w, par);
 	return (float4)(w, 1.0, wx, wy);	

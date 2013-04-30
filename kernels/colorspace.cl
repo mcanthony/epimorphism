@@ -1,4 +1,6 @@
 float4 RGBtoHSV(float4 val){
+	val = clamp(val, 0.0, 1.0);
+	
   float vmin = fmin(fmin(val.x, val.y), val.z);
   float vmax = fmax(fmax(val.x, val.y), val.z);
   float h, s;
@@ -16,6 +18,10 @@ float4 RGBtoHSV(float4 val){
     else
       h = 4.0f + native_divide((val.x - val.y), delta);
     h /= 6.0f;
+
+		if(h < 0.0)
+			h += 1.0f;
+		
     return (float4)(h, s, vmax, val.w);
   }
 }

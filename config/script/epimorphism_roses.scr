@@ -8,7 +8,7 @@
  {'cmd':"state.paths.append(Rose('zn', 10, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
  {'cmd':"state.paths.append(Rose('zn', 11, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('par', '_SEED_W', 20, {'a':0.3, 'b':0.5, 'th':0.0}))", 'time':0.0},
- {'cmd':"state.paths.append(Wave1D('par', '_SEED_COLOR_A', 25, {'a':0.3, 'b':0.7, 'th':3.14}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D('par', '_SEED_COLOR_A', 25, {'a':0.2, 'b':0.8, 'th':0.5}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('par', '_COLOR_PHI1', 20, {'a':0.5, 'b':0.5, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('par', '_COLOR_PSI1', 25, {'a':0.5, 'b':0.5, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('par', '_COLOR_BASE_PHI', 30, {'a':0.5, 'b':0.5, 'th':0.0}))", 'time':0.0},
@@ -16,7 +16,7 @@
  {'cmd':"state.paths.append(Wave1D('sphere_rot', 0, 20, {'a':2.0, 'b':0.0, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('sphere_rot', 1, 30, {'a':3.0, 'b':0.0, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('par', '_PC3_HUE', 30, {'a':0.5, 'b':0.5, 'th':0.0}))", 'time':0.0},
- {'cmd':"state.paths.append(Wave1D('par', '_PC3_HUE', 45, {'a':0.5, 'b':0.5, 'th':0.5}))", 'time':0.0},
- {'cmd':"state.paths.append(Wave1D('par', '_PC3_HUE', 60, {'a':0.5, 'b':0.5, 'th':0.5}))", 'time':0.0} 
+ {'cmd':"state.paths.append(Wave1D('par', '_PC3_SPREAD', 45, {'a':0.4, 'b':0.5, 'th':0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D('par', '_PC3_LGV', 60, {'a':0.4, 'b':0.5, 'th':0.5}))", 'time':0.0} 
  ]}
 }

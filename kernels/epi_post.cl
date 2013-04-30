@@ -81,40 +81,35 @@ void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float
   float4 v = read_imagef(fb, post_sampler, p);
 
   v = RGBtoHSV(v);
-
+	
 	float4 c0 = HSLtoRGB((float4)(_PC3_HUE, 1.0, 0.5, 0.0));
 	float4 c1 = HSLtoRGB((float4)(_PC3_HUE + _PC3_SPREAD / 2.0, 1.0, _PC3_LGV, 0.0));
 	float4 c2 = HSLtoRGB((float4)(_PC3_HUE - _PC3_SPREAD / 2.0, 1.0, -1.0 * _PC3_LGV, 0.0));
-
-	/*
-	float4 c0 = (float4)(1.0,1.0,0.0,0.0);
-	float4 c1 = (float4)(1.0,0.27,0.0,0.0);
-	float4 c2 = (float4)(0.04,0.37,0.65,0.0);
-	*/
 	
 	/*
-	float4 c0 = (float4)(1.0,0.0,0.0,0.0);
-	float4 c1 = (float4)(1.0,0.27,0.0,0.0);
-	float4 c2 = (float4)(1.0,0.00,0.35,0.0);
+	float4 c0 = (float4)(1.0, 0.0, 0.0, 0.0);
+	float4 c1 = (float4)(0.0, 1.0, 0.0, 0.0);
+	float4 c2 = (float4)(0.0, 0.0, 1.0, 0.0);
 	*/
-
-	float4 res, r0, r1;
-
+	
+	float4 res, r0, r1;	
 	float f;
-	if(v.x < 1.0 / 3.0){
-		f = 3.0 * v.x;
+	
+	if(v.x < 1.0f / 3.0){
+		f = 3.0f * v.x;
 		r0 = c0;
 		r1 = c1;
-	}else if(v.x < 2.0 / 3.0){
-		f = 3.0 * v.x - 1.0;
+	}else if(v.x < 2.0f / 3.0f){
+		f = 3.0f * v.x - 1.0f;
 		r0 = c1;
 		r1 = c2;
 	}else{
-		f = 3.0 * v.x - 2.0;
+		f = 3.0f * v.x - 2.0f;
 		r0 = c2;
 		r1 = c0;
 	}
-	res = (1.0 - f) * r0 + f * r1;
+	res = (1.0f - f) * r0 + f * r1;
+		
 	//res = intrp(r0, r1, f);
 	/*if(f < 0.5)
 		res = (1.0 - f / 2.0) * r0 + f / 2.0 * r1;
@@ -122,9 +117,10 @@ void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float
 		res = (0.5 - f / 2.0) * r0 + (0.5 + f / 2.0) * r1;
 	*/
 	
-  res = RGBtoHSV(res);
-
+	res = RGBtoHSV(res);
 	v.x = res.x;
+
+	//v.y = erf(4.0 * v.y);
 
 	v = HSVtoRGB(v);
 
@@ -132,3 +128,6 @@ void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float
 }
 
 #endif
+
+
+
