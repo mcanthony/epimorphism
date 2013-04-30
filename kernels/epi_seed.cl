@@ -71,18 +71,19 @@ _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z
 }
 
 
-/*
+// refactor later
 _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
   float4 res;
-  float ep = -0.0000001;
+	float ep = -0.0000001;
   float seed_wt, seed_a;
-  float2 seed_w, seed_w0, seed_w1;
+  float4 seed_w, seed_w0, seed_w1;
   float4 seed_c;
-  float w = $SEED_W$.x;
-
+	float4 seed = $SEED_W$;
+  float w = seed.x;
+	
   w = fmax(fmin(w, 1.0f), ep);
 
   z = torus_reduce(z);
@@ -103,4 +104,3 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float
   return res;
 }
 
-*/

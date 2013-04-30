@@ -69,7 +69,7 @@ _EPI_ float4 lines_lr(float2 z, __constant float* par){
   z = grid_reduce(z);
   float w = -0.0000001;
 	float wx = 0.0;
-	float wy = z.y * 4.0;
+	float wy = z.y * 2.0;
   if(z.x > (1.0f - _SEED_W)){
     w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
 		wx = w / 2.0;
@@ -82,6 +82,22 @@ _EPI_ float4 lines_lr(float2 z, __constant float* par){
 	return (float4)(w, 1.0, wx, wy);	
 }
 
+_EPI_ float4 lines_inner(float2 z, __constant float* par){
+  // lines in a cross
+  // FULL, LIVE, DEV
+
+  z = grid_reduce(z);
+  float w = -0.0000001;
+	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
+	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
+  if(fabs(z.x) < _SEED_W)
+    w = (1.0f - fabs(z.x) / _SEED_W);
+	if(fabs(z.y) < _SEED_W)
+    w = fmax(1.0f - fabs(z.x) / _SEED_W, 1.0f - fabs(z.y) / _SEED_W); 
+  w = trans_w(w, par);
+	return (float4)(w, 1.0, wx, wy);	
+}
+
 _EPI_ float4 square(float2 z, __constant float* par){
   // central square
   // FULL, LIVE, DEV
@@ -89,20 +105,16 @@ _EPI_ float4 square(float2 z, __constant float* par){
   z = grid_reduce(z);
   float w = -0.0000001;
 	float wx = 0.0;
-	float wy = z.y * 4.0;
+	float wy = 0.0;
   if(z.x < _SEED_W && z.x > -1.0f * _SEED_W && z.y < _SEED_W && z.y > -1.0f * _SEED_W){
     w = fmin((1.0f - fabs(z.x) / _SEED_W), (1.0f - fabs(z.y) / _SEED_W));
 		wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
 		wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
   }
-
+	
   w = trans_w(w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
-
-
-
-
 
 _EPI_ float4 lines_box(float2 z, __constant float* par){
   // 4 lines in a box
@@ -110,8 +122,8 @@ _EPI_ float4 lines_box(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = 0.0;
-	float wy = 0.0;
+	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
+	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
   if(z.x > (1.0f - _SEED_W))
     w =  (z.y < 0.0f ? fmax((z.x - (1.0f - _SEED_W)), (-1.0f * (1.0f - _SEED_W) - z.y)) : max((z.x - (1.0f - _SEED_W)), (z.y - (1.0f - _SEED_W)))) / _SEED_W;
   else if(z.y > (1.0f - _SEED_W))
@@ -144,24 +156,6 @@ _EPI_ float4 lines_box_stag(float2 z, __constant float* par){
   w = trans_w(w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
-
-
-_EPI_ float4 lines_inner(float2 z, __constant float* par){
-  // lines in a cross
-  // FULL, LIVE, DEV
-
-  z = grid_reduce(z);
-  float w = -0.0000001;
-	float wx = 0.0;
-	float wy = 0.0;
-  if(fabs(z.x) < _SEED_W)
-    w = (1.0f - fabs(z.x) / _SEED_W);
-  if(fabs(z.y) < _SEED_W)
-    w = fmax(1.0f - fabs(z.x) / _SEED_W, 1.0f - fabs(z.y) / _SEED_W);
-  w = trans_w(w, par);
-	return (float4)(w, 1.0, wx, wy);	
-}
-
 
 _EPI_ float4 anti_grid_fade(float2 z, __constant float* par){
   // inverse grid, radially shaded
