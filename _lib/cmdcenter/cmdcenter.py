@@ -258,7 +258,7 @@ class CmdCenter(Archiver):
             try:
                 exec(code) in self.cmd_env
             except:
-                err = traceback.format_exc().split("\n")[-2]
+                err = traceback.format_exc() #.split("\n")[-2]
         else:
             exec(code) in self.cmd_env
 
@@ -322,7 +322,7 @@ class CmdCenter(Archiver):
 
     def pars(self):
         ''' Prints a list of paramaters, their bindings, and their values. '''
-        print str(self.state.pars)
+        print str(self.state.par)
 
 
     def funcs(self):

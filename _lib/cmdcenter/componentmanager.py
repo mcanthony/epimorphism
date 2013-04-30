@@ -34,8 +34,9 @@ class ComponentManager(object):
 
         # print components
         for i in xrange(len(keys)) :
-            component = self.state.components[keys[i]]
-            print i+1, ":", keys[i], "-", component, "-", self.datamanager.comment(keys[i], component)
+            print i
+#            component = self.state.components[keys[i]]
+#            print i+1, ":", keys[i], "-", component, "-", self.datamanager.comment(keys[i], component)
 
 
     def inc_data(self, name, ofs, return_result=False):
@@ -66,6 +67,9 @@ class ComponentManager(object):
         # switch component
         self.switch_components({name: new_component[0]})
 
+
+    def switch_component(self, component, val):
+        self.switch_components({component: val})
 
     def switch_components(self, data):
         ''' Switches the system to the new components specified in data '''

@@ -29,12 +29,14 @@ class EventManager(object):
 
         return inner
 
+    def setT(self, val):
+        self.cmdcenter.cmd("switch_component('T', '%s')" % val)
 
-    @handle_event
-    def switch_component(self, component, multiplier=0):
-        ''' Switches a component '''
+#    @handle_event
+#    def switch_component(self, component, multiplier=0):
+#        ''' Switches a component '''
 
-        self.cmdcenter.cmd("inc_data('%s', 1)" % component)
+#        self.cmdcenter.cmd("inc_data('%s', 1)" % component)
 
 
     @handle_event
