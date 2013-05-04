@@ -51,3 +51,15 @@ class RandomAllComponents(Program):
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
         
         config.cmdcenter.componentmanager.switch_components(update)
+
+
+class RandomGridAux(Program):
+    def _execute(self):
+        debug("Executing Random Grid Aux")
+
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+
+        i = random.randint(1, 6)
+
+        config.cmdcenter.load_image("tile_grid%d.png" % i)
+        
