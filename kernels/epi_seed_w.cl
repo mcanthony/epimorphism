@@ -152,8 +152,8 @@ _EPI_ float4 lines_box_stag(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = 0.0;
-	float wy = 0.0;
+	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
+	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
   if(z.x > (1.0f - _SEED_W))
     w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
   if(z.y > (1.0f - _SEED_W))
@@ -172,8 +172,8 @@ _EPI_ float4 anti_grid_fade(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = 0.0;
-	float wy = 0.0;
+	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
+	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
   z = remf(floor(5.0f * _SEED_GRID_N) / 2.0f * z, 1.0f);
   if((z.x > 0.5f * (1.0f - _SEED_W) && z.x < 0.5f * (1.0f + _SEED_W)) && (z.y < 0.5f * (1.0f + _SEED_W) && z.y > 0.5f * (1.0f - _SEED_W)))
     w = min((1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W), (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W));
@@ -188,8 +188,8 @@ _EPI_ float4 grid_fade(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = 0.0;
-	float wy = 0.0;
+	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
+	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);	
   z = remf(floor(5.0f * _SEED_GRID_N) /2.0f * z, 1.0f);
   if((z.x > 0.5f * (1.0f - _SEED_W) && z.x < 0.5f * (1.0f + _SEED_W)))
     w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W);

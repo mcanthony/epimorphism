@@ -12,7 +12,7 @@ Dependencies - python2.7, freeglut, PIL(optional)
 
 ./epimorphism
 
-optional: PIL, twisted
+optional: PIL, twisted, opencv
 
 OSX:
 

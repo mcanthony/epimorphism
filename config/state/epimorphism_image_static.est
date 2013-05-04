@@ -10,7 +10,7 @@
  'camera_id': 1,
  'components': {
  'SEED': 'seed_wca(fb, aux, z, internal, par, time)',
- 'SEED_W': 'lines_box(z, par)',
+ 'SEED_W': 'solid(z, par)',
  'SEED_WT': 'wt_gauss(w)',
  'SEED_C': 'tex_color(aux, z, seed, par, time)',
  'SEED_A': 'id_alpha(w, par)',
