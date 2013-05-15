@@ -8,7 +8,6 @@
 *.jpg
 *.png
 *.bcl
-*.est
 __*.cu
 __*.cl
 *log.txt

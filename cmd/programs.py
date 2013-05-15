@@ -59,9 +59,9 @@ class RandomGridAux(Program):
 
         self.next_event_in = self.data["interval"] * (0.5 + random.random())        
 
-        tiles = [ f for f in os.listdir("media/image") if os.path.isfile(os.path.join("media/image",f)) and "tile_" in f]
+        textures = [ f for f in os.listdir("media/textures") ]
 
-        i = random.randint(0, len(tiles))
+        i = random.randint(0, len(textures))
 
-        config.cmdcenter.load_image(tiles[i])
+        config.cmdcenter.load_image("../textures" + textures[i])
         
