@@ -61,7 +61,7 @@ class RandomGridAux(Program):
 
         textures = [ f for f in os.listdir("media/textures") ]
 
-        i = random.randint(0, len(textures))
+        i = random.randint(0, len(textures) - 1)
 
-        config.cmdcenter.load_image("../textures" + textures[i])
+        config.cmdcenter.load_image("../textures/" + textures[i])
         
