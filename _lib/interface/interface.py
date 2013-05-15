@@ -50,7 +50,7 @@ class Interface(object):
         info("Starting interface")
 
         # create input handlers
-        self.mouse_handler = eval(self.app.mouse_handler + "()")
+#        self.mouse_handler = eval(self.app.mouse_handler + "()")
         self.keyboard_handler = eval(self.app.keyboard_handler + "()")
 
         # create_console
@@ -59,7 +59,7 @@ class Interface(object):
             self.renderer.register_console_callbacks(console.render_console, console.console_keyboard)
 
         # register callbacks & console with Renderer
-        self.renderer.register_callbacks(self.keyboard_handler.do_key, self.mouse_handler.do_button, self.mouse_handler.do_motion)
+        self.renderer.register_callbacks(self.keyboard_handler.do_key, None, None)#self.mouse_handler.do_button, self.mouse_handler.do_motion)
 
         # register cmdcenter with renderer
         self.renderer.cmdcenter = self.cmdcenter

@@ -1,6 +1,6 @@
 from cmdcenter.program import Program
 
-import random
+import random, os
 
 from common.runner import *
 
@@ -57,9 +57,11 @@ class RandomGridAux(Program):
     def _execute(self):
         debug("Executing Random Grid Aux")
 
-        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())        
 
-        i = random.randint(1, 6)
+        tiles = [ f for f in os.listdir("media/image") if os.path.isfile(os.path.join("media/image",f)) and "tile_" in f]
 
-        config.cmdcenter.load_image("tile_grid%d.png" % i)
+        i = random.randint(0, len(tiles))
+
+        config.cmdcenter.load_image(tiles[i])
         
