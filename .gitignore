@@ -6,7 +6,8 @@
 *.so
 *.bmp
 *.jpg
-*.png
+media/image/*.png
+media/archive/*
 *.bcl
 __*.cu
 __*.cl
