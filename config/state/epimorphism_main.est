@@ -4,6 +4,7 @@
  'time': 0.0,
  't_speed': 0.4,
  'aux': "../textures/tile_grid5.png",
+ 'post_process': 'post_colors3',
  'frame_cnt': 0,
  'randomize_seed': True,
  'bpm': 120,

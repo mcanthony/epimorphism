@@ -4,20 +4,22 @@ import sys, os
 sys.path.append("_lib/sources")
 sys.path.append("_lib")
 
-# add location of dlls to path if windows
-if sys.platform == "win32":
-    if 'PROGRAMFILES(X86)' in os.environ:  # 64 bit windows
-        os.environ['PATH'] = '_lib/sources/win64' + ';' + os.environ['PATH']
-    else:
-        os.environ['PATH'] = '_lib/sources/win32' + ';' + os.environ['PATH']
-
 # test for availability of PIL
 import config
 try: 
     import PIL
     config.PIL_available = True 
 except ImportError:
-    config.PIL_available = False 
+    config.PIL_available = False
+
+# add location of dlls to path if windows
+if sys.platform == "win32":
+    config.is_windows = True
+    if 'PROGRAMFILES(X86)' in os.environ:  # 64 bit windows
+        os.environ['PATH'] = '_lib/sources/win64' + ';' + os.environ['PATH']
+    else:
+        os.environ['PATH'] = '_lib/sources/win32' + ';' + os.environ['PATH']
+    
 
 # setup logging
 from common.log import *

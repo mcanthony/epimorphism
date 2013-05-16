@@ -7,7 +7,7 @@ from OpenGL.GLUT import *
 
 if config.PIL_available:
     import common.glFreeType
-FONT_PATH = "_lib/common/FreeSansBold.ttf"
+FONT_PATH = "/_lib/common/FreeSansBold.ttf"
 
 class Console(object):
     ''' The Console object is responsible for rendering the console in the
@@ -26,7 +26,10 @@ class Console(object):
         self.queue_idx = -1
         self.cursor_pos = 0
 
-        self.font = common.glFreeType.font_data(FONT_PATH, self.console_font_size)
+        if(config.is_windows):
+            self.font = None
+        else:
+            self.font = common.glFreeType.font_data(FONT_PATH, self.console_font_size)
 
 
     def render_console(self):
