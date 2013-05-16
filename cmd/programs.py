@@ -1,6 +1,6 @@
 from cmdcenter.program import Program
 
-import random
+import random, os
 
 from common.runner import *
 
@@ -51,3 +51,17 @@ class RandomAllComponents(Program):
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, random.randint(0,100000), True)
         
         config.cmdcenter.componentmanager.switch_components(update)
+
+
+class RandomGridAux(Program):
+    def _execute(self):
+        debug("Executing Random Grid Aux")
+
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())        
+
+        textures = [ f for f in os.listdir("media/textures") ]
+
+        i = random.randint(0, len(textures) - 1)
+
+        config.cmdcenter.load_image("../textures/" + textures[i])
+        

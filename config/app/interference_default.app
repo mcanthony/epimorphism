@@ -14,8 +14,8 @@
  'screen': [800,800,False],
  'kernel_dim': 1536,
 
- 'sources': ['util', 'math', 'colorspace', 'interference'], 
+ 'sources': ['util', 'math', 'colorspace', 'interference', 'post1'], 
  'kernel': 'interference',
  'lib_prefix': 'int',
- 'feedback_buffer': False
+ 'feedback_buffer': True
 }

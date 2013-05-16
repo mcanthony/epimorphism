@@ -56,6 +56,7 @@ DONE:
   remove freeglut dependencies
   windows build
     optional PIL dependency
+  fix console
 
 
 RELEASE QUEUE:
@@ -111,7 +112,6 @@ LATER:
   think more about dict objs & structs file
 
   OpenCL CPUs - replace images with buffers
-  fix console
 
   periodically connect to server ??
   more sophisticated application loading - switch apps on the fly

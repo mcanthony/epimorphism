@@ -68,3 +68,4 @@ float4 to_xyz(float4 v){
 
 
 #define intrp(from, to, time) (time >= 1.0f ? to : mix(from, to, (1.0 + erf(4.0f * time - 2.0f)) / 2.0))
+

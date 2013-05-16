@@ -19,7 +19,7 @@ if config.PIL_available:
     from PIL import Image
     import common.glFreeType
 
-FONT_PATH = "_lib/common/FreeSansBold.ttf"
+FONT_PATH = "/_lib/common/FreeSansBold.ttf"
 
 from common.log import *
 set_log("RENDERER")
@@ -152,7 +152,7 @@ class Renderer(object):
         glMatrixMode(GL_MODELVIEW)
         
         # create echo font 
-        if config.PIL_available:
+        if config.PIL_available and not config.is_windows:
             self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
             self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
             self.fps_font_size = 20
@@ -241,7 +241,6 @@ class Renderer(object):
             gluSphere(self.quad, 1.3, 256, 256);
 
         else:
-
             # compute texture coordinates
             x0 = .5 - self.app.viewport[2] / 2 - self.app.viewport[0] * self.aspect
             x1 = .5 + self.app.viewport[2] / 2 - self.app.viewport[0] * self.aspect

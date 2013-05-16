@@ -1,0 +1,10 @@
+{
+ 'name':'post1_roses',
+ 'data':{
+ 'phase':0,
+ 'events':[
+ {'cmd':"state.paths.append(Linear1D('par', '_PC3_HUE', 30, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D('par', '_PC3_SPREAD', 45, {'a':0.35, 'b':0.5, 'th':0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D('par', '_PC3_LGV', 60, {'a':0.25, 'b':0.5, 'th':0.5}))", 'time':0.0} 
+ ]}
+}

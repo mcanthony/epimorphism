@@ -23,8 +23,7 @@ if config.PIL_available:
     from PIL import Image
 
 if config.app.camera_enabled:
-    from opencv import highgui
-    import opencv
+    import cv
 
 from common.log import *
 set_log("CMDCENTER")
@@ -131,7 +130,7 @@ class CmdCenter(Archiver):
 
         # camera
         if config.app.camera_enabled and config.state.camera_id:
-            self.camera = highgui.cvCreateCameraCapture(config.state.camera_id)
+            self.camera = cv.CreateCameraCapture(0)#config.state.camera_id)
         
         return True
 
@@ -258,7 +257,7 @@ class CmdCenter(Archiver):
             try:
                 exec(code) in self.cmd_env
             except:
-                err = traceback.format_exc().split("\n")[-2]
+                err = traceback.format_exc() #.split("\n")[-2]
         else:
             exec(code) in self.cmd_env
 
@@ -304,25 +303,34 @@ class CmdCenter(Archiver):
 
 
     def load_image(self, name):
-        ''' Loads and image into the host memory
+        ''' Loads and image into the aux buffer
             and uploads it to a buffer.
-              buffer_name can be either fb or aux '''
+            '''
         if not config.PIL_available:
             warning("PIL not available")
             return None
 
         info("Load image: %s", name)
 
+
+        # eh?
+        self.state.aux = name
+        
         self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
 
 
     def upload_webcam_frame(self):
-       if config.PIL_available: self.engine.load_aux(opencv.adaptors.Ipl2PIL(highgui.cvQueryFrame(self.camera)).convert("RGBA"))         
+        #if config.PIL_available: self.engine.load_aux(cv.adaptors.Ipl2PIL(cv.cvQueryFrame(self.camera)).convert("RGBA"))
+        if config.PIL_available:            
+            cv_im = cv.QueryFrame(self.camera)
+            pi = Image.fromstring("RGB", cv.GetSize(cv_im), cv_im.tostring())
+            self.engine.load_aux(pi.convert("RGBA"))
+        
 
 
     def pars(self):
         ''' Prints a list of paramaters, their bindings, and their values. '''
-        print str(self.state.pars)
+        print str(self.state.par)
 
 
     def funcs(self):

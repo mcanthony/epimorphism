@@ -90,7 +90,7 @@ class Engine(object):
         # post processing kernel
         if(self.state.post_process):
             self.post_process = self.program[self.state.post_process]
-            self.post_process.argtypes = (cl_mem, cl_mem, cl_float, cl_mem)
+            self.post_process.argtypes = (cl_mem, cl_mem, cl_mem, cl_float)
 
 
     def do(self):
@@ -143,8 +143,8 @@ class Engine(object):
 
         # post processing
         if(self.state.post_process):
-            i = (self.app.feedback_buffer and 1 or 0)
-            args = [args[0 + i], args[1 + i], args[2 + i], args[4 + i]] # maybe could use some work, if frame format ever changes
+            #i = (self.app.feedback_buffer and 1 or 0)
+            args = [args[0], args[1], args[4], args[7]] # maybe could use some work, if frame format ever changes
             self.post_process(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
         # release pbo
@@ -218,7 +218,7 @@ class Engine(object):
     def load_aux(self, img):
         ''' Loads an image into the auxilary buffer '''
 
-        self.aux = clCreateImage2D(self.ctx, img.size[0], img.size[1], cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
+        self.aux = clCreateImage2D(self.ctx, img.size[0], img.size[1], cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
         self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1))
 
