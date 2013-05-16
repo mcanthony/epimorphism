@@ -1,0 +1,30 @@
+To Run -
+
+Windows
+
+click on epimorphism.py or run with python 2.7 via a console
+
+select application - (1) epimorphism
+
+select state - (1) main
+
+IF THE APPLICATION RUNS SLOWLY:
+  try each of(default is 1536) from the command line:
+	LINUX
+  ./epimorphism kernel_dim=1024
+  ./epimorphism kernel_dim=512
+  ./epimorphism kernel_dim=256
+
+	WINDOWS
+
+	epimorphism kernel_dim=1024
+  epimorphism kernel_dim=512
+  epimorphism kernel_dim=256
+
+  until you get acceptable performance
+
+
+FULL SCREEN -
+  from the command line
+  epimorphism screen=auto
+
