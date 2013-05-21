@@ -2,9 +2,7 @@ WINDOWS:
 
 install python 2.7
 click on epimorphism.py or run with python 2.7 via a console
-
-to take screenshots & onscreen text, install PIL(optional)
-
+install PIL for python 2.7 - http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe
 
 LINUX:
 
