@@ -146,4 +146,63 @@ class DefaultEpimorphismOSC(DefaultOSCHandler):
     def __init__(self):
         DefaultOSCHandler.__init__(self)
 
+# define helpers
+def get_val(x):       return x
+def set_val(x, y):    return y
+def get_radius(z):    return r_to_p(z)[0]
+def set_radius(z, r): return p_to_r([r, r_to_p(z)[1]])
+def get_th(z):        return r_to_p(z)[1]
+def set_th(z, th):    return p_to_r([r_to_p(z)[0], th])
+        
+class EpimorphismRD1OSC(OSCHandler):
+    def __init__(self):
+        self.regex_callbacks = {"/midinote": self.midinote, "/midictrl": self.midictrl}
+                                
+        OSCHandler.__init__(self)
+
+
+    def midinote(self, addr, tags, data, source):
+        note = data[0]
+        if(note == 0):
+            pass
+        elif(note == 1):
+            pass        
+        print "note", note
+
+        
+    def midictrl(self, addr, tags, data, source):
+        param = data[1]
+        val = data[0]
+        
+#        print "ctrl", param, val
+
+        bindings = {1: ["state.zn",  '0',  "radius", (1.0, 1.0)],
+                    2: ["state.zn",  '2',  "radius", (1.0, 1.0)],
+                    3: ["state.zn",  '8',  "radius", (1.0, 1.0)],
+                    4: ["state.zn",  '9',  "radius", (1.0, 0.0)],
+                    5: ["state.zn",  '10', "radius", (1.0, 1.0)],
+                    6: ["state.zn",  '11', "radius", (1.0, 0.0)]
+                    }
+
+        # catch error
+        if(not bindings.has_key(int(param))):
+            print "no osc binding for channel ", param
+        binding = bindings[int(param)]
+
+        f = val / 128.0
+        if(val == 127.0) : f = 1.0
+
+        f = binding[3][0] * f + binding[3][1]
+
+        old = self.cmdcenter.get_val(binding[0], eval(binding[1]))
+        val = eval("set_" + binding[2])(old, f)
+        #print old, val, str(binding[1])
+        # HACK to smoothen values
+        
+        if(binding[2] == "radius" or binding[2] == "th"):
+            self.cmdcenter.radial_2d('zn', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, r_to_p(old), r_to_p(val))
+        else:
+            self.cmdcenter.linear_1d('par', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, old, val)
+
+
         

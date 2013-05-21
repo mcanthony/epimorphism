@@ -37,7 +37,7 @@
  'OSC_enabled': True,
  'OSC_handler': 'DefaultOSCHandler',
  'OSC_input_port': 8000,
- 'OSC_client_address': ('10.42.43.57', 9000),
+ 'OSC_client_address': ('10.0.0.116', 9000),
  'OSC_echo': True,
 
  'screen' : [800,800,False],

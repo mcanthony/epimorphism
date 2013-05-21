@@ -12,7 +12,7 @@ if(config.app and config.app.midi_enabled):
     set_log("MIDI")
 
 
-    # define midi helpers
+    # define helpers
     def get_val(x):       return x
     def set_val(x, y):    return y
     def get_radius(z):    return r_to_p(z)[0]
@@ -133,7 +133,7 @@ if(config.app and config.app.midi_enabled):
 
             # run loop
             while(True and self.app.midi_enabled):
-
+ 
                 # sleep / exit
                 while(not self.midi_in.Poll() and not self.cmdcenter.app.exit):
                     time.sleep(0.01)

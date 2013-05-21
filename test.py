@@ -1,17 +1,11 @@
-import Image;
-import cv;
- 
-camcapture = cv.CreateCameraCapture(0)
-cv.SetCaptureProperty(camcapture,cv.CV_CAP_PROP_FRAME_WIDTH, 640)
-cv.SetCaptureProperty(camcapture,cv.CV_CAP_PROP_FRAME_HEIGHT, 480);
- 
-if not camcapture:
-        print "Error opening WebCAM"
-        sys.exit(1)
- 
-while 1:
-    frame = cv.QueryFrame(camcapture)
-    if frame is None:
-        break
-    cv.ShowImage('Camera', frame)
-    k=cv.WaitKey(10);
+import socket 
+UDP_IP = "10.0.0.117"
+UDP_PORT = 8000
+
+sock = socket.socket(socket.AF_INET, # Internet
+		     socket.SOCK_DGRAM) # UDP
+sock.bind((UDP_IP, UDP_PORT))
+
+while True:
+	data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+	print "received message:", data

@@ -6,9 +6,9 @@
  'keyboard_handler': 'DefaultEpimorphismKeyboard',
  'mouse_handler': 'DefaultEpimorphismMouse',
 
- 'OSC_enabled': False,
- 'OSC_handler': 'DefaultEpimorphismOSC',
- 'OSC_client_address': ('10.0.0.10', 9001),
+ 'OSC_enabled': True,
+ 'OSC_handler': 'EpimorphismRD1OSC',
+ 'OSC_client_address': ('10.0.0.116', 9001),
  'OSC_echo': True,
 
  'state_intrp_time': 10.0,
