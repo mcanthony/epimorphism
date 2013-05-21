@@ -13,6 +13,7 @@ except ImportError:
     config.PIL_available = False
 
 # add location of dlls to path if windows
+config.is_windows = False
 if sys.platform == "win32":
     config.is_windows = True
     if 'PROGRAMFILES(X86)' in os.environ:  # 64 bit windows

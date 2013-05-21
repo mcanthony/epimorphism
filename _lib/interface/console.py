@@ -7,7 +7,7 @@ from OpenGL.GLUT import *
 
 if config.PIL_available:
     import common.glFreeType
-FONT_PATH = "/_lib/common/FreeSansBold.ttf"
+FONT_PATH = "_lib/common/FreeSansBold.ttf"
 
 class Console(object):
     ''' The Console object is responsible for rendering the console in the

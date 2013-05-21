@@ -19,7 +19,7 @@ if config.PIL_available:
     from PIL import Image
     import common.glFreeType
 
-FONT_PATH = "/_lib/common/FreeSansBold.ttf"
+FONT_PATH = "_lib/common/FreeSansBold.ttf"
 
 from common.log import *
 set_log("RENDERER")
