@@ -16,7 +16,7 @@ class Animator(object):
     def radial_2d(self, obj, idx, spd, z0, z1):
         ''' Helper function for creating radial_2d paths. '''
 
-        path = Radial2D(obj, idx, spd, {"s" : z0, "e" : z1})
+        path = Radial2D2(obj, idx, spd, {"s" : z0, "e" : z1})
 
         # remove any previously existing paths for these vars
         [p.stop() for p in config.state.paths if (path.obj, path.idx) == (p.obj, p.idx)]
