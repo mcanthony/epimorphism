@@ -20,7 +20,7 @@
  'component_level': 'FULL',
  'state_intrp_time': 3.0,
 
- 'server': False,
+ 'server': True,
 
  'kbd_switch_spd' : .25,
  'keyboard_handler': 'DefaultKeyboard',

@@ -47,7 +47,7 @@ class Animator(object):
         # get time
         t = config.cmdcenter.time()
 
-        # execute paths traverse list backward, in case we need to r
+        # execute paths traverse list backward, in case we need to remove one
         for path in config.state.paths[::-1]:
 
             # execute path

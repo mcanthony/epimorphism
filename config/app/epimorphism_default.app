@@ -6,7 +6,7 @@
  'keyboard_handler': 'DefaultEpimorphismKeyboard',
  'mouse_handler': 'DefaultEpimorphismMouse',
 
- 'OSC_enabled': True,
+ 'OSC_enabled': False,
  'OSC_handler': 'EpimorphismRD1OSC',
  'OSC_client_address': ('10.0.0.116', 9001),
  'OSC_echo': True,
