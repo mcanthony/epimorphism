@@ -35,21 +35,6 @@ class Radial2D(Path):
 
         return (p_to_r(z), t != 1 or self.loop)
 
-    
-class Radial2D2(Path):
-    ''' 2 dimensional radial path '''
-    def do(self, t):
-        if(t > 1):
-            t = self.loop and fmod(t, 1.0) or 1
-
-        if(math.abs(self.s[1] - self.e[1]) > math.pi):
-            self.e[1] += math.pi
-        
-        
-        z = [self.s[0] * (1 - t) + self.e[0] * t, self.s[1] * (1 - t) + self.e[1] * t]
-
-        return (p_to_r(z), t != 1 or self.loop)    
-
 
 class Radial2DStep(Path):
     ''' 2 dimensional radial path, moving by steps '''
