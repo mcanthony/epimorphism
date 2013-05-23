@@ -62,7 +62,7 @@ if(config.app and config.app.server):
                 # switich time
                 if(channel == 1):                        
                     spb = 60.0 / cmdcenter.state.bpm
-                    mult = -4 + math.floor( f * 8)
+                    mult = -4 + math.floor(f * 8)
                     print "set mult ", mult
                     cmdcenter.app.state_intrp_time = cmdcenter.app.midi_speed = spb * (2 ** mult)
                 # zn                    

@@ -16,7 +16,8 @@ _EPI_ float4 seed_simple(read_only image2d_t fb, read_only image2d_t aux, float2
 
 }
 
-_EPI_ float4 seed_wca(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+
+_EPI_ float4 seed_wca(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
