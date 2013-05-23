@@ -164,6 +164,7 @@ _EPI_ float4 seed_multi(int idx, float2 z, read_only image2d_t fb, read_only ima
 	z = M(zn[8], (z - zn[9]));
 	z = recover2($REDUCE$);
 
+	idx = 0;
 	return $SEED0$; //seed_wca(0, z, fb, aux, par, internal, zn, time);
 
 }
