@@ -4,7 +4,7 @@
 const sampler_t aux_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_MIRRORED_REPEAT;
 
 
-_EPI_ float4 simple_color(read_only image2d_t aux, float2 z, float4 seed, __constant float* par, float time){
+_EPI_ float4 simple_color(int idx, read_only image2d_t aux, float2 z, float4 seed, __constant float* par, float time){
   // simple coloring function
   // FULL, LIVE, DEV
 
@@ -18,7 +18,7 @@ _EPI_ float4 simple_color(read_only image2d_t aux, float2 z, float4 seed, __cons
 }
 
 
-_EPI_ float4 tex_color(read_only image2d_t aux, float2 z, float4 seed, __constant float* par, float time){
+_EPI_ float4 tex_color(int idx, read_only image2d_t aux, float2 z, float4 seed, __constant float* par, float time){
   // simple coloring function
   // FULL, LIVE, DEV
 	float2 w = _SEED_TEX_SC * seed.zw;
