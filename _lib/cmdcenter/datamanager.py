@@ -109,7 +109,8 @@ class DataManager(object):
                             # add component
                             values.append(component)
 
-        self.component_names = self.components.keys()
+        #self.component_names = self.components.keys()
+        self.component_names = self.state.components.keys()
         self.component_names.sort()
 
 

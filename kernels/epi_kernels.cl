@@ -40,17 +40,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
-
-			// get seed2
-			float2 w = _SEED_TEX_SC * ((float2)(1.0f, 1.0f) + z) / 2.0f;
-			//			float4 seed2 = convert_float4(read_imagei(aux, tmp_aux_sampler, w)) / 255.0f;
-			
-      // compute seed          
-      z = M(zn[10], (z - zn[11]));           
-      z = $T_SEED$;
-      z = M(zn[8], (z - zn[9]));
-      z = recover2($REDUCE$);
-      
+			      
       seed = $SEED$;			
 
       // cull & blending

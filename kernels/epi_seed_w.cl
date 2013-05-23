@@ -124,19 +124,19 @@ _EPI_ float4 lines_box(float2 z, __constant float* par){
   float w = -0.0000001;
 	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
 	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
-	if(z.x > z.y && z.x > -1.0f * z.y && z.x > (1.0f - _SEED_W)){
+	if(z.x >= z.y && z.x >= -1.0f * z.y && z.x > (1.0f - _SEED_W)){
 		w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
 		wx = w / 2.0;
 		wy = z.y / (0.5 * _SEED_W) - 0.5;
-	}else if(z.y > z.x && z.y > -1.0f * z.x && z.y > (1.0f - _SEED_W)){
+	}else if(z.y >= z.x && z.y >= -1.0f * z.x && z.y > (1.0f - _SEED_W)){
 		w = (z.y - (1.0f - _SEED_W)) / _SEED_W;
 		wx = w / 2.0;
 		wy = z.x / (0.5 * _SEED_W) - 0.5;
-	}else if(z.y > z.x && z.y < -1.0 * z.x && z.x < -1.0f * (1.0f - _SEED_W)){
+	}else if(z.y >= z.x && z.y <= -1.0 * z.x && z.x < -1.0f * (1.0f - _SEED_W)){
 		w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
 		wx = 1.0 - w / 2.0;
 		wy = z.y / (0.5 * _SEED_W) - 0.5;
-	}else if(z.x > z.y && z.x < -1.0 * z.y && z.y < -1.0f * (1.0f - _SEED_W)){
+	}else if(z.x >= z.y && z.x <= -1.0 * z.y && z.y < -1.0f * (1.0f - _SEED_W)){
 		w = (-1.0f * (1.0f - _SEED_W) - z.y) / _SEED_W;
 		wx = 1.0 - w / 2.0;
 		wy = z.x / (0.5 * _SEED_W) - 0.5;

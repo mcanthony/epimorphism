@@ -26,7 +26,7 @@ class Compiler():
         info("Compiling")
 
         contents = [self.get_definitions()] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
-
+        
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
             #self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros", callback=create_build_callback(self.callback))

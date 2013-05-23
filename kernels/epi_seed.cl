@@ -3,7 +3,7 @@ const sampler_t fb_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CL
 // EPIMORPHISM library file
 // seed functions
 
-_EPI_ float4 seed_simple(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+_EPI_ float4 seed_simple(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -16,35 +16,80 @@ _EPI_ float4 seed_simple(read_only image2d_t fb, read_only image2d_t aux, float2
 
 }
 
-
-_EPI_ float4 seed_wca(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){){
+_EPI_ float4 seed_multi_wca(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // FULL, LIVE, DEV
 
-  float4 res;
+	float4 res, seed_w, seed_c, seed;
   float ep = -0.0000001;
   float seed_wt, seed_a;
-  float4 seed_w, seed_w0, seed_w1;
-  float4 seed_c;
-	float4 seed = $SEED_W$;
+	
+	switch(idx){
+	case 0:
+		seed = $SEED_W0$;
+		break;
+	case 1:
+		seed = $SEED_W1$;
+		break;
+	case 2:
+		seed = $SEED_W2$;
+		break;
+	}
   float w = seed.x;
 
   w = fmax(fmin(w, 1.0f), ep);
 
-  if(w > 0.0f){   
-		w = $SEED_WT$;    
-    res = $SEED_C$;
-		float a = $SEED_A$;
+	
+  if(w > 0.0f){
+		switch(idx){
+		case 0:
+			w = $SEED_WT0$;
+			break;
+		case 1:
+			w = $SEED_WT1$;
+			break;
+		case 2:
+			w = $SEED_WT2$;
+			break;
+		}
+
+		seed.x = w; // hrm, why wasn't this there before?
+
+		switch(idx){
+		case 0:
+			res = $SEED_C0$;
+			break;
+		case 1:
+			res = $SEED_C1$;
+			break;
+		case 2:
+			res = $SEED_C2$;
+			break;
+		}
+
+		float a;
+		switch(idx){
+		case 0:
+			a = $SEED_A0$;
+			break;
+		case 1:
+			a = $SEED_A1$;
+			break;
+		case 2:
+			a = $SEED_A2$;
+			break;
+		}
 		if(a > 0)
-			res.w = $SEED_A$;
+			res.w = a;
   }else{
     res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   }
+	
 
   return res;
 }
 
-_EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+_EPI_ float4 seed_poly(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -74,8 +119,9 @@ _EPI_ float4 seed_poly(read_only image2d_t fb, read_only image2d_t aux, float2 z
 }
 
 
+/*
 // refactor later
-_EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float2 z, __constant float* internal, __constant float* par, float time){
+_EPI_ float4 seed_texture(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -106,4 +152,18 @@ _EPI_ float4 seed_texture(read_only image2d_t fb, read_only image2d_t aux, float
 
   return res;
 }
+*/
 
+_EPI_ float4 seed_multi(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+	// multiseed
+  // FULL, LIVE, DEV
+	
+	// compute seed          
+	z = M(zn[10], (z - zn[11]));           
+	z = $T_SEED$;
+	z = M(zn[8], (z - zn[9]));
+	z = recover2($REDUCE$);
+
+	return $SEED0$; //seed_wca(0, z, fb, aux, par, internal, zn, time);
+
+}
