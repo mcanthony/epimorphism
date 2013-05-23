@@ -160,7 +160,7 @@ _EPI_ float4 seed_multi(int idx, float2 z, read_only image2d_t fb, read_only ima
 	
 	// compute seed          
 	z = M(zn[10], (z - zn[11]));           
-	z = $T_SEED$;
+	z = $T_SEED0$;
 	z = M(zn[8], (z - zn[9]));
 	z = recover2($REDUCE$);
 

@@ -1,7 +1,7 @@
 // EPIMORPH library file
 // seed shape functions for the seed_wca seed function
 
-_EPI_ float trans_w(float w, __constant float* par){
+_EPI_ float trans_w(int idx, float w, __constant float* par){
   // EXCLUDE
   if(w < _SEED_W_MIN && w > 0.0f)
     w = 1.0f;
@@ -10,28 +10,28 @@ _EPI_ float trans_w(float w, __constant float* par){
   return w;
 }
 
-_EPI_ float4 solid(float2 z, __constant float* par){
+_EPI_ float4 solid(int idx, float2 z, __constant float* par){
   // solid
   // DEV
 
   z = grid_reduce(z);
   float w = 1.0;
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, z.x, z.y);
 }
 
-_EPI_ float4 fade(float2 z, __constant float* par){
+_EPI_ float4 fade(int idx, float2 z, __constant float* par){
   // linear l-r gradient
   // DEV
 
   z = grid_reduce(z);
   float w = (z.x + 1.0f) / 2.0f;
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, z.x, z.y);
 }
 
 
-_EPI_ float4 wave(float2 z, __constant float* par){
+_EPI_ float4 wave(int idx, float2 z, __constant float* par){
   // sinousoid
   // DEV
 
@@ -39,12 +39,12 @@ _EPI_ float4 wave(float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = (2.0f + native_sin(2.0f * PI * (z.y + _clock / 10.0f))) / 4.0f;
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, z.x, z.y);
 }
 
 
-_EPI_ float4 circle(float2 z, __constant float* par){
+_EPI_ float4 circle(int idx, float2 z, __constant float* par){
   // circle
   // FULL, LIVE, DEV
 
@@ -57,12 +57,12 @@ _EPI_ float4 circle(float2 z, __constant float* par){
     w = (1.0f - 2.0f * fabs(r - _SEED_CIRCLE_R) / _SEED_W);
 		wy = (r - _SEED_CIRCLE_R - _SEED_W / 2.0f) / _SEED_W;
 	}
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
 
-_EPI_ float4 lines_lr(float2 z, __constant float* par){
+_EPI_ float4 lines_lr(int idx, float2 z, __constant float* par){
   // parallel vertical lines
   // FULL, LIVE, DEV
 
@@ -78,11 +78,11 @@ _EPI_ float4 lines_lr(float2 z, __constant float* par){
     w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
 		wx = 1.0 - w / 2.0;
 	}
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
-_EPI_ float4 lines_inner(float2 z, __constant float* par){
+_EPI_ float4 lines_inner(int idx, float2 z, __constant float* par){
   // lines in a cross
   // FULL, LIVE, DEV
 
@@ -94,11 +94,11 @@ _EPI_ float4 lines_inner(float2 z, __constant float* par){
     w = (1.0f - fabs(z.x) / _SEED_W);
 	if(fabs(z.y) < _SEED_W)
     w = fmax(1.0f - fabs(z.x) / _SEED_W, 1.0f - fabs(z.y) / _SEED_W); 
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
-_EPI_ float4 square(float2 z, __constant float* par){
+_EPI_ float4 square(int idx, float2 z, __constant float* par){
   // central square
   // FULL, LIVE, DEV
 
@@ -112,11 +112,11 @@ _EPI_ float4 square(float2 z, __constant float* par){
 		wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
   }
 	
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
-_EPI_ float4 lines_box(float2 z, __constant float* par){
+_EPI_ float4 lines_box(int idx, float2 z, __constant float* par){
   // 4 lines in a box
   // FULL, LIVE, DEV
 
@@ -141,12 +141,12 @@ _EPI_ float4 lines_box(float2 z, __constant float* par){
 		wx = 1.0 - w / 2.0;
 		wy = z.x / (0.5 * _SEED_W) - 0.5;
 	}
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
 
-_EPI_ float4 lines_box_stag(float2 z, __constant float* par){
+_EPI_ float4 lines_box_stag(int idx, float2 z, __constant float* par){
   // 4 lines in a box, staggered
   // FULL, LIVE, DEV
 
@@ -162,11 +162,11 @@ _EPI_ float4 lines_box_stag(float2 z, __constant float* par){
     w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
   if(z.y < -1.0f * (1.0f - _SEED_W) && z.x < (1.0f - _SEED_W))
     w = (-1.0f * (1.0f - _SEED_W) - z.y) / _SEED_W;
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
-_EPI_ float4 anti_grid_fade(float2 z, __constant float* par){
+_EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
   // inverse grid, radially shaded
   // FULL, LIVE, DEV
 
@@ -177,12 +177,12 @@ _EPI_ float4 anti_grid_fade(float2 z, __constant float* par){
   z = remf(floor(5.0f * _SEED_GRID_N) / 2.0f * z, 1.0f);
   if((z.x > 0.5f * (1.0f - _SEED_W) && z.x < 0.5f * (1.0f + _SEED_W)) && (z.y < 0.5f * (1.0f + _SEED_W) && z.y > 0.5f * (1.0f - _SEED_W)))
     w = min((1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W), (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W));
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
 
 
-_EPI_ float4 grid_fade(float2 z, __constant float* par){
+_EPI_ float4 grid_fade(int idx, float2 z, __constant float* par){
   // grid, radially shaded
   // FULL, LIVE, DEV
 
@@ -195,6 +195,6 @@ _EPI_ float4 grid_fade(float2 z, __constant float* par){
     w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W);
   if((z.y < 0.5f * (1.0f + _SEED_W) && z.y > 0.5f * (1.0f - _SEED_W)))
     w = fmax((1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W), (1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W));
-  w = trans_w(w, par);
+  w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
