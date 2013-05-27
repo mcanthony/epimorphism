@@ -62,7 +62,7 @@ class Engine(object):
             self.reset_fb()
 
         #auxilary buffer
-        self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, 2, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+        self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
         empty3d = cast(create_string_buffer(4 * self.app.kernel_dim ** 2 * 8), POINTER(c_uint))
         self.upload_image(self.aux, empty3d)
@@ -212,7 +212,10 @@ class Engine(object):
     def upload_image(self, cl_image, data, idx=None):
         ''' Upload an image to the DEVICE '''
         # debug("Uploading image")
-        clEnqueueWriteImage(self.queue, cl_image, data, (0, 0,0), (size_t * 3)(self.app.kernel_dim, self.app.kernel_dim, 1))
+        if not idx:
+            clEnqueueWriteImage(self.queue, cl_image, data)
+        else:
+            clEnqueueWriteImage(self.queue, cl_image, data, (0, 0, idx), (size_t * 3)(self.app.kernel_dim, self.app.kernel_dim, 1))
 
 
     def reset_fb(self):
