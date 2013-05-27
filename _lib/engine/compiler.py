@@ -25,7 +25,8 @@ class Compiler():
         ''' Executes the main Compiler sequence '''
         info("Compiling")
 
-        contents = [self.get_definitions()] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
+        contents = [self.get_definitions() + "#define _SEED_WZ _SEED_W;\n" ] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
+        print contents
         
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
