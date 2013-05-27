@@ -76,5 +76,5 @@ class RandomGridAux(Program):
 
         i = random.randint(0, len(textures) - 1)
 
-        config.cmdcenter.load_image("../textures/" + textures[i])
+        config.cmdcenter.load_image(textures[i])
         

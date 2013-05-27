@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.4,
- 'aux': 'flowers/flowers2.png',
+ 'aux': ['flowers/flowers2.png', None, 'tile_grid4.png', None, 'tile_grid1.png', None],
  'post_process': 'post_colors3',
  'frame_cnt': 0,
  'bpm': 120,

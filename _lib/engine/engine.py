@@ -72,7 +72,9 @@ class Engine(object):
 
         # load aux image
         if(self.state.aux):
-            self.cmdcenter.load_image(self.state.aux)
+            for i in range(len(self.state.aux)):
+                print self.state.aux
+                if(self.state.aux[i]): self.cmdcenter.load_image(self.state.aux[i])
 
         self.cl_initialized = True
 

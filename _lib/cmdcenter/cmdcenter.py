@@ -316,9 +316,9 @@ class CmdCenter(Archiver):
 
 
         # eh?
-        self.state.aux = name
+#        self.state.aux = name
         
-        self.engine.load_aux(Image.open("media/image/" + name).convert("RGBA"))
+        self.engine.load_aux(Image.open("media/textures/" + name).convert("RGBA"))
 
 
     def upload_webcam_frame(self):
