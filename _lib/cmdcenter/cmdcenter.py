@@ -230,7 +230,9 @@ class CmdCenter(Archiver):
         del self.frame[:]
         keys = self.state.par.keys()
         keys.sort()
-        self.frame.append({"name": "par",         "type": "float_array",   "val": [self.state.par[key] for key in keys]})
+        pars = [self.state.par[key] for key in keys]
+        pars = [item for sublist in pars for item in sublist]
+        self.frame.append({"name": "par",         "type": "float_array",   "val": pars})
         self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
         self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
         self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      

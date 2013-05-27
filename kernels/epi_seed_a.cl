@@ -19,7 +19,7 @@ _EPI_ float solid_alpha(int idx, float w, __constant float* par){
   // solid
   // FULL, LIVE, DEV
 
-  return _SEED_COLOR_A;
+  return _SEED_COLOR_A(idx);
 }
 
 
@@ -27,7 +27,7 @@ _EPI_ float linear_alpha(int idx, float w, __constant float* par){
   // linear with w
   // FULL, LIVE, DEV
 
-  return w * _SEED_COLOR_A;
+  return w * _SEED_COLOR_A(idx);
 }
 
 
@@ -35,5 +35,5 @@ _EPI_ float circular_alpha(int idx, float w, __constant float* par){
   // circular with w
   // FULL, LIVE, DEV
 
-  return native_sqrt(1.0f - (1.0f - w) * (1.0f - w)) * _SEED_COLOR_A;
+  return native_sqrt(1.0f - (1.0f - w) * (1.0f - w)) * _SEED_COLOR_A(idx);
 }

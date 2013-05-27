@@ -19,3 +19,4 @@ est
 *.log
 sources/pypm/build/*
 .directory
+kernels/debug.cl

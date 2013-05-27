@@ -25,8 +25,10 @@ class Compiler():
         ''' Executes the main Compiler sequence '''
         info("Compiling")
 
-        contents = [self.get_definitions() + "#define _SEED_WZ _SEED_W;\n" ] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
-        print contents
+        contents = [self.get_definitions()] + [open("kernels/%s.cl" % source).read() for source in self.app.sources]
+        debug_out = open("kernels/debug.cl", "w")
+        debug_out.write("".join(contents))
+        debug_out.close()
         
         try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
@@ -67,6 +69,6 @@ class Compiler():
         keys = self.state.par.keys()
         keys.sort()
         for i, k in enumerate(keys):
-            definitions += "#define %s par[%d]\n" % (k, i)            
+            definitions += "#define %s(idx) par[%d * %d + idx]\n" % (k, self.state.par_dim, i)            
 
         return definitions

@@ -7,7 +7,7 @@ const sampler_t tmp_aux_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
-		 __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+		 __constant float* par, __constant float *internal, __constant float2 *zn, float time){
   float2 t, t_seed, reduce;
   float4 seed, color;
 

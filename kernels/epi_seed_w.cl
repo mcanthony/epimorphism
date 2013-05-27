@@ -3,10 +3,10 @@
 
 _EPI_ float trans_w(int idx, float w, __constant float* par){
   // EXCLUDE
-  if(w < _SEED_W_MIN && w > 0.0f)
+  if(w < _SEED_W_MIN(idx) && w > 0.0f)
     w = 1.0f;
-  if(_SEED_W_BASE != 0.0f && w < 0.0f)
-    w = _SEED_W_BASE;
+  if(_SEED_W_BASE(idx) != 0.0f && w < 0.0f)
+    w = _SEED_W_BASE(idx);
   return w;
 }
 
@@ -53,9 +53,9 @@ _EPI_ float4 circle(int idx, float2 z, __constant float* par){
   float w = -0.0000001;
 	float wx = atan2pi(z.y, z.x) * 3.0;
 	float wy = 0.0;
-	if(r > _SEED_CIRCLE_R - _SEED_W / 2.0f && r  < _SEED_CIRCLE_R + _SEED_W / 2.0f){
-    w = (1.0f - 2.0f * fabs(r - _SEED_CIRCLE_R) / _SEED_W);
-		wy = (r - _SEED_CIRCLE_R - _SEED_W / 2.0f) / _SEED_W;
+	if(r > _SEED_CIRCLE_R(idx) - _SEED_W(idx) / 2.0f && r  < _SEED_CIRCLE_R(idx) + _SEED_W(idx) / 2.0f){
+    w = (1.0f - 2.0f * fabs(r - _SEED_CIRCLE_R(idx)) / _SEED_W(idx));
+		wy = (r - _SEED_CIRCLE_R(idx) - _SEED_W(idx) / 2.0f) / _SEED_W(idx);
 	}
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
@@ -69,13 +69,13 @@ _EPI_ float4 lines_lr(int idx, float2 z, __constant float* par){
   z = grid_reduce(z);
   float w = -0.0000001;
 	float wx = 0.0;
-	float wy = z.y / (0.5 * _SEED_W) - 0.5;
-  if(z.x > (1.0f - _SEED_W)){
-    w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
+	float wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
+  if(z.x > (1.0f - _SEED_W(idx))){
+    w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
 		wx = w / 2.0;
 	}
-  else if(z.x < -1.0f * (1.0f - _SEED_W)){
-    w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
+  else if(z.x < -1.0f * (1.0f - _SEED_W(idx))){
+    w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
 		wx = 1.0 - w / 2.0;
 	}
   w = trans_w(idx, w, par);
@@ -88,12 +88,12 @@ _EPI_ float4 lines_inner(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
-  if(fabs(z.x) < _SEED_W)
-    w = (1.0f - fabs(z.x) / _SEED_W);
-	if(fabs(z.y) < _SEED_W)
-    w = fmax(1.0f - fabs(z.x) / _SEED_W, 1.0f - fabs(z.y) / _SEED_W); 
+	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+  if(fabs(z.x) < _SEED_W(idx))
+    w = (1.0f - fabs(z.x) / _SEED_W(idx));
+	if(fabs(z.y) < _SEED_W(idx))
+    w = fmax(1.0f - fabs(z.x) / _SEED_W(idx), 1.0f - fabs(z.y) / _SEED_W(idx)); 
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -106,10 +106,10 @@ _EPI_ float4 square(int idx, float2 z, __constant float* par){
   float w = -0.0000001;
 	float wx = 0.0;
 	float wy = 0.0;
-  if(z.x < _SEED_W && z.x > -1.0f * _SEED_W && z.y < _SEED_W && z.y > -1.0f * _SEED_W){
-    w = fmin((1.0f - fabs(z.x) / _SEED_W), (1.0f - fabs(z.y) / _SEED_W));
-		wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-		wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
+  if(z.x < _SEED_W(idx) && z.x > -1.0f * _SEED_W(idx) && z.y < _SEED_W(idx) && z.y > -1.0f * _SEED_W(idx)){
+    w = fmin((1.0f - fabs(z.x) / _SEED_W(idx)), (1.0f - fabs(z.y) / _SEED_W(idx)));
+		wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+		wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
   }
 	
   w = trans_w(idx, w, par);
@@ -122,24 +122,24 @@ _EPI_ float4 lines_box(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
-	if(z.x >= z.y && z.x >= -1.0f * z.y && z.x > (1.0f - _SEED_W)){
-		w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
+	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	if(z.x >= z.y && z.x >= -1.0f * z.y && z.x > (1.0f - _SEED_W(idx))){
+		w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
 		wx = w / 2.0;
-		wy = z.y / (0.5 * _SEED_W) - 0.5;
-	}else if(z.y >= z.x && z.y >= -1.0f * z.x && z.y > (1.0f - _SEED_W)){
-		w = (z.y - (1.0f - _SEED_W)) / _SEED_W;
+		wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
+	}else if(z.y >= z.x && z.y >= -1.0f * z.x && z.y > (1.0f - _SEED_W(idx))){
+		w = (z.y - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
 		wx = w / 2.0;
-		wy = z.x / (0.5 * _SEED_W) - 0.5;
-	}else if(z.y >= z.x && z.y <= -1.0 * z.x && z.x < -1.0f * (1.0f - _SEED_W)){
-		w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
+		wy = z.x / (0.5 * _SEED_W(idx)) - 0.5;
+	}else if(z.y >= z.x && z.y <= -1.0 * z.x && z.x < -1.0f * (1.0f - _SEED_W(idx))){
+		w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
 		wx = 1.0 - w / 2.0;
-		wy = z.y / (0.5 * _SEED_W) - 0.5;
-	}else if(z.x >= z.y && z.x <= -1.0 * z.y && z.y < -1.0f * (1.0f - _SEED_W)){
-		w = (-1.0f * (1.0f - _SEED_W) - z.y) / _SEED_W;
+		wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
+	}else if(z.x >= z.y && z.x <= -1.0 * z.y && z.y < -1.0f * (1.0f - _SEED_W(idx))){
+		w = (-1.0f * (1.0f - _SEED_W(idx)) - z.y) / _SEED_W(idx);
 		wx = 1.0 - w / 2.0;
-		wy = z.x / (0.5 * _SEED_W) - 0.5;
+		wy = z.x / (0.5 * _SEED_W(idx)) - 0.5;
 	}
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
@@ -152,16 +152,16 @@ _EPI_ float4 lines_box_stag(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
-  if(z.x > (1.0f - _SEED_W))
-    w = (z.x - (1.0f - _SEED_W)) / _SEED_W;
-  if(z.y > (1.0f - _SEED_W))
-    w = (z.y - (1.0f - _SEED_W)) / _SEED_W;
-  if(z.x < -1.0f * (1.0f - _SEED_W))
-    w = (-1.0f * (1.0f - _SEED_W) - z.x) / _SEED_W;
-  if(z.y < -1.0f * (1.0f - _SEED_W) && z.x < (1.0f - _SEED_W))
-    w = (-1.0f * (1.0f - _SEED_W) - z.y) / _SEED_W;
+	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+  if(z.x > (1.0f - _SEED_W(idx)))
+    w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
+  if(z.y > (1.0f - _SEED_W(idx)))
+    w = (z.y - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
+  if(z.x < -1.0f * (1.0f - _SEED_W(idx)))
+    w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
+  if(z.y < -1.0f * (1.0f - _SEED_W(idx)) && z.x < (1.0f - _SEED_W(idx)))
+    w = (-1.0f * (1.0f - _SEED_W(idx)) - z.y) / _SEED_W(idx);
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -172,11 +172,11 @@ _EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);
-  z = remf(floor(5.0f * _SEED_GRID_N) / 2.0f * z, 1.0f);
-  if((z.x > 0.5f * (1.0f - _SEED_W) && z.x < 0.5f * (1.0f + _SEED_W)) && (z.y < 0.5f * (1.0f + _SEED_W) && z.y > 0.5f * (1.0f - _SEED_W)))
-    w = min((1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W), (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W));
+	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+  z = remf(floor(5.0f * _SEED_GRID_N(idx)) / 2.0f * z, 1.0f);
+  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx))) && (z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx))))
+    w = min((1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W(idx)), (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx)));
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -188,13 +188,13 @@ _EPI_ float4 grid_fade(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W) / (2.0 * _SEED_W);
-	float wy = (z.y + _SEED_W) / (2.0 * _SEED_W);	
-  z = remf(floor(5.0f * _SEED_GRID_N) /2.0f * z, 1.0f);
-  if((z.x > 0.5f * (1.0f - _SEED_W) && z.x < 0.5f * (1.0f + _SEED_W)))
-    w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W);
-  if((z.y < 0.5f * (1.0f + _SEED_W) && z.y > 0.5f * (1.0f - _SEED_W)))
-    w = fmax((1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W), (1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W));
+	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));	
+  z = remf(floor(5.0f * _SEED_GRID_N(idx)) /2.0f * z, 1.0f);
+  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx))))
+    w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx));
+  if((z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx))))
+    w = fmax((1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx)), (1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W(idx)));
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }

@@ -11,10 +11,10 @@ _EPI_ float4 reset_hsls(int x, int y, __constant float* par){
   // hsls reset function
   // FULL, LIVE, DEV
 
-  float phi = 2.0f * PI * _COLOR_PHI1;
-  float psi = 2.0f * PI * _COLOR_PSI1;
+  float phi = 2.0f * PI * _COLOR_PHI1(0);
+  float psi = 2.0f * PI * _COLOR_PSI1(0);
 
-  float4 pt = 2.0f * (_COLOR_RESET_Z - 0.5f) * (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0);
+  float4 pt = 2.0f * (_COLOR_RESET_Z(0) - 0.5f) * (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0);
   pt.w = -10000000.0f;
 
   return HSLstoRGB(pt);

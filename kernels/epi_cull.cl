@@ -19,7 +19,7 @@ float4 cull(float4 v, float4 seed, float4 frame, __constant float* par){
   if(null)
     v.w = -10000000.0f;
   
-  if(_CULL_DEPTH != 0.0f && v.w > 20 * _CULL_DEPTH)
+  if(_CULL_DEPTH(0) != 0.0f && v.w > 20 * _CULL_DEPTH(0))
     v = (float4)(0.0f, 0.0f, 0.0f, -10000000.0f);
   
   return v;
