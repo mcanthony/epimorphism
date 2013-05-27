@@ -218,7 +218,7 @@ class Engine(object):
     def load_aux(self, img):
         ''' Loads an image into the auxilary buffer '''
 
-        self.aux = clCreateImage2D(self.ctx, img.size[0], img.size[1], cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+        self.aux = clCreateImage3D(self.ctx, img.size[0], img.size[1], 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
         self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1))
 
