@@ -168,23 +168,6 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	idx = 0;
 	frame = $SEED0$;
 
-	// compute seed1
-	z = z_z;
-	z = M(zn[14], (z - zn[15]));           
-	z = $T_SEED1$;
-	z = M(zn[12], (z - zn[13]));
-	z = recover2($REDUCE$);
-	idx = 1;
-	frame = $SEED1$;
- 
-	// compute seed2
-	z = z_z;
-	z = M(zn[18], (z - zn[19]));           
-	z = $T_SEED2$;
-	z = M(zn[16], (z - zn[17]));
-	z = recover2($REDUCE$);
-	idx = 2;
-	frame = $SEED2$;
 	
 	return frame;
 

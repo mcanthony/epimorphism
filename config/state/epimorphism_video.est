@@ -7,7 +7,7 @@
  'bpm': 120,
  'paths': [],
  'randomize_seed': True,
- 'programs': [Script('epimorphism', 'video_roses'), RandomVideoComponents({'scope': 12, 'interval':40}), RandomGridAux({'interval':40})],
+ 'programs': [Script('epimorphism', 'video_roses')],
  'camera_id': 1,
  'components': {
  'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
@@ -26,11 +26,11 @@
  'SEED_WT2': 'wt_gauss(idx, w)',
  'SEED_C2': 'simple_color(idx, aux, z, seed, par, time)',
  'SEED_A2': 'solid_alpha(idx, w, par)',
- 'T': 'z',
+ 'T': 'coshz(z)',
  'T_SEED0': 'z',
  'T_SEED1': 'expz(z)',
  'T_SEED2': 'coshz(z)',
- 'COLOR': 'bgr_id(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
