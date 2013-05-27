@@ -304,7 +304,7 @@ class CmdCenter(Archiver):
         self.load(self.current_state_idx)
 
 
-    def load_image(self, name):
+    def load_image(self, name, idx):
         ''' Loads and image into the aux buffer
             and uploads it to a buffer.
             '''
@@ -316,9 +316,9 @@ class CmdCenter(Archiver):
 
 
         # eh?
-#        self.state.aux = name
+        self.state.aux[idx] = name
         
-        self.engine.load_aux(Image.open("media/textures/" + name).convert("RGBA"))
+        self.engine.load_aux(Image.open("media/textures/" + name).convert("RGBA").resize((self.app.kernel_dim, self.app.kernel_dim)))
 
 
     def upload_webcam_frame(self):

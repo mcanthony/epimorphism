@@ -58,7 +58,11 @@ class Engine(object):
             self.reset_fb()
 
         #auxilary buffer
-        self.aux = clCreateImage2D(self.ctx, 1, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))        
+        self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+
+        empty3d = cast(create_string_buffer(4 * self.app.kernel_dim ** 2 * 2), POINTER(c_uint))
+        self.upload_image(self.aux, empty3d)
+
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -73,8 +77,7 @@ class Engine(object):
         # load aux image
         if(self.state.aux):
             for i in range(len(self.state.aux)):
-                print self.state.aux
-                if(self.state.aux[i]): self.cmdcenter.load_image(self.state.aux[i])
+                if(self.state.aux[i]): self.cmdcenter.load_image(self.state.aux[i], i)
 
         self.cl_initialized = True
 
@@ -219,8 +222,6 @@ class Engine(object):
 
     def load_aux(self, img):
         ''' Loads an image into the auxilary buffer '''
-
-        self.aux = clCreateImage3D(self.ctx, img.size[0], img.size[1], 1, cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
         self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1))
 
