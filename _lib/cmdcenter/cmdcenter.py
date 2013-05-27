@@ -315,7 +315,7 @@ class CmdCenter(Archiver):
         info("Load image: %s", name)
 
         self.state.aux[idx] = name
-        
+
         self.engine.load_aux(Image.open("media/textures/" + name).convert("RGBA").resize((self.app.kernel_dim, self.app.kernel_dim)), idx)
 
 

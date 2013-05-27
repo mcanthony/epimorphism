@@ -64,10 +64,6 @@ class Engine(object):
         #auxilary buffer
         self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
-        empty3d = cast(create_string_buffer(4 * self.app.kernel_dim ** 2 * 8), POINTER(c_uint))
-        self.upload_image(self.aux, empty3d)
-
-
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
         self.pbo = clCreateFromGLBuffer(self.ctx, self.pbo_ptr, CL_MEM_WRITE_ONLY)       
@@ -212,7 +208,7 @@ class Engine(object):
     def upload_image(self, cl_image, data, idx=None):
         ''' Upload an image to the DEVICE '''
         # debug("Uploading image")
-        if not idx:
+        if idx == None:
             clEnqueueWriteImage(self.queue, cl_image, data)
         else:
             clEnqueueWriteImage(self.queue, cl_image, data, (0, 0, idx), (size_t * 3)(self.app.kernel_dim, self.app.kernel_dim, 1))
