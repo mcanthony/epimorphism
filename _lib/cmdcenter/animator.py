@@ -54,7 +54,9 @@ class Animator(object):
             (res, status) = path.do((t - path.phase) / path.spd) 
 
             # set result
-            getattr(config.state, path.obj)[path.idx] = res
+            #getattr(config.state, path.obj)[path.idx] = res
+            eval("config.state." + path.obj)[path.idx] = res
+            
 
             # if necessary, remove path
             if(not status):

@@ -9,7 +9,7 @@ __kernel __attribute__((reqd_work_group_size(16,16,1)))
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
 		 __constant float* par, __constant float *internal, __constant float2 *zn, float time){
   float2 t, t_seed, reduce;
-  float4 seed, color;
+  float4 color;
 
   // get coords
   const int x = get_global_id(0);
@@ -40,18 +40,20 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = recover2($REDUCE$);      
       
       // get frame
-      float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
-			      
-      seed = $SEED$[0];			
+      float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));			      
 
+			v += $SEED$;
+			
       // cull & blending
+			/*
+				seed = $SEED$;			
       #ifdef $CULL_ENABLED$
       v = cull(v, seed, frame, par);
       #else      
       v += seed.w * seed + (1.0 - seed.w) * frame;
 			//			v = seed2.w * seed2 + (1.0 - seed2.w) * v;									
       #endif
-
+			*/
     }
 
   // scale

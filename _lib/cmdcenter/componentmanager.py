@@ -2,7 +2,7 @@ from common.globals import *
 
 from datamanager import *
 
-import time, random
+import time, random, re
 
 from common.log import *
 set_log("COMPONENT")
@@ -49,7 +49,9 @@ class ComponentManager(object):
             return
 
         # get components
-        components = self.datamanager.components[name.upper()]
+        base_name = re.sub("\d+", "", name.upper())
+        print base_name
+        components = self.datamanager.components[base_name]
 
         try:
             idx = [elt[0] for elt in components].index(self.state.components[name])
@@ -64,6 +66,7 @@ class ComponentManager(object):
         new_component = components[idx % len(components)]
         if(return_result):
             return new_component[0]
+        
         # switch component
         self.switch_components({name: new_component[0]})
 
@@ -71,6 +74,7 @@ class ComponentManager(object):
     def switch_component(self, component, val):
         self.switch_components({component: val})
 
+        
     def switch_components(self, data):
         ''' Switches the system to the new components specified in data '''
         info("Switching components: %s" % str(data))
