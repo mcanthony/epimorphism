@@ -27,6 +27,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 
   for(int i_x = 0; i_x < (int)$FRACT$; i_x++)
     for(int i_y = 0; i_y < (int)$FRACT$; i_y++){
+			// z is the center of a pixel
       z = CX(z_z.x - i_k + i_x * inc, z_z.y - i_k + i_y * inc);
       
       // compute T      
@@ -41,7 +42,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
 			      
-      seed = $SEED$;			
+      seed = $SEED$[0];			
 
       // cull & blending
       #ifdef $CULL_ENABLED$
