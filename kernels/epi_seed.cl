@@ -53,7 +53,7 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 			break;
 		}
 
-		//		seed.x = w; // hrm, why wasn't this there before?
+		seed.x = w; // hrm, why wasn't this there before?
 
 		switch(idx){
 		case 0:
