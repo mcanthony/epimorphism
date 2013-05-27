@@ -26,7 +26,7 @@
  'SEED_WT2': 'wt_gauss(idx, w)',
  'SEED_C2': 'simple_color(idx, aux, z, seed, par, time)',
  'SEED_A2': 'solid_alpha(idx, w, par)',
- 'T': 'coshz(z)',
+ 'T': 'z',
  'T_SEED0': 'z',
  'T_SEED1': 'expz(z)',
  'T_SEED2': 'coshz(z)',
