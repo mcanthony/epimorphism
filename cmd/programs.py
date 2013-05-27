@@ -60,7 +60,7 @@ class RandomVideoComponents(Program):
         self.next_event_in = self.data["interval"] * (0.5 + random.random())
 
         update = {}
-        for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0', 'T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1', 'T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2'][0:self.data["scope"]]:
+        for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0', 'SEED_C0', 'T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1', 'SEED_C1', 'T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2', 'SEED_C2'][0:self.data["scope"]]:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         
         config.cmdcenter.componentmanager.switch_components(update)        

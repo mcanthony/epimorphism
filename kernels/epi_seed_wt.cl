@@ -42,7 +42,7 @@ _EPI_ float wt_gauss(int idx, float w){
 
 _EPI_ float wt_inv_gauss(int idx, float w){
   // inverse gaussian transform
-  // FULL, LIVE, DEV
+  // LIVE, DEV
 
   return native_exp(-100.0f * w * w);
 }

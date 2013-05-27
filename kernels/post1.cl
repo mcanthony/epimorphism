@@ -80,13 +80,13 @@ void post_colors3(read_only image2d_t fb, __global uchar4* pbo, __constant float
 
   float4 v = read_imagef(fb, post_sampler, p);
 
-		v = _gamma3(v, _GAMMA / 1.5);      
+	v = _gamma3(v, _GAMMA(0) / 1.5);      
 	
   v = RGBtoHSV(v);
 	
-	float4 c0 = HSLtoRGB((float4)(_PC3_HUE, 1.0, 0.5, 0.0));
-	float4 c1 = HSLtoRGB((float4)(_PC3_HUE + _PC3_SPREAD / 2.0, 1.0, _PC3_LGV, 0.0));
-	float4 c2 = HSLtoRGB((float4)(_PC3_HUE - _PC3_SPREAD / 2.0, 1.0, -1.0 * _PC3_LGV, 0.0));
+	float4 c0 = HSLtoRGB((float4)(_PC3_HUE(0), 1.0, 0.5, 0.0));
+	float4 c1 = HSLtoRGB((float4)(_PC3_HUE(0) + _PC3_SPREAD(0) / 2.0, 1.0, _PC3_LGV(0), 0.0));
+	float4 c2 = HSLtoRGB((float4)(_PC3_HUE(0) - _PC3_SPREAD(0) / 2.0, 1.0, -1.0 * _PC3_LGV(0), 0.0));
 	
 	/*
 	float4 c0 = (float4)(1.0, 0.0, 0.0, 0.0);
@@ -138,7 +138,7 @@ void post_gamma(read_only image2d_t fb, __global uchar4* pbo, __constant float* 
 
   float4 v = read_imagef(fb, post_sampler, p);
 
-	v = _gamma3(v, _GAMMA / 1.5);      
+	v = _gamma3(v, _GAMMA(0) / 1.5);      
 	
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }
