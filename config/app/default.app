@@ -18,9 +18,9 @@
  'record_events': False,
 
  'component_level': 'FULL',
- 'state_intrp_time': 3.0,
+ 'state_intrp_time': 5.0,
 
- 'server': True,
+ 'server': False,
 
  'kbd_switch_spd' : .25,
  'keyboard_handler': 'DefaultKeyboard',

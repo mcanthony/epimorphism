@@ -9,7 +9,7 @@
  'bpm': 120,
  'paths': [],
  'randomize_seed': True,
- 'programs': [Script('epimorphism', 'video_roses'), RandomMain({'interval': 40})],
+ 'programs': [Script('epimorphism', 'video_roses'), RandomMain({'interval': 150})],
  'camera_id': 1,
  'components': {
  'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
