@@ -71,29 +71,29 @@ class DefaultKeyboard(KeyboardHandler):
 class DefaultInterferenceKeyboard(DefaultKeyboard):
     def key_pressed(self, key, modifiers):
         if(key == '1'):
-            self.cmdcenter.cmd("state.par['_N'] += 1")
+            self.cmdcenter.cmd("state.par['_N'][0] += 1")
         elif(key == 'q'):
-            self.cmdcenter.cmd("state.par['_N'] -= 1")
+            self.cmdcenter.cmd("state.par['_N'][0] -= 1")
         elif(key == '2'):
-            self.cmdcenter.cmd("state.par['_SLICES'] += 1")
+            self.cmdcenter.cmd("state.par['_SLICES'][0] += 1")
         elif(key == 'w'):
-            self.cmdcenter.cmd("state.par['_SLICES'] -= 1")
+            self.cmdcenter.cmd("state.par['_SLICES'][0] -= 1")
         elif(key == 'a'):
-            self.cmdcenter.cmd("state.par['_VAL_TYPE'] += 1")
+            self.cmdcenter.cmd("state.par['_VAL_TYPE'][0] += 1")
         elif(key == 'z'):
-            self.cmdcenter.cmd("state.par['_VAL_TYPE'] -= 1")
+            self.cmdcenter.cmd("state.par['_VAL_TYPE'][0] -= 1")
         elif(key == 's'):
-            self.cmdcenter.cmd("state.par['_HUE_TYPE'] += 1")
+            self.cmdcenter.cmd("state.par['_HUE_TYPE'][0] += 1")
         elif(key == 'x'):
-            self.cmdcenter.cmd("state.par['_HUE_TYPE'] -= 1")
+            self.cmdcenter.cmd("state.par['_HUE_TYPE'][0] -= 1")
         elif(key == 'd'):
-            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'] += 1")
+            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'][0] += 1")
         elif(key == 'c'):
-            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'] -= 1")
+            self.cmdcenter.cmd("state.par['_VAL_WRAP_TYPE'][0] -= 1")
         elif(key == 'f'):
-            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'] += 1")
+            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'][0] += 1")
         elif(key == 'v'):
-            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'] -= 1")
+            self.cmdcenter.cmd("state.par['_HUE_WRAP_TYPE'][0] -= 1")
         elif(key in ["7", "8", "9", "0"]):
             i = ["7", "8", "9", "0"].index(key)
             self.cmdcenter.cmd("inc_data('%s', 1)" % self.components[i])

@@ -2,6 +2,7 @@
  'app_name': 'test',
  'name': 'default',
  'VERSION': 1.0,
+  'aux': [None],
  'time': 0.0,
  't_phase': 0.0,
  't_speed': 0.01,

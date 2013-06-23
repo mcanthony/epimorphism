@@ -119,10 +119,11 @@ class Engine(object):
         self.timings.append(time.time())
 
         # create args
+        args = [self.pbo, self.out]
+        
         if self.state.aux:
-            args = [self.pbo, self.out, self.aux]
-        else:
-            args = [self.pbo, self.out]
+            args += [self.aux]
+            
         if(self.app.feedback_buffer):
             args = [self.fb] + args
             

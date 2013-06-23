@@ -79,7 +79,7 @@ float wrapn(float* vals, int num_vals, int TYPE){
 
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
+void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image3d_t aux,
 	      __constant float *par, __constant float *internal, __constant float2 *zn, float time){
 
 

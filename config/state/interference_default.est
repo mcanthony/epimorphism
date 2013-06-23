@@ -3,6 +3,7 @@
  'name': 'default',
  'VERSION': 1.0,
  'time': 0.0,
+ 'aux': [None],
  't_phase': 0.0,
  't_speed': 0.8,
  'paths': [],

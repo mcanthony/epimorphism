@@ -34,6 +34,7 @@ class Script(DictObj, Program):
         if(self.next_event_in > 0):
             return
 
+#        print self.data["events"].pop(0)["cmd"]
         self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
 
 
