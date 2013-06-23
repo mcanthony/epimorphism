@@ -52,7 +52,7 @@ class Engine(object):
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
-        format = cl_image_format(CL_RGBA, CL_FLOAT)
+        format = cl_image_format(CL_BGRA, CL_FLOAT)
 
         self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
@@ -62,7 +62,8 @@ class Engine(object):
             self.reset_fb()
 
         #auxilary buffer
-        self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+        if(self.state.aux):
+            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -118,7 +119,8 @@ class Engine(object):
         self.timings.append(time.time())
 
         # create args
-        args = [self.pbo, self.out, self.aux]            
+        if self.state.aux:
+            args = [self.pbo, self.out, self.aux]            
         if(self.app.feedback_buffer):
             args = [self.fb] + args
             

@@ -6,7 +6,7 @@
  'keyboard_handler': 'DefaultInterferenceKeyboard',
  'mouse_handler': 'DefaultInterferenceMouse',
 
- 'OSC_enabled': True,
+ 'OSC_enabled': False,
  'OSC_handler': 'DefaultInterferenceOSC',
  'OSC_client_address': ('192.168.200.3', 9000),
  'OSC_echo': True,

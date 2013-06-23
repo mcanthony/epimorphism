@@ -96,13 +96,13 @@ void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image
 
   // compute val
   float waves[MAX_WAVES];
-  for(int i = 0; i <= _SLICES; i++){
-     float th = i * PI / _SLICES;
+  for(int i = 0; i <= _SLICES(0); i++){
+		float th = i * PI / _SLICES(0);
      
-     if(i < _SLICES / 2.0f){
-       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;
-     }else if(i > _SLICES / 2.0f){
-       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;
+		if(i < _SLICES(0) / 2.0f){
+       th -= 1 * (_SLICES(0) / 2.0f - i) * time * 0.01;
+     }else if(i > _SLICES(0) / 2.0f){
+       th += 1 * (i - _SLICES(0) / 2.0f) * time * 0.01;
      }
 
      float2 k = (float2)(cos(th), sin(th));
@@ -112,7 +112,7 @@ void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image
      z = $T$;     
      z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_VAL_TYPE, ENV1, _N * k, z, time * 0.01, _N, 0.0f);
+     waves[i] = plane_wave(_VAL_TYPE(0), ENV1, _N(0) * k, z, time * 0.01, _N(0), 0.0f);
   }
 
 
@@ -129,16 +129,16 @@ void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image
     val = 0.0;
   */
 
-  float val = wrapn(waves, _SLICES + 1, _VAL_WRAP_TYPE);
+  float val = wrapn(waves, _SLICES(0) + 1, _VAL_WRAP_TYPE(0));
   
   // compute hue
-  for(int i = 0; i <= _SLICES; i++){
-     float th = i * PI / _SLICES;
+  for(int i = 0; i <= _SLICES(0); i++){
+		float th = i * PI / _SLICES(0);
 
-     if(i < _SLICES / 2.0f){
-       th -= 1 * (_SLICES / 2.0f - i) * time * 0.01;;
-     }else if(i > _SLICES / 2.0f){
-       th += 1 * (i - _SLICES / 2.0f) * time * 0.01;;
+		if(i < _SLICES(0) / 2.0f){
+			th -= 1 * (_SLICES(0) / 2.0f - i) * time * 0.01;;
+		}else if(i > _SLICES(0) / 2.0f){
+			th += 1 * (i - _SLICES(0) / 2.0f) * time * 0.01;;
      }
 
      float2 k = (float2)(cos(th), sin(th));
@@ -148,10 +148,10 @@ void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image
      z = $T$;
      z = M(zn[0], z) + zn[1];
 
-     waves[i] = plane_wave(_HUE_TYPE, ENV1, _N * k, z, 2.0f * time * 0.01, _N, 0.0f) / 4.0f;
+     waves[i] = plane_wave(_HUE_TYPE(0), ENV1, _N(0) * k, z, 2.0f * time * 0.01, _N(0), 0.0f) / 4.0f;
   }
 
-  float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);
+  float hue = wrapn(waves, _SLICES(0) + 1, _HUE_WRAP_TYPE(0));
   
   /*
   // compute rotation
@@ -204,6 +204,7 @@ void interference(read_only image2d_t fb, __global uchar4* pbo, write_only image
   #endif
 }
 
+/*
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void interference_fb(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image2d_t aux,
 		     __constant float *par, __constant float *internal, __constant float2 *zn, float time){
@@ -244,7 +245,7 @@ void interference_fb(read_only image2d_t fb, __global uchar4* pbo, write_only im
   waves[MAX_WAVES] = read_imagef(fb, sampler, (0.5f * z_z + (float2)(0.5f, 0.5f))).x;
 
   float val = wrapn(waves, _SLICES + 2, _VAL_WRAP_TYPE);
-
+*/
 /*
 
   // compute hue
@@ -270,7 +271,7 @@ void interference_fb(read_only image2d_t fb, __global uchar4* pbo, write_only im
   float hue = wrapn(waves, _SLICES + 1, _HUE_WRAP_TYPE);
   float4 color = HSVtoRGB((float4)(hue, 1.0f, val, 1.0f));
   */
-
+/*
   float4 color = (float4)(val, val, val, 1.0);
 
   // write out value
@@ -303,3 +304,4 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __co
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }
 #endif
+*/

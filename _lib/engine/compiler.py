@@ -71,4 +71,6 @@ class Compiler():
         for i, k in enumerate(keys):
             definitions += "#define %s(idx) par[%d * %d + idx]\n" % (k, self.state.par_dim, i)            
 
-        return ("#define _NUM_AUX %d\n" % len(self.state.aux)) + definitions
+        if self.state.aux:
+            definitions += "#define _NUM_AUX %d\n" % len(self.state.aux)
+        return definitions
