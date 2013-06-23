@@ -120,7 +120,9 @@ class Engine(object):
 
         # create args
         if self.state.aux:
-            args = [self.pbo, self.out, self.aux]            
+            args = [self.pbo, self.out, self.aux]
+        else:
+            args = [self.pbo, self.out]
         if(self.app.feedback_buffer):
             args = [self.fb] + args
             
