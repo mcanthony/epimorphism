@@ -1,30 +1,82 @@
-To Run -
+------------------------------------------------
+ABOUT
+------------------------------------------------
 
-Windows
+I'll fill this in one of these days
+
+------------------------------------------------
+INSTALLATION
+------------------------------------------------
+
+WINDOWS:
+
+Install python 2.7
+Install PIL for python 2.7 - http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.exe
+
+LINUX:
+
+Dependencies - python2.7, freeglut, PIL
+
+optional: twisted, opencv
+
+OSX:
+
+borken
+
+------------------------------------------------
+TO RUN
+------------------------------------------------
+
+WINDOWS:
 
 click on epimorphism.py or run with python 2.7 via a console
 
-select application - (1) epimorphism
+LINUX:
 
-select state - (1) main
+./epimorphism
+
+OSX:
+
+borken
+
+------------------------------------------------
+APPLICATION & PRESET
+------------------------------------------------
+
+Choose epimorphism Application
+Choose main Preset
+
+Play around with others if you wish.  Some work, some do not.
+
+------------------------------------------------
+COMMAND LINE OPTIONS
+------------------------------------------------
+
+FULL SCREEN:
+
+./epimorphism screen=auto
 
 IF THE APPLICATION RUNS SLOWLY:
-  try each of(default is 1536) from the command line:
-	LINUX
-  ./epimorphism kernel_dim=1024
-  ./epimorphism kernel_dim=512
-  ./epimorphism kernel_dim=256
 
-	WINDOWS
+Try each of(default is 1536) from the command line:
+	
+./epimorphism kernel_dim=1024
+./epimorphism kernel_dim=512
+./epimorphism kernel_dim=256
 
-	epimorphism kernel_dim=1024
-  epimorphism kernel_dim=512
-  epimorphism kernel_dim=256
+until you get acceptable performance
 
-  until you get acceptable performance
+You can even increas from 1536 if your graphics card supports it.
 
+WINDOWS EXAMPLE:
 
-FULL SCREEN -
-  from the command line
-  epimorphism screen=auto
+epimorphism screen=auto kernel_dim=1024
+as in you don't need the ./
 
+------------------------------------------------
+CONTROLS
+------------------------------------------------
+
+QUIT: Esc
+
+A lot more which I'll document later
