@@ -3,6 +3,7 @@
  'data':{
  'phase':0,
  'events':[
+  {'cmd':"state.paths.append(Rose('zn', 1, 40, {'a':0.3, 'b':6, 'c':0.9}))", 'time':0.0},
  {'cmd':"state.paths.append(Linear1D(\"par['_PC3_HUE']\", 0, 30, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_PC3_SPREAD']\", 0, 45, {'a':0.35, 'b':0.5, 'th':0.5}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_PC3_LGV']\", 0, 60, {'a':0.25, 'b':0.5, 'th':0.5}))", 'time':0.0} 

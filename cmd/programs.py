@@ -128,3 +128,14 @@ class SwitchAux(Program):
         self.stop()
         
         
+class RandomInterference(Program):
+    def _execute(self):
+        debug("Execute random Interference")
+    
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+
+        config.cmdcenter.state.par['_N'][0] = random.randint(1, 8)
+        config.cmdcenter.state.par['_SLICES'][0] = random.randint(1, 5)
+        config.cmdcenter.cmd("inc_data('T', 0)")
+            
+
