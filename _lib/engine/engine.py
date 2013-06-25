@@ -52,7 +52,7 @@ class Engine(object):
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
-        format = cl_image_format(CL_RGBA, CL_FLOAT)
+        format = cl_image_format(CL_BGRA, CL_FLOAT)
 
         self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
