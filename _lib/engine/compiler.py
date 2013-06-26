@@ -30,11 +30,10 @@ class Compiler():
         debug_out.write("".join(contents))
         debug_out.close()
         
-        try:
+        try:            
             self.program = clCreateProgramWithSource(self.ctx, contents)
             #self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros", callback=create_build_callback(self.callback))
             self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros")
-
             t1 = self.cmdcenter.time()
         except BuildProgramFailureError as e:
             print e
@@ -71,6 +70,6 @@ class Compiler():
         for i, k in enumerate(keys):
             definitions += "#define %s(idx) par[%d * %d + idx]\n" % (k, self.state.par_dim, i)            
 
-        if self.state.aux:
+        if not self.state.aux is None:
             definitions += "#define _NUM_AUX %d\n" % len(self.state.aux)
         return definitions

@@ -1,5 +1,5 @@
 {'app_name': 'epimorphism',
- 'name': 'default',
+ 'name': 'main',
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.35,

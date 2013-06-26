@@ -35,29 +35,36 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 	case 0:
 		seed = $SEED_W0$;
 		break;
+	#ifdef $SEED1$		
 	case 1:
 		seed = $SEED_W1$;
 		break;
+	#endif
+	#ifdef $SEED2$
 	case 2:
 		seed = $SEED_W2$;
 		break;
+	#endif
 	}
   float w = seed.x;
 
   w = fmax(fmin(w, 1.0f), ep);
-
 	
   if(w > 0.0f){
 		switch(idx){
 		case 0:
 			w = $SEED_WT0$;
 			break;
+    #ifdef $SEED1$			
 		case 1:
 			w = $SEED_WT1$;
 			break;
+		#endif
+ 		#ifdef $SEED2$
 		case 2:
 			w = $SEED_WT2$;
 			break;
+		#endif
 		}
 
 		seed.x = w; // hrm, why wasn't this there before?
@@ -66,12 +73,16 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 		case 0:
 			res = $SEED_C0$;
 			break;
+  	#ifdef $SEED1$			
 		case 1:
 			res = $SEED_C1$;
 			break;
+    #endif		
+		#ifdef $SEED2$
 		case 2:
 			res = $SEED_C2$;
 			break;
+		#endif
 		}
 
 		float a;
@@ -79,12 +90,16 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 		case 0:
 			a = $SEED_A0$;
 			break;
+	  #ifdef $SEED1$		
 		case 1:
 			a = $SEED_A1$;
 			break;
+		#endif
+		#ifdef $SEED2$
 		case 2:
 			a = $SEED_A2$;
 			break;
+		#endif
 		}
 		if(a > 0)
 			res.w = a;
@@ -176,6 +191,7 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	frame = $SEED0$;
 
 	// compute seed1
+	#ifdef $SEED1$
 	z = z_z;
 	z = M(zn[14], (z - zn[15]));           
 	z = $T_SEED1$;
@@ -183,8 +199,10 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	z = recover2($REDUCE$);
 	idx = 1;
 	frame = $SEED1$;
- 
+	#endif
+
 	// compute seed2
+  #ifdef $SEED2$
 	z = z_z;
 	z = M(zn[18], (z - zn[19]));           
 	z = $T_SEED2$;
@@ -192,6 +210,7 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	z = recover2($REDUCE$);
 	idx = 2;
 	frame = $SEED2$;
+	#endif
 	
 	return frame;
 
