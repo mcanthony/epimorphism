@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.35,
- 'aux': ['flowers/flowers3.png', None],
+ 'aux': ['misc/tile_dodec.png', None],
  'post_process': None,
  'frame_cnt': 0,
  'bpm': 120,
@@ -15,10 +15,10 @@
  'components': {
  'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
  'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
- 'SEED_W0': 'lines_inner(idx, z, par)',
+ 'SEED_W0': 'anti_grid_fade(idx, z, par)',
  'SEED_WT0': 'wt_id(idx, w)',
  'SEED_C0': 'tex_color(idx, aux, z, seed, par, time)',
- 'SEED_A0': 'solid_alpha(idx, w, par)',
+ 'SEED_A0': 'id_alpha(idx, w, par)',
  'T': 'z',
  'T_SEED0': 'z',
  'COLOR': 'bgr_id(v, z_z, par, time)',
@@ -81,7 +81,7 @@
  0.0],
  'par': {
  '_SEED_W':
- [0.4],
+ [0.25],
  '_SEED_W_BASE':
  [0.0],
  '_SEED_W_MIN':

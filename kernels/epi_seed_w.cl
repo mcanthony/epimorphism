@@ -72,12 +72,11 @@ _EPI_ float4 lines_lr(int idx, float2 z, __constant float* par){
 	float wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
   if(z.x > (1.0f - _SEED_W(idx))){
     w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
-		wx = w;
 	}
   else if(z.x < -1.0f * (1.0f - _SEED_W(idx))){
     w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
-		wx = w;
 	}
+	wx = w;
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -126,21 +125,18 @@ _EPI_ float4 lines_box(int idx, float2 z, __constant float* par){
 	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
 	if(z.x >= z.y && z.x >= -1.0f * z.y && z.x > (1.0f - _SEED_W(idx))){
 		w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
-		wx = w / 2.0;
 		wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
 	}else if(z.y >= z.x && z.y >= -1.0f * z.x && z.y > (1.0f - _SEED_W(idx))){
 		w = (z.y - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
-		wx = w / 2.0;
 		wy = z.x / (0.5 * _SEED_W(idx)) - 0.5;
 	}else if(z.y >= z.x && z.y <= -1.0 * z.x && z.x < -1.0f * (1.0f - _SEED_W(idx))){
 		w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
-		wx = 1.0 - w / 2.0;
 		wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
 	}else if(z.x >= z.y && z.x <= -1.0 * z.y && z.y < -1.0f * (1.0f - _SEED_W(idx))){
 		w = (-1.0f * (1.0f - _SEED_W(idx)) - z.y) / _SEED_W(idx);
-		wx = 1.0 - w / 2.0;
 		wy = z.x / (0.5 * _SEED_W(idx)) - 0.5;
 	}
+	wx = w;
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -172,11 +168,14 @@ _EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
-	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
+	float wx = 0.0f;
+	float wy = 0.0f;
   z = remf(floor(5.0f * _SEED_GRID_N(idx)) / 2.0f * z, 1.0f);
-  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx))) && (z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx))))
+  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx))) && (z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx)))){
+		wx = 0.5 * (2.0f * z.x - 1.0f) / _SEED_W(idx) + 0.5;
+		wy = 0.5 * (2.0f * z.y - 1.0f) / _SEED_W(idx) + 0.5;
     w = min((1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W(idx)), (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx)));
+	}
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
@@ -191,10 +190,12 @@ _EPI_ float4 grid_fade(int idx, float2 z, __constant float* par){
 	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
 	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));	
   z = remf(floor(5.0f * _SEED_GRID_N(idx)) /2.0f * z, 1.0f);
-  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx))))
+  if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx)))){
     w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx));
-  if((z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx))))
+	}
+  if((z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx)))){
     w = fmax((1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx)), (1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W(idx)));
+	}
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
 }
