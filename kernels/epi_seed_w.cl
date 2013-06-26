@@ -72,11 +72,11 @@ _EPI_ float4 lines_lr(int idx, float2 z, __constant float* par){
 	float wy = z.y / (0.5 * _SEED_W(idx)) - 0.5;
   if(z.x > (1.0f - _SEED_W(idx))){
     w = (z.x - (1.0f - _SEED_W(idx))) / _SEED_W(idx);
-		wx = w / 2.0;
+		wx = w;
 	}
   else if(z.x < -1.0f * (1.0f - _SEED_W(idx))){
     w = (-1.0f * (1.0f - _SEED_W(idx)) - z.x) / _SEED_W(idx);
-		wx = 1.0 - w / 2.0;
+		wx = w;
 	}
   w = trans_w(idx, w, par);
 	return (float4)(w, 1.0, wx, wy);	
