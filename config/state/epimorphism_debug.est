@@ -9,7 +9,7 @@
  'bpm': 120,
  'paths': [],
  'randomize_seed': False,
- 'programs': [],
+ 'programs': [Script('epimorphism', 'debug')],
  'camera_id': 1,
  'par_dim': 1,
  'components': {
@@ -21,11 +21,11 @@
  'SEED_A0': 'solid_alpha(idx, w, par)',
  'T': 'z',
  'T_SEED0': 'z',
- 'COLOR': 'bgr_id(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)'
  },
- 'zn': [(1.0+0.0j),
+ 'zn': [(2.0+0.0j),
  (0.0+0.0j),
  (1.0+0j),
  0j,

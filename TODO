@@ -61,6 +61,8 @@ DONE:
 
 RELEASE QUEUE:
 
+	make it so you can save & load paths directly
+
   in generator, fix default state application name
 
   TouchOSC template 

@@ -1,0 +1,8 @@
+{
+ 'name':'main_roses',
+ 'data':{
+ 'phase':0,
+ 'events':[
+ {'cmd':"state.paths.append(Linear2D('zn', 9, 2.5, {'s':-1.0, 'e':1.0, 'loop':True}))", 'time':0.0}
+ ]}
+}
