@@ -3,6 +3,31 @@
  'data':{
  'phase':0,
  'events':[
- {'cmd':"state.paths.append(Linear2D('zn', 9, 2.5, {'s':-1.0, 'e':1.0, 'loop':True}))", 'time':0.0}
+ {'cmd':"state.paths.append(Rose('zn', 8, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 9, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 10, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 11, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 12, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 13, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 14, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 15, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 16, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 17, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 18, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 19, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D(\"par['_SEED_W']\", 0, 20, {'a':0.2, 'b':0.4, 'th':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D(\"par['_SEED_COLOR_A']\", 0, 25, {'a':0.15, 'b':0.85, 'th':0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_PHI1']\", 0, 20, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_PSI1']\", 0, 30, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_PHI2']\", 0, 35, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_PSI2']\", 0, 40, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_BASE_PHI']\", 0, 35, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_COLOR_BASE_PSI']\", 0, 40, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Linear1D(\"par['_PC3_HUE']\", 0, 30, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D(\"par['_PC3_SPREAD']\", 0, 45, {'a':0.35, 'b':0.5, 'th':0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D(\"par['_PC3_LGV']\", 0, 60, {'a':0.25, 'b':0.5, 'th':0.5}))", 'time':0.0},
+  {'cmd':"state.paths.append(Wave1D('sphere_rot', 0, 20, {'a':2.0, 'b':0.0, 'th':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Wave1D('sphere_rot', 1, 30, {'a':3.0, 'b':0.0, 'th':0.0}))", 'time':0.0}
+ 
  ]}
 }
