@@ -162,6 +162,7 @@ _EPI_ float4 lines_box_stag(int idx, float2 z, __constant float* par){
 	return (float4)(w, 1.0, wx, wy);	
 }
 
+// refactor me
 _EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
   // inverse grid, radially shaded
   // FULL, LIVE, DEV
@@ -181,19 +182,24 @@ _EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
 }
 
 
+// refactor me
 _EPI_ float4 grid_fade(int idx, float2 z, __constant float* par){
   // grid, radially shaded
   // FULL, LIVE, DEV
 
   z = grid_reduce(z);
   float w = -0.0000001;
-	float wx = (z.x + _SEED_W(idx)) / (2.0 * _SEED_W(idx));
-	float wy = (z.y + _SEED_W(idx)) / (2.0 * _SEED_W(idx));	
-  z = remf(floor(5.0f * _SEED_GRID_N(idx)) /2.0f * z, 1.0f);
+	float wx = 0.0f;
+	float wy = 0.0f;
+  z = remf(floor(5.0f * _SEED_GRID_N(idx)) / 2.0f * z, 1.0f);
   if((z.x > 0.5f * (1.0f - _SEED_W(idx)) && z.x < 0.5f * (1.0f + _SEED_W(idx)))){
+		wx = 0.5 * (2.0f * z.x - 1.0f) / _SEED_W(idx) + 0.5;
+		wy = 0.5 * (2.0f * z.y - 1.0f) / _SEED_W(idx) + 0.5;
     w = (1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx));
 	}
   if((z.y < 0.5f * (1.0f + _SEED_W(idx)) && z.y > 0.5f * (1.0f - _SEED_W(idx)))){
+		wx = 0.5 * (2.0f * z.x - 1.0f) / _SEED_W(idx) + 0.5;
+		wy = 0.5 * (2.0f * z.y - 1.0f) / _SEED_W(idx) + 0.5;
     w = fmax((1.0f - 2.0f * fabs(z.x - 0.5f) / _SEED_W(idx)), (1.0f - 2.0f * fabs(z.y - 0.5f) / _SEED_W(idx)));
 	}
   w = trans_w(idx, w, par);
