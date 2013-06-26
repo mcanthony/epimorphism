@@ -59,6 +59,21 @@ DONE:
   fix console
 
 
+PRICELESS:
+  more tiles
+	more coloring schemes
+	better T
+	variable # of seeds
+
+	better main program
+	
+	investigate texturing of seed_w
+
+	maybe limit certain image types to certain seed_w
+	
+	interpolation discontinuities
+	
+
 RELEASE QUEUE:
 
 	make it so you can save & load paths directly

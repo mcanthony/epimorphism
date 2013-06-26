@@ -64,18 +64,25 @@ class RandomMain(Program):
         # seed 0                
         for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0']:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
-            update["SEED_C0"] = 'simple_color(idx, aux, z, seed, par, time)'
+            update["SEED_C0"] = 'tex_color(idx, aux, z, seed, par, time)'
 
-        # seed 1
-        for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
-            update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
-            update["SEED_C1"] = 'tex_color(idx, aux, z, seed, par, time)'
-        prg = RandomAux({'idx': 1})
+        prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
         config.cmdcenter.state.programs.append(prg)
         prg.run()
 
+        # seed 1
+        if False:
+            for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
+                update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
+                update["SEED_C1"] = 'tex_color(idx, aux, z, seed, par, time)'
+            prg = RandomAux({'idx': 1})
+            config.cmdcenter.state.programs.append(prg)
+            prg.run()
+        else:
+            update["SEED1"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
+
         # seed 2
-        if random.random() > 0.3333:
+        if False:
             for component_name in ['T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
                 update["SEED_C2"] = 'tex_color(idx, aux, z, seed, par, time)'
