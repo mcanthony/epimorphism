@@ -48,7 +48,7 @@ class RandomAllComponents(Program):
         self.next_event_in = self.data["interval"] * (0.5 + random.random())
 
         update = {}
-        for component_name in ['T', 'T_SEED', 'SEED_W', 'SEED_WT', 'SEED_A', 'SEED'][0:self.data["scope"]]:
+        for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0', 'SEED'][0:self.data["scope"]]:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         
         config.cmdcenter.componentmanager.switch_components(update)
@@ -90,12 +90,12 @@ class RandomMain(Program):
 
 class RandomAux(Program):
     def _execute(self):
-        debug("Executing Random Grid Aux")
+        debug("Executing Random Aux")
 
         if not self.data.has_key("folder"):
             self.data["folder"] = ""
         path = "media/textures/" + self.data["folder"] + '/'
-        textures = [ f for f in os.listdir(path) if os.path.isfile(path + f)]
+        textures = [f for f in os.listdir(path) if os.path.isfile(path + f)]
 
         i = random.randint(0, len(textures) - 1)
         prg = SwitchAux({'idx': self.data['idx'], 'tex': self.data["folder"] + '/' + textures[i]})
@@ -112,9 +112,9 @@ class SwitchAux(Program):
 
         # see if we're already switching.  done a bit ghettoly.  not even sure if it works
         cur = config.cmdcenter.state.par["_SEED_TEX_IDX"][self.data["idx"]]
-        if math.fabs(cur - round(cur)) > 0.1:
-            debug("Already switching aux %d" % self.data["idx"])
-            return
+#        if math.fabs(cur - round(cur)) > 0.1:
+#            debug("Already switching aux %d" % self.data["idx"])
+#            return
 
         ofs = (round(cur) == 0 and 1 or 0)
 

@@ -12,7 +12,6 @@ set_log("Program")
 class Program(threading.Thread):
 
     def __init__(self, data):
-
         self.data = data
         info("Starting program: %s", self.__class__.__name__)
 
@@ -33,6 +32,7 @@ class Program(threading.Thread):
         else:
             self.freeze_event.clear()
 
+            
     def stop(self):
         self.exit = True
         self.sleep_event.set()
@@ -48,6 +48,7 @@ class Program(threading.Thread):
             self.freeze_event.wait()
             self.sleep_event.wait(self.next_event_in)
 
+            
     def _execute(self):
         pass
 

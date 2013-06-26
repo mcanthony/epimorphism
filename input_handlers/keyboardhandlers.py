@@ -4,6 +4,10 @@ from OpenGL.GLUT import *
 
 from interface.keyboardhandler import KeyboardHandler
 
+from cmd.programs import *
+
+from common.log import *
+set_log("Keyboard")
 
 class DefaultKeyboard(KeyboardHandler):
     def key_pressed(self, key, modifiers):
@@ -253,8 +257,11 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                     self.app.midi_speed = 0.5
 
             # record events
-            elif(key == GLUT_KEY_F8):
-                self.cmdcenter.toggle_record()
+            elif(key == GLUT_KEY_F9):
+                #self.cmdcenter.toggle_record()
+                prg = RandomAux({'idx': 0})
+                self.cmdcenter.state.programs.append(prg)
+                prg.run()
 
             # default
             else:
