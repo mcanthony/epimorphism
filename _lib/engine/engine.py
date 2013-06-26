@@ -231,6 +231,6 @@ class Engine(object):
     def load_aux(self, img, idx):
         ''' Loads an image into the auxilary buffer '''
 
-        self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1), idx)
+        self.upload_image(self.aux, img.tostring("raw", "BGRA", 0, -1), idx)
 
 

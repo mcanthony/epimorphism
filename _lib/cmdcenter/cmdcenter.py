@@ -318,7 +318,8 @@ class CmdCenter(Archiver):
 
         self.state.aux[idx] = name
 
-        self.engine.load_aux(Image.open("media/textures/" + name).convert("RGBA").resize((self.app.kernel_dim, self.app.kernel_dim)), idx)
+        img = Image.open("media/textures/" + name).convert("RGBA")
+        self.engine.load_aux(img.resize((self.app.kernel_dim, self.app.kernel_dim)), idx)
 
 
     def upload_webcam_frame(self):

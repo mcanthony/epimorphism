@@ -259,7 +259,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
             # record events
             elif(key == GLUT_KEY_F9):
                 #self.cmdcenter.toggle_record()
-                prg = RandomAux({'idx': 0})
+                prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
                 self.cmdcenter.state.programs.append(prg)
                 prg.run()
 
