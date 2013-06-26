@@ -15,7 +15,7 @@
  'components': {
  'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
  'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
- 'SEED_W0': 'square(idx, z, par)',
+ 'SEED_W0': 'lines_lr(idx, z, par)',
  'SEED_WT0': 'wt_id(idx, w)',
  'SEED_C0': 'tex_color(idx, aux, z, seed, par, time)',
  'SEED_A0': 'solid_alpha(idx, w, par)',
