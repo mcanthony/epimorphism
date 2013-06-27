@@ -4,7 +4,7 @@
  'time': 0.0,
  't_speed': 0.35,
  'aux': ['misc/tile_paisley2.png', None],
- 'post_process': 'post_gamma',
+ 'post_process': 'post_process',
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],
@@ -23,7 +23,8 @@
  'T_SEED0': 'z',
  'COLOR': 'bgr_id(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
- 'RESET': 'reset_hsls(x, y, par)'
+ 'RESET': 'reset_hsls(x, y, par)',
+ 'POST': 'post_gamma(v, par, time)'
  },
  'zn': [(1.0+0.0j),
  (0.0+0.0j),

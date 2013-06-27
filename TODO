@@ -62,7 +62,7 @@ DONE:
 PRICELESS:
   more tiles
 	more coloring schemes
-	better T
+	more T
 
 	even better main program 
 
@@ -70,11 +70,11 @@ PRICELESS:
 
 	self texturing seed
 
-	post_process interpolation???
-
 	more post process options
 
 	still discontinuities
+
+	clean out kernels to reduce compile time?
 	
 
 RELEASE QUEUE:

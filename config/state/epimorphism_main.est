@@ -4,7 +4,7 @@
  'time': 0.0,
  't_speed': 0.25,
  'aux': ['simplegeom/tile_grid1.png', None, None, None, None, None],
- 'post_process': 'post_gamma',
+ 'post_process': 'post_process',
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],
@@ -33,9 +33,10 @@
  'T_SEED0': 'z',
  'T_SEED1': 'expz(z)',
  'T_SEED2': 'coshz(z)',
- 'COLOR': 'bgr_id(v, z_z, par, time)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
- 'RESET': 'reset_hsls(x, y, par)'
+ 'RESET': 'reset_hsls(x, y, par)',
+ 'POST': 'post_colors3(v, par, time)'
  },
  'zn': [(0.0+1.0j),
  (1.0+0.0j),
