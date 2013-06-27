@@ -151,12 +151,12 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 
 
 
-	
+  /*	
 _EPI_ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
-  /*
+
   float4 res;
   float ep = -0.0000001;
   float seed_wt, seed_a;
@@ -174,12 +174,11 @@ _EPI_ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, 
     res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   }
 
-  */
-
   float hue = (M(z, z) + 5 * (cos(time / 2) + 0.5) * cosz(z)).x / 5.0;
 
   return HSVtoRGB((float4)(hue, 1.0, 1.0, 0.5));
 }
+  */
 
 
 /*
