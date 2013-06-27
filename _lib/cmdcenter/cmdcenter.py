@@ -173,7 +173,7 @@ class CmdCenter(Archiver):
     def do(self):
         ''' Main application loop '''
 
-        # print self.state.par['_SEED_TEX_IDX'][0]
+        #print self.state.par['_SEED_TEX_IDX']
         
         # execute engine
         if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):

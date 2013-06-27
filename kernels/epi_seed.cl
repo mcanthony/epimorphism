@@ -23,6 +23,7 @@ _EPI_ float4 seed_simple(int idx, float4 frame, float2 z, read_only image2d_t fb
 
 }
 
+
 _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
@@ -64,7 +65,7 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 	#endif
 	}
 
-	seed.x = w; // hrm, why wasn't this there before?
+	seed.x = w;
 	
 	switch(idx){
 	case 0:

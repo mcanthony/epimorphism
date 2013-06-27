@@ -13,14 +13,14 @@ _EPI_ float wt_id(int idx, float w){
 _EPI_ float wt_inv(int idx, float w){
   // identity transform
   // LIVE, DEV
-
+					 	
   return 1.0f - w;
 }
 
 
 _EPI_ float wt_circular(int idx, float w){
   // circular transform
-  // FULL, LIVE, DEV
+  // LIVE, DEV
 
   return native_sqrt(1.0f - (1.0f - w) * (1.0f - w));
 }
@@ -35,7 +35,7 @@ _EPI_ float wt_inv_circular(int idx, float w){
 
 _EPI_ float wt_gauss(int idx, float w){
   // gaussian transform
-  // FULL, LIVE, DEV
+  // LIVE, DEV
 
   return native_exp(-10.0f * (w - 1.0f) * (w - 1.0f));
 }

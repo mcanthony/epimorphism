@@ -1,20 +1,20 @@
 {
- 'name':'video_roses',
+ 'name':'main_roses',
  'data':{
  'phase':0,
  'events':[
  {'cmd':"state.paths.append(Rose('zn', 8, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 9, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 10, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 11, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 12, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 13, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 14, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 15, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 16, 20, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 17, 15, {'a':0.8, 'b':5, 'c':-0.5}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 9, 15, {'a':0.8, 'b':5, 'c':-0.8}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 10, 25, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 11, 30, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 12, 15, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 13, 25, {'a':0.8, 'b':5, 'c':-0.8}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 14, 40, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 15, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0}, 
+ {'cmd':"state.paths.append(Rose('zn', 16, 25, {'a':0.4, 'b':6, 'c':0.9}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 17, 30, {'a':0.8, 'b':5, 'c':-0.8}))", 'time':0.0},
  {'cmd':"state.paths.append(Rose('zn', 18, 15, {'a':0.3, 'b':7, 'c':0.9}))", 'time':0.0},
- {'cmd':"state.paths.append(Rose('zn', 19, 20, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0},
+ {'cmd':"state.paths.append(Rose('zn', 19, 25, {'a':1.2, 'b':4, 'c':0.0}))", 'time':0.0}, 
  {'cmd':"state.paths.append(Wave1D(\"par['_SEED_W']\", 0, 20, {'a':0.2, 'b':0.4, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_SEED_COLOR_A']\", 0, 25, {'a':0.15, 'b':0.85, 'th':0.5}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_SEED_W']\", 1, 30, {'a':0.2, 'b':0.4, 'th':0.0}))", 'time':0.0},
@@ -34,3 +34,4 @@
  {'cmd':"state.paths.append(Wave1D('sphere_rot', 1, 30, {'a':3.0, 'b':0.0, 'th':0.0}))", 'time':0.0}
  ]}
 }
+ 

@@ -71,7 +71,7 @@ class RandomMain(Program):
         prg.run()
 
         # seed 1
-        if random.random() > 0.5:
+        if random.random() > 0.4:
             for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
@@ -86,14 +86,15 @@ class RandomMain(Program):
             update["SEED1"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
 
         # seed 2
-        if random.random() > 0.5:
+        if random.random() > 0.2:
             for component_name in ['T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED_C2"] = 'tex_color(idx, aux, z, seed, par, time)'
-            update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
-            if random.random() > 0.33:            
+            update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+            rnd = random.random()
+            if rnd < 0.33:            
                 prg = RandomAux({'idx': 2, 'folder': 'flowers'})
-            elif random.random() > 0.66:
+            elif rnd < 0.66:
                 prg = RandomAux({'idx': 2, 'folder': 'misc'})
             else:
                 prg = RandomAux({'idx': 2, 'folder': 'nontile'})

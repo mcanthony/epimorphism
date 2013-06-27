@@ -101,7 +101,7 @@ _EPI_ float4 lines_inner(int idx, float2 z, __constant float* par){
 
 _EPI_ float4 square(int idx, float2 z, __constant float* par){
   // central square
-  // FULL, LIVE, DEV
+  // LIVE, DEV
 
   z = grid_reduce(z);
   float w = VOID_W;
@@ -167,7 +167,7 @@ _EPI_ float4 lines_box_stag(int idx, float2 z, __constant float* par){
 // refactor me
 _EPI_ float4 anti_grid_fade(int idx, float2 z, __constant float* par){
   // inverse grid, radially shaded
-  // FULL, LIVE, DEV
+  // LIVE, DEV
 
   z = grid_reduce(z);
   float w = VOID_W;

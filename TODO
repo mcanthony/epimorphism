@@ -63,15 +63,16 @@ PRICELESS:
   more tiles
 	more coloring schemes
 	better T
-	make rose patterns less sharp
 
 	even better main program 
 
-	maybe limit certain image types to certain seed_w
+	contemplate removing circle
 
 	self texturing seed
 
 	move post processing into main kernel
+
+	still discontinuities
 	
 
 RELEASE QUEUE:
