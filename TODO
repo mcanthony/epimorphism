@@ -61,20 +61,19 @@ DONE:
 
 PRICELESS:
   more tiles
-	more coloring schemes
 	more T
-
+	
 	even better main program 
 
-	contemplate removing circle & blank seeds
+	contemplate removing grid_fade & blank seeds
 
 	self texturing seed
-
-	more post process options
 
 	still discontinuities
 
 	clean out kernels to reduce compile time?
+
+	make program programs start as post compilation hook
 	
 
 RELEASE QUEUE:

@@ -102,7 +102,14 @@ class RandomMain(Program):
             prg.run()            
         else:
             update["SEED2"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
-        
+
+        if random.random() > 0.5:
+            update["COLOR"] = "rotate_hsls(v, z_z, par, time)"
+            update["POST"] = "post_colors3(v, par, time)"
+        else:
+            update["COLOR"] = "bgr_id(v, z_z, par, time)"
+            update["POST"] = "post_gamma(v, par, time)"                
+            
         config.cmdcenter.componentmanager.switch_components(update)        
 
 

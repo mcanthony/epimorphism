@@ -96,7 +96,7 @@ class Engine(object):
         # post processing kernel
         if(self.state.post_process):
             self.post_process = self.program[self.state.post_process]
-            self.post_process.argtypes = (cl_mem, cl_mem, cl_mem, cl_float)
+            self.post_process.argtypes = (cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
 
 
     def do(self):
@@ -154,7 +154,7 @@ class Engine(object):
         # post processing
         if(self.state.post_process):
             #i = (self.app.feedback_buffer and 1 or 0)
-            args = [args[0], args[1], args[4], args[7]] # maybe could use some work, if frame format ever changes
+            args = [args[0], args[1], args[4], args[5], args[7]] # maybe could use some work, if frame format ever changes
             self.post_process(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
 
         # release pbo

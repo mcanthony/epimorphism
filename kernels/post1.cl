@@ -70,7 +70,7 @@ _EPI_ float4 post_colors3(float4 v, __constant float* par, float time){
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
-void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
+void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, __constant float *internal, float time){
 
   // get coords
   const int x = get_global_id(0);
