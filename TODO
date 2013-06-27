@@ -66,12 +66,12 @@ PRICELESS:
 	make rose patterns less sharp
 
 	better main program
-	
-	investigate texturing of seed_w
 
 	maybe limit certain image types to certain seed_w
 	
 	interpolation discontinuities
+
+	self texturing seed
 	
 
 RELEASE QUEUE:

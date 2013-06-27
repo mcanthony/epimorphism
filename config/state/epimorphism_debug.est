@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.35,
- 'aux': ['misc/tile_dodec.png', None],
+ 'aux': ['misc/tile_paisley2.png', None],
  'post_process': None,
  'frame_cnt': 0,
  'bpm': 120,
