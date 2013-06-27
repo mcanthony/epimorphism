@@ -65,13 +65,13 @@ PRICELESS:
 	better T
 	make rose patterns less sharp
 
-	better main program
+	even better main program 
 
 	maybe limit certain image types to certain seed_w
-	
-	interpolation discontinuities
 
 	self texturing seed
+
+	move post processing into main kernel
 	
 
 RELEASE QUEUE:
