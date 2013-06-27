@@ -42,6 +42,7 @@ class Compiler():
         info("Done Compiling")            
         if internal_callback:
             internal_callback()
+            time.sleep(0.01) # mad ghetto
             
         self.callback(self.program, None)            
         self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - config.last_frame_time))

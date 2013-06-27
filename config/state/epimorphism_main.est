@@ -35,7 +35,7 @@
  'T_SEED2': 'coshz(z)',
  'COLOR': 'rotate_hsls(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
- 'RESET': 'reset_hsls(x, y, par)',
+ 'RESET': 'reset_black(x, y, par)',
  'POST': 'post_colors3(v, par, time)'
  },
  'zn': [(0.0+1.0j),

@@ -52,6 +52,7 @@ float2 expz(float2 z0){
   return CX(f * c, f * s);
 }
 
+/*
 float2 sqrtz(float2 z0){
   return CX(rint(z0.x), rint(z0.y));
 }
@@ -84,6 +85,7 @@ float2 B(float2 z0){
   float mid = z0.x + K * sin( pi * (z0.y + 1) ) / pi - 1;
   return CX(mid, z0.y + mid);
 }
+*/
 
 float4 rotate3D(float4 v, float4 axis, float th){
   // compute constants

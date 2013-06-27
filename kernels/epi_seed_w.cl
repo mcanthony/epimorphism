@@ -12,6 +12,7 @@ _EPI_ float trans_w(int idx, float w, __constant float* par){
   return w;
 }
 
+/*
 _EPI_ float4 solid(int idx, float2 z, __constant float* par){
   // solid
   // DEV
@@ -44,7 +45,7 @@ _EPI_ float4 wave(int idx, float2 z, __constant float* par){
   w = trans_w(idx, w, par);
 	return (float4)(w, (w==VOID_W ? 0.0f : 1.0f), z.x, z.y);
 }
-
+*/
 
 _EPI_ float4 circle(int idx, float2 z, __constant float* par){
   // circle

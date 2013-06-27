@@ -7,6 +7,7 @@ _EPI_ float4 reset_black(int x, int y, __constant float* par){
   return (float4)(0.0f, 0.0f, 0.0f, -10000000.0f);
 }
 
+/*
 _EPI_ float4 reset_hsls(int x, int y, __constant float* par){
   // hsls reset function
   // FULL, LIVE, DEV
@@ -19,3 +20,4 @@ _EPI_ float4 reset_hsls(int x, int y, __constant float* par){
 
   return HSLstoRGB(pt);
 }
+*/

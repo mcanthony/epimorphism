@@ -1,3 +1,4 @@
+#ifdef $CULL_ENABLED$
 float4 cull(float4 v, float4 seed, float4 frame, __constant float* par){
   float new_w;
 
@@ -24,3 +25,4 @@ float4 cull(float4 v, float4 seed, float4 frame, __constant float* par){
   
   return v;
 }
+#endif

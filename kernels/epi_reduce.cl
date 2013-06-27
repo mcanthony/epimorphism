@@ -33,6 +33,7 @@ _EPI_ float2 torus_reduce(float2 z){
 }
 
 
+/*
 _EPI_ float2 tri_reduce(float2 z){
   // reduction based on the reflective torus
   // FULL, LIVE, DEV
@@ -72,7 +73,7 @@ _EPI_ float2 tri_reduce(float2 z){
   return zr;
 
 }
-
+*/
 
 /*
 device__ float2 hex_reduce(float2 z){
@@ -116,7 +117,8 @@ device__ float2 hex_reduce(float2 z){
 }
 */
 
-_EPI_ float2 awesome(float2 z){
+/*
+_EPI_ float2 awesome_reduce(float2 z){
   // hex reduce
   // NA
 
@@ -132,3 +134,4 @@ _EPI_ float2 awesome(float2 z){
 
   return z / 2.0;
 }
+*/
