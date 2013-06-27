@@ -4,7 +4,7 @@
  'time': 0.0,
  't_speed': 0.35,
  'aux': ['misc/tile_paisley2.png', None],
- 'post_process': None,
+ 'post_process': 'post_gamma',
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],

@@ -70,7 +70,9 @@ PRICELESS:
 
 	self texturing seed
 
-	move post processing into main kernel
+	post_process interpolation???
+
+	more post process options
 
 	still discontinuities
 	
