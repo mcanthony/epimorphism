@@ -50,7 +50,7 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 
   w = fmax(fmin(w, 1.0f), ep);
 	
-  if(w > 0.0f){
+	//  if(w > 0.0f){
 		switch(idx){
 		case 0:
 			w = $SEED_WT0$;
@@ -103,10 +103,11 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 		}
 		if(a > 0)
 			res.w = a;
-  }else{
-    res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
-  }
-	
+		//  }else{
+		// res = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
+		//}
+
+		res.w *= seed.y;
 
   return mix(frame, res, res.w);
 }
