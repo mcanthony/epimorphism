@@ -60,15 +60,14 @@ class RandomMain(Program):
         self.next_event_in = self.data["interval"] * (0.5 + random.random())
 
         update = {}
-        
+
+        programs = []
         # seed 0                
         for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0']:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         update["SEED_C0"] = 'tex_color(idx, aux, z, seed, par, time)'
 
-        prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
-        config.cmdcenter.state.programs.append(prg)
-        prg.run()
+        programs.append(RandomAux({'idx': 0, 'folder': 'simplegeom'}))
 
         # seed 1
         if random.random() > 0.4:
@@ -77,9 +76,7 @@ class RandomMain(Program):
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
             if random.random() > 0.5:
                 update["SEED_C1"] = 'tex_color(idx, aux, z, seed, par, time)'
-                prg = RandomAux({'idx': 1, 'folder': 'Vasarely'})
-                config.cmdcenter.state.programs.append(prg)
-                prg.run()
+                programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
             else:
                 update["SEED_C1"] = 'simple_color(idx, aux, z, seed, par, time)'
         else:
@@ -93,13 +90,11 @@ class RandomMain(Program):
             update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             rnd = random.random()
             if rnd < 0.33:            
-                prg = RandomAux({'idx': 2, 'folder': 'flowers'})
+                programs.append(RandomAux({'idx': 2, 'folder': 'flowers'}))
             elif rnd < 0.66:
-                prg = RandomAux({'idx': 2, 'folder': 'misc'})
+                programs.append(RandomAux({'idx': 2, 'folder': 'misc'}))
             else:
-                prg = RandomAux({'idx': 2, 'folder': 'nontile'})
-            config.cmdcenter.state.programs.append(prg)
-            prg.run()            
+                programs.append(RandomAux({'idx': 2, 'folder': 'nontile'}))
         else:
             update["SEED2"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
 
@@ -109,8 +104,16 @@ class RandomMain(Program):
         else:
             update["COLOR"] = "bgr_id(v, z_z, par, time)"
             update["POST"] = "post_gamma(v, par, time)"                
-            
-        config.cmdcenter.componentmanager.switch_components(update)        
+
+
+        def start_programs():
+            for program in programs:
+                print "program"
+                config.cmdcenter.state.programs.append(program)
+                program.run()
+
+        #start_programs()
+        config.cmdcenter.componentmanager.switch_components(update, start_programs)        
 
 
 class RandomAux(Program):

@@ -21,7 +21,7 @@ class Compiler():
         self.substitutions = {"KERNEL_DIM": self.app.kernel_dim}
         self.program = None        
 
-    def compile(self):
+    def compile(self, internal_callback=None):
         ''' Executes the main Compiler sequence '''
         info("Compiling")
 
@@ -39,7 +39,11 @@ class Compiler():
             print e
             sys.exit(0)
 
-        self.callback(self.program, None)        
+        info("Done Compiling")            
+        if internal_callback:
+            internal_callback()
+            
+        self.callback(self.program, None)            
         self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - config.last_frame_time))
 
 

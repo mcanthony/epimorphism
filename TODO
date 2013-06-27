@@ -61,6 +61,7 @@ DONE:
 
 PRICELESS:
   more tiles
+	vector art tiles
 	more T
 	
 	even better main program 
@@ -72,8 +73,6 @@ PRICELESS:
 	still discontinuities
 
 	clean out kernels to reduce compile time?
-
-	make program programs start as post compilation hook
 	
 
 RELEASE QUEUE:

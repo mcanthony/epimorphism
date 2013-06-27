@@ -16,6 +16,7 @@ log.txt*
 *.linkinfo
 ptx
 est
+config/state/*save*
 *.log
 sources/pypm/build/*
 .directory

@@ -136,6 +136,7 @@ float4 RGBtoHSLs(float4 val){
 
 }
 
+/*
 float4 RGBtoXYZ(float4 val){
   float a = val.w;
 
@@ -163,7 +164,7 @@ float4 RGBtoXYZ(float4 val){
 
   return xyz;
 }
-
+*/
 /*
 float4 XYZtoLAB(float4 val){
   const REF_X:Number = 95.047; // Observer= 2°, Illuminant= D65
@@ -213,6 +214,7 @@ float4 XYZtoLAB(float4 val){
   }
 */
 
+/*
 float4 XYZtoRGB(float4 val){
   //X from 0 to  95.047      (Observer = 2°, Illuminant = D65)
   //Y from 0 to 100.000
@@ -241,7 +243,7 @@ float4 XYZtoRGB(float4 val){
 
   return rgb;
 }
-
+*/
 /*
   float4 RGBtoLAB(float4 val){
   var xyz:Object = ColorUtils.rgb2xyz(R, G, B);

@@ -75,7 +75,7 @@ class ComponentManager(object):
         self.switch_components({component: val})
 
         
-    def switch_components(self, data):
+    def switch_components(self, data, callback=None):
         ''' Switches the system to the new components specified in data '''
         info("Switching components: %s" % str(data))
 
@@ -100,7 +100,7 @@ class ComponentManager(object):
             self.state.components[component_name] = intrp
 
         # compile engine
-        self.engine.compile()
+        self.engine.compile(callback)
 
         # set internal values
         for component_name, val in data.items():

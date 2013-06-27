@@ -206,8 +206,8 @@ class Engine(object):
         info("Starting engine")        
 
     
-    def compile(self):
-        self.compiler.compile()
+    def compile(self, callback=None):
+        self.compiler.compile(callback)
 
 
     def upload_image(self, cl_image, data, idx=None):

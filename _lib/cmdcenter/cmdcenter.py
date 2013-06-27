@@ -173,7 +173,7 @@ class CmdCenter(Archiver):
     def do(self):
         ''' Main application loop '''
 
-        #print self.state.par['_SEED_TEX_IDX']
+        # print self.state.par['_SEED_TEX_IDX']
         
         # execute engine
         if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
@@ -320,6 +320,7 @@ class CmdCenter(Archiver):
 
         img = Image.open("media/textures/" + name).convert("RGBA")
         self.engine.load_aux(img.resize((self.app.kernel_dim, self.app.kernel_dim)), idx)
+#        info("Done load image: %s", name)
 
 
     def upload_webcam_frame(self):
