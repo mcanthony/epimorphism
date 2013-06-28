@@ -8,6 +8,9 @@ I'll fill this in one of these days
 INSTALLATION
 ------------------------------------------------
 
+-----> Install your most recent graphics driver.
+       Currently only Nvidia is supported.
+
 WINDOWS:
 
 Install python 2.7
@@ -66,7 +69,7 @@ Try each of(default is 1536) from the command line:
 
 until you get acceptable performance
 
-You can even increas from 1536 if your graphics card supports it.
+You can even increase from 1536 if your graphics card supports it.
 
 WINDOWS EXAMPLE:
 
