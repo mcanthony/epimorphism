@@ -65,7 +65,7 @@ class RandomMain(Program):
         # seed 0                
         for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0']:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
-        update["SEED_C0"] = 'tex_color(idx, aux, z, seed, par, time)'
+        update["SEED_C0"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
 
         programs.append(RandomAux({'idx': 0, 'folder': 'simplegeom'}))
 
@@ -75,10 +75,10 @@ class RandomMain(Program):
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
             if random.random() > 0.5:
-                update["SEED_C1"] = 'tex_color(idx, aux, z, seed, par, time)'
+                update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
                 programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
             else:
-                update["SEED_C1"] = 'simple_color(idx, aux, z, seed, par, time)'
+                update["SEED_C1"] = 'simple_color(idx, fb, aux, z, seed, par, time)'
         else:
             update["SEED1"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
 
@@ -86,7 +86,7 @@ class RandomMain(Program):
         if random.random() > 0.2:
             for component_name in ['T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
-            update["SEED_C2"] = 'tex_color(idx, aux, z, seed, par, time)'
+            update["SEED_C2"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             rnd = random.random()
             if rnd < 0.33:            

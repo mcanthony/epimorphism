@@ -1,5 +1,3 @@
-const sampler_t fb_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
-
 // EPIMORPHISM library file
 // seed functions
 

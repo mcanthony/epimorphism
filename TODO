@@ -60,22 +60,24 @@ DONE:
 
 
 PRICELESS:
-  more tiles
+	rainbow tiles
 	vector art tiles
 	more T
 	
 	even better main program 
 
-	contemplate removing grid_fade & blank seeds
-
-	self texturing seed
+	contemplate removing grid_fade
 
 	still discontinuities
 
-	clean out kernels to reduce compile time?
+	mystery bug?????? post process arg 4
+
+	camera input
 	
 
 RELEASE QUEUE:
+
+	self texturing seed
 
 	make it so you can save & load paths directly
 

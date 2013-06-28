@@ -11,7 +11,6 @@ $l - 0.5f * (sqz(z) + tanhz(z))		 :
 cosz(z) - tanhz(z)			 :
 0.5f * (z + expz(z))			 :
 0.5f * (z + sqz(z))			 :
-sinz(tanz(z))				 :
 0.5f * (sinz(z) + tanz(z))		 :
 sqz(z)                                   :
 sqz($l - z)                              :

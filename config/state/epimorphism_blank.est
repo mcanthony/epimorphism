@@ -17,7 +17,7 @@
  'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
  'SEED_W0': 'lines_box(idx, z, par)',
  'SEED_WT0': 'wt_id(idx, w)',
- 'SEED_C0': 'simple_color(idx, aux, z, seed, par, time)',
+ 'SEED_C0': 'simple_color(idx, fb, aux, z, seed, par, time)',
  'SEED_A0': 'solid_alpha(idx, w, par)',
  'T': 'z',
  'T_SEED0': 'z',

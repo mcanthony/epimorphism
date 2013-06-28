@@ -17,7 +17,7 @@
  'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
  'SEED_W0': 'grid_fade(idx, z, par)',
  'SEED_WT0': 'wt_id(idx, w)',
- 'SEED_C0': 'tex_color(idx, aux, z, seed, par, time)',
+ 'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
  'SEED_A0': 'id_alpha(idx, w, par)',
  'T': 'z',
  'T_SEED0': 'z',
