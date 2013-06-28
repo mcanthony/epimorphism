@@ -97,10 +97,7 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 	#endif
 	}
 	
-	if(a > 0)
-		res.w = a;
-
-	res.w *= seed.y;
+	res.w = a * seed.y;
 
   return mix(frame, res, res.w);
 }
