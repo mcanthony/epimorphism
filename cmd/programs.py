@@ -74,9 +74,12 @@ class RandomMain(Program):
             for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
-            if random.random() > 0.5:
+            if random.random() > 0.4:
                 update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
-                programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
+                if random.random() > 0.5:
+                    programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
+                else:
+                    programs.append(RandomAux({'idx': 1, 'folder': 'misc'}))
             else:
                 update["SEED_C1"] = 'simple_color(idx, fb, aux, z, seed, par, time)'
         else:
@@ -98,7 +101,7 @@ class RandomMain(Program):
         else:
             update["SEED2"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
 
-        if random.random() > 0.5:
+        if random.random() > 0.6:
             update["COLOR"] = "rotate_hsls(v, z_z, par, time)"
             update["POST"] = "post_colors3(v, par, time)"
         else:

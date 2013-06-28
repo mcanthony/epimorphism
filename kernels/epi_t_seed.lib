@@ -2,15 +2,13 @@ z		                         :
 expz(z)                                  :
 sinz(z)                                  :
 cosz(z)                                  :
-tanz(z)                                  :
 $l - sqz(z)                              :
 sinhz(z)                                 :
 coshz(z)                                 :
-tanhz(z)                                 :
-$l - 0.5f * (sqz(z) + tanhz(z))		 :
-cosz(z) - tanhz(z)			 :
+$l - 0.5f * (sqz(z) + expz(z))		 :
+cosz(z) - sinhz(z)			 :
 0.5f * (z + expz(z))			 :
 0.5f * (z + sqz(z))			 :
-0.5f * (sinz(z) + tanz(z))		 :
+0.5f * (sinz(z) + cosz(z))		 :
 sqz(z)                                   :
 sqz($l - z)                              :
