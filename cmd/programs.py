@@ -73,15 +73,15 @@ class RandomMain(Program):
         if random.random() > 0.4:
             for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
-            update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"            
-            if random.random() > 0.4:
-                update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
-                if random.random() > 0.5:
-                    programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
-                else:
-                    programs.append(RandomAux({'idx': 1, 'folder': 'misc'}))
+            update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+            update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
+            rnd = random.random()
+            if rnd < 0.33:
+                programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
+            elif rnd < 0.66:
+                programs.append(RandomAux({'idx': 1, 'folder': 'misc'}))
             else:
-                update["SEED_C1"] = 'simple_color(idx, fb, aux, z, seed, par, time)'
+                programs.append(RandomAux({'idx': 1, 'folder': 'simplegeom'}))
         else:
             update["SEED1"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
 
