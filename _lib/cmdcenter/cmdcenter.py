@@ -173,7 +173,8 @@ class CmdCenter(Archiver):
     def do(self):
         ''' Main application loop '''
 
-        # print self.state.par['_SEED_TEX_IDX']
+        #print self.state.par['_SEED_TEX_IDX']
+        #print self.state.aux
         
         # execute engine
         if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
@@ -314,13 +315,13 @@ class CmdCenter(Archiver):
             warning("PIL not available")
             return None
 
-        info("Load image: %s", name)
+        info("Load image: %s, %d", name, idx)
 
         self.state.aux[idx] = name
 
         img = Image.open("media/textures/" + name).convert("RGBA")
         self.engine.load_aux(img.resize((self.app.kernel_dim, self.app.kernel_dim)), idx)
-#        info("Done load image: %s", name)
+        info("Done load image: %s", name)
 
 
     def upload_webcam_frame(self):

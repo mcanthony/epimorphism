@@ -140,17 +140,19 @@ class RandomAux(Program):
 class SwitchAux(Program):
     def _execute(self):
         debug("Switching aux %d to %s" % (self.data["idx"], self.data["tex"]))
+        print "Switching aux %d to %s" % (self.data["idx"], self.data["tex"])
 
         # see if we're already switching.  done a bit ghettoly.  not even sure if it works
         cur = config.cmdcenter.state.par["_SEED_TEX_IDX"][self.data["idx"]]
 #        if math.fabs(cur - round(cur)) > 0.1:
 #            debug("Already switching aux %d" % self.data["idx"])
 #            return
-
         ofs = (round(cur) == 0 and 1 or 0)
+        
+        print "cur, ofs", cur, ofs
 
         # load image
-        config.cmdcenter.load_image(self.data["tex"], self.data["idx"] + ofs)
+        config.cmdcenter.load_image(self.data["tex"], 2 * self.data["idx"] + ofs)
 
         # add path
         config.cmdcenter.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", self.data["idx"], config.cmdcenter.app.state_intrp_time * config.cmdcenter.state.t_speed, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
