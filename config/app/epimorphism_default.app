@@ -13,7 +13,7 @@
 
  'state_intrp_time': 2.0,
 
- 'screen': [800,800,False],
+ 'screen': 'auto',
  'kernel_dim': 1024,
  'fract': 2,
 
