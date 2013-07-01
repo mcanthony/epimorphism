@@ -24,6 +24,27 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   const float i_k = ($FRACT$ == 1 ? 0.0f : 1.0f / $KERNEL_DIM$);  
   const float inc = ($FRACT$ == 1 ? 0.0f : 2.0f / ($KERNEL_DIM$ * ($FRACT$ - 1.0f)));  
 	
-  
+	
+  // scale
+  v = (float4)(v.xyz / ($FRACT$ * $FRACT$), v.w);
+  v = recover4(v);
+
+  // compute color  
+  color = recover4($COLOR$);
+
+  //z = tri_reduce(4.0f*z);
+  //color = (float4)((z.x + 1.0) / 2.0, (z.y + 1.0) / 2.0,0.0f,0.0f);
+  //float val = (color.w) / 20;//-1.0f / (color.w / 5 + 1.0f) + 1.0f;
+  //pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * (float4)(val, 0.0, 0.0, 0.0));
+  //pbo[y * $KERNEL_DIM$ + x] = (char4)(0,0,255,255);
+
+  //color.w = 1.0f;
+
+  // write out value
+  write_imagef(out, p, color);   
+  #ifndef $POST_PROCESS$
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
+  #endif
+
 }
 
