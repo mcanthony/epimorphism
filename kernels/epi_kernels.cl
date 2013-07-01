@@ -41,7 +41,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));			      
 
-			v += $SEED$;
+
 			
       // cull & blending
 			/*
