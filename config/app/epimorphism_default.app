@@ -17,7 +17,7 @@
  'kernel_dim': 1280,
  'fract': 3,
 
- 'sources': ['util', 'epi_kernels'], 
+ 'sources': ['util', 'math', 'colorspace', 'epi_cull', 'epi_reduce', 'epi_kernels'], 
  'kernel': 'epimorphism',
  'lib_prefix': 'epi',
  'feedback_buffer': True
