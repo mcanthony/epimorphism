@@ -6,7 +6,7 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image3d_t aux,
 		 __constant float* par, __constant float *internal, __constant float2 *zn, float time){
-	/*
+	
   float2 t, t_seed, reduce;
   float4 color;
 
@@ -52,7 +52,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       v += seed.w * seed + (1.0 - seed.w) * frame;
 			//			v = seed2.w * seed2 + (1.0 - seed2.w) * v;									
       #endif
-
+			*/
     }
 
   // scale
@@ -75,6 +75,6 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   #ifndef $POST_PROCESS$
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * color.zyxw);
   #endif
-*/
+
 }
 
