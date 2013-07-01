@@ -26,7 +26,8 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 	
 	
   // scale
-	float3 tmp = v.xyz / ($FRACT$ * $FRACT$);
+
+  v = (float4)(v.x / ($FRACT$ * $FRACT$), v.y / ($FRACT$ * $FRACT$), v.z / ($FRACT$ * $FRACT$), v.w);
   v = recover4(v);
 
   // compute color  
