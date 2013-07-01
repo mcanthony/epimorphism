@@ -63,7 +63,7 @@ class Engine(object):
 
         #auxilary buffer
         if(self.state.aux):
-            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_RGBA, CL_UNSIGNED_INT8))
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -231,6 +231,6 @@ class Engine(object):
     def load_aux(self, img, idx):
         ''' Loads an image into the auxilary buffer '''
 
-        self.upload_image(self.aux, img.tostring("raw", "RGBA", 0, -1), idx)
+        self.upload_image(self.aux, img.tostring("raw", "BGRA", 0, -1), idx)
 
 
