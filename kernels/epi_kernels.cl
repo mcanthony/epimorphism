@@ -26,7 +26,8 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 	
 	
   // scale
-  
+
+  v = recover4(v);
 
   // compute color  
   color = recover4($COLOR$);
