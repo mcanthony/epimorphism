@@ -18,7 +18,8 @@ Install PIL for python 2.7 - http://effbot.org/downloads/PIL-1.1.7.win32-py2.7.e
 
 LINUX:
 
-Dependencies - python2.7, freeglut, PIL
+Dependencies - python2.7, freeglut, PIL.
+--You may also need to install nvidia-opencl-common
 
 optional: twisted, opencv
 
