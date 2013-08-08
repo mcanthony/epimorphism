@@ -1,6 +1,8 @@
 // EPIMORPHISM library file
 // seed functions
 
+#define SEED_ZOFS 4
+
 _EPI_ float4 seed_id(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
@@ -110,9 +112,9 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	float2 z_z = z;
 	
 	// compute seed0          
-	z = M(zn[10], (z - zn[11]));           
+	z = M(zn[2 + SEED_ZOFS], (z - zn[3 + SEED_ZOFS]));           
 	z = $T_SEED0$;
-	z = M(zn[8], (z - zn[9]));
+	z = M(zn[0 + SEED_ZOFS], (z - zn[1 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
 	idx = 0;
 	frame = $SEED0$;
@@ -120,9 +122,9 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	// compute seed1
 	#ifdef $SEED1$
 	z = z_z;
-	z = M(zn[14], (z - zn[15]));           
+	z = M(zn[6 + SEED_ZOFS], (z - zn[7 + SEED_ZOFS]));           
 	z = $T_SEED1$;
-	z = M(zn[12], (z - zn[13]));
+	z = M(zn[4 + SEED_ZOFS], (z - zn[5 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
 	idx = 1;
 	frame = $SEED1$;
@@ -131,9 +133,9 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 	// compute seed2
   #ifdef $SEED2$
 	z = z_z;
-	z = M(zn[18], (z - zn[19]));           
+	z = M(zn[10 + SEED_ZOFS], (z - zn[11 + SEED_ZOFS]));           
 	z = $T_SEED2$;
-	z = M(zn[16], (z - zn[17]));
+	z = M(zn[8 + SEED_ZOFS], (z - zn[9 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
 	idx = 2;
 	frame = $SEED2$;
