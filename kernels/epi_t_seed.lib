@@ -12,3 +12,7 @@ cosz(z) - sinhz(z)			 :
 0.5f * (sinz(z) + cosz(z))		 :
 sqz(z)                                   :
 sqz($l - z)                              :
+sinhz(z) - sinz(z)												 :
+coshz(z) + expz(z)												 :
+M(z, cosz(z))															 :
+0.5f * (coshz(z) + sinhz(z))			 :

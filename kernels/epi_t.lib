@@ -14,3 +14,8 @@ cosz(z) - tanhz(z)			 :
 sinz(tanz(z))				 :
 0.5f * (sinz(z) + tanz(z))		 :
 sqz(z)                                   :
+sinhz(z) - sinz(z)												 :
+coshz(z) + expz(z)												 :
+M(z, cosz(z))															 :
+0.5f * (coshz(z) + sinhz(z))			 :
+

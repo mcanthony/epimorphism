@@ -25,6 +25,14 @@
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)',
  'POST': 'post_gamma(v, par, time)'
+  'T': 'z',
+ 'T_SEED0': 'z',
+ 'T_SEED1': 'expz(z)',
+ 'T_SEED2': 'coshz(z)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
+ 'REDUCE': 'torus_reduce(z)',
+ 'RESET': 'reset_black(x, y, par)',
+ 'POST': 'post_colors3(v, par, time)'
  },
  'zn': [(1.0+0.0j),
  (0.0+0.0j),

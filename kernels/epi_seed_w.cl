@@ -47,6 +47,13 @@ _EPI_ float4 wave(int idx, float2 z, __constant float* par){
 }
 */
 
+_EPI_ float4 nothing(int idx, float2 z, __constant float* par){
+  // empty
+  // FULL, LIVE, DEV
+
+	return (float4)(0.0f, 0.0f, 0.0f, 0.0f);	
+}
+
 _EPI_ float4 circle(int idx, float2 z, __constant float* par){
   // circle
   // FULL, LIVE, DEV

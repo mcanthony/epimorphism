@@ -57,7 +57,8 @@ class RandomAllComponents(Program):
 class RandomMain(Program):
     def _execute(self):
         debug("Execute random All Components")
-        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+        if self.data["interval"]:
+            self.next_event_in = self.data["interval"] * (0.5 + random.random()) 
 
         update = {}
 
@@ -83,8 +84,9 @@ class RandomMain(Program):
             else:
                 programs.append(RandomAux({'idx': 1, 'folder': 'simplegeom'}))
         else:
-            update["SEED1"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
+            update["SEED_W1"] = "nothing(idx, z, par)"
 
+            
         # seed 2
         if random.random() > 0.2:
             for component_name in ['T_SEED2', 'SEED_W2', 'SEED_WT2', 'SEED_A2']:
@@ -92,14 +94,18 @@ class RandomMain(Program):
             update["SEED_C2"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             rnd = random.random()
-            if rnd < 0.33:            
+            if rnd < 0.3:            
                 programs.append(RandomAux({'idx': 2, 'folder': 'flowers'}))
-            elif rnd < 0.66:
+            elif rnd < 0.6:
                 programs.append(RandomAux({'idx': 2, 'folder': 'misc'}))
-            else:
+            elif rnd < 0.9:
                 programs.append(RandomAux({'idx': 2, 'folder': 'nontile'}))
+            else:
+                programs.append(RandomAux({'idx': 2, 'folder': 'stoopid'}))
         else:
-            update["SEED2"] = "seed_id(idx, frame, z, fb, aux, par, internal, zn, time)"            
+            update["SEED_W1"] = "nothing(idx, z, par)"
+
+            
 
         if random.random() > 0.6:
             update["COLOR"] = "rotate_hsls(v, z_z, par, time)"
@@ -111,12 +117,84 @@ class RandomMain(Program):
 
         def start_programs():
             for program in programs:
-                print "program"
                 config.cmdcenter.state.programs.append(program)
                 program.run()
 
         #start_programs()
-        config.cmdcenter.componentmanager.switch_components(update, start_programs)        
+        config.cmdcenter.componentmanager.switch_components(update, start_programs)
+
+
+class RandomMain2(Program):
+    def _execute(self):
+        debug("Execute random All Main2")
+        self.next_event_in = self.data["interval"] * (0.5 + random.random())
+
+        update = {}
+        programs = []
+
+        def random_image(idx):
+            rnd = random.random()
+            if rnd < 0.5:                
+                programs.append(RandomAux({'idx': idx, 'folder': '4'}))
+            elif rnd < 0.75:                
+                programs.append(RandomAux({'idx': idx, 'folder': '3'}))
+            elif rnd < 0.92:                
+                programs.append(RandomAux({'idx': idx, 'folder': '2'}))
+            elif rnd < 0.98:                
+                programs.append(RandomAux({'idx': idx, 'folder': '12'}))
+            elif rnd < 1.0:
+                programs.append(RandomAux({'idx': idx, 'folder': '11'}))
+
+
+        # first seed
+        for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0']:
+            update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
+
+        update["SEED0"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+        update["SEED_C0"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
+        random_image(0)
+
+        # second seed
+        if random.random() > 0.7:
+            debug("Adding 2nd seed")
+            for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
+                update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
+
+            update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+            update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
+            random_image(1)
+
+            # third seed
+            if random.random() > 0.5:
+                debug("Adding 3nd seed")
+                for component_name in ['T_SEED2', 'SEED_W2', 'SEED_WT2']:
+                    update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
+                update["SEED_A2"] = 'solid_alpha(idx, w, res, par)'
+                update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+                update["SEED_C2"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
+                random_image(2)                
+            else:
+                update["SEED_W2"] = "nothing(idx, z, par)"                            
+        else:
+            update["SEED_W2"] = "nothing(idx, z, par)"                            
+            update["SEED_W1"] = "nothing(idx, z, par)"            
+
+        # colorization
+        if random.random() > 0.6:
+            update["COLOR"] = "rotate_hsls(v, z_z, par, time)"
+            update["POST"] = "post_colors3(v, par, time)"
+        else:
+            update["COLOR"] = "bgr_id(v, z_z, par, time)"
+            update["POST"] = "post_gamma(v, par, time)"                
+
+
+        def start_programs():
+            for program in programs:
+                config.cmdcenter.state.programs.append(program)
+                program.run()
+
+        #start_programs()
+        config.cmdcenter.componentmanager.switch_components(update, start_programs)
 
 
 class RandomAux(Program):

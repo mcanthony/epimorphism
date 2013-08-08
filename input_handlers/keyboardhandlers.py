@@ -235,13 +235,15 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z1[1] -= self.app.par_scale * 2.0 * pi / 32.0
                 self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0,  z1)
 
-            # magnify par_scale
+            # increase speed
             elif(key == GLUT_KEY_PAGE_UP):
-                self.app.par_scale *= 2.0
+                #self.app.par_scale *= 2.0
+                self.state.t_speed += 0.05                
 
-            # minify par_scale
+            # decrease speed
             elif(key == GLUT_KEY_PAGE_DOWN):
-                self.app.par_scale /= 2.0
+                #self.app.par_scale /= 2.0
+                self.state.t_speed -= 0.05
 
             # inc current_state_idx
             elif(key == GLUT_KEY_PAGE_UP):
@@ -255,6 +257,13 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 else:
                     self.cmdcenter.interface.renderer.flash_message("Changing midi_speed to 0.5")
                     self.app.midi_speed = 0.5
+
+            # change program
+            if(key == "\010"):
+                prg = RandomMain({'interval': None})
+                self.cmdcenter.state.programs.append(prg)
+                prg.run()
+
 
             # record events
             elif(key == GLUT_KEY_F9):
