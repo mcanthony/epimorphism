@@ -116,7 +116,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.componentmanager))
         funcs.update(get_funcs(self.eventmanager))
         funcs.update(default_funcs)
-        funcs.update({"SwitchAux": SwitchAux})
+        funcs.update(dict([(cls.__name__, cls) for cls in vars()['Program'].__subclasses__()]))
 
         # generate cmd exec environment
         paths = dict([(sub.__name__, sub) for sub in Path.__subclasses__()])
