@@ -101,6 +101,8 @@ RELEASE QUEUE:
 
 
 LATER:
+	globalize component arguments - i.e seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time) -> seed_multi_wca
+
   constraints on incremental par[] variables
 
   animation with touchosc

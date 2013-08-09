@@ -116,6 +116,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.componentmanager))
         funcs.update(get_funcs(self.eventmanager))
         funcs.update(default_funcs)
+        funcs.update({"SwitchAux": SwitchAux})
 
         # generate cmd exec environment
         paths = dict([(sub.__name__, sub) for sub in Path.__subclasses__()])
@@ -416,7 +417,7 @@ class CmdCenter(Archiver):
         for path in new_state.paths:
             path.phase -= self.state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
             self.state.paths.append(path)
-
+            
         for program in new_state.programs:
             program.start()
             self.state.programs.append(program)
@@ -501,6 +502,10 @@ class CmdCenter(Archiver):
         default = State(self.app.app)
         for i in xrange(len(default.par)):
             self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])
+
+    def runProgram(self, prg):
+        self.state.programs.append(prg)
+        prg.run()        
 
     # convert rect to polar - GHETTO - shouldn't be here
     def r_to_p(self, z):

@@ -83,7 +83,7 @@ class BeatScript(Script):
 
         try:
             with open("config/script/%s_%s.bscr" % (app, name)) as f:
-                contents = f.readlines()
+                contents = [line for line in f.readlines() if line[0] != '#']
         except Exception as e:
             raise ScriptParseError("couldn't find script %s.bscr" % name)
 
@@ -130,9 +130,16 @@ class BeatScript(Script):
             # parse event
             cmd = components.pop(0)
             if cmd == "do":
-                pass
-            elif cmd == "load":
-                pass
+                cmd = components.pop(0)
+                events.append({'cmd':cmd, 'time':time})
+            elif cmd == "switch":
+                cmd = "switch_component('%s', '%s')" % (components.pop(0), components.pop(0))
+                events.append({'cmd':cmd, 'time':time})
+            elif cmd == "tex":
+                spd = parse_spd(components.pop())
+                cmd = "runProgram(SwitchAux({'idx': %s, 'tex': '%s'}))" % (components.pop(0), components.pop(0))
+                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':time})                                                
+                events.append({'cmd':cmd, 'time':time})
             elif cmd == "zn":
                 idx = components.pop(0)
                 path_type = components.pop(0)
@@ -141,10 +148,9 @@ class BeatScript(Script):
                 spd = parse_spd(components.pop(0))
                 if path_type == "rad":
                     cmd = "state.paths.append(Radial2D('zn', %s, %f, {'s':%s, 'e':%s}))" % (idx, spd, start, end)
+                events.append({'cmd':cmd, 'time':time})                                                                    
             elif cmd == "par":
-                pass
-
-            events.append({'cmd':cmd, 'time':time})
+                pass            
                      
         # copy template data
         template = Script(app, "default")
