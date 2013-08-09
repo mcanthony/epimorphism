@@ -74,7 +74,7 @@ def load_obj(type, name, extension):
     try:
         obj = eval(contents)
         return obj
-    except:
+    except Exception as e:
         warning("couldn't parse %s.%s" % (name, extension))
         traceback.print_exc()
         return None

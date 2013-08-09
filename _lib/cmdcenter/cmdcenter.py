@@ -3,6 +3,7 @@ import config
 from common.globals import *
 
 from common.runner import *
+from math import *
 
 from video import *
 from animator import *
@@ -51,7 +52,7 @@ class CmdEnv(dict):
         for d in self.data:
             if d.has_key(key):
                 d[key] = value
-
+                
 
 class CmdCenter(Archiver):
     ''' The CmdCenter is the central control center for the engine and
@@ -246,6 +247,8 @@ class CmdCenter(Archiver):
     def cmd(self, code, record = True, capture=False):
         ''' Execute code in the CmdEnv environment '''
 
+        print code
+        
         if(self.app.record_events):
             self.recorded_events.push(self.time() - self.app.record_events, code)
 
@@ -499,7 +502,12 @@ class CmdCenter(Archiver):
         for i in xrange(len(default.par)):
             self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])
 
-    
+    # convert rect to polar - GHETTO - shouldn't be here
+    def r_to_p(self, z):
+        arg = atan2(z.imag, z.real)
+        if(arg < 0) : arg += 2.0 * 3.14159
+        return [abs(z), arg]
+                
     def quit(self):
         self.app.exit = True
         sys.exit(0)

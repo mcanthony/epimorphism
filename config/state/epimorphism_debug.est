@@ -9,7 +9,7 @@
  'bpm': 120,
  'paths': [],
  'randomize_seed': False,
- 'programs': [],
+ 'programs': [BeatScript('epimorphism', 'test')],
  'camera_id': 1,
  'par_dim': 1,
  'components': {
@@ -24,7 +24,7 @@
  'COLOR': 'bgr_id(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)',
- 'POST': 'post_gamma(v, par, time)'
+ 'POST': 'post_gamma(v, par, time)',
   'T': 'z',
  'T_SEED0': 'z',
  'T_SEED1': 'expz(z)',
@@ -49,8 +49,7 @@
  (1.0+0j),
  0j,
  (1.0+0j),
- 0j
- ],
+ 0j],
  'internal': [0.0,
  0.0,
  0.0,
