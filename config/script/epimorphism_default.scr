@@ -1,0 +1,7 @@
+{
+ 'name':'default',
+ 'data':{
+ 'events':[],
+ 'phase':0,
+}
+}
