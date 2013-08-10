@@ -58,6 +58,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
   l = native_divide((4.0f * _COLOR_LEN_SC(0) + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC(0)));
   l = native_log(l + 1.0f);
+	l *= _COLOR_LEN_SC_AMT(0);
 
   // compute a
   float a = 0.0f;
@@ -74,7 +75,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   float4 tmp = (float4)(v.x, v.y, v.z, 0.0f);
   float th = 2.0f * PI * (a + l + time * _COLOR_SPEED_TH(0));
   th = remf(CX(th, 0.0f), 2.0f * PI).x;
-  tmp = rotate3D(tmp, axis, th);
+	tmp = rotate3D(tmp, axis, th);
   
   // compute rotation 2  
   th = 2.0f * PI * _COLOR_DHUE(0);

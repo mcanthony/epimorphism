@@ -19,6 +19,7 @@ from cmd.events import *
 from cmd.programs import *
 
 import StringIO, sys, traceback, random, copy
+from subprocess import Popen
 
 if config.PIL_available:
     from PIL import Image
@@ -117,6 +118,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.eventmanager))
         funcs.update(default_funcs)
         funcs.update(dict([(cls.__name__, cls) for cls in Program.__subclasses__()]))
+        funcs.update({'PI': 3.141592653})
 
         # generate cmd exec environment
         paths = dict([(sub.__name__, sub) for sub in Path.__subclasses__()])
@@ -129,6 +131,7 @@ class CmdCenter(Archiver):
         # misc
         self.last_frame_time = 0
         self.programs_initialized = False
+        self.mp3_process = None
 
         # camera
         if config.app.camera_enabled and config.state.camera_id:
@@ -503,7 +506,7 @@ class CmdCenter(Archiver):
         for i in xrange(len(default.par)):
             self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])
 
-    def runProgram(self, prg):
+    def run_program(self, prg):
         self.state.programs.append(prg)
         prg.run()        
 
@@ -512,10 +515,23 @@ class CmdCenter(Archiver):
         arg = atan2(z.imag, z.real)
         if(arg < 0) : arg += 2.0 * 3.14159
         return [abs(z), arg]
-                
+
+    def p_to_r(self, z):
+        return complex(abs(z[0]) * cos(z[1]), abs(z[0]) * sin(z[1]))
+
+
+    # weirdness
+    def play_mp3(self, name, sample_rate, t_ofs=0.0):
+        num_frames = t_ofs * sample_rate / 1152.0
+
+        self.mp3_process = Popen(['mpg123', '--skip', str(num_frames), "media/audio/%s.mp3" % name])
+
+        
     def quit(self):
         self.app.exit = True
+        if self.mp3_process: self.mp3_process.terminate() 
         sys.exit(0)
+
 
 
 

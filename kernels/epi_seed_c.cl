@@ -24,7 +24,7 @@ _EPI_ float4 tex_color(int idx, read_only image2d_t fb, read_only image3d_t aux,
   // simple coloring function
   // FULL, LIVE, DEV
 	float2 w = _SEED_TEX_SC(idx) * seed.zw;
-	float seed_c = (idx + _SEED_TEX_IDX(idx) + 0.5) / _NUM_AUX;
+	float seed_c = (2.0 * idx + _SEED_TEX_IDX(idx) + 0.5) / _NUM_AUX;
 	float4 c = (float4)(w.x, w.y, seed_c, 0);
   return convert_float4(read_imagei(aux, aux_sampler, c)) / 255.0f;	
 }

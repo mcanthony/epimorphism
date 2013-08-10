@@ -1,4 +1,5 @@
 from cmdcenter.program import Program
+from cmdcenter.script import *        
 from cmd.paths import *
 
 import random, os, math
@@ -236,8 +237,8 @@ class SwitchAux(Program):
         config.cmdcenter.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", self.data["idx"], config.cmdcenter.app.state_intrp_time * config.cmdcenter.state.t_speed, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
 
         # remove self.  should ideally happen after execution terminates
-        self.stop()
-        
+        self.stop()        
+
         
 class RandomInterference(Program):
     def _execute(self):
@@ -248,5 +249,19 @@ class RandomInterference(Program):
         config.cmdcenter.state.par['_N'][0] = random.randint(1, 8)
         config.cmdcenter.state.par['_SLICES'][0] = random.randint(1, 5)
         config.cmdcenter.cmd("inc_data('T', 0)")
-            
+
+
+class FOG(Program):
+    def _execute(self):
+        debug("Execute Face of God program")
+        config.cmdcenter.state.t_phase -= config.cmdcenter.state.time
+        config.cmdcenter.play_mp3("face_of_god", 44100)
+        config.cmdcenter.run_program(BeatScript("epimorphism", "fog"))
+        self.stop()        
+
+
+
+
+
+
 

@@ -46,7 +46,8 @@ class Script(DictObj, Program):
             return
 
 #        print self.data["events"].pop(0)["cmd"]
-        self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
+        async(lambda: self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False))
+        #self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
 
 
     def add_event(self, time, cmd):
@@ -134,23 +135,33 @@ class BeatScript(Script):
                 events.append({'cmd':cmd, 'time':time})
             elif cmd == "switch":
                 cmd = "switch_component('%s', '%s')" % (components.pop(0), components.pop(0))
+                spd = parse_spd(components.pop())
+                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':time})                                                
                 events.append({'cmd':cmd, 'time':time})
             elif cmd == "tex":
                 spd = parse_spd(components.pop())
-                cmd = "runProgram(SwitchAux({'idx': %s, 'tex': '%s'}))" % (components.pop(0), components.pop(0))
+                cmd = "run_program(SwitchAux({'idx': %s, 'tex': '%s'}))" % (components.pop(0), components.pop(0))
                 events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':time})                                                
                 events.append({'cmd':cmd, 'time':time})
             elif cmd == "zn":
                 idx = components.pop(0)
                 path_type = components.pop(0)
-                start = "r_to_p(state.zn[%s])" % idx
-                end = str(r_to_p(complex(components.pop(0))))
+                start = "r_to_p(state.zn[%s])" % idx                
+                end = components.pop(0)
                 spd = parse_spd(components.pop(0))
                 if path_type == "rad":
-                    cmd = "state.paths.append(Radial2D('zn', %s, %f, {'s':%s, 'e':%s}))" % (idx, spd, start, end)
+                    cmd = "state.paths.append(Radial2D('zn', %s, %f, {'s':%s, 'e':r_to_p(complex(%s))}))" % (idx, spd, start, end)
                 events.append({'cmd':cmd, 'time':time})                                                                    
             elif cmd == "par":
-                pass            
+                name = components.pop(0)
+                idx = components.pop(0)
+                path_type = components.pop(0)
+                start = "state.par['%s'][%s]" % (name, idx)
+                end = components.pop(0)
+                spd = parse_spd(components.pop(0))
+                if path_type == "lin":
+                    cmd = "state.paths.append(Linear1D(\"par['%s']\", %s, %s, {'s':%s, 'e':%s, 'loop':False}))" % (name, idx, spd, start, end)
+                events.append({'cmd':cmd, 'time':time})                                                                    
                      
         # copy template data
         template = Script(app, "default")

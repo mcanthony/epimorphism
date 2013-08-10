@@ -260,13 +260,13 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
 
             # change program
             if(key == "\010"):
-                prg = RandomMain({'interval': None})
-                self.cmdcenter.state.programs.append(prg)
-                prg.run()
+                self.cmdcenter.run_program(RandomMain({'interval': None}))
 
+            elif(key == GLUT_KEY_F9):
+                self.cmdcenter.run_program(FOG({'start':0.0}))
 
             # record events
-            elif(key == GLUT_KEY_F9):
+            elif(key == GLUT_KEY_F6):
                 #self.cmdcenter.toggle_record()
                 prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
                 self.cmdcenter.state.programs.append(prg)
@@ -275,3 +275,6 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
             # default
             else:
                 DefaultKeyboard.key_pressed(self, key, modifiers)
+
+
+
