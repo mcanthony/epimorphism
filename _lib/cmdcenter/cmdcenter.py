@@ -116,6 +116,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.engine))
         funcs.update(get_funcs(self.componentmanager))
         funcs.update(get_funcs(self.eventmanager))
+        funcs.update(get_funcs(self.animator))        
         funcs.update(default_funcs)
         funcs.update(dict([(cls.__name__, cls) for cls in Program.__subclasses__()]))
         funcs.update({'PI': 3.141592653})
@@ -372,7 +373,6 @@ class CmdCenter(Archiver):
 
         self.app.next_frame = True
         img = self.interface.renderer.grab_image()
-        #img.save("media/image/%s_%s.jpg" % (self.app.app, name))
         img.convert("RGB").save("media/image/%s_%s.png" % (self.app.app, name))
         #self.interface.renderer.grab_image().save("media/image/%s_%s.jpg" % (self.app.app, name))
 

@@ -1,9 +1,9 @@
 95bpm
 # BLOCK 1
 0.0.0		par _COLOR_DHUE 0 lin 0.5 8W
-4.0.0		par _SEED_COLOR_A 2 lin 0.65 4W
-4.0.0		zn 0 rad 2.5+0.0j 12W
-4.0.0		par _SEED_W 2 lin 0.75 4W
+4.0.0		par _SEED_COLOR_A 2 lin 0.7 4W
+4.0.0		zn 0 rads 2.5+0.0j 12W
+4.0.0		par _SEED_W 2 lins 0.75 4W
 8.0.0		par _SEED_COLOR_A 2 lin 0.95 4W
 8.0.0   switch T_SEED2 sqz(z)-sinhz(z) 8W
 8.0.0	  tex 2 simplegeom/tile_rainbow1.png 8W
@@ -11,7 +11,8 @@
 12.0.0	par _COLOR_LEN_SC_AMT 0 lin 1.0 4W
 12.0.0  switch T_SEED0 sinhz(z) 4W
 # BLOCK 2
-16.0.0	zn 0 rad 1.7+0.0j 4W
+16.0.0  save_fog
+16.0.0	zn 0 rad 1.0+0.0j 4W
 16.0.0  zn 13 rad p_to_r([1.5,0.0]) 2Q
 17.0.0  zn 15 rad p_to_r([1.5,0.0]) 2Q
 18.0.0  zn 13 rad p_to_r([1.0,0.0]) 2Q

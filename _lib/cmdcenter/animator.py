@@ -43,25 +43,29 @@ class Animator(object):
 
     # do execution
     def execute_paths(self):
-
         # get time
         t = config.cmdcenter.time()
 
-        # execute paths traverse list backward, in case we need to remove one
-        for path in config.state.paths[::-1]:
+        remove_paths = []
+        for path in config.state.paths:
 
             # execute path
-            (res, status) = path.do((t - path.phase) / path.spd) 
+            t1 = (t - path.phase) / path.spd
+            (res, status) = path.do(t1) 
 
             # set result
             #getattr(config.state, path.obj)[path.idx] = res
             eval("config.state." + path.obj)[path.idx] = res
-            
+#            print path.obj, t1, res, len(config.state.paths)                
 
             # if necessary, remove path
             if(not status):
-                path.stop()
+                print "REMOVING PATH"
+                remove_paths.append(path)
 
+        for path in remove_paths:
+            path.stop()
 
+#        print config.state.paths
 
 

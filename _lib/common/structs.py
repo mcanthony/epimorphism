@@ -72,7 +72,7 @@ def load_obj(type, name, extension):
 
     # creat object
     try:
-        obj = eval(contents)
+        obj = eval(contents.replace("\n", ""))
         return obj
     except Exception as e:
         warning("couldn't parse %s.%s" % (name, extension))

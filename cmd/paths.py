@@ -6,6 +6,8 @@ import random
 
 import math
 
+epsilon = 0.005
+
 class Linear1D(Path):
     ''' 1 dimensional linear path '''
     def do(self, t):
@@ -13,6 +15,20 @@ class Linear1D(Path):
             t = self.loop and fmod(t, 1.0) or 1
 
         return (self.s * (1 - t) + self.e * t, t != 1 or self.loop)
+
+class Linear1DSmooth(Path):
+    ''' 1 dimensional linear path '''
+    def do(self, t):
+        if(t > 1):
+            t = self.loop and fmod(t, 1.0) or 1
+        t = (1.0 + math.erf(4.0 * t - 2.0)) / 2.0            
+        
+        status = True
+        if abs(t - 1.0) < epsilon:
+            t = 1.0
+            status = False
+            
+        return (self.s * (1 - t) + self.e * t, status or self.loop)    
 
 
 class Linear2D(Path):
@@ -34,6 +50,25 @@ class Radial2D(Path):
         z = [self.s[0] * (1 - t) + self.e[0] * t, self.s[1] * (1 - t) + self.e[1] * t]
 
         return (p_to_r(z), t != 1 or self.loop)
+
+    
+class Radial2DSmooth(Path):
+    ''' 2 dimensional radial path '''
+    def do(self, t):
+        if(t > 1):
+            t = self.loop and fmod(t, 1.0) or 1
+        t = (1.0 + math.erf(4.0 * t - 2.0)) / 2.0
+        
+        status = True
+        if abs(t - 1.0) < epsilon:
+            t = 1.0
+            status = False
+
+        print "T: ", t, status            
+
+        z = [self.s[0] * (1 - t) + self.e[0] * t, self.s[1] * (1 - t) + self.e[1] * t]
+
+        return (p_to_r(z), status or self.loop)    
 
 
 class Radial2DStep(Path):
@@ -63,3 +98,4 @@ class Rose(Path):
     ''' a rose curve '''
     def do(self, t):
         return (p_to_r([self.a * cos(self.b * t) + self.c, t]), True)
+

@@ -9,7 +9,7 @@ from common.complex import *
 from common.log import *
 set_log("SCRIPT")
 
-import time, copy
+import time, copy, os
 
 class ScriptParseError(Exception):
     """Exception raised script parsing errors."""
@@ -121,29 +121,29 @@ class BeatScript(Script):
         
         for line in contents:
             components = line.split()
-            print components
 
-            #parse time
-            time = components.pop(0)
-            sections = time.split('.')            
-            time = spb * (4 * int(sections[0]) + int(sections[1]) + int(sections[2]) / (10.0 ** len(sections[2])))
+            #parse t
+            t = components.pop(0)
+            sections = t.split('.')            
+            t = spb * (4 * int(sections[0]) + int(sections[1]) + int(sections[2]) / (10.0 ** len(sections[2])))
             
             # parse event
             cmd = components.pop(0)
             if cmd == "do":
                 cmd = components.pop(0)
-                events.append({'cmd':cmd, 'time':time})
+                events.append({'cmd':cmd, 'time':t})
             elif cmd == "switch":
                 cmd = "switch_component('%s', '%s')" % (components.pop(0), components.pop(0))
                 spd = parse_spd(components.pop())
-                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':time})                                                
-                events.append({'cmd':cmd, 'time':time})
+                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':t})                                                
+                events.append({'cmd':cmd, 'time':t})
             elif cmd == "tex":
                 spd = parse_spd(components.pop())
                 cmd = "run_program(SwitchAux({'idx': %s, 'tex': '%s'}))" % (components.pop(0), components.pop(0))
-                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':time})                                                
-                events.append({'cmd':cmd, 'time':time})
+                events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':t})                                                
+                events.append({'cmd':cmd, 'time':t})
             elif cmd == "zn":
+
                 idx = components.pop(0)
                 path_type = components.pop(0)
                 start = "r_to_p(state.zn[%s])" % idx                
@@ -151,7 +151,9 @@ class BeatScript(Script):
                 spd = parse_spd(components.pop(0))
                 if path_type == "rad":
                     cmd = "state.paths.append(Radial2D('zn', %s, %f, {'s':%s, 'e':r_to_p(complex(%s))}))" % (idx, spd, start, end)
-                events.append({'cmd':cmd, 'time':time})                                                                    
+                elif path_type == "rads":
+                    cmd = "state.paths.append(Radial2DSmooth('zn', %s, %f, {'s':%s, 'e':r_to_p(complex(%s))}))" % (idx, spd, start, end)                    
+                events.append({'cmd':cmd, 'time':t})                                                                    
             elif cmd == "par":
                 name = components.pop(0)
                 idx = components.pop(0)
@@ -161,7 +163,14 @@ class BeatScript(Script):
                 spd = parse_spd(components.pop(0))
                 if path_type == "lin":
                     cmd = "state.paths.append(Linear1D(\"par['%s']\", %s, %s, {'s':%s, 'e':%s, 'loop':False}))" % (name, idx, spd, start, end)
-                events.append({'cmd':cmd, 'time':time})                                                                    
+                elif path_type == "lins":
+                    cmd = "state.paths.append(Linear1DSmooth(\"par['%s']\", %s, %s, {'s':%s, 'e':%s, 'loop':False}))" % (name, idx, spd, start, end)                    
+                events.append({'cmd':cmd, 'time':t})
+            elif cmd == "save_fog":
+                block = int(sections[0]) / 16
+                cmd = "execute_paths();state.audio_block=%d;state.programs=[];state.save('fog%d')" % (block, block)
+                events.append({'cmd':cmd, 'time':t})
+                
                      
         # copy template data
         template = Script(app, "default")

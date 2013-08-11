@@ -255,7 +255,8 @@ class FOG(Program):
     def _execute(self):
         debug("Execute Face of God program")
         config.cmdcenter.state.t_phase -= config.cmdcenter.state.time
-        config.cmdcenter.play_mp3("face_of_god", 44100)
+        t = 16 * 4 * 60.0 / config.cmdcenter.state.bpm * config.cmdcenter.state.audio_block
+        config.cmdcenter.play_mp3("face_of_god", 44100, t)
         config.cmdcenter.run_program(BeatScript("epimorphism", "fog"))
         self.stop()        
 
