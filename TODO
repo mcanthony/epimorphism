@@ -98,7 +98,7 @@ RELEASE QUEUE:
 
   website & videos
 
-
+	fix path timings
 
 LATER:
 	globalize component arguments - i.e seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time) -> seed_multi_wca

@@ -168,7 +168,7 @@ class BeatScript(Script):
                 events.append({'cmd':cmd, 'time':t})
             elif cmd == "save_fog":
                 block = int(sections[0]) / 16
-                cmd = "execute_paths();state.audio_block=%d;state.programs=[];state.save('fog%d')" % (block, block)
+                cmd = "state.audio_block=%d;state.programs=[];state.save('fog%d')" % (block, block)
                 events.append({'cmd':cmd, 'time':t})
                 
                      

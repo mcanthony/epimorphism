@@ -64,8 +64,6 @@ class Radial2DSmooth(Path):
             t = 1.0
             status = False
 
-        print "T: ", t, status            
-
         z = [self.s[0] * (1 - t) + self.e[0] * t, self.s[1] * (1 - t) + self.e[1] * t]
 
         return (p_to_r(z), status or self.loop)    
