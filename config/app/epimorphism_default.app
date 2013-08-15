@@ -7,8 +7,8 @@
  'mouse_handler': 'DefaultEpimorphismMouse',
 
  'OSC_enabled': False,
- 'OSC_handler': 'EpimorphismOSC',
- 'OSC_client_address': ('10.0.0.116', 9001),
+ 'OSC_handler': 'DefaultEpimorphismOSC',
+ 'OSC_client_address': ('192.168.11.137', 9000),
  'OSC_echo': True,
 
  'state_intrp_time': 2.0,

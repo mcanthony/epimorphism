@@ -258,7 +258,6 @@ class FOG(Program):
         t = 16 * 4 * 60.0 / config.cmdcenter.state.bpm * config.cmdcenter.state.audio_block
         config.cmdcenter.play_mp3("face_of_god", 44100, t)
         config.cmdcenter.run_program(BeatScript("epimorphism", "fog"))
-        self.stop()        
 
 
 

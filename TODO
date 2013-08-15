@@ -70,6 +70,8 @@ PRICELESS:
 	
 
 RELEASE QUEUE:
+	make SEED_COLORN SEED_COLOR[N]?
+
 	mystery bug?????? post process arg 4
 
 	self texturing seed
