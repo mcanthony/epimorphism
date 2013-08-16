@@ -305,7 +305,7 @@ class CmdCenter(Archiver):
 
         return self.state.t_speed * (self.abs_time() + self.state.t_phase)
 
-
+    
     def get_val(self, var, idx):
         return eval("self.%s[%s]" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx)))
 

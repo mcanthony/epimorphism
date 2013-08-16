@@ -31,8 +31,8 @@ class DefaultOSCHandler(OSCHandler):
 
         old = self.state.zn[idx]
         val = complex(data[1], data[0])
-        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
-
+        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        self.cmdcenter.state.zn[idx] = val
 
     def val_r_zn(self, addr, tags, data, source):
         if(data[0] == -1000):
@@ -40,7 +40,9 @@ class DefaultOSCHandler(OSCHandler):
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]        
         val = (data[0], r_to_p(old)[1])
-        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+#        self.cmdcenter.cmd("set_state_val('zn', %d, %s)" % (idx, str(p_to_r(val))))        
+        self.cmdcenter.state.zn[idx] = p_to_r(val)
 
 
     def val_th_zn(self, addr, tags, data, source):
@@ -49,7 +51,8 @@ class DefaultOSCHandler(OSCHandler):
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]
         val = (r_to_p(old)[0], data[0] / 360.0 * 2 * 3.14159)
-        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        self.cmdcenter.state.zn[idx] = p_to_r(val)
 
 
     def qnt_th_zn(self, addr, tags, data, source):
@@ -61,22 +64,28 @@ class DefaultOSCHandler(OSCHandler):
         th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
         th += data[0] * pi4;
         val = (r_to_p(old)[0], th)
-        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        self.cmdcenter.state.zn[idx] = p_to_r(val)
 
 
     def val_par(self, addr, tags, data, source):
         idx = re.search("(\d+)$", addr).groups()[0]
         idx_idx = addr.index(idx)
         name=addr[9:idx_idx-1]
-        print name, idx
-        self.cmdcenter.cmd("state.par['_%s'][%s] = %f" % (name, idx, data[0]))
+#        self.cmdcenter.cmd("state.par['_%s'][%s] = %f" % (name, idx, data[0]))
+        new_par = self.cmdcenter.state.par['_' + name]
+        new_par[int(idx)] = data[0]
+        self.cmdcenter.state.par['_' + name] = new_par
 
 
     def inc_par(self, addr, tags, data, source):
         idx = re.search("(\d+)$", addr).groups()[0]
         idx_idx = addr.index(idx)
         name=addr[9:idx_idx-1]
-        self.cmdcenter.cmd("state.par['_%s'][%s] = %f" % (name, idx, self.state.par['_' + name] + data[0]))
+        #self.cmdcenter.cmd("state.par['_%s'][%s] = %f" % (name, idx, self.state.par['_' + name] + data[0]))
+        new_par = self.cmdcenter.state.par['_' + name]
+        new_par[int(idx)] = data[0]
+        self.cmdcenter.state.par['_' + name] = new_par
 
         
     def inc_cmp(self, addr, tags, data, source):
@@ -106,19 +115,19 @@ class DefaultOSCHandler(OSCHandler):
 
     # OSC device feedback
     def mirror(self, obj, key, val, bundle=False):
+        print key
         if(obj == self.state.par):
             for i in range(len(val)):
-                self._send("/val_par%s_%d" % (key, i), [str(val[i])], True)
-                print "/txt_par%s_%d" % (key, i)
+                self._send("/val_par%s_%d" % (key, i), [str(val[i])], False)
                 self._send("/txt_par%s_%d" % (key, i), ["%0.2f" % val[i]], bundle)
         elif(obj == self.state.zn):
-            self._send("/val_zn%d" % key, [val.imag, val.real], True)
+            self._send("/val_zn%d" % key, [val.imag, val.real], False)
             self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)], bundle)
             val = r_to_p(val)
-            self._send("/val_r_zn%d" % key, [val[0]], True)
-            self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], True)
+            self._send("/val_r_zn%d" % key, [val[0]], False)
+            self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], False)
             th = (val[1] + 0.0001) / (2 * 3.14159) * 360
-            self._send("/val_th_zn%d" % key, [str(th)], True)
+            self._send("/val_th_zn%d" % key, [str(th)], False)
             self._send("/txt_th_zn%d" % key, [str(int(th))], bundle)
         elif(obj == self.state.components):
             if(re.match("intrp", val)):
@@ -127,20 +136,14 @@ class DefaultOSCHandler(OSCHandler):
         elif(obj == self.state):
             if(key == "t_speed"):
                 print self.state.t_speed
-                self._send("/val_speed", [str(self.state.t_speed)], True)
+                self._send("/val_speed", [str(self.state.t_speed)], False)
                 self._send("/txt_speed", ["%0.2f" % self.state.t_speed], bundle)\
 #        elif(obj == self.state):                    
 
 
     def mirror_all(self):
-        for k,v in self.state.par.items():
-            self.mirror(self.state.par, k, v, True)
-        for i in xrange(len(self.state.zn)):
-            self.mirror(self.state.zn, i, self.state.zn[i], True)
-        for k,v in self.state.components.items():
-            self.mirror(self.state.components, k, v, True)
-        self._send("/val_speed", [self.state.t_speed], True)
-        self._send("/txt_speed", ["%0.2f" % self.state.t_speed])
+        for i in range(len(self.state.zn)):
+            self.mirror(self.state.zn, i, self.state.zn[i], False)
 
 
 class DefaultInterferenceOSC(DefaultOSCHandler):    

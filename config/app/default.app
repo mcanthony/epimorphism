@@ -22,7 +22,7 @@
 
  'server': False,
 
- 'kbd_switch_spd' : .25,
+ 'kbd_switch_spd' : .01,
  'keyboard_handler': 'DefaultKeyboard',
  'par_scale': 1,
 
