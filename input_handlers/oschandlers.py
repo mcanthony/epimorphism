@@ -4,7 +4,7 @@ from common.complex import *
 
 from interface.oschandler import *
 
-import OSC, re
+import OSC, re, time
 
 from common.log import *
 set_log("OSCHandler")
@@ -115,19 +115,19 @@ class DefaultOSCHandler(OSCHandler):
 
     # OSC device feedback
     def mirror(self, obj, key, val, bundle=False):
-        print key
         if(obj == self.state.par):
+            print key
             for i in range(len(val)):
-                self._send("/val_par%s_%d" % (key, i), [str(val[i])], False)
+                self._send("/val_par%s_%d" % (key, i), [str(val[i])], bundle)
                 self._send("/txt_par%s_%d" % (key, i), ["%0.2f" % val[i]], bundle)
         elif(obj == self.state.zn):
-            self._send("/val_zn%d" % key, [val.imag, val.real], False)
+            self._send("/val_zn%d" % key, [val.imag, val.real], bundle)
             self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)], bundle)
             val = r_to_p(val)
-            self._send("/val_r_zn%d" % key, [val[0]], False)
-            self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], False)
+            self._send("/val_r_zn%d" % key, [val[0]], bundle)
+            self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], bundle)
             th = (val[1] + 0.0001) / (2 * 3.14159) * 360
-            self._send("/val_th_zn%d" % key, [str(th)], False)
+            self._send("/val_th_zn%d" % key, [str(th)], bundle)
             self._send("/txt_th_zn%d" % key, [str(int(th))], bundle)
         elif(obj == self.state.components):
             if(re.match("intrp", val)):
@@ -136,14 +136,25 @@ class DefaultOSCHandler(OSCHandler):
         elif(obj == self.state):
             if(key == "t_speed"):
                 print self.state.t_speed
-                self._send("/val_speed", [str(self.state.t_speed)], False)
+                self._send("/val_speed", [str(self.state.t_speed)], bundle)
                 self._send("/txt_speed", ["%0.2f" % self.state.t_speed], bundle)\
 #        elif(obj == self.state):                    
 
 
     def mirror_all(self):
-        for i in range(len(self.state.zn)):
+        for i in xrange(len(self.state.zn)):
+            time.sleep(0.01)
             self.mirror(self.state.zn, i, self.state.zn[i], False)
+        for k,v in self.state.par.items():
+            time.sleep(0.01)
+            self.mirror(self.state.par, k, v, False)
+        for k,v in self.state.components.items():
+            time.sleep(0.01)
+            self.mirror(self.state.components, k, v, False)
+        time.sleep(0.01)            
+        self._send("/val_speed", [self.state.t_speed], False)
+        time.sleep(0.01)
+        self._send("/txt_speed", ["%0.2f" % self.state.t_speed], False)
 
 
 class DefaultInterferenceOSC(DefaultOSCHandler):    
