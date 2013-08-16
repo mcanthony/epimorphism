@@ -208,9 +208,7 @@ class RandomAux(Program):
         textures = [f for f in os.listdir(path) if os.path.isfile(path + f)]
 
         i = random.randint(0, len(textures) - 1)
-        prg = SwitchAux({'idx': self.data['idx'], 'tex': self.data["folder"] + '/' + textures[i]})
-        config.cmdcenter.state.programs.append(prg)
-        prg.run()
+        config.cmdcenter.switch_aux(self.data['idx'], self.data["folder"] + '/' + textures[i])
 
         # remove self.  should ideally happen after execution terminates
         self.stop()

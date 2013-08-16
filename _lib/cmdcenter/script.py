@@ -139,7 +139,7 @@ class BeatScript(Script):
                 events.append({'cmd':cmd, 'time':t})
             elif cmd == "tex":
                 spd = parse_spd(components.pop())
-                cmd = "run_program(SwitchAux({'idx': %s, 'tex': '%s'}))" % (components.pop(0), components.pop(0))
+                cmd = "switch_aux(%s, '%s')" % (components.pop(0), components.pop(0))
                 events.append({'cmd':'app.state_intrp_time=%s' % spd, 'time':t})                                                
                 events.append({'cmd':cmd, 'time':t})
             elif cmd == "zn":

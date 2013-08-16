@@ -263,8 +263,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 self.cmdcenter.run_program(RandomMain({'interval': None}))
 
             elif(key == GLUT_KEY_F9):
-                self.interface.osc.mirror_all()
-#                self.cmdcenter.run_program(FOG({'start':0.0}))
+                self.cmdcenter.run_program(FOG({'start':0.0}))
 
             # record events
             elif(key == GLUT_KEY_F6):

@@ -508,7 +508,29 @@ class CmdCenter(Archiver):
 
     def run_program(self, prg):
         self.state.programs.append(prg)
-        prg.run()        
+        prg.run()
+
+    def switch_aux(self, idx, tex, spd=None):
+        if spd == None:
+            spd = self.app.state_intrp_time * self.state.t_speed
+
+            debug("Switching aux %d to %s" % (idx, tex))
+
+        # see if we're already switching.  done a bit ghettoly.  not even sure if it works
+        cur = self.state.par["_SEED_TEX_IDX"][idx]
+#        if math.fabs(cur - round(cur)) > 0.1:
+#            debug("Already switching aux %d" % idx)
+#            return
+        ofs = (round(cur) == 0 and 1 or 0)
+        
+#        print "cur, ofs", cur, ofs
+
+        # load image
+        self.load_image(tex, 2 * idx + ofs)
+
+        # add path
+        self.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", idx, spd, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
+
 
     # convert rect to polar - GHETTO - shouldn't be here
     def r_to_p(self, z):

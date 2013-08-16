@@ -258,6 +258,7 @@ class State(DictObj):
 
         # make observed objects
         self.zn  = ObserverList(self.zn)
+        self.aux = ObserverList(self.aux)
         self.par = ObserverDict(self.par)
         self.components = ObserverDict(self.components)
 

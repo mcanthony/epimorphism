@@ -13,7 +13,7 @@
  'camera_id': 1,
  'par_dim': 3,
  'components': {
-  'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
+ 'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
  'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
  'SEED_W0': 'lines_inner(idx, z, par)',
  'SEED_WT0': 'wt_id(idx, w)',
