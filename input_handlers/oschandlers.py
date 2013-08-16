@@ -4,7 +4,7 @@ from common.complex import *
 
 from interface.oschandler import *
 
-import OSC, re, time
+import OSC, re, time, os
 
 from common.log import *
 set_log("OSCHandler")
@@ -16,6 +16,8 @@ class DefaultOSCHandler(OSCHandler):
                                 "/val_th_zn(\d+)": self.val_th_zn,
                                 "/set_r_zn(\d+)": self.val_r_zn,
                                 "/set_th_zn(\d+)": self.val_th_zn,
+                                "/set_re_zn(\d+)": self.val_re_zn,
+                                "/set_im_zn(\d+)": self.val_im_zn,
                                 "/qnt_th_zn(\d+)": self.qnt_th_zn,
                                 "/val_par_([a-zA-Z_]+)_(\d+)": self.val_par,
                                 "/inc_par_([a-zA-Z_]+)_(\d+)": self.inc_par,
@@ -33,6 +35,28 @@ class DefaultOSCHandler(OSCHandler):
         val = complex(data[1], data[0])
         #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
         self.cmdcenter.state.zn[idx] = val
+
+    def val_re_zn(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+
+        old = self.state.zn[idx]
+        val = complex(data[0], old.imag)
+        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        self.cmdcenter.state.zn[idx] = val
+
+    def val_im_zn(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return        
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+
+        old = self.state.zn[idx]
+        val = complex(old.real, data[0])
+        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        self.cmdcenter.state.zn[idx] = val        
 
     def val_r_zn(self, addr, tags, data, source):
         if(data[0] == -1000):
@@ -122,7 +146,7 @@ class DefaultOSCHandler(OSCHandler):
                 self._send("/txt_par%s_%d" % (key, i), ["%0.2f" % val[i]], bundle)
         elif(obj == self.state.zn):
             self._send("/val_zn%d" % key, [val.imag, val.real], bundle)
-            self._send("/txt_zn%d" % key, ["%f+%fi" % (val.imag, val.real)], bundle)
+            self._send("/txt_zn%d" % key, ["%0.2f + %0.2fi" % (val.imag, val.real)], bundle)
             val = r_to_p(val)
             self._send("/val_r_zn%d" % key, [val[0]], bundle)
             self._send("/txt_r_zn%d" % key, ["%0.2f" % val[0]], bundle)
@@ -166,6 +190,9 @@ class DefaultInterferenceOSC(DefaultOSCHandler):
 class DefaultEpimorphismOSC(DefaultOSCHandler):    
 
     def __init__(self):
+        self.updated_components = {}
+        self.current_tex_folder
+        self.current_tex_name
         DefaultOSCHandler.__init__(self)
 
 # define helpers
