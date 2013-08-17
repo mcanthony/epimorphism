@@ -101,11 +101,11 @@ class DefaultOSCHandler(OSCHandler):
         cur = self.current_texture_folders[idx]        
         cur_idx = [t['folder'] for t in self.texture_names].index(cur)
         cur_idx = (cur_idx + int(data[0])) % len(self.texture_names)
-        new = self.texture_names[cur_idx]['folder']
+        new = '* ' + self.texture_names[cur_idx]['folder']
         self.current_texture_folders[idx] = new
         self._send("/txt_tex_folder_%d" % idx, [new])
         
-        new = self.texture_names[cur_idx]['textures'][0]
+        new = '* ' + self.texture_names[cur_idx]['textures'][0]
         self.current_texture_names[idx] = new
         self._send("/txt_tex_name_%d" % idx, [new])                                
 
@@ -118,7 +118,7 @@ class DefaultOSCHandler(OSCHandler):
         textures = [t['textures'] for t in self.texture_names if t['folder'] == cur_folder][0]
         cur_idx = (textures.index(cur_texture) + int(data[0])) % len(textures)
 
-        new = textures[cur_idx]
+        new = '* ' + textures[cur_idx]
         self.current_texture_names[idx] = new
         self._send("/txt_tex_name_%d" % idx, [new])
 
@@ -153,8 +153,8 @@ class DefaultOSCHandler(OSCHandler):
         
     def inc_cmp(self, addr, tags, data, source):
         name=addr[9:]
-        if(data[0] in {-1, 0, 1}):
-            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))        
+#        if(data[0] in {-1, 0, 1}):
+#            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))        
 
     def cmp_send(self, addr, tags, data, source):
         pass
