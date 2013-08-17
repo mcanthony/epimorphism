@@ -1,5 +1,6 @@
 // EPIMORPH library file
 // seed color functions for the seed_wca seed
+// SUFFIX (idx, fb, aux, z, seed, par, time)
 
 const sampler_t aux_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_MIRRORED_REPEAT;
 const sampler_t fb_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_MIRRORED_REPEAT;

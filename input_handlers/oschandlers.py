@@ -196,7 +196,14 @@ class DefaultOSCHandler(OSCHandler):
         elif(obj == self.state.components):
             if(re.match("intrp", val)):
                 val = "SWITCHING"
-            self._send("/txt_cmp_%s" % key, [val], bundle)
+            else:
+                parent_key = re.sub("(\d)+", "", key)
+                if parent_key in self.cmdcenter.componentmanager.datamanager.component_suffixes:
+                    suffix = self.cmdcenter.componentmanager.datamanager.component_suffixes[parent_key]
+                else:
+                    suffix = ""
+                print parent_key, suffix                                
+            self._send("/txt_cmp_%s" % key, [val.replace(suffix, '')], bundle)
         elif(obj == self.state.aux):
             key /= 2
             name = self.cmdcenter.get_aux_name(key)

@@ -1,5 +1,6 @@
 // EPIMORPH library file
 // seed alpha functions for the seed_wca seed function
+// SUFFIX (idx, w, res, par)
 
 _EPI_ float no_alpha(int idx, float w, float4 res, __constant float* par){
   // none

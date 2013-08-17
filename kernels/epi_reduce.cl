@@ -1,5 +1,6 @@
 // EPIMORPH library file
 // complex plane reductions C -> [-1, -1] x [1, 1]
+// SUFFIX (z)
 
 _EPI_ float2 no_reduce(float2 z){
   // standard reduction based on the cartesian grid

@@ -1,6 +1,6 @@
 // EPIMORPH library file
 // seed width transformation functions fot the seed_wca seed
-
+// SUFFIX (idx, w)
 
 _EPI_ float wt_id(int idx, float w){
   // identity transform

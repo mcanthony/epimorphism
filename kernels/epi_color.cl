@@ -1,5 +1,6 @@
 // EPIMORPH library file
 // coloring functions
+// SUFFIX (v, z_z, par, time)
 
 _EPI_ float4 bgr_id(float4 v, float2 z_z, __constant float* par, float time){
   // identity

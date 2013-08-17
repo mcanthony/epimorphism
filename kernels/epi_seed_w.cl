@@ -1,5 +1,6 @@
 // EPIMORPH library file
 // seed shape functions for the seed_wca seed function
+// SUFFIX (idx, z, par)
 
 #define VOID_W -0.0000001
 

@@ -1,5 +1,6 @@
 // EPIMORPHISM library file
 // seed functions
+// SUFFIX (idx, frame, z, fb, aux, par, internal, zn, time)
 
 #define SEED_ZOFS 4
 

@@ -17,6 +17,7 @@ class DataManager(object):
         files = [file for file in os.listdir("kernels") if re.search("^%s(.*?)\.lib$"  % self.app.lib_prefix, file)]
 
         self.components = {}
+        self.component_suffixes = {}
 
         for file_name in files:
 
@@ -32,6 +33,9 @@ class DataManager(object):
             self.components[component_name.upper()] = []
             values = self.components[component_name.upper()]
 
+            # set suffix
+            self.component_suffixes[component_name.upper()] = ""
+            
             # get all components
             for line in contents.split("\n"):
 
@@ -76,6 +80,12 @@ class DataManager(object):
                 # set component
                 self.components[component_name.upper()] = []
                 values = self.components[component_name.upper()]
+
+                # set suffix
+                suf = re.findall("SUFFIX (.*)", contents)
+                if len(suf) == 0:
+                    suf.append("")
+                self.component_suffixes[component_name.upper()] = suf[0]
 
                 # get all function definitions
                 funcs = re.findall("^_%s_.+?^}$" % self.app.lib_prefix.upper(), contents, re.M | re.S)
