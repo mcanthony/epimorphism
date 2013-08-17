@@ -161,7 +161,6 @@ class DefaultOSCHandler(OSCHandler):
         parent_name = re.sub("(\d)+$", "", name)
         
         components = self.cmdcenter.componentmanager.datamanager.components[parent_name]
-
         cur_idx = [c[0] for c in components].index(cur)
         cur_idx = (cur_idx + int(data[0])) % len(components)
         new_component = components[cur_idx][0]

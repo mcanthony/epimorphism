@@ -65,7 +65,6 @@ class DataManager(object):
 
         # load components from files of form *.cl
         files = [file for file in os.listdir("kernels") if re.search("^%s(.*?)\.e*cl$" % self.app.lib_prefix, file)]
-
         for file_name in files:
 
             # get component name
