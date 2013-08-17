@@ -106,9 +106,9 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 }
 
 
-_EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
 	// multiseed
-  // FULL, LIVE, DEV
+  // NOT A LIBRARY FILE
 
 	float2 z_z = z;
 	
@@ -150,7 +150,7 @@ _EPI_ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb,
 
 
   /*	
-_EPI_ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 
@@ -181,7 +181,7 @@ _EPI_ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, 
 
 /*
 // refactor later
-_EPI_ float4 seed_texture(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
+ float4 seed_texture(int idx, float2 z, read_only image2d_t fb, read_only image2d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   // width, color, alpha, width_trans templated seed family
   // DEV
 

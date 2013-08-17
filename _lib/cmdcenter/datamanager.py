@@ -85,7 +85,8 @@ class DataManager(object):
                 suf = re.findall("SUFFIX (.*)", contents)
                 if len(suf) == 0:
                     suf.append("")
-                self.component_suffixes[component_name.upper()] = suf[0]
+                suffix = suf[0]
+                self.component_suffixes[component_name.upper()] = suffix
 
                 # get all function definitions
                 funcs = re.findall("^_%s_.+?^}$" % self.app.lib_prefix.upper(), contents, re.M | re.S)
@@ -111,10 +112,9 @@ class DataManager(object):
                         levels = [level.strip() for level in comments[1].split(',')]
 
                         # filter by level
-                        if(self.app.component_level in levels):
+                        if(self.app.component_level in levels + ['ALL']):
                             # make clause
-                            clause = "(" + ", ".join(args) + ")"
-                            component = [func_name + clause, comments[0]]
+                            component = [func_name + suffix, comments[0]]
 
                             # add component
                             values.append(component)

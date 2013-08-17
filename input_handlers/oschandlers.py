@@ -4,7 +4,7 @@ from common.complex import *
 
 from interface.oschandler import *
 
-import OSC, re, time, os
+import OSC, re, time, os, copy
 
 from common.log import *
 set_log("OSCHandler")
@@ -101,11 +101,11 @@ class DefaultOSCHandler(OSCHandler):
         cur = self.current_texture_folders[idx]        
         cur_idx = [t['folder'] for t in self.texture_names].index(cur)
         cur_idx = (cur_idx + int(data[0])) % len(self.texture_names)
-        new = '* ' + self.texture_names[cur_idx]['folder']
+        new = self.texture_names[cur_idx]['folder']
         self.current_texture_folders[idx] = new
         self._send("/txt_tex_folder_%d" % idx, [new])
         
-        new = '* ' + self.texture_names[cur_idx]['textures'][0]
+        new = self.texture_names[cur_idx]['textures'][0]
         self.current_texture_names[idx] = new
         self._send("/txt_tex_name_%d" % idx, [new])                                
 
@@ -118,7 +118,7 @@ class DefaultOSCHandler(OSCHandler):
         textures = [t['textures'] for t in self.texture_names if t['folder'] == cur_folder][0]
         cur_idx = (textures.index(cur_texture) + int(data[0])) % len(textures)
 
-        new = '* ' + textures[cur_idx]
+        new = textures[cur_idx]
         self.current_texture_names[idx] = new
         self._send("/txt_tex_name_%d" % idx, [new])
 
@@ -152,13 +152,34 @@ class DefaultOSCHandler(OSCHandler):
 
         
     def inc_cmp(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
         name=addr[9:]
 #        if(data[0] in {-1, 0, 1}):
-#            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))        
+#            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))
+        cur = self.current_components[name]
+        parent_name = re.sub("(\d)+$", "", name)
+        
+        components = self.cmdcenter.componentmanager.datamanager.components[parent_name]
 
+        cur_idx = [c[0] for c in components].index(cur)
+        cur_idx = (cur_idx + int(data[0])) % len(components)
+        new_component = components[cur_idx][0]
+
+        self.updated_components[name] = new_component
+        self.current_components[name] = new_component
+        if parent_name in self.cmdcenter.componentmanager.datamanager.component_suffixes:
+            suffix = self.cmdcenter.componentmanager.datamanager.component_suffixes[parent_name]
+        else:
+            suffix = ""
+        self._send("/txt_cmp_%s" % name, [new_component.replace(suffix, '')])
+
+        
     def cmp_send(self, addr, tags, data, source):
-        pass
+        self.cmdcenter.componentmanager.switch_components(self.current_components)
+        self.current_components = {}
 
+        
     def cmd(self, addr, tags, data, source):
         if(data[0] != 1):
             return
@@ -196,13 +217,13 @@ class DefaultOSCHandler(OSCHandler):
         elif(obj == self.state.components):
             if(re.match("intrp", val)):
                 val = "SWITCHING"
+                suffix = ""
             else:
                 parent_key = re.sub("(\d)+", "", key)
                 if parent_key in self.cmdcenter.componentmanager.datamanager.component_suffixes:
                     suffix = self.cmdcenter.componentmanager.datamanager.component_suffixes[parent_key]
                 else:
                     suffix = ""
-                print parent_key, suffix                                
             self._send("/txt_cmp_%s" % key, [val.replace(suffix, '')], bundle)
         elif(obj == self.state.aux):
             key /= 2
@@ -262,6 +283,8 @@ class DefaultEpimorphismOSC(DefaultOSCHandler):
             name = self.cmdcenter.get_aux_name(i)
             self.current_texture_folders.append(name.split('/')[0])
             self.current_texture_names.append(name.split('/')[1].replace('.png', ''))
+
+        self.current_components = copy.copy(self.state.components)
 
 
 

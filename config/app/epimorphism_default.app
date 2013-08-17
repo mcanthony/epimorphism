@@ -2,6 +2,7 @@
  'app': 'epimorphism',
  'name': 'default',
  'state': State('epimorphism', 'default'),
+ 'component_level': 'ALL',
 
  'keyboard_handler': 'DefaultEpimorphismKeyboard',
  'mouse_handler': 'DefaultEpimorphismMouse',
