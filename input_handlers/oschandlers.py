@@ -176,8 +176,8 @@ class DefaultOSCHandler(OSCHandler):
 
         
     def cmp_send(self, addr, tags, data, source):
-        self.cmdcenter.componentmanager.switch_components(self.current_components)
-        self.current_components = {}
+        self.cmdcenter.componentmanager.switch_components(self.updated_components)
+        self.updated_components = {}
 
         
     def cmd(self, addr, tags, data, source):

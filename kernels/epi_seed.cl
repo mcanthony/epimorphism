@@ -99,7 +99,7 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 		break;
 	#endif
 	}
-	
+
 	res.w = a * seed.y;
 
   return mix(frame, res, res.w);
@@ -112,13 +112,15 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 
 	float2 z_z = z;
 	
-	// compute seed0          
+	// compute seed0
+
 	z = M(zn[2 + SEED_ZOFS], (z - zn[3 + SEED_ZOFS]));           
 	z = $T_SEED0$;
 	z = M(zn[0 + SEED_ZOFS], (z - zn[1 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
 	idx = 0;
 	frame = $SEED0$;
+
 
 	// compute seed1
 	#ifdef $SEED1$
@@ -131,6 +133,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 	frame = $SEED1$;
 	#endif
 
+
 	// compute seed2
   #ifdef $SEED2$
 	z = z_z;
@@ -141,7 +144,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 	idx = 2;
 	frame = $SEED2$;
 	#endif
-	
+
 	return frame;
 
 }
