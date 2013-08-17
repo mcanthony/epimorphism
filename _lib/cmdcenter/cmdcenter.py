@@ -521,16 +521,26 @@ class CmdCenter(Archiver):
 #        if math.fabs(cur - round(cur)) > 0.1:
 #            debug("Already switching aux %d" % idx)
 #            return
-        ofs = (round(cur) == 0 and 1 or 0)
+        ofs = (int(round(cur)) == 0 and 1 or 0)
         
 #        print "cur, ofs", cur, ofs
 
         # load image
         self.load_image(tex, 2 * idx + ofs)
+        
+        # change
+        if(spd == 0):
+            self.state.par['_SEED_TEX_IDX'][idx] = ofs
+        else:
+            self.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", idx, spd, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
+            
 
-        # add path
-        self.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", idx, spd, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
-
+    def get_aux_name(self, idx):
+        cur = self.state.par["_SEED_TEX_IDX"][idx]
+        if math.fabs(cur - round(cur)) > 0.1:
+            return "SWITCHING"
+        ofs = 1 - (int(round(cur)) == 0 and 1 or 0)
+        return self.state.aux[2 * idx + ofs]
 
     # convert rect to polar - GHETTO - shouldn't be here
     def r_to_p(self, z):

@@ -18,10 +18,13 @@ class DefaultOSCHandler(OSCHandler):
                                 "/set_th_zn(\d+)": self.val_th_zn,
                                 "/set_re_zn(\d+)": self.val_re_zn,
                                 "/set_im_zn(\d+)": self.val_im_zn,
-                                "/qnt_th_zn(\d+)": self.qnt_th_zn,
+                                "/tex_send": self.tex_send,                                
+                                "/inc_tex_folder_(\d+)": self.inc_tex_folder,
+                                "/inc_tex_name_(\d+)": self.inc_tex_name,                                
                                 "/val_par_([a-zA-Z_]+)_(\d+)": self.val_par,
                                 "/inc_par_([a-zA-Z_]+)_(\d+)": self.inc_par,
                                 "/inc_cmp_([a-zA-Z_]+)": self.inc_cmp,
+                                "/cmp_send": self.cmp_send,
                                 "/cmd_(\w+)": self.cmd}
                                 
         OSCHandler.__init__(self)
@@ -91,7 +94,43 @@ class DefaultOSCHandler(OSCHandler):
         #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
         self.cmdcenter.state.zn[idx] = p_to_r(val)
 
+    def inc_tex_folder(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        cur = self.current_texture_folders[idx]        
+        cur_idx = [t['folder'] for t in self.texture_names].index(cur)
+        cur_idx = (cur_idx + int(data[0])) % len(self.texture_names)
+        new = self.texture_names[cur_idx]['folder']
+        self.current_texture_folders[idx] = new
+        self._send("/txt_tex_folder_%d" % idx, [new])
+        
+        new = self.texture_names[cur_idx]['textures'][0]
+        self.current_texture_names[idx] = new
+        self._send("/txt_tex_name_%d" % idx, [new])                                
 
+    def inc_tex_name(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        cur_folder = self.current_texture_folders[idx]
+        cur_texture = self.current_texture_names[idx]        
+        textures = [t['textures'] for t in self.texture_names if t['folder'] == cur_folder][0]
+        cur_idx = (textures.index(cur_texture) + int(data[0])) % len(textures)
+
+        new = textures[cur_idx]
+        self.current_texture_names[idx] = new
+        self._send("/txt_tex_name_%d" % idx, [new])
+
+        
+    def tex_send(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+        for i in xrange(self.state.par_dim):
+            name = self.current_texture_folders[i] + '/' + self.current_texture_names[i] + ".png"
+            self.cmdcenter.switch_aux(i, name, 0)
+            
+        
     def val_par(self, addr, tags, data, source):
         idx = re.search("(\d+)$", addr).groups()[0]
         idx_idx = addr.index(idx)
@@ -117,6 +156,8 @@ class DefaultOSCHandler(OSCHandler):
         if(data[0] in {-1, 0, 1}):
             self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))        
 
+    def cmp_send(self, addr, tags, data, source):
+        pass
 
     def cmd(self, addr, tags, data, source):
         if(data[0] != 1):
@@ -140,7 +181,6 @@ class DefaultOSCHandler(OSCHandler):
     # OSC device feedback
     def mirror(self, obj, key, val, bundle=False):
         if(obj == self.state.par):
-            print key
             for i in range(len(val)):
                 self._send("/val_par%s_%d" % (key, i), [str(val[i])], bundle)
                 self._send("/txt_par%s_%d" % (key, i), ["%0.2f" % val[i]], bundle)
@@ -157,9 +197,15 @@ class DefaultOSCHandler(OSCHandler):
             if(re.match("intrp", val)):
                 val = "SWITCHING"
             self._send("/txt_cmp_%s" % key, [val], bundle)
+        elif(obj == self.state.aux):
+            key /= 2
+            name = self.cmdcenter.get_aux_name(key)
+            if not name or name != val:
+                return            
+            self._send("/txt_tex_folder_%d" % key, [name.split('/')[0]], bundle)
+            self._send("/txt_tex_name_%d" % key, [name.split('/')[1].replace('.png', '')], bundle)
         elif(obj == self.state):
             if(key == "t_speed"):
-                print self.state.t_speed
                 self._send("/val_speed", [str(self.state.t_speed)], bundle)
                 self._send("/txt_speed", ["%0.2f" % self.state.t_speed], bundle)\
 #        elif(obj == self.state):                    
@@ -175,6 +221,9 @@ class DefaultOSCHandler(OSCHandler):
         for k,v in self.state.components.items():
             time.sleep(0.01)
             self.mirror(self.state.components, k, v, False)
+        for i in xrange(self.state.par_dim):
+            time.sleep(0.01)
+            self.mirror(self.state.aux, i, self.state.aux[i], False)
         time.sleep(0.01)            
         self._send("/val_speed", [self.state.t_speed], False)
         time.sleep(0.01)
@@ -190,10 +239,24 @@ class DefaultInterferenceOSC(DefaultOSCHandler):
 class DefaultEpimorphismOSC(DefaultOSCHandler):    
 
     def __init__(self):
-        self.updated_components = {}
-        self.current_tex_folder
-        self.current_tex_name
         DefaultOSCHandler.__init__(self)
+        self.updated_components = {}
+        path = "media/textures/"
+        folders = [f for f in os.listdir(path) if not os.path.isfile(path + f)]
+        for i in xrange(len(folders)):
+            textures = [f.replace('.png','') for f in os.listdir(path + folders[i]) if os.path.isfile(path + folders[i] + "/" + f)]
+            textures.sort()
+            folders[i] = {'folder': folders[i], 'textures': textures}
+        self.texture_names = folders
+
+        self.current_texture_folders = []
+        self.current_texture_names = []
+        for i in xrange(self.state.par_dim):
+            name = self.cmdcenter.get_aux_name(i)
+            self.current_texture_folders.append(name.split('/')[0])
+            self.current_texture_names.append(name.split('/')[1].replace('.png', ''))
+
+
 
 # define helpers
 def get_val(x):       return x
