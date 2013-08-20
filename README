@@ -75,7 +75,7 @@ You can even increase from 1536 if your graphics card supports it.
 WINDOWS EXAMPLE:
 
 epimorphism screen=auto kernel_dim=1024
-as in you don't need the ./
+-- you don't need the ./
 
 ------------------------------------------------
 CONTROLS
@@ -84,3 +84,16 @@ CONTROLS
 QUIT: Esc
 
 A lot more which I'll document later
+
+------------------------------------------------
+TOUCHOSC
+------------------------------------------------
+
+It is possible to control the epimorphism and interference apps 
+via TouchOSC.  The templates live in the touchosc/ directory.  Sync the templates,
+and configure TouchOSC with the host ip address.  Add the following flags while
+starting the application:
+
+./epimorphism OSC_enabled=True OSC_client_address=\(\'10.0.0.116\',9000\)
+
+setting the IP client address to the IP address of your controller.
