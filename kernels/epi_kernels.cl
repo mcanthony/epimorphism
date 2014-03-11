@@ -6,6 +6,7 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 __kernel __attribute__((reqd_work_group_size(16,16,1))) 
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image3d_t aux,
 		 __constant float* par, __constant float *internal, __constant float2 *zn, float time){
+	
   float2 t, t_seed, reduce;
   float4 color;
 
@@ -22,7 +23,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
   float4 v = (float4)(0.0f, 0.0f, 0.0f, 0.0f);
   const float i_k = ($FRACT$ == 1 ? 0.0f : 1.0f / $KERNEL_DIM$);  
   const float inc = ($FRACT$ == 1 ? 0.0f : 2.0f / ($KERNEL_DIM$ * ($FRACT$ - 1.0f)));  
-
+	
   for(int i_x = 0; i_x < (int)$FRACT$; i_x++)
     for(int i_y = 0; i_y < (int)$FRACT$; i_y++){
 			// z is the center of a pixel
@@ -55,7 +56,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
     }
 
   // scale
-  v = (float4)(v.xyz / ($FRACT$ * $FRACT$), v.w);
+  v = (float4)(v.x / ($FRACT$ * $FRACT$), v.y / ($FRACT$ * $FRACT$), v.z / ($FRACT$ * $FRACT$), v.w); 
   v = recover4(v);
 
   // compute color  

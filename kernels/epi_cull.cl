@@ -12,7 +12,7 @@ float4 cull(float4 v, float4 seed, float4 frame, __constant float* par){
       new_w = 0.0f;
   frame.w = new_w;
   
-  v += seed.w * seed + (1.0 - seed.w) * frame;      
+  v += seed.w * seed + (1.0f - seed.w) * frame;      
   //if(v.w < 0)
   //  v.w = frame.w;
 

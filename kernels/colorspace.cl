@@ -1,5 +1,5 @@
 float4 RGBtoHSV(float4 val){
-	val = clamp(val, 0.0, 1.0);
+	val = clamp(val, 0.0f, 1.0f);
 	
   float vmin = fmin(fmin(val.x, val.y), val.z);
   float vmax = fmax(fmax(val.x, val.y), val.z);
