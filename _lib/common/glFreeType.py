@@ -2,7 +2,7 @@
 #	and distributed as part of a tutorial for nehe.gamedev.net.
 #	Sven Olsen, 2003
 #	Translated to PyOpenGL by Brian Leair, 2004
-# 
+#
 #
 
 
@@ -11,7 +11,7 @@
 # We are going to use Python Image Library's font handling
 # From PIL 1.1.4:
 
-import ImageFont
+from PIL import ImageFont
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
@@ -25,7 +25,7 @@ except NameError:
 
 
 def is_font_available (ft, facename):
-	""" Returns true if FreeType can find the requested face name 
+	""" Returns true if FreeType can find the requested face name
 		Pass the basname of the font e.g. "arial" or "times new roman"
 	"""
 	if (facename in ft.available_fonts ()):
@@ -48,7 +48,7 @@ def make_dlist (ft, ch, list_base, tex_base_list):
 		Populate the glTexture for the integer ch and construct a display
 		list that renders the texture for ch.
 		Note, that display_list_base and texture_base are supposed
-		to be preallocated for 128 consecutive display lists and and 
+		to be preallocated for 128 consecutive display lists and and
 		array of textures.
 	"""
 
@@ -64,21 +64,21 @@ def make_dlist (ft, ch, list_base, tex_base_list):
 	# the bitmap data that we will need in order to create
 	# our texture.
 	glyph = ft.getmask (chr (ch))
-	glyph_width, glyph_height = glyph.size 
-	# We are using PIL's wrapping for FreeType. As a result, we don't have 
+	glyph_width, glyph_height = glyph.size
+	# We are using PIL's wrapping for FreeType. As a result, we don't have
 	# direct access to glyph.advance or other attributes, so we add a 1 pixel pad.
 	width = next_p2 (glyph_width + 1)
 	height = next_p2 (glyph_height + 1)
 
 
 	# python GL will accept lists of integers or strings, but not Numeric arrays
-	# so, we buildup a string for our glyph's texture from the Numeric bitmap 
+	# so, we buildup a string for our glyph's texture from the Numeric bitmap
 
 	# Here we fill in the data for the expanded bitmap.
 	# Notice that we are using two channel bitmap (one for
 	# luminocity and one for alpha), but we assign
 	# both luminocity and alpha to the value that we
-	# find in the FreeType bitmap. 
+	# find in the FreeType bitmap.
 	# We use the ?: operator so that value which we use
 	# will be 0 if we are in the padding zone, and whatever
 	# is the the Freetype bitmap otherwise.
@@ -137,15 +137,15 @@ def make_dlist (ft, ch, list_base, tex_base_list):
 		# glTranslatef(glyph_left, 0, 0)
 
 		# // Now we move down a little in the case that the
-		# // bitmap extends past the bottom of the line 
+		# // bitmap extends past the bottom of the line
 		# // this is only true for characters like 'g' or 'y'.
 		# glyph_descent = glyph.decent
 		# glTranslatef(0, glyph_descent, 0)
 
 		# //Now we need to account for the fact that many of
 		# //our textures are filled with empty padding space.
-		# //We figure what portion of the texture is used by 
-		# //the actual character and store that information in 
+		# //We figure what portion of the texture is used by
+		# //the actual character and store that information in
 		# //the x and y variables, then when we draw the
 		# //quad, we will only reference the parts of the texture
 		# //that we contain the character itself.
@@ -153,7 +153,7 @@ def make_dlist (ft, ch, list_base, tex_base_list):
 		y=float (glyph_height) / float (height)
 
 		# //Here we draw the texturemaped quads.
-		# //The bitmap that we got from FreeType was not 
+		# //The bitmap that we got from FreeType was not
 		# //oriented quite like we would like it to be,
 		# //so we need to link the texture to the quad
 		# //so that the result will be properly aligned.
@@ -182,7 +182,7 @@ def make_dlist (ft, ch, list_base, tex_base_list):
 	return
 
 # /// A fairly straight forward function that pushes
-# /// a projection matrix that will make object world 
+# /// a projection matrix that will make object world
 # /// coordinates identical to window coordinates.
 def pushScreenCoordinateMatrix():
 	glPushAttrib(GL_TRANSFORM_BIT)
@@ -220,7 +220,7 @@ class font_data:
 
 		# Here we ask opengl to allocate resources for
 		# all the textures and displays lists which we
-		# are about to create.  
+		# are about to create.
 		self.m_list_base = glGenLists (128)
 
 		# Consturct a list of 128 elements. This
@@ -247,10 +247,10 @@ class font_data:
 		"""
 		# We want a coordinate system where things coresponding to window pixels.
 		pushScreenCoordinateMatrix()
-	
+
 		# //We make the height about 1.5* that of
-		h = float (self.m_font_height) / 0.63		
-	
+		h = float (self.m_font_height) / 0.63
+
 		# If There's No Text
 		# Do Nothing
 		if (string == None):
@@ -261,7 +261,7 @@ class font_data:
 			return
 
 		# //Here is some code to split the text that we have been
-		# //given into a set of lines.  
+		# //given into a set of lines.
 		# //This could be made much neater by using
 		# //a regular expression library such as the one avliable from
 		# //boost.org (I've only done it out by hand to avoid complicating
@@ -286,7 +286,7 @@ class font_data:
 		# //Notice that we need to reset the matrix, rather than just translating
 		# //down by h. This is because when each character is
 		# //draw it modifies the current matrix so that the next character
-		# //will be drawn immediatly after it.  
+		# //will be drawn immediatly after it.
 		for i in xrange (len (lines)):
 			line = lines [i]
 
