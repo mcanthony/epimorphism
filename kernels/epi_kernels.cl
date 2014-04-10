@@ -34,26 +34,26 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       z = $T$;
 
       // reduce
-      reduce = recover2(torus_reduce(z));
+      //reduce = recover2(torus_reduce(z));
       z = M(zn[0], z) + zn[1];
       z = recover2($REDUCE$);
 
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
 
-      //v += $SEED$;
+      v += $SEED$;
 
       // cull & blending
 
-      float4 seed = $SEED$;
-
+      //float4 seed = $SEED$;
+      /*
       #ifdef $CULL_ENABLED$
       v = cull(v, seed, frame, par);
       #else
       v += seed.w * seed + (1.0 - seed.w) * frame;
       //			v = seed2.w * seed2 + (1.0 - seed2.w) * v;
       #endif
-
+      */
     }
 
   // scale
