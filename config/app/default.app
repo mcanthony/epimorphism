@@ -54,5 +54,7 @@
  'kernel': 'test',
  'sources': ['util', 'math', 'colorspace'],
  'lib_prefix': 'def',
- 'feedback_buffer': False
+ 'feedback_buffer': False,
+
+ 'program_interrupt': False
 }

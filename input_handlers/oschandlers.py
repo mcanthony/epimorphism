@@ -11,18 +11,19 @@ set_log("OSCHandler")
 
 class DefaultOSCHandler(OSCHandler):
     def __init__(self):
-        self.regex_callbacks = {"/val_zn(\d+)": self.val_zn,
-                                "/val_r_zn(\d+)": self.val_r_zn,
-                                "/val_th_zn(\d+)": self.val_th_zn,
-                                "/set_r_zn(\d+)": self.val_r_zn,
-                                "/set_th_zn(\d+)": self.val_th_zn,
-                                "/set_re_zn(\d+)": self.val_re_zn,
-                                "/set_im_zn(\d+)": self.val_im_zn,
+        self.regex_callbacks = {"/val_zn(\d+)$": self.val_zn,
+                                "/val_r_zn(\d+)$": self.val_r_zn,
+                                "/val_th_zn(\d+)$": self.val_th_zn,
+                                "/qnt_th_zn(\d+)$": self.qnt_th_zn,
+                                "/set_r_zn(\d+)$": self.val_r_zn,
+                                "/set_th_zn(\d+)$": self.val_th_zn,
+                                "/set_re_zn(\d+)$": self.val_re_zn,
+                                "/set_im_zn(\d+)$": self.val_im_zn,
                                 "/tex_send": self.tex_send,                                
-                                "/inc_tex_folder_(\d+)": self.inc_tex_folder,
-                                "/inc_tex_name_(\d+)": self.inc_tex_name,                                
-                                "/val_par_([a-zA-Z_]+)_(\d+)": self.val_par,
-                                "/inc_par_([a-zA-Z_]+)_(\d+)": self.inc_par,
+                                "/inc_tex_folder_(\d+)$": self.inc_tex_folder,
+                                "/inc_tex_name_(\d+)$": self.inc_tex_name,                                
+                                "/val_par_(\w+)_(\d+)$": self.val_par,
+                                "/inc_par_(\w+)_(\d+)$": self.inc_par,
                                 "/inc_cmp_([a-zA-Z_]+)": self.inc_cmp,
                                 "/cmp_send": self.cmp_send,
                                 "/cmd_(\w+)": self.cmd}
@@ -31,6 +32,7 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def val_zn(self, addr, tags, data, source):
+        self.log_event()
         idx = int(re.search("(\d+)$", addr).groups()[0])
         #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
 
@@ -40,6 +42,7 @@ class DefaultOSCHandler(OSCHandler):
         self.cmdcenter.state.zn[idx] = val
 
     def val_re_zn(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -51,6 +54,7 @@ class DefaultOSCHandler(OSCHandler):
         self.cmdcenter.state.zn[idx] = val
 
     def val_im_zn(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return        
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -62,6 +66,7 @@ class DefaultOSCHandler(OSCHandler):
         self.cmdcenter.state.zn[idx] = val        
 
     def val_r_zn(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -73,6 +78,7 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def val_th_zn(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -83,6 +89,7 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def qnt_th_zn(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -95,6 +102,7 @@ class DefaultOSCHandler(OSCHandler):
         self.cmdcenter.state.zn[idx] = p_to_r(val)
 
     def inc_tex_folder(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -110,6 +118,7 @@ class DefaultOSCHandler(OSCHandler):
         self._send("/txt_tex_name_%d" % idx, [new])                                
 
     def inc_tex_name(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
@@ -124,6 +133,7 @@ class DefaultOSCHandler(OSCHandler):
 
         
     def tex_send(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         for i in xrange(self.state.par_dim):
@@ -132,6 +142,7 @@ class DefaultOSCHandler(OSCHandler):
             
         
     def val_par(self, addr, tags, data, source):
+        self.log_event()
         idx = re.search("(\d+)$", addr).groups()[0]
         idx_idx = addr.index(idx)
         name=addr[9:idx_idx-1]
@@ -142,6 +153,7 @@ class DefaultOSCHandler(OSCHandler):
 
 
     def inc_par(self, addr, tags, data, source):
+        self.log_event()
         idx = re.search("(\d+)$", addr).groups()[0]
         idx_idx = addr.index(idx)
         name=addr[9:idx_idx-1]
@@ -152,6 +164,7 @@ class DefaultOSCHandler(OSCHandler):
 
         
     def inc_cmp(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] == -1000):
             return
         name=addr[9:]
@@ -175,16 +188,22 @@ class DefaultOSCHandler(OSCHandler):
 
         
     def cmp_send(self, addr, tags, data, source):
+        self.log_event()
         self.cmdcenter.componentmanager.switch_components(self.updated_components)
         self.updated_components = {}
 
         
     def cmd(self, addr, tags, data, source):
+        self.log_event()
         if(data[0] != 1):
             return
         cmd=addr[5:]
         self.cmdcenter.cmd("%s()" % cmd)        
 
+        
+    def log_event(self):
+        self.cmdcenter.programInterrupt()
+        
 
     # OSC address handers        
     def hnd_val_speed(self, addr, tags, data, source):

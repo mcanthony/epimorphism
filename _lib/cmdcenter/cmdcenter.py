@@ -137,7 +137,10 @@ class CmdCenter(Archiver):
         # camera
         if config.app.camera_enabled and config.state.camera_id:
             self.camera = cv.CreateCameraCapture(0)#config.state.camera_id)
-        
+
+        # program interrupt
+        self.last_interrupt = 1000000000000
+            
         return True
 
 
@@ -181,6 +184,9 @@ class CmdCenter(Archiver):
 
         #print self.state.par['_SEED_TEX_IDX']
         #print self.state.aux
+
+        # check for interrupted programs
+        self.resumeMain()
         
         # execute engine
         if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
@@ -564,6 +570,26 @@ class CmdCenter(Archiver):
         if self.mp3_process: self.mp3_process.terminate() 
         sys.exit(0)
 
+
+    def programInterrupt(self):
+        if not self.app.program_interrupt:
+            return
+        
+        self.last_interrupt = time.time()
+
+        for program in self.state.programs:
+            program.stop()
+
+        self.state.paths = []
+
+        
+    def resumeMain(self):
+        if not self.app.program_interrupt:
+            return
+        
+        if time.time() - self.last_interrupt > 5:
+#            self.run_program(Script('epimorphism', 'main_roses'))
+            self.run_program(RandomMain({'interval': 120}))
 
 
 

@@ -2,14 +2,14 @@
  'app': 'epimorphism',
  'name': 'default',
  'state': State('epimorphism', 'default'),
- 'component_level': 'ALL',
+ 'component_level': 'FULL',
 
  'keyboard_handler': 'DefaultEpimorphismKeyboard',
  'mouse_handler': 'DefaultEpimorphismMouse',
 
  'OSC_enabled': False,
  'OSC_handler': 'DefaultEpimorphismOSC',
- 'OSC_client_address': ('192.168.11.137', 9000),
+ 'OSC_client_address': ('192.168.33.100', 9000),
  'OSC_echo': True,
 
  'state_intrp_time': 2.0,
