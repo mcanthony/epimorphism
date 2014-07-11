@@ -9,7 +9,7 @@
  'bpm': 120,
  'paths': [],
  'randomize_seed': True,
- 'programs': [Script('epimorphism', 'main_roses'), RandomMain({'interval': 60})],
+ 'programs': [Script('epimorphism', 'main_roses'), RandomMain({'interval': 120})],
  'camera_id': 1,
  'par_dim': 3,
  'components': {
@@ -28,7 +28,7 @@
  'SEED_W2': 'lines_box(idx, z, par)',
  'SEED_WT2': 'wt_id(idx, w)',
  'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
- 'SEED_A2': 'id_alpha(idx, w, res, par)',
+  'SEED_A2': 'id_alpha(idx, w, res, par)',
  'T': 'z',
  'T_SEED0': 'z',
  'T_SEED1': 'expz(z)',
