@@ -46,6 +46,7 @@ class Script(DictObj, Program):
             return
 
 #        print self.data["events"].pop(0)["cmd"]
+#        if len(self.data["events"] > 0):
         async(lambda: self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False))
         #self.cmdcenter.cmd(self.data["events"].pop(0)["cmd"], False)
 

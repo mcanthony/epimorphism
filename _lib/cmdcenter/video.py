@@ -34,17 +34,19 @@ class VideoRenderer(object):
 
         # encapsulated for asynchronous execution
         def grab_image():
+            print "before grab"
             image = self.interface.renderer.grab_image()
+            print "after grab"
 
             # pad frame_num
             digit_size = 5
             padded = "".join(["0" for i in xrange(digit_size - int(math.log10(self.frame_num + 1)) - 1)]) + str(self.frame_num)
 
             # save
-            folder = "/media/gene/0CF49676F496622E1/tmp"
-            # folder = "media/video/
-            image.convert("RGB").save("%s/%s.png" % (folder, padded))
+            image.convert("RGB").save("media/video/%s/%s.png" % (self.video_name, padded))
 
+            print "after save"
+            
             # stop video if necessary
             if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):
                 self.stop_video(True)
@@ -53,19 +55,24 @@ class VideoRenderer(object):
                     info("Video rendering complete.  Exiting program")
                     self.app.exit = True
 
-            self.capturing_event.set()
+         #   self.capturing_event.set()
 
 
-        if(self.frame_num != 0):
-            self.capturing_event.wait()
-        self.capturing_event.clear()
+        #if(self.frame_num != 0):
+        #    print "before wait"
+        #    self.capturing_event.wait()
+        #    print "after wait"
+
+        #print "before clear"
+        #self.capturing_event.clear()
+        #print "after clear"
 
         # inc frame num
         self.frame_num += 1
 
         # async grab frame
-        self.cmdcenter.engine.do_get_fb = True
-        async(grab_image)
+        #self.cmdcenter.engine.do_get_fb = True
+        grab_image()
 
 
     def start_video(self, video_name=None):

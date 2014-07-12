@@ -216,6 +216,7 @@ class CmdCenter(Archiver):
 
 
         # execute interface
+        self.interface.renderer.have_image.clear()
         self.interface.do()
 
         # capture video frames
@@ -301,7 +302,9 @@ class CmdCenter(Archiver):
         ''' Returns the current absolute time '''
 
         if(self.app.fps_sync):
-            return self.state.frame_cnt / float(self.app.fps_sync)
+            t = self.state.frame_cnt / float(self.app.fps_sync)
+            print "setting time to %f" % t
+            return t
         else:
             return time.time() - self.t_start
 
@@ -590,3 +593,12 @@ class CmdCenter(Archiver):
         if time.time() - self.last_interrupt > 5:
 #            self.run_program(Script('epimorphism', 'main_roses'))
             self.run_program(RandomMain({'interval': 120}))
+
+
+    def block_for(block_time):
+        wait_until = self.time() + block_time
+        #print "time ", self.cmdcenter.time()
+        #print "wait until ", wait_until
+        while(self.time() <= wait_until):
+            #print "time ", self.cmdcenter.time()
+            time.sleep(0.01)
