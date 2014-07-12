@@ -598,7 +598,7 @@ class CmdCenter(Archiver):
             self.run_program(RandomMain({'interval': 120}))
 
 
-    def block_for(block_time):
+    def block_for(self, block_time):
         wait_until = self.time() + block_time
         #print "time ", self.cmdcenter.time()
         #print "wait until ", wait_until
