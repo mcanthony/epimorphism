@@ -21,3 +21,5 @@ config/state/*save*
 sources/pypm/build/*
 .directory
 kernels/debug.cl
+media/video/*
+*.mp4
