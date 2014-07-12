@@ -69,15 +69,11 @@ class RandomMain(Program):
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         update["SEED_C0"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
 
-        if random.random() <= 0.75:
+        no_more = False
+        if random.random() <= 0.50:
             programs.append(RandomAux({'idx': 0, 'folder': 'simplegeom'}))
-            no_more = False
-        elif random.random() <= 0.95:
-            programs.append(RandomAux({'idx': 0, 'folder': 'psych'}))
-            no_more = True
         else:
-            programs.append(RandomAux({'idx': 0, 'folder': 'ponies'}))
-            no_more = True
+            programs.append(RandomAux({'idx': 0, 'folder': 'psych'}))
 
         # seed 1
         if random.random() > 0.4 and not no_more:
@@ -86,14 +82,7 @@ class RandomMain(Program):
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             rnd = random.random()
-            if rnd < 0.25:
-                programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
-            elif rnd < 0.50:
-                programs.append(RandomAux({'idx': 1, 'folder': 'misc'}))
-            elif rnd < 0.75:
-                programs.append(RandomAux({'idx': 1, 'folder': 'psych'}))
-            else:
-                programs.append(RandomAux({'idx': 1, 'folder': 'simplegeom'}))
+            programs.append(RandomAux({'idx': 1, 'folder': 'misc'}))
         else:
             update["SEED_W1"] = "nothing(idx, z, par)"
 
@@ -104,14 +93,10 @@ class RandomMain(Program):
             update["SEED_C2"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             rnd = random.random()
-            if rnd < 0.29:
+            if rnd < 0.5:
                 programs.append(RandomAux({'idx': 2, 'folder': 'flowers'}))
-            elif rnd < 0.58:
-                programs.append(RandomAux({'idx': 2, 'folder': 'misc'}))
-            elif rnd < 0.85:
-                programs.append(RandomAux({'idx': 2, 'folder': 'nontile'}))
             else:
-                programs.append(RandomAux({'idx': 2, 'folder': 'stoopid'}))
+                programs.append(RandomAux({'idx': 2, 'folder': 'misc'}))
         else:
             update["SEED_W1"] = "nothing(idx, z, par)"
 
