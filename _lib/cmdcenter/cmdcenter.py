@@ -215,8 +215,11 @@ class CmdCenter(Archiver):
             #print "t elapsed:", self.abs_time() - self.last_frame_time
 
 
+        # grab image
+        if(self.app.render_video):
+            self.interface.renderer.have_image.clear()
+
         # execute interface
-        self.interface.renderer.have_image.clear()
         self.interface.do()
 
         # capture video frames
