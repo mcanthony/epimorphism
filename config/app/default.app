@@ -12,17 +12,17 @@
  'next_frame': False,
 
  'render_video': False,
- 'max_video_frames': 10800,
+ 'max_video_frames': 20,
  'video_frame_rate': 30.0,
  'fps_sync': False,
  'record_events': False,
 
  'component_level': 'FULL',
- 'state_intrp_time': 5.0,
+ 'state_intrp_time': 4.0,
 
  'server': False,
 
- 'kbd_switch_spd' : .01,
+ 'kbd_switch_spd' : .3,
  'keyboard_handler': 'DefaultKeyboard',
  'par_scale': 1,
 
@@ -31,7 +31,7 @@
  'midi_enabled': False,
  'midi_echo': False,
  'midi_controller': [],
- 'midi_speed': 0.5,
+ 'midi_speed': 1.0,
  'last_midi_event': 0.0,
 
  'OSC_enabled': False,
@@ -41,7 +41,7 @@
  'OSC_echo': True,
 
  'screen' : [800,800,False],
- 'echo' : True,
+ 'echo' : False,
 
  'camera_enabled': False,
 

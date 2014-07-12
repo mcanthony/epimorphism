@@ -53,13 +53,13 @@ class CmdEnv(dict):
         for d in self.data:
             if d.has_key(key):
                 d[key] = value
-                
+
 
 class CmdCenter(Archiver):
     ''' The CmdCenter is the central control center for the engine and
         renderer.  All systems generating signals route through here, and the object
         provides an interface for executing code int the appropriate environment. '''
-    
+
 
     def init(self):
         info("Initializing CmdCenter")
@@ -116,7 +116,7 @@ class CmdCenter(Archiver):
         funcs.update(get_funcs(self.engine))
         funcs.update(get_funcs(self.componentmanager))
         funcs.update(get_funcs(self.eventmanager))
-        funcs.update(get_funcs(self.animator))        
+        funcs.update(get_funcs(self.animator))
         funcs.update(default_funcs)
         funcs.update(dict([(cls.__name__, cls) for cls in Program.__subclasses__()]))
         funcs.update({'PI': 3.141592653})
@@ -140,7 +140,7 @@ class CmdCenter(Archiver):
 
         # program interrupt
         self.last_interrupt = 1000000000000
-            
+
         return True
 
 
@@ -177,7 +177,7 @@ class CmdCenter(Archiver):
         # start modules - DOESN'T RETURN
         self.engine.start()
         self.interface.start()
-        
+
 
     def do(self):
         ''' Main application loop '''
@@ -187,7 +187,7 @@ class CmdCenter(Archiver):
 
         # check for interrupted programs
         self.resumeMain()
-        
+
         # execute engine
         if((not (self.app.manual_iter and not self.app.next_frame)) and not self.app.freeze and not self.componentmanager.compiling):
             self.app.next_frame = False
@@ -206,14 +206,14 @@ class CmdCenter(Archiver):
 
             # execute animation paths
             self.animator.execute_paths()
-            
+
             # render frame
             self.send_frame()
             self.engine.do()
 
             self.state.frame_cnt += 1
             #print "t elapsed:", self.abs_time() - self.last_frame_time
-        
+
 
         # execute interface
         self.interface.do()
@@ -228,12 +228,12 @@ class CmdCenter(Archiver):
 
         # start programs
         if not self.programs_initialized:
-            self.programs_initialized = True        
+            self.programs_initialized = True
             for program in self.state.programs:
                 if isinstance(program, Script):
                     program.data["phase"] = self.time()
                 program.start()
-        
+
         # upload frame
         if config.app.camera_enabled and config.state.camera_id:
             self.upload_webcam_frame()
@@ -248,9 +248,9 @@ class CmdCenter(Archiver):
         pars = [self.state.par[key] for key in keys]
         pars = [item for sublist in pars for item in sublist]
         self.frame.append({"name": "par",         "type": "float_array",   "val": pars})
-        self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})        
-        self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})    
-        self.frame.append({"name": "time",        "type": "float",         "val": self.time()})      
+        self.frame.append({"name": "internal",    "type": "float_array",   "val": self.state.internal})
+        self.frame.append({"name": "zn",          "type": "complex_array", "val": self.state.zn})
+        self.frame.append({"name": "time",        "type": "float",         "val": self.time()})
 
         config.last_frame_time = self.time()
 
@@ -259,7 +259,7 @@ class CmdCenter(Archiver):
         ''' Execute code in the CmdEnv environment '''
 
         print code
-        
+
         if(self.app.record_events):
             self.recorded_events.push(self.time() - self.app.record_events, code)
 
@@ -311,7 +311,7 @@ class CmdCenter(Archiver):
 
         return self.state.t_speed * (self.abs_time() + self.state.t_phase)
 
-    
+
     def get_val(self, var, idx):
         return eval("self.%s[%s]" % (var, (((type(idx) == int) and "%s" or "'%s'") % idx)))
 
@@ -340,11 +340,11 @@ class CmdCenter(Archiver):
 
     def upload_webcam_frame(self):
         #if config.PIL_available: self.engine.load_aux(cv.adaptors.Ipl2PIL(cv.cvQueryFrame(self.camera)).convert("RGBA"))
-        if config.PIL_available:            
+        if config.PIL_available:
             cv_im = cv.QueryFrame(self.camera)
             pi = Image.fromstring("RGB", cv.GetSize(cv_im), cv_im.tostring())
             self.engine.load_aux(pi.convert("RGBA"))
-        
+
 
 
     def pars(self):
@@ -384,7 +384,7 @@ class CmdCenter(Archiver):
 
         self.interface.renderer.flash_message("saved state as %s_%s" % (self.app.app, name))
 
-        return name        
+        return name
 
 
     # needs some work - right now it only loads components, zn & par
@@ -395,12 +395,12 @@ class CmdCenter(Archiver):
 
         new_state = State(self.app.app, str(name))
         if(not new_state):
-            return False    
+            return False
 
         # if immediate, change switch time
         if(immediate):
             old_intrp_time = self.app.state_intrp_time
-            self.app.state_intrp_time = 0.000001            
+            self.app.state_intrp_time = 0.000001
 
         # stop paths, scripts & programs
         [path.stop() for path in self.state.paths]
@@ -426,7 +426,7 @@ class CmdCenter(Archiver):
         for path in new_state.paths:
             path.phase -= self.state.t_speed * (new_state.time + new_state.t_phase) / self.state.t_speed - self.state.time
             self.state.paths.append(path)
-            
+
         for program in new_state.programs:
             program.start()
             self.state.programs.append(program)
@@ -440,7 +440,7 @@ class CmdCenter(Archiver):
 
     def toggle_record(self):
         ''' Toggles event recording '''
-        
+
         if(not self.app.record_events):
             info("Recording script")
             self.app.record_events = self.time()
@@ -449,14 +449,14 @@ class CmdCenter(Archiver):
             self.record_state = State(self.state.app_name, self.state.save(self.state.name + "_record"))
 
             self.interface.renderer.flash_message("Recording script")
-        else:            
+        else:
             info("Saving recorded script")
             self.app.record_events = False
 
-            self.recorded_events.save()   
+            self.recorded_events.save()
             self.record_state.programs.append(self.recorded_events)
             self.record_state.save(self.record_state.name)
-            
+
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
             info("Saved state as %s" % (self.record_state.name))
             self.recorded_events = None
@@ -500,7 +500,7 @@ class CmdCenter(Archiver):
             self.state.bmp = 1.0 / (sum(lst) / (len(self.tempo_events) - 1)) * 60
             info("Tempo: %s bmp" % self.state.bmp)
 
-               
+
     def reset_zn(self):
         default = State(self.app.app)
         for i in xrange(len(default.zn)):
@@ -528,18 +528,18 @@ class CmdCenter(Archiver):
 #            debug("Already switching aux %d" % idx)
 #            return
         ofs = (int(round(cur)) == 0 and 1 or 0)
-        
+
 #        print "cur, ofs", cur, ofs
 
         # load image
         self.load_image(tex, 2 * idx + ofs)
-        
+
         # change
         if(spd == 0):
             self.state.par['_SEED_TEX_IDX'][idx] = ofs
         else:
             self.state.paths.append(Linear1D("par['_SEED_TEX_IDX']", idx, spd, {'s':1.0 - ofs, 'e':ofs, 'loop':False}))
-            
+
 
     def get_aux_name(self, idx):
         cur = self.state.par["_SEED_TEX_IDX"][idx]
@@ -564,17 +564,17 @@ class CmdCenter(Archiver):
 
         self.mp3_process = Popen(['mpg123', '--skip', str(num_frames), "media/audio/%s.mp3" % name])
 
-        
+
     def quit(self):
         self.app.exit = True
-        if self.mp3_process: self.mp3_process.terminate() 
+        if self.mp3_process: self.mp3_process.terminate()
         sys.exit(0)
 
 
     def programInterrupt(self):
         if not self.app.program_interrupt:
             return
-        
+
         self.last_interrupt = time.time()
 
         for program in self.state.programs:
@@ -582,14 +582,11 @@ class CmdCenter(Archiver):
 
         self.state.paths = []
 
-        
+
     def resumeMain(self):
         if not self.app.program_interrupt:
             return
-        
+
         if time.time() - self.last_interrupt > 5:
 #            self.run_program(Script('epimorphism', 'main_roses'))
             self.run_program(RandomMain({'interval': 120}))
-
-
-
