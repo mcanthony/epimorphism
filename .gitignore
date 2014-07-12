@@ -8,6 +8,7 @@
 *.jpg
 media/image/*.png
 media/archive/*
+media/video/*
 *.bcl
 __*.cu
 __*.cl
@@ -21,3 +22,4 @@ config/state/*save*
 sources/pypm/build/*
 .directory
 kernels/debug.cl
+*.mp4

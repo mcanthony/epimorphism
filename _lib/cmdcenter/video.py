@@ -41,7 +41,9 @@ class VideoRenderer(object):
             padded = "".join(["0" for i in xrange(digit_size - int(math.log10(self.frame_num + 1)) - 1)]) + str(self.frame_num)
 
             # save
-            image.convert("RGB").save("media/video/%s/%s.png" % (self.video_name, padded))
+            folder = "/media/gene/0CF49676F496622E1/tmp"
+            # folder = "media/video/
+            image.convert("RGB").save("%s/%s.png" % (folder, padded))
 
             # stop video if necessary
             if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):

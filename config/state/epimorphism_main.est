@@ -3,13 +3,13 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 1.0,
- 'aux': ['simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'], 
+ 'aux': ['simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'],
  'post_process': 'post_process',
  'frame_cnt': 0,
  'bpm': 120,
  'paths': [],
  'randomize_seed': True,
- 'programs': [Script('epimorphism', 'main_roses'), RandomMain({'interval': 120})],
+ 'programs': [Script('epimorphism', 'main_roses'), RandomMain({'interval': 90})],
  'camera_id': 1,
  'par_dim': 3,
  'components': {
@@ -111,7 +111,7 @@
  '_SEED_TEX_IDX':
  [0.0, 0.0, 0.0],
  '_SEED_TEX_SC':
- [1.0, 1.0, 1.0], 
+ [1.0, 1.0, 1.0],
  '_COLOR_PHI1':
  [1.0, 1.0, 1.0],
  '_COLOR_PSI1':
@@ -135,7 +135,7 @@
  '_COLOR_LEN_SC':
  [0.5, 0.5, 0.5],
  '_COLOR_LEN_SC_AMT':
- [1.0, 1.0, 1.0], 
+ [1.0, 1.0, 1.0],
  '_COLOR_18':
  [1.0, 1.0, 1.0],
  '_COLOR_19':

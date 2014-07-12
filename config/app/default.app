@@ -12,7 +12,7 @@
  'next_frame': False,
 
  'render_video': False,
- 'max_video_frames': 20,
+ 'max_video_frames': 200000,
  'video_frame_rate': 30.0,
  'fps_sync': False,
  'record_events': False,
