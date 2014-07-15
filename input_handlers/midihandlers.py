@@ -122,3 +122,6 @@ UC = [{(0, 7): ["state.zn",  '0',  "radius", (1.0, 1.0)],
        (6, 12) : ["state.par", 'self.state.par_idx("_SEED_W_THRESH")',  "val",    (0.6, 0.0)],
        (7, 12) : ["state.par", 'self.state.par_idx("_COLOR_DHUE")', "val",    (1.0, 0.0)],
        }]
+
+
+nanoKONTROL = []

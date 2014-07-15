@@ -19,7 +19,7 @@ ptx
 est
 config/state/*save*
 *.log
-sources/pypm/build/*
+_lib/sources/pypm/build/*
 .directory
 kernels/debug.cl
 media/video/*

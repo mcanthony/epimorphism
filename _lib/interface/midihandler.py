@@ -6,7 +6,7 @@ if(config.app and config.app.midi_enabled):
 
     from common.complex import *
 
-    from input_handlers.mididevices import *
+    from input_handlers.midihandlers import *
 
     from common.log import *
     set_log("MIDI")
@@ -35,6 +35,7 @@ if(config.app and config.app.midi_enabled):
                 interf,name,inp,outp,opened = pypm.GetDeviceInfo(i)
                 if(not re.compile("Midi Through Port|TiMidity").search(name)):
                     debug("ID: %d INTERFACE: %s NAME: %s %s OPENED? %s" % (i, interf, name, (inp == 1 and "INPUT" or "OUTPUT"), str(opened)))
+                print interf,name,inp,outp,opened
 
                 if(re.compile(self.app.midi_controller[0]).search(name) and inp == 1):
                     self.input_device = i
@@ -71,7 +72,8 @@ if(config.app and config.app.midi_enabled):
             self.bindings = eval(self.app.midi_controller[1])
 
             # send defaults
-            self.send_bindings()
+            if(self.app.midi_echo):
+                self.send_bindings()
 
 
         def output_binding(self, binding_id):
@@ -133,7 +135,7 @@ if(config.app and config.app.midi_enabled):
 
             # run loop
             while(True and self.app.midi_enabled):
- 
+
                 # sleep / exit
                 while(not self.midi_in.Poll() and not self.cmdcenter.app.exit):
                     time.sleep(0.01)
@@ -178,15 +180,14 @@ if(config.app and config.app.midi_enabled):
 
                 # change bindings - sortofHACK: buttons switch bindings
 
-                elif(channel >= 65 and channel <= 72):
+#                elif(channel >= 65 and channel <= 72):
 
-                    self.binding_idx = (channel - 65) % len(self.bindings)
-                    if val == 0 : self.binding_idx = 0
-                    self.send_bindings()
+#                    self.binding_idx = (channel - 65) % len(self.bindings)
+#                    if val == 0 : self.binding_idx = 0
+#                    self.send_bindings()
 
 #                elif(channel >= 33 and channel <= 40):
 #
 #                    self.binding_idx = (channel - 33) % len(self.bindings)
 #
 #                    self.send_bindings()
-
