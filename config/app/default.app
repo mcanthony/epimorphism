@@ -30,7 +30,7 @@
 
  'midi_enabled': False,
  'midi_echo': False,
- 'midi_controller': [],
+ 'midi_controller': ['nanoKONTROL', 'nanoKONTROL'],
  'midi_speed': 1.0,
  'last_midi_event': 0.0,
 
