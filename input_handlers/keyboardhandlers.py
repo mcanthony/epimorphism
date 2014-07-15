@@ -262,7 +262,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                     self.app.midi_speed = 0.5
 
             # change program
-            if(key == "\010"):
+            if(key == GLUT_KEY_F10):
                 self.cmdcenter.run_program(RandomMain({'interval': None}))
 
             elif(key == GLUT_KEY_F9):

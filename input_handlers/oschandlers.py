@@ -6,8 +6,12 @@ from interface.oschandler import *
 
 import OSC, re, time, os, copy
 
+import random
+
 from common.log import *
 set_log("OSCHandler")
+
+SPD = 0.54
 
 class DefaultOSCHandler(OSCHandler):
     def __init__(self):
@@ -15,11 +19,13 @@ class DefaultOSCHandler(OSCHandler):
                                 "/val_r_zn(\d+)$": self.val_r_zn,
                                 "/val_th_zn(\d+)$": self.val_th_zn,
                                 "/qnt_th_zn(\d+)$": self.qnt_th_zn,
+                                "/qnt_th_d_zn(\d+)$": self.qnt_th_d_zn,
                                 "/set_r_zn(\d+)$": self.val_r_zn,
                                 "/set_th_zn(\d+)$": self.val_th_zn,
                                 "/set_re_zn(\d+)$": self.val_re_zn,
                                 "/set_im_zn(\d+)$": self.val_im_zn,
                                 "/tex_send": self.tex_send,
+                                "/change_state": self.change_state,
                                 "/inc_tex_folder_(\d+)$": self.inc_tex_folder,
                                 "/inc_tex_name_(\d+)$": self.inc_tex_name,
                                 "/val_par_(\w+)_(\d+)$": self.val_par,
@@ -27,6 +33,9 @@ class DefaultOSCHandler(OSCHandler):
                                 "/inc_cmp_([a-zA-Z_]+)": self.inc_cmp,
                                 "/cmp_send": self.cmp_send,
                                 "/cmd_(\w+)": self.cmd}
+
+
+        self.idx = -1
 
         OSCHandler.__init__(self)
 
@@ -94,12 +103,29 @@ class DefaultOSCHandler(OSCHandler):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]
-        pi4 = 3.14159 / 4
+        pi4 = 3.14159 / 2
+        th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
+        th += data[0] * pi4
+        val = (r_to_p(old)[0], th)
+        spd = SPD
+        self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (idx, spd, r_to_p(old), val))
+        #self.cmdcenter.state.zn[idx] = p_to_r(val)
+
+
+    def qnt_th_d_zn(self, addr, tags, data, source):
+        self.log_event()
+        if(data[0] == -1000):
+            return
+        idx = int(re.search("(\d+)$", addr).groups()[0])
+        old = self.state.zn[idx]
+        pi4 = 3.14159
         th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
         th += data[0] * pi4;
         val = (r_to_p(old)[0], th)
-        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        spd = SPD
+        self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (idx, spd, r_to_p(old), val))
         #self.cmdcenter.state.zn[idx] = p_to_r(val)
+
 
     def inc_tex_folder(self, addr, tags, data, source):
         self.log_event()
@@ -192,6 +218,35 @@ class DefaultOSCHandler(OSCHandler):
         self.cmdcenter.componentmanager.switch_components(self.updated_components)
         self.updated_components = {}
 
+
+    def change_state(self, addr, tags, data, source):
+        if(data[0] == -1000):
+            return
+
+        # i = random.randint(0, 1)
+        self.idx = (self.idx + 1) % 3
+
+        i = self.idx
+
+        if(i == 0):
+            updated_components = {'T': 'expz(z)',  'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)'}
+            aux = ['simplegeom/grid_1.png', 'simplegeom/grid_2.png', 'simplegeom/grid_1.png']
+        elif(i == 1):
+            updated_components = {'T': 'coshz(z)',  'SEED_C0': 'simple_color(idx, fb, aux, z, seed, par, time)'}
+            aux = ['simplegeom/grid_2.png', 'simplegeom/grid_1.png', 'simplegeom/grid_2.png']
+        elif(i == 2):
+            updated_components = {'T': 'tanhz(z)+expz(z)',  'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)'}
+            aux = ['simplegeom/tile_hexagons1.png', 'simplegeom/grid_1.png', 'simplegeom/grid_2.png']
+
+
+        time = SPD
+
+        self.cmdcenter.cmd("app.state_intrp_time = %s" % time)
+        self.cmdcenter.cmd("switch_aux(0, '%s', %s)" % (aux[0], time))
+        self.cmdcenter.cmd("switch_aux(1, '%s', %s)" % (aux[1], time))
+        self.cmdcenter.cmd("switch_aux(2, '%s', %s)" % (aux[2], time))
+
+        self.cmdcenter.cmd("switch_components(%s)" % updated_components)
 
     def cmd(self, addr, tags, data, source):
         self.log_event()

@@ -175,6 +175,10 @@ class CmdCenter(Archiver):
             random.seed(self.state.time + self.state.t_phase)
 
         # start modules - DOESN'T RETURN
+
+        if(self.app.toggle_record):
+            self.toggle_record()
+
         self.engine.start()
         self.interface.start()
 
@@ -304,7 +308,6 @@ class CmdCenter(Archiver):
 
         if(self.app.fps_sync):
             t = self.state.frame_cnt / float(self.app.fps_sync)
-            print "setting time to %f" % t
             return t
         else:
             return time.time() - self.t_start
@@ -450,7 +453,7 @@ class CmdCenter(Archiver):
             self.app.record_events = self.time()
             self.recorded_events = Script()
 
-            self.record_state = State(self.state.app_name, self.state.save(self.state.name + "_record"))
+            self.record_state = State(self.state.app_name, self.state.save(self.state.name + "_record_aaa"))
 
             self.interface.renderer.flash_message("Recording script")
         else:

@@ -16,6 +16,7 @@
  'video_frame_rate': 30.0,
  'fps_sync': False,
  'record_events': False,
+ 'toggle_record': False,
 
  'component_level': 'FULL',
  'state_intrp_time': 4.0,

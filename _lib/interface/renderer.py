@@ -66,14 +66,14 @@ class Renderer(object):
         glShadeModel(GL_SMOOTH)
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glClearDepth(1.0)			
-        glDepthFunc(GL_LESS)			
-        glEnable(GL_DEPTH_TEST)			
+        glClearDepth(1.0)
+        glDepthFunc(GL_LESS)
+        glEnable(GL_DEPTH_TEST)
 
         # quadric
         self.quad = gluNewQuadric()
         gluQuadricNormals(self.quad, GLU_SMOOTH)
-	gluQuadricTexture(self.quad, GL_TRUE)        
+	gluQuadricTexture(self.quad, GL_TRUE)
 
         # fps data
         self.frame_count = 0.0
@@ -93,7 +93,7 @@ class Renderer(object):
         self.have_image.set()
 
         self.image = None
-        
+
 
     def __del__(self):
         info("Deleting Renderer")
@@ -150,23 +150,24 @@ class Renderer(object):
         else:
             glOrtho(-1.0, 1.0, -1.0, 1.0, -1.0, 1.0)
         glMatrixMode(GL_MODELVIEW)
-        
-        # create echo font 
+
+        # create echo font
         if config.PIL_available and not config.is_windows:
             self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
             self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
             self.fps_font_size = 20
             self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
 
-        
+
     def grab_image(self):
         if not config.PIL_available:
             warning("PIL is not available")
             return None
 
         info("Grabbing pixels")
-        #self.have_image.clear()
-        #self.have_image.wait()
+        if(not self.app.render_video):
+            self.have_image.clear()
+            self.have_image.wait()
         return self.image
 
 
@@ -217,7 +218,7 @@ class Renderer(object):
 
         self.frame_count += 1
         # compute frame rate
-        if(self.frame_count % 60 == 0):            
+        if(self.frame_count % 60 == 0):
             cur_time = glutGet(GLUT_ELAPSED_TIME)
             self.fps = (cur_time - self.d_timebase) / 60.0
             self.d_timebase = cur_time
@@ -232,11 +233,11 @@ class Renderer(object):
         glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glLoadIdentity();			
+	glLoadIdentity();
         if(self.state.render_mode == 'Sphere'):
             glTranslatef(0, 0, -1.0 * self.app.viewport[2])
-            glRotatef(100.0 * self.state.sphere_rot[0], 1.0,0.0,0.0)                      	
-            glRotatef(100.0 * self.state.sphere_rot[1], 0.0,1.0,0.0)                      	
+            glRotatef(100.0 * self.state.sphere_rot[0], 1.0,0.0,0.0)
+            glRotatef(100.0 * self.state.sphere_rot[1], 0.0,1.0,0.0)
 
             gluSphere(self.quad, 1.3, 256, 256);
 
@@ -258,7 +259,7 @@ class Renderer(object):
             glVertex3f(1.0, 1.0, 0)
             glTexCoord2f(x0, y1)
             glVertex3f(-1.0, 1.0, 0)
-            glEnd()    
+            glEnd()
 
         # render console
         if(self.show_console):
@@ -274,7 +275,6 @@ class Renderer(object):
 
         # grab image
         if(not self.have_image.isSet()):
-            debug("internal grab image")
             glBindBuffer(GL_ARRAY_BUFFER, self.pbo_ptr)
             #self.pixels = glReadPixelsb(0, 0, self.app.kernel_dim, self.app.kernel_dim, GL_RGBA)
             pixels = glMapBuffer(GL_ARRAY_BUFFER, GL_READ_ONLY)
@@ -369,7 +369,3 @@ class Renderer(object):
         self.app.echo = not self.app.echo
 
         info("Toggle echo %s", str(self.app.echo))
-
-
-
-
