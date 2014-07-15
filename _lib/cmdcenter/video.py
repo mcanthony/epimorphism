@@ -40,13 +40,13 @@ class VideoRenderer(object):
 
             # pad frame_num
             digit_size = 5
-            padded = "".join(["0" for i in xrange(digit_size - int(math.log10(self.frame_num + 1)) - 1)]) + str(self.frame_num)
+            padded = "".join(["0" for i in xrange(digit_size - int(math.log10(self.frame_num)) - 1)]) + str(self.frame_num)
 
             # save
             image.convert("RGB").save("media/video/%s/%s.png" % (self.video_name, padded))
 
             print "after save"
-            
+
             # stop video if necessary
             if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):
                 self.stop_video(True)

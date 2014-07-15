@@ -24,3 +24,7 @@ _lib/sources/pypm/build/*
 kernels/debug.cl
 media/video/*
 *.mp4
+media/backup
+ffmpeg
+config/script/epimorphism_save*
+

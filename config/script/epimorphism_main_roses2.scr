@@ -1,5 +1,5 @@
 {
- 'name':'main_roses',
+ 'name':'main_roses2',
  'data':{
  'phase':0,
  'events':[
@@ -30,7 +30,7 @@
  {'cmd':"state.paths.append(Linear1D(\"par['_PC3_HUE']\", 0, 150, {'s':0.0, 'e':1.0, 'loop':True}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_PC3_SPREAD']\", 0, 225, {'a':0.35, 'b':0.5, 'th':0.5}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D(\"par['_PC3_LGV']\", 0, 300, {'a':0.125, 'b':0.5, 'th':0.5}))", 'time':0.0},
- {'cmd':"state.paths.append(Wave1D('sphere_rot', 0, 100, {'a':2.0, 'b':0.0, 'th':0.0}))", 'time':0.0},
+  {'cmd':"state.paths.append(Wave1D('sphere_rot', 0, 100, {'a':2.0, 'b':0.0, 'th':0.0}))", 'time':0.0},
  {'cmd':"state.paths.append(Wave1D('sphere_rot', 1, 150, {'a':3.0, 'b':0.0, 'th':0.0}))", 'time':0.0}
  ]}
 }

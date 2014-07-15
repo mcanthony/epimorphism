@@ -66,7 +66,7 @@ class ComponentManager(object):
         new_component = components[idx % len(components)]
         if(return_result):
             return new_component[0]
-        
+
         # switch component
         self.switch_components({name: new_component[0]})
 
@@ -74,10 +74,12 @@ class ComponentManager(object):
     def switch_component(self, component, val):
         self.switch_components({component: val})
 
-        
+
     def switch_components(self, data, callback=None):
         ''' Switches the system to the new components specified in data '''
         info("Switching components: %s" % str(data))
+
+        print "                START SWITCHING                    "
 
 #        self.cmdcenter.freeze=True
         self.switching_components = True
@@ -95,12 +97,14 @@ class ComponentManager(object):
 
             idx_idx = self.datamanager.component_names.index(component_name)
 
-            intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)        
+            intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)
 
             self.state.components[component_name] = intrp
 
         # compile engine
+        print "                COMPILE                    "
         self.engine.compile(callback)
+        print "              DONE COMPILE                 "
 
         # set internal values
         for component_name, val in data.items():
@@ -112,11 +116,17 @@ class ComponentManager(object):
         self.cmdcenter.block_for(self.app.state_intrp_time)
         for k,v in data.items():
             self.state.components[k] = v
-        
+
+
+
+        print "              DONE BLOCK                 "
+
         # recompile without interpolation
         self.engine.compile()
-        
-        print "done switching"
+
+        print "              DONE RECOMPILE                 "
+
+        print "              DONE SWITCHING                "
         self.switching_components = False
 
             #self.cmdcenter.freeze=False
