@@ -216,7 +216,8 @@ class CmdCenter(Archiver):
 
 
         # execute interface
-        self.interface.renderer.have_image.clear()
+        if(self.app.render_video):
+            self.interface.renderer.have_image.clear()
         self.interface.do()
 
         # capture video frames
