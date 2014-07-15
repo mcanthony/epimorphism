@@ -171,9 +171,12 @@ if(config.app and config.app.midi_enabled):
                     old = self.cmdcenter.get_val(binding[0], eval(binding[1]))
                     val = eval("set_" + binding[2])(old, f)
                     #print old, val, str(binding[1])
-                    # HACK to smoothen valuesx
+                    # HACK to smoothen values
                     if(binding[2] == "radius" or binding[2] == "th"):
-                        self.cmdcenter.radial_2d('state.zn', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, r_to_p(old), r_to_p(val))
+                        #self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (binding[1], self.app.midi_speed / 4, r_to_p(old), r_to_p(val)))
+
+                        self.cmdcenter.radial_2d('zn', binding[1], self.app.midi_speed / 8, r_to_p(old), r_to_p(val))
+                        #self.cmdcenter.radial_2d('state.zn', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, r_to_p(old), r_to_p(val))
                     else:
                         self.cmdcenter.linear_1d('state.par', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, old, val)
 
