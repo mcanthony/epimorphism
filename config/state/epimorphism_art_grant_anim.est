@@ -1,0 +1,164 @@
+{'app_name': 'epimorphism',
+ 'name': 'art_grant_anim',
+ 'VERSION': 1.0,
+ 'time': 0.0,
+ 't_speed': 1.0,
+ 'aux': ['simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'],
+ 'post_process': 'post_process',
+ 'frame_cnt': 0,
+ 'bpm': 120,
+ 'paths': [],
+ 'randomize_seed': True,
+ 'programs': [Script('epimorphism', 'main_roses'), RandomMain({'interval': 30})],
+ 'camera_id': 1,
+ 'par_dim': 3,
+ 'components': {
+ 'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
+ 'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
+ 'SEED_W0': 'lines_inner(idx, z, par)',
+ 'SEED_WT0': 'wt_id(idx, w)',
+ 'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+ 'SEED_A0': 'solid_alpha(idx, w, res, par)',
+ 'SEED1': 'seed_id(idx, frame, z, fb, aux, par, internal, zn, time)',
+ 'SEED_W1': 'lines_box(idx, z, par)',
+ 'SEED_WT1': 'wt_id(idx, w)',
+ 'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+ 'SEED_A1': 'id_alpha(idx, w, res, par)',
+ 'SEED2': 'seed_id(idx, frame, z, fb, aux, par, internal, zn, time)',
+ 'SEED_W2': 'lines_box(idx, z, par)',
+ 'SEED_WT2': 'wt_id(idx, w)',
+ 'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+ 'SEED_A2': 'id_alpha(idx, w, res, par)',
+ 'T': 'z',
+ 'T_SEED': 'sinh(z)',
+ 'T_SEED0': 'z',
+ 'T_SEED1': 'expz(z)',
+ 'T_SEED2': 'coshz(z)',
+ 'COLOR': 'rotate_hsls(v, z_z, par, time)',
+ 'REDUCE': 'torus_reduce(z)',
+ 'RESET': 'reset_black(x, y, par)',
+ 'POST': 'post_colors3(v, par, time)'
+ },
+ 'zn': [(0.0+1.0j),
+ (1.0+0.0j),
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (1.0+0j),
+ 0j,
+ (0.0+1.0j),
+ (1.0+0.0j),
+ (1.0+0j),
+ 0j
+ ],
+ 'internal': [0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0,
+ 0.0],
+ 'par': {
+ '_SEED_W':
+ [0.1, 0.1, 0.1],
+ '_SEED_W_BASE':
+ [0.0, 0.0, 0.0],
+ '_SEED_W_MIN':
+ [0.0, 0.0, 0.0],
+ '_SEED_COLOR_A':
+ [1.0, 1.0, 1.0],
+ '_SEED_COLOR_S':
+ [1.0, 1.0, 1.0],
+ '_SEED_COLOR_V':
+ [1.0, 1.0, 1.0],
+ '_SEED_C_TH_EFF':
+ [0.0, 0.0, 0.0],
+ '_SEED_CIRCLE_R':
+ [0.5, 0.5, 0.5],
+ '_SEED_GRID_N':
+ [0.5, 0.5, 0.5],
+ '_SEED_COLOR_SPEED':
+ [0.0, 0.0, 0.0],
+ '_SEED_COLOR_DHUE':
+ [0.0, 0.3333, 0.6666],
+ '_SEED_TEX_IDX':
+ [0.0, 0.0, 0.0],
+ '_SEED_TEX_SC':
+ [1.0, 1.0, 1.0],
+ '_COLOR_PHI1':
+ [1.0, 1.0, 1.0],
+ '_COLOR_PSI1':
+ [0.0, 0.0, 0.0],
+ '_COLOR_PHI2':
+ [0.0, 0.0, 0.0],
+ '_COLOR_PSI2':
+ [0.0, 0.0, 0.0],
+ '_COLOR_BASE_PHI':
+ [0.0, 0.0, 0.0],
+ '_COLOR_BASE_PSI':
+ [0.0, 0.0, 0.0],
+ '_COLOR_BASE_R':
+ [1.0, 1.0, 1.0],
+ '_COLOR_BASE_I':
+ [0.9, 0.9, 0.9],
+ '_COLOR_I':
+ [0.9, 0.9, 0.9],
+ '_COLOR_DHUE':
+ [0.5, 0.5, 0.5],
+ '_COLOR_LEN_SC':
+ [0.5, 0.5, 0.5],
+ '_COLOR_LEN_SC_AMT':
+ [1.0, 1.0, 1.0],
+ '_COLOR_18':
+ [1.0, 1.0, 1.0],
+ '_COLOR_19':
+ [0.0, 0.0, 0.0],
+ '_COLOR_TH_EFF':
+ [0.0, 0.0, 0.0],
+ '_COLOR_SPEED_TH':
+ [0.0, 0.0, 0.0],
+ '_COLOR_RESET_Z':
+ [0.5, 0.5, 0.5],
+ '_GAMMA':
+ [2.0, 2.0, 2.0],
+ '_CULL_DEPTH':
+ [0.0, 0.0, 0.0],
+  '_PC3_HUE':
+ [0.33, 0.33, 0.33],
+ '_PC3_SPREAD':
+ [0.5, 0.5, 0.5],
+ '_PC3_LGV':
+ [0.5, 0.5, 0.5]
+ }}
