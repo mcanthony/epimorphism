@@ -222,31 +222,84 @@ class DefaultOSCHandler(OSCHandler):
     def change_state(self, addr, tags, data, source):
         if(data[0] == -1000):
             return
-
-        # i = random.randint(0, 1)
-        self.idx = (self.idx + 1) % 3
-
-        i = self.idx
+        # i = random.randint(0, 2)
+        self.idx = (self.idx + 1) % 2
+        i = 1#self.idx
 
         if(i == 0):
-            updated_components = {'T': 'expz(z)',  'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)'}
-            aux = ['simplegeom/grid_1.png', 'simplegeom/grid_2.png', 'simplegeom/grid_1.png']
+            updated_components = {
+                'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
+                'SEED0': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
+                'SEED_W0': 'lines_box(idx, z, par)',
+                'SEED_WT0': 'wt_id(idx, w)',
+                'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_A0': 'solid_alpha(idx, w, res, par)',
+                'SEED1': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
+                'SEED_W1': 'nothing(idx, z, par)',
+                'SEED_WT1': 'wt_id(idx, w)',
+                'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_A1': 'id_alpha(idx, w, res, par)',
+                'SEED2': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
+                'SEED_W2': 'nothing(idx, z, par)',
+                'SEED_WT2': 'wt_id(idx, w)',
+                'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_A2': 'id_alpha(idx, w, res, par)',
+                'T': 'sinhz(z)',
+                'T_SEED': 'sinhz(z)',
+                'T_SEED0': 'z',
+                'T_SEED1': 'z',
+                'T_SEED2': 'z',
+                'COLOR': 'rotate_hsls(v, z_z, par, time)',
+                'REDUCE': 'torus_reduce(z)',
+                'RESET': 'reset_hsls(x, y, par)',
+                'POST': 'post_gamma(v, par, time)'
+            }
+
+            aux = ['simplegeom/tile_rainbow1.png', 'simplegeom/tile_rainbow1.png', 'simplegeom/tile_rainbow1.png']
+            par = {('_SEED_TEX_SC', 0) : 0.4}
         elif(i == 1):
-            updated_components = {'T': 'coshz(z)',  'SEED_C0': 'simple_color(idx, fb, aux, z, seed, par, time)'}
-            aux = ['simplegeom/grid_2.png', 'simplegeom/grid_1.png', 'simplegeom/grid_2.png']
+            updated_components = {
+                'T': 'tanhz(z) +tanz(z)',
+                'T_SEED': '$l - 0.5f * (sqz(z) + expz(z))',
+                'SEED_C0': 'tex_color(idx,fb,aux,z,seed,par,time)',
+                'SEED_C1': 'tex_color(idx,fb,aux,z,seed,par,time)',
+                'SEED_C2': 'tex_color(idx,fb,aux,z,seed,par,time)',
+                'SEED': 'seed_multi(0,frame,z,fb,aux,par,internal,zn,time)',
+                'SEED_A2': 'id_alpha(idx,w,res,par)',
+                'SEED_A0': 'solid_alpha(idx,w,res,par)',
+                'SEED_A1': 'id_alpha(idx,w,res,par)',
+                'POST': 'post_colors3(v,par,time)',
+                'SEED_WT1': 'wt_id(idx,w)',
+                'SEED_WT0': 'wt_id(idx,w)',
+                'SEED_WT2': 'wt_id(idx,w)',
+                'COLOR': 'gbr_id(v,z_z,par,time)',
+                'T_SEED2': 'sinz(z)+expz(z)',
+                'T_SEED1': 'sinz(z)',
+                'T_SEED0': 'z',
+                'SEED0': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
+                'SEED1': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
+                'SEED2': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
+                'SEED_W0': 'lines_box_stag(idx,z,par)',
+                'SEED_W1': 'lines_box_stag(idx,z,par)',
+                'SEED_W2': 'nothing(idx,z,par)'
+                }
+
+
+            aux = ['misc/tile_vector1.png', 'flowers/flowers6.png', 'flowers/flowers6.png']
+            par = {
+                ('_SEED_TEX_SC', 0) : 0.6016483306884766,
+                ('_SEED_TEX_SC', 1) : 0.4532966911792755
+            }
         elif(i == 2):
             updated_components = {'T': 'tanhz(z)+expz(z)',  'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)'}
             aux = ['simplegeom/tile_hexagons1.png', 'simplegeom/grid_1.png', 'simplegeom/grid_2.png']
+            par = {}
 
 
         time = SPD
 
         self.cmdcenter.cmd("app.state_intrp_time = %s" % time)
-        self.cmdcenter.cmd("switch_aux(0, '%s', %s)" % (aux[0], time))
-        self.cmdcenter.cmd("switch_aux(1, '%s', %s)" % (aux[1], time))
-        self.cmdcenter.cmd("switch_aux(2, '%s', %s)" % (aux[2], time))
-
-        self.cmdcenter.cmd("switch_components(%s)" % updated_components)
+        self.cmdcenter.cmd("switch_components_all(%s, %s, '%s', '%s', '%s')" % (updated_components, par, aux[0], aux[1], aux[2]))
 
     def cmd(self, addr, tags, data, source):
         self.log_event()
