@@ -75,6 +75,27 @@ class ComponentManager(object):
         self.switch_components({component: val})
 
 
+    def switch_components_all(self, data, par, aux0, aux1, aux2):
+        self.aux0 = aux0
+        self.aux1 = aux1
+        self.aux2 = aux2
+        self.par  = par
+        self.switch_components(data, self.update_all)
+
+
+    def update_all(self):
+        self.cmdcenter.switch_aux(0, self.aux0, self.app.state_intrp_time)
+        self.cmdcenter.switch_aux(1, self.aux1, self.app.state_intrp_time)
+        self.cmdcenter.switch_aux(2, self.aux2, self.app.state_intrp_time)
+
+        for k,v in self.par.items():
+            old = self.state.par[k[0]][k[1]]
+            #self.state.paths.append(Linear1D("par['%s']" % k[0], k[1], self.app.midi_speed, {'a':old, 'b':v, 'th':0.0}))
+            #print "par['%s']" % k[0]
+            self.cmdcenter.linear_1d("par['%s']" % k[0], k[1], self.app.midi_speed, old, v)
+
+
+
     def switch_components(self, data, callback=None):
         ''' Switches the system to the new components specified in data '''
         info("Switching components: %s" % str(data))
