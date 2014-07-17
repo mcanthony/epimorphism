@@ -222,10 +222,11 @@ class DefaultOSCHandler(OSCHandler):
     def change_state(self, addr, tags, data, source):
         if(data[0] == -1000):
             return
-        # i = random.randint(0, 2)
-        self.idx = (self.idx + 1) % 2
-        i = 1#self.idx
-
+        i = random.randint(0, 5)
+        #self.idx = (self.idx + 1) % 5
+        #i = self.idx
+        #print i
+        par = {}
         if(i == 0):
             updated_components = {
                 'SEED': 'seed_multi(0, frame, z, fb, aux, par, internal, zn, time)',
@@ -238,12 +239,12 @@ class DefaultOSCHandler(OSCHandler):
                 'SEED_W1': 'nothing(idx, z, par)',
                 'SEED_WT1': 'wt_id(idx, w)',
                 'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
-                'SEED_A1': 'id_alpha(idx, w, res, par)',
+                'SEED_A1': 'solid_alpha(idx, w, res, par)',
                 'SEED2': 'seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)',
                 'SEED_W2': 'nothing(idx, z, par)',
                 'SEED_WT2': 'wt_id(idx, w)',
                 'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
-                'SEED_A2': 'id_alpha(idx, w, res, par)',
+                'SEED_A2': 'solid_alpha(idx, w, res, par)',
                 'T': 'sinhz(z)',
                 'T_SEED': 'sinhz(z)',
                 'T_SEED0': 'z',
@@ -256,45 +257,82 @@ class DefaultOSCHandler(OSCHandler):
             }
 
             aux = ['simplegeom/tile_rainbow1.png', 'simplegeom/tile_rainbow1.png', 'simplegeom/tile_rainbow1.png']
-            par = {('_SEED_TEX_SC', 0) : 0.4}
+
         elif(i == 1):
+            aux = ['psych/psych_7.png', 'simplegeom/tile_grid3.png', 'simplegeom/tile_grid1.png']
             updated_components = {
-                'T': 'tanhz(z) +tanz(z)',
-                'T_SEED': '$l - 0.5f * (sqz(z) + expz(z))',
-                'SEED_C0': 'tex_color(idx,fb,aux,z,seed,par,time)',
-                'SEED_C1': 'tex_color(idx,fb,aux,z,seed,par,time)',
-                'SEED_C2': 'tex_color(idx,fb,aux,z,seed,par,time)',
-                'SEED': 'seed_multi(0,frame,z,fb,aux,par,internal,zn,time)',
-                'SEED_A2': 'id_alpha(idx,w,res,par)',
-                'SEED_A0': 'solid_alpha(idx,w,res,par)',
-                'SEED_A1': 'id_alpha(idx,w,res,par)',
-                'POST': 'post_colors3(v,par,time)',
-                'SEED_WT1': 'wt_id(idx,w)',
-                'SEED_WT0': 'wt_id(idx,w)',
-                'SEED_WT2': 'wt_id(idx,w)',
-                'COLOR': 'gbr_id(v,z_z,par,time)',
-                'T_SEED2': 'sinz(z)+expz(z)',
-                'T_SEED1': 'sinz(z)',
-                'T_SEED0': 'z',
-                'SEED0': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
-                'SEED1': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
-                'SEED2': 'seed_multi_wca(idx,frame,z,fb,aux,par,internal,zn,time)',
-                'SEED_W0': 'lines_box_stag(idx,z,par)',
-                'SEED_W1': 'lines_box_stag(idx,z,par)',
-                'SEED_W2': 'nothing(idx,z,par)'
-                }
-
-
-            aux = ['misc/tile_vector1.png', 'flowers/flowers6.png', 'flowers/flowers6.png']
-            par = {
-                ('_SEED_TEX_SC', 0) : 0.6016483306884766,
-                ('_SEED_TEX_SC', 1) : 0.4532966911792755
+                'T': '0.5f * (z + sinhz(z))',
+                'T_SEED': 'cosz(z) - sinhz(z)',
+                'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'POST': 'post_gamma(v, par, time)',
+                'COLOR': 'rotate_hsls(v, z_z, par, time)',
+                'T_SEED2': 'z',
+                'T_SEED1': 'cosz(z)',
+                'T_SEED0': 'expz(z)',
+                'SEED_W0': 'lines_box(idx, z,par)',
+                'SEED_W1': 'lines_lr(idx,z, par)',
+                'SEED_W2': 'nothing(idx, z, par)'
             }
-        elif(i == 2):
-            updated_components = {'T': 'tanhz(z)+expz(z)',  'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)'}
-            aux = ['simplegeom/tile_hexagons1.png', 'simplegeom/grid_1.png', 'simplegeom/grid_2.png']
-            par = {}
 
+        elif(i == 2):
+            aux = ['simplegeom/tile_rainbow1.png','misc/tile_vector1.png','simplegeom/tile_grid1.png']
+            updated_components = {
+                'T_SEED': 'cosz(z) - sinhz(z)',
+                'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'T': 'sinhz(z)',
+                'POST': 'post_gamma(v, par, time)',
+                'COLOR': 'rotate_hsls(v, z_z, par, time)',
+                'T_SEED2': 'z',
+                'T_SEED1': 'cosz(z)',
+                'T_SEED0': 'expz(z)',
+                'SEED_W0': 'lines_box(idx, z, par)',
+                'SEED_W1': 'lines_lr(idx, z, par)',
+                'SEED_W2': 'nothing(idx, z, par)'
+            }
+        elif(i == 3):
+            aux = ['simplegeom/tile_grid3.png', 'misc/tile_vector2.png', 'flowers/flowers7.png']
+            updated_components = {
+                'T_SEED': '0.5f * (z + sqz(z))',
+                'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'T': '0.5f * (sinz(z) + tanz(z))',
+                'POST': 'post_gamma(v, par, time)',
+                'COLOR': 'rotate_hsv(v, z_z, par, time)',
+                'T_SEED2': 'z',
+                'T_SEED1': 'sinh(z)',
+                'T_SEED0': 'z',
+                'SEED_W0': 'lines_box(idx, z, par)',
+                'SEED_W1': 'lines_inner(idx, z, par)',
+                'SEED_W2': 'lines_box_stag(idx, z, par)'
+            }
+        elif(i == 4):
+            aux = ['simplegeom/tile_rainbow2.png', 'simplegeom/tile_grid2.png', 'psych/psych_7.png']
+            updated_components = {
+                'T': '0.5f * (z + expz(z))',
+                'T_SEED': '0.5f * (sinz(z) + cosz(z) )',
+                'SEED_C0': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C1': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'SEED_C2': 'tex_color(idx, fb, aux, z, seed, par, time)',
+                'POST': 'post_gamma(v, par, time)',
+                'COLOR': 'bgr_id(v, z_z, par, time)',
+                'T_SEED2': 'cosz(z)',
+                'T_SEED1': 'sinh(z)',
+                'T_SEED0': 'sinh(z)',
+                'SEED_W0': 'lines_box(idx, z, par)',
+                'SEED_W1': 'lines_inner(idx, z, par)',
+                'SEED_W2': 'lines_box_stag(idx, z, par)'
+            }
+
+        elif(i == 5):
+            aux = []
+            updated_components = {
+
+            }
 
         time = SPD
 

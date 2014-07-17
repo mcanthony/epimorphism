@@ -19,7 +19,7 @@ class Compiler():
 
         self.ctx, self.callback = ctx, callback
         self.substitutions = {"KERNEL_DIM": self.app.kernel_dim}
-        self.program = None        
+        self.program = None
 
     def compile(self, internal_callback=None):
         ''' Executes the main Compiler sequence '''
@@ -29,8 +29,8 @@ class Compiler():
         debug_out = open("kernels/debug.cl", "w")
         debug_out.write("".join(contents))
         debug_out.close()
-        
-        try:            
+
+        try:
             self.program = clCreateProgramWithSource(self.ctx, contents)
             #self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros", callback=create_build_callback(self.callback))
             self.program.build("-Ikernels -I_lib/cl -cl-mad-enable -cl-no-signed-zeros")
@@ -39,19 +39,19 @@ class Compiler():
             print e
             sys.exit(0)
 
-        info("Done Compiling")            
+        info("Done Compiling")
         if internal_callback:
             internal_callback()
             time.sleep(0.1) # mad ghetto
-            
-        self.callback(self.program, None)            
+
+        self.callback(self.program, None)
 #        self.cmdcenter.cmd("state.t_phase -= %f" % (t1 - config.last_frame_time))
 
 
     def get_definitions(self):
         ''' Turn substutions into defines '''
 
-        info("Getting definitions")        
+        info("Getting definitions")
 
         definitions = "#define _EPI_\n"
 
@@ -69,11 +69,14 @@ class Compiler():
             if(v and v != ""):
                 definitions += "#define $%s$ %s\n" % (k, v)
 
-        # bind PAR_NAMES        
+        print self.substitutions, "\n\n\n\n"
+
+
+        # bind PAR_NAMES
         keys = self.state.par.keys()
         keys.sort()
         for i, k in enumerate(keys):
-            definitions += "#define %s(idx) par[%d * %d + idx]\n" % (k, self.state.par_dim, i)            
+            definitions += "#define %s(idx) par[%d * %d + idx]\n" % (k, self.state.par_dim, i)
 
         if not self.state.aux is None:
             definitions += "#define _NUM_AUX %d\n" % len(self.state.aux)
