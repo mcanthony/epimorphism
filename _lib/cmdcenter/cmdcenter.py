@@ -458,7 +458,12 @@ class CmdCenter(Archiver):
             self.app.record_events = self.time()
             self.recorded_events = Script()
 
-            self.record_state = State(self.state.app_name, self.state.save(self.state.name + "_record_aaa"))
+            i = 0
+            while(os.path.exists("config/state/%s_%s_record%d.est" % (self.state.app_name, self.state.name, i))):
+                i += 1
+
+            new_name = "%s_record%d" % (self.state.name, i)
+            self.record_state = State(self.state.app_name, self.state.save(new_name))
 
             self.interface.renderer.flash_message("Recording script")
         else:
@@ -466,7 +471,7 @@ class CmdCenter(Archiver):
             self.app.record_events = False
 
             self.recorded_events.save()
-            self.record_state.programs.append(self.recorded_events)
+            self.record_state.programs = [self.recorded_events]#.append(self.recorded_events)
             self.record_state.save(self.record_state.name)
 
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))

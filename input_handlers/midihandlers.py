@@ -124,12 +124,11 @@ UC = [{(0, 7): ["state.zn",  '0',  "radius", (1.0, 1.0)],
        }]
 
 
-nanoKONTROL = [{(0,2): ["state.zn", '0', "radius", (0.7, 0.7)],
-                (0,3): ["state.zn", '2', "radius", (0.7, 0.7)],
-                (0,4): ["state.zn", '16', "radius", (0.7, 0.7)],
-                (0,5): ["state.zn", '18', "radius", (0.7, 0.7)],
-                (0,6): ["state.zn", '17', "radius", (1.0, 0.0)],
-                (0,8): ["state.zn", '19', "radius", (1.0, 0.0)],
-                (0,16): ["state.zn", '16', "th",     (3.14, 0.0)]
-
-            }]
+nanoKONTROL = [{
+    (0,2): ["state.zn", '16', "radius", (0.7, 0.7)],
+    (0,3): ["state.zn", '18', "radius", (0.7, 0.7)],
+    (0,4): ["state.zn", '17', "radius", (1.0, 0.0)],
+    (0,5): ["state.zn", '19', "radius", (1.0, 0.0)],
+    (0,6): ["state.zn", '0', "radius", (0.7, 0.7)],
+    (0,8): ["state.zn", '2', "radius", (0.7, 0.7)]
+}]
