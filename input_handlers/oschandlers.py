@@ -118,11 +118,11 @@ class DefaultOSCHandler(OSCHandler):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]
-        pi4 = 3.14159
+        pi4 = 3.14159 / 2
         th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
         th += data[0] * pi4;
         val = (r_to_p(old)[0], th)
-        spd = SPD
+        spd = SPD * 2
         self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (idx, spd, r_to_p(old), val))
         #self.cmdcenter.state.zn[idx] = p_to_r(val)
 
@@ -222,9 +222,9 @@ class DefaultOSCHandler(OSCHandler):
     def change_state(self, addr, tags, data, source):
         if(data[0] == -1000):
             return
-        i = random.randint(0, 5)
-        #self.idx = (self.idx + 1) % 5
-        #i = self.idx
+        #i = random.randint(0, 4)
+        self.idx = (self.idx + 1) % 5
+        i = self.idx
         #print i
         par = {}
         if(i == 0):
