@@ -32,7 +32,7 @@
  'midi_enabled': False,
  'midi_echo': False,
  'midi_controller': ['nanoKONTROL', 'nanoKONTROL'],
- 'midi_speed': 1.0,
+ 'midi_speed': 0.001,
  'last_midi_event': 0.0,
 
  'OSC_enabled': False,
