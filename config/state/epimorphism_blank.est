@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 1.0,
- 'aux': ['simplegeom/tile_rainbow1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'],
+ 'aux': ['ponies/ponies_11.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'],
  'post_process': 'post_process',
  'frame_cnt': 0,
  'bpm': 120,
@@ -39,7 +39,7 @@
  'RESET': 'reset_hsls(x, y, par)',
  'POST': 'post_colors3(v, par, time)'
  },
- 'zn': [(1.0 + 0.0j),
+ 'zn': [(1.2 + 0.0j),
  (0.0+0.0j),
  (1.0+0j),
  0j,
@@ -92,7 +92,7 @@
  0.0],
  'par': {
  '_SEED_W':
- [0.1, 0.1, 0.1],
+ [0.3, 0.3, 0.3],
  '_SEED_W_BASE':
  [0.0, 0.0, 0.0],
  '_SEED_W_MIN':
@@ -116,7 +116,7 @@
  '_SEED_TEX_IDX':
  [0.0, 0.0, 0.0],
  '_SEED_TEX_SC':
- [0.45, 0.8, 0.8],
+ [0.8, 0.8, 0.8],
  '_COLOR_PHI1':
  [1.0, 1.0, 1.0],
  '_COLOR_PSI1':

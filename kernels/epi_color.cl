@@ -17,7 +17,7 @@ _EPI_ float4 gbr_id(float4 v, float2 z_z, __constant float* par, float time){
 
 _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time){
   // hsv rotation
-  // FULL, LIVE, DEV
+  // DEV
   v = RGBtoHSV(v);
 
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);

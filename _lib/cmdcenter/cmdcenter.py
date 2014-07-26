@@ -519,12 +519,14 @@ class CmdCenter(Archiver):
 
 
     def reset_zn(self):
+        pass
         default = State(self.app.app)
         for i in xrange(len(default.zn)):
             self.radial_2d('zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
 
 
     def reset_par(self):
+        pass
         default = State(self.app.app)
         for i in xrange(len(default.par)):
             self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])

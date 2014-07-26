@@ -11,7 +11,7 @@ _EPI_ float no_alpha(int idx, float w, float4 res, __constant float* par){
 
 _EPI_ float id_alpha(int idx, float w, float4 res, __constant float* par){
   // id
-  // FULL, LIVE, DEV
+  // DEV
 
   return res.w;
 }
