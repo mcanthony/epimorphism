@@ -69,15 +69,12 @@ class RandomMain(Program):
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         update["SEED_C0"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
 
-        if random.random() <= 0.75:
-            programs.append(RandomAux({'idx': 0, 'folder': 'ponies'}))
-            no_more = False
-        elif random.random() <= 0.95:
-            programs.append(RandomAux({'idx': 0, 'folder': 'psych'}))
-            no_more = True
-        else:
-            programs.append(RandomAux({'idx': 0, 'folder': 'ponies'}))
-            no_more = True
+        no_more = False
+        if(not "no_aux" in self.data or not self.data["no_aux"]):
+            if random.random() <= 0.50:
+                programs.append(RandomAux({'idx': 0, 'folder': 'simplegeom'}))
+            else:
+                programs.append(RandomAux({'idx': 0, 'folder': 'psych'}))
 
         # seed 1
         if random.random() > 0.4 and not no_more:
@@ -86,6 +83,7 @@ class RandomMain(Program):
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
             update["SEED_C1"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             rnd = random.random()
+
             if rnd < 0.25:
                 programs.append(RandomAux({'idx': 1, 'folder': 'Vasarely'}))
             elif rnd < 0.50:
@@ -103,6 +101,7 @@ class RandomMain(Program):
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED_C2"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
             update["SEED2"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
+
             rnd = random.random()
             if rnd < 0.29:
                 programs.append(RandomAux({'idx': 2, 'folder': 'flowers'}))
@@ -133,6 +132,17 @@ class RandomMain(Program):
         #start_programs()
         config.cmdcenter.componentmanager.switch_components(update, start_programs)
 
+class RandomPonies(Program):
+    def _execute(self):
+        programs = []
+        programs.append(RandomAux({'idx': 0, 'folder': 'ponies'}))
+        programs.append(RandomAux({'idx': 1, 'folder': 'ponies'}))
+        programs.append(RandomAux({'idx': 2, 'folder': 'ponies'}))
+
+        for program in programs:
+            config.cmdcenter.state.programs.append(program)
+            program.run()
+    
 
 class RandomMain2(Program):
     def _execute(self):

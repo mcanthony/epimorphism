@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 1.0,
- 'aux': ['ponies/ponies_11.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png','simplegeom/tile_grid1.png'],
+ 'aux': ['ponies/ponies_11.png', 'ponies/ponies_1.png', 'ponies/ponies_2.png', 'ponies/ponies_3.png', 'ponies/ponies_4.png', 'ponies/ponies_7.png', ],
  'post_process': 'post_process',
  'frame_cnt': 0,
  'bpm': 120,

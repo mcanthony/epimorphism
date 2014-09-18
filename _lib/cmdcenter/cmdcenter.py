@@ -139,7 +139,7 @@ class CmdCenter(Archiver):
             self.camera = cv.CreateCameraCapture(0)#config.state.camera_id)
 
         # program interrupt
-        self.last_interrupt = 1000000000000
+        self.last_interrupt = time.time() + 1# 1000000000000
 
         return True
 
@@ -185,7 +185,6 @@ class CmdCenter(Archiver):
 
     def do(self):
         ''' Main application loop '''
-
         #print self.state.par['_SEED_TEX_IDX']
         #print self.state.aux
 
@@ -605,10 +604,18 @@ class CmdCenter(Archiver):
     def resumeMain(self):
         if not self.app.program_interrupt:
             return
+        
+        if time.time() - self.last_interrupt > self.app.program_interrupt:
+            self.run_program(Script('epimorphism', 'main_roses'))
+            self.last_interrupt = 1000000000000000
+            async(lambda: self.run_program(RandomMain({'interval': 120, "no_aux": True})))
 
-        if time.time() - self.last_interrupt > 5:
-#            self.run_program(Script('epimorphism', 'main_roses'))
-            self.run_program(RandomMain({'interval': 120}))
+    def randomMain(self):
+        self.run_program(RandomMain({'interval': None, 'no_aux': True}))
+
+    def randomPonies(self):
+        self.run_program(RandomPonies({'interval': None}))
+
 
 
     def block_for(self, block_time):

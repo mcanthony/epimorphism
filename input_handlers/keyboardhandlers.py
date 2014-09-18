@@ -263,10 +263,11 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
 
             # change program
             if(key == GLUT_KEY_F10):
-                self.cmdcenter.run_program(RandomMain({'interval': None}))
+                self.cmdcenter.cmd("randomMain()") #run_program(RandomMain({'interval': None}))
 
             elif(key == GLUT_KEY_F9):
-                self.cmdcenter.run_program(FOG({'start':0.0}))
+                self.cmdcenter.cmd("randomPonies()")
+                #self.cmdcenter.run_program(FOG({'start':0.0}))
 
             # record events
             elif(key == GLUT_KEY_F6):
