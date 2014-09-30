@@ -34,9 +34,7 @@ class VideoRenderer(object):
 
         # encapsulated for asynchronous execution
         def grab_image():
-            print "before grab"
             image = self.interface.renderer.grab_image()
-            print "after grab"
 
             # pad frame_num
             digit_size = 5
@@ -44,8 +42,6 @@ class VideoRenderer(object):
 
             # save
             image.convert("RGB").save("media/video/%s/%s.png" % (self.video_name, padded))
-
-            print "after save"
 
             # stop video if necessary
             if(self.app.max_video_frames and self.frame_num == int(self.app.max_video_frames)):

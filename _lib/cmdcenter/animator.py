@@ -31,7 +31,7 @@ class Animator(object):
         ''' Helper function for creating linear_1d paths. '''
 
         path = Linear1D(obj, idx, spd, {"s" : x0, "e" : x1})
-        print obj, idx, spd, x0, x1
+        # print obj, idx, spd, x0, x1
         # remove any previously existing paths for these vars
         [p.stop() for p in config.state.paths if (path.obj, path.idx) == (p.obj, p.idx)]
 

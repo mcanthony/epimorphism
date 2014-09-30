@@ -69,9 +69,6 @@ class Compiler():
             if(v and v != ""):
                 definitions += "#define $%s$ %s\n" % (k, v)
 
-        print self.substitutions, "\n\n\n\n"
-
-
         # bind PAR_NAMES
         keys = self.state.par.keys()
         keys.sort()

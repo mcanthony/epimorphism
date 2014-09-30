@@ -311,8 +311,7 @@ class CmdCenter(Archiver):
         ''' Returns the current absolute time '''
 
         if(self.app.fps_sync):
-            t = self.state.frame_cnt / float(self.app.fps_sync)
-            return t
+            return self.state.frame_cnt / float(self.app.fps_sync)
         else:
             return time.time() - self.t_start
 
@@ -470,7 +469,8 @@ class CmdCenter(Archiver):
             self.app.record_events = False
 
             self.recorded_events.save()
-            self.record_state.programs = [self.recorded_events]#.append(self.recorded_events)
+            #self.record_state.programs = [self.recorded_events]
+            self.record_state.programs.append(self.recorded_events)
             self.record_state.save(self.record_state.name)
 
             self.interface.renderer.flash_message("Saved state as %s" % (self.state.name))
@@ -518,14 +518,12 @@ class CmdCenter(Archiver):
 
 
     def reset_zn(self):
-        pass
         default = State(self.app.app)
         for i in xrange(len(default.zn)):
             self.radial_2d('zn', i, 0.4, r_to_p(self.state.zn[i]), r_to_p(default.zn[i]))
 
 
     def reset_par(self):
-        pass
         default = State(self.app.app)
         for i in xrange(len(default.par)):
             self.linear_1d('par', i, 0.4, self.state.par[i], default.par[i])
@@ -542,12 +540,12 @@ class CmdCenter(Archiver):
 
         # see if we're already switching.  done a bit ghettoly.  not even sure if it works
         cur = self.state.par["_SEED_TEX_IDX"][idx]
-#        if math.fabs(cur - round(cur)) > 0.1:
-#            debug("Already switching aux %d" % idx)
-#            return
+        if math.fabs(cur - round(cur)) > 0.1:
+            debug("Already switching aux %d" % idx)
+            return
         ofs = (int(round(cur)) == 0 and 1 or 0)
 
-        print "cur, ofs", cur, ofs
+#        print "cur, ofs", cur, ofs
 
         # load image
         self.load_image(tex, 2 * idx + ofs)
