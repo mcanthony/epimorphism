@@ -118,7 +118,7 @@ class ComponentManager(object):
 
             idx_idx = self.datamanager.component_names.index(component_name)
 
-            intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)
+            intrp = "intrp(%s, %s, (time - internal[%d]) / %f)" % (self.state.components[component_name], val, idx_idx, self.app.state_intrp_time * self.state.t_speed)        
 
             self.state.components[component_name] = intrp
 

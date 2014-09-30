@@ -6,6 +6,7 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 __kernel __attribute__((reqd_work_group_size(16,16,1)))
 void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2d_t out, read_only image3d_t aux,
 		 __constant float* par, __constant float *internal, __constant float2 *zn, float time){
+
   float2 t, t_seed, reduce;
   float4 color;
 
@@ -25,7 +26,7 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
 
   for(int i_x = 0; i_x < (int)$FRACT$; i_x++)
     for(int i_y = 0; i_y < (int)$FRACT$; i_y++){
-			// z is the center of a pixel
+      // z is the center of a pixel
       z = CX(z_z.x - i_k + i_x * inc, z_z.y - i_k + i_y * inc);
 
       // compute T
@@ -40,7 +41,6 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // get frame
       float4 frame = read_imagef(fb, sampler, (0.5f * z + (float2)(0.5f, 0.5f)));
 
-
       z = M(zn[16], z) / 1.0 + zn[17] / 1.0;
       z = $T_SEED$;
       z = M(zn[18], z) / 1.0 + zn[19] / 1.0;
@@ -51,17 +51,22 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       // cull & blending
 			/*
 				seed = $SEED$;
+      v += $SEED$;
+
+      // cull & blending
+
+      //float4 seed = $SEED$;
+      /*
       #ifdef $CULL_ENABLED$
       v = cull(v, seed, frame, par);
       #else
-      v += seed.w * seed + (1.0 - seed.w) * frame;
-			//			v = seed2.w * seed2 + (1.0 - seed2.w) * v;
+      //			v = seed2.w * seed2 + (1.0 - seed2.w) * v;
       #endif
-			*/
+      */
     }
 
   // scale
-  v = (float4)(v.xyz / ($FRACT$ * $FRACT$), v.w);
+  v = (float4)(v.x / ($FRACT$ * $FRACT$), v.y / ($FRACT$ * $FRACT$), v.z / ($FRACT$ * $FRACT$), v.w);
   v = recover4(v);
 
   // compute color

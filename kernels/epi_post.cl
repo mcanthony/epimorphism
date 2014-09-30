@@ -82,7 +82,7 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
 
 	v = $POST$;
 
-  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
+  pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0f * v.zyxw);
 }
 
 /*

@@ -52,7 +52,7 @@ class Engine(object):
         self.queue = clCreateCommandQueue(self.ctx)
 
         # create buffers
-        format = cl_image_format(CL_BGRA, CL_FLOAT)
+        format = cl_image_format(CL_RGBA, CL_FLOAT)
 
         self.out = clCreateImage2D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, format)
 
@@ -63,7 +63,7 @@ class Engine(object):
 
         #auxilary buffer
         if(self.state.aux):
-            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_BGRA, CL_UNSIGNED_INT8))
+            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_RGBA, CL_UNSIGNED_INT8))
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
