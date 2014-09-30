@@ -99,13 +99,8 @@ _EPI_ float4 seed_multi_wca(int idx, float4 frame, float2 z, read_only image2d_t
 		break;
 	#endif
 	}
-<<<<<<< HEAD
 
 	res.w = a * seed.y;
-=======
->>>>>>> 8f6f92d84b2825e1071d69f743b0c42947f5e532
-
-	  res.w = a * seed.y;
 
 	//  return mix(frame, res, res.w);
 	return frame + (res - frame) * res.w;
@@ -119,12 +114,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 	float2 z_z = z;
 
 	// compute seed0
-<<<<<<< HEAD
-
 	z = M(zn[2 + SEED_ZOFS], (z - zn[3 + SEED_ZOFS]));
-=======
-	z = M(zn[10], (z - zn[11]));
->>>>>>> 8f6f92d84b2825e1071d69f743b0c42947f5e532
 	z = $T_SEED0$;
 	z = M(zn[0 + SEED_ZOFS], (z - zn[1 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
@@ -135,11 +125,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 	// compute seed1
 	#ifdef $SEED1$
 	z = z_z;
-<<<<<<< HEAD
 	z = M(zn[6 + SEED_ZOFS], (z - zn[7 + SEED_ZOFS]));
-=======
-	z = M(zn[14], (z - zn[15]));
->>>>>>> 8f6f92d84b2825e1071d69f743b0c42947f5e532
 	z = $T_SEED1$;
 	z = M(zn[4 + SEED_ZOFS], (z - zn[5 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
@@ -151,11 +137,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 	// compute seed2
   #ifdef $SEED2$
 	z = z_z;
-<<<<<<< HEAD
 	z = M(zn[10 + SEED_ZOFS], (z - zn[11 + SEED_ZOFS]));
-=======
-	z = M(zn[18], (z - zn[19]));
->>>>>>> 8f6f92d84b2825e1071d69f743b0c42947f5e532
 	z = $T_SEED2$;
 	z = M(zn[8 + SEED_ZOFS], (z - zn[9 + SEED_ZOFS]));
 	z = recover2($REDUCE$);
@@ -171,11 +153,7 @@ float4 seed_multi(int idx, float4 frame, float2 z, read_only image2d_t fb, read_
 
 
   /*
-<<<<<<< HEAD
- float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
-=======
 _EPI_ float4 seed_poly(int idx, float4 frame, float2 z, read_only image2d_t fb, read_only image3d_t aux, __constant float *par, __constant float *internal, __constant float2 *zn, float time){
->>>>>>> 8f6f92d84b2825e1071d69f743b0c42947f5e532
   // width, color, alpha, width_trans templated seed family
   // DEV
 

@@ -49,13 +49,6 @@ void epimorphism(read_only image2d_t fb, __global uchar4* pbo, write_only image2
       v += $SEED$;
 
       // cull & blending
-			/*
-				seed = $SEED$;
-      v += $SEED$;
-
-      // cull & blending
-
-      //float4 seed = $SEED$;
       /*
       #ifdef $CULL_ENABLED$
       v = cull(v, seed, frame, par);
