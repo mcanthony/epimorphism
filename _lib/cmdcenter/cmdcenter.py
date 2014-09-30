@@ -547,11 +547,11 @@ class CmdCenter(Archiver):
 #            return
         ofs = (int(round(cur)) == 0 and 1 or 0)
 
-#        print "cur, ofs", cur, ofs
+        print "cur, ofs", cur, ofs
 
         # load image
         self.load_image(tex, 2 * idx + ofs)
-
+        
         # change
         if(spd == 0):
             self.state.par['_SEED_TEX_IDX'][idx] = ofs
@@ -608,14 +608,13 @@ class CmdCenter(Archiver):
         if time.time() - self.last_interrupt > self.app.program_interrupt:
             self.run_program(Script('epimorphism', 'main_roses'))
             self.last_interrupt = 1000000000000000
-            async(lambda: self.run_program(RandomMain({'interval': 120, "no_aux": True})))
+            #async(lambda: self.run_program(RandomMain({'interval': 120, "no_aux": True})))
 
     def randomMain(self):
-        self.run_program(RandomMain({'interval': None, 'no_aux': True}))
+        self.run_program(RandomMain({'interval': None}))
 
     def randomPonies(self):
         self.run_program(RandomPonies({'interval': None}))
-
 
 
     def block_for(self, block_time):

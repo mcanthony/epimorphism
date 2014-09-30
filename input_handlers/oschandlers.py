@@ -39,7 +39,6 @@ class DefaultOSCHandler(OSCHandler):
 
         OSCHandler.__init__(self)
 
-
     def val_zn(self, addr, tags, data, source):
         self.log_event()
         idx = int(re.search("(\d+)$", addr).groups()[0])

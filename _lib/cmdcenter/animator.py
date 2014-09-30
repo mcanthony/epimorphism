@@ -60,7 +60,7 @@ class Animator(object):
 
             # if necessary, remove path
             if(not status):
-                print "REMOVING PATH"
+                #print "REMOVING PATH"
                 remove_paths.append(path)
 
         for path in remove_paths:

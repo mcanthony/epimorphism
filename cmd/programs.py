@@ -68,7 +68,7 @@ class RandomMain(Program):
         for component_name in ['T', 'T_SEED0', 'SEED_W0', 'SEED_WT0', 'SEED_A0']:
             update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
         update["SEED_C0"] = 'tex_color(idx, fb, aux, z, seed, par, time)'
-
+        
         no_more = False
         if(not "no_aux" in self.data or not self.data["no_aux"]):
             if random.random() <= 0.50:
@@ -77,7 +77,7 @@ class RandomMain(Program):
                 programs.append(RandomAux({'idx': 0, 'folder': 'psych'}))
 
         # seed 1
-        if random.random() > 0.4 and not no_more:
+        if random.random() > 0.3 and not no_more:
             for component_name in ['T_SEED1', 'SEED_W1', 'SEED_WT1', 'SEED_A1']:
                 update[component_name] = config.cmdcenter.componentmanager.inc_data(component_name, 0, True)
             update["SEED1"] = "seed_multi_wca(idx, frame, z, fb, aux, par, internal, zn, time)"
@@ -116,7 +116,7 @@ class RandomMain(Program):
 
 
 
-        if random.random() > 0.6:
+        if random.random() > 0.3:
             update["COLOR"] = "rotate_hsls(v, z_z, par, time)"
             update["POST"] = "post_colors3(v, par, time)"
         else:
@@ -221,6 +221,8 @@ class RandomAux(Program):
     def _execute(self):
         debug("Executing Random Aux")
 
+        self.data["folder"] = 'ponies'
+        
         if not self.data.has_key("folder"):
             self.data["folder"] = ""
         path = "media/textures/" + self.data["folder"] + '/'
@@ -245,7 +247,7 @@ class SwitchAux(Program):
 #            return
         ofs = (round(cur) == 0 and 1 or 0)
 
-        print "cur, ofs", cur, ofs
+        #print "cur, ofs", cur, ofs
 
         # load image
         config.cmdcenter.load_image(self.data["tex"], 2 * self.data["idx"] + ofs)
