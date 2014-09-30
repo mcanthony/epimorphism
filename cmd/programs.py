@@ -9,7 +9,6 @@ from common.runner import *
 from common.log import *
 set_log("Program")
 
-
 class RandomComponents(Program):
     def _execute(self):
         debug("Executing Random Components")
