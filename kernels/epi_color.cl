@@ -14,7 +14,7 @@ _EPI_ float4 gbr_id(float4 v, float2 z_z, __constant float* par, float time){
   return v.yxzw;
 }
 
-/*
+
 _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time){
   // hsv rotation
   // FULL, LIVE, DEV
@@ -25,7 +25,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
   //l = (4.0f * _COLOR_LEN_SC + 1.0f) * l / (l + 4.0f * _COLOR_LEN_SC);
 
   l = native_divide((4.0f * _COLOR_LEN_SC(0) + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC(0)));
-  l = native_log(l + 1.0f);	
+  l = native_log(l + 1.0f);
 
   float a = 0.0f;
   if(_COLOR_TH_EFF(0) != 0.0f && (z_z.y != 0.0f || z_z.x != 0.0f)){
@@ -43,7 +43,7 @@ _EPI_ float4 rotate_hsv(float4 v, float2 z_z, __constant float* par, float time)
 
   return HSVtoRGB(v);
 }
-*/
+
 
 _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time){
   // complex hsls rotation
@@ -55,7 +55,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   //float l = native_log(lz);
 
   // compute l
-  
+
   float l = native_sqrt(z_z.x * z_z.x + z_z.y * z_z.y);
   l = native_divide((4.0f * _COLOR_LEN_SC(0) + 1.0f) * l, (l + 4.0f * _COLOR_LEN_SC(0)));
   l = native_log(l + 1.0f);
@@ -72,13 +72,13 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   float psi = 2.0f * PI * _COLOR_PSI1(0);
   float4 axis = (float4)(native_cos(psi) * native_cos(phi), native_cos(psi) * native_sin(phi), native_sin(psi), 0.0f);
 
-  // compute rotation 1  
+  // compute rotation 1
   float4 tmp = (float4)(v.x, v.y, v.z, 0.0f);
   float th = 2.0f * PI * (a + l + time * _COLOR_SPEED_TH(0));
   th = remf(CX(th, 0.0f), 2.0f * PI).x;
 	tmp = rotate3D(tmp, axis, th);
-  
-  // compute rotation 2  
+
+  // compute rotation 2
   th = 2.0f * PI * _COLOR_DHUE(0);
   phi += 2.0f * PI * _COLOR_PHI2(0);
   psi += 2.0f * PI * _COLOR_PSI2(0);
@@ -95,7 +95,7 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   tmp = s * tmp + (1.0f - s) * base;
   tmp = _COLOR_I * tmp + (1.0f - _COLOR_I) * (float4)(v.x, v.y, v.z, 0.0f);
 	*/
-	
+
   //s = tmp.x;
   //tmp.x = native_sin(PI * tmp.z);
   //tmp.z = native_sin(PI * tmp.y);
@@ -105,7 +105,6 @@ _EPI_ float4 rotate_hsls(float4 v, float2 z_z, __constant float* par, float time
   //float r = native_sqrt(tmp.x * tmp.x + tmp.y * tmp.y + tmp.z * tmp.z);
   //float r_p = 3.0f * r / (2.0f * r + 1.0f);//0.1f + 0.9f * r;
   //tmp *= (r_p / r);
-  v = (float4)(tmp.x, tmp.y, tmp.z, v.w);  
+  v = (float4)(tmp.x, tmp.y, tmp.z, v.w);
   return HSLstoRGB(v);
 }
-

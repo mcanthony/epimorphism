@@ -19,62 +19,62 @@ class DefaultOSCHandler(OSCHandler):
                                 "/set_th_zn(\d+)$": self.val_th_zn,
                                 "/set_re_zn(\d+)$": self.val_re_zn,
                                 "/set_im_zn(\d+)$": self.val_im_zn,
-                                "/tex_send": self.tex_send,                                
+                                "/tex_send": self.tex_send,
                                 "/inc_tex_folder_(\d+)$": self.inc_tex_folder,
-                                "/inc_tex_name_(\d+)$": self.inc_tex_name,                                
+                                "/inc_tex_name_(\d+)$": self.inc_tex_name,
                                 "/val_par_(\w+)_(\d+)$": self.val_par,
                                 "/inc_par_(\w+)_(\d+)$": self.inc_par,
                                 "/inc_cmp_([a-zA-Z_]+)": self.inc_cmp,
                                 "/cmp_send": self.cmp_send,
                                 "/cmd_(\w+)": self.cmd}
-                                
+
         OSCHandler.__init__(self)
 
 
     def val_zn(self, addr, tags, data, source):
         self.log_event()
         idx = int(re.search("(\d+)$", addr).groups()[0])
-        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))
 
         old = self.state.zn[idx]
         val = complex(data[1], data[0])
-        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
-        self.cmdcenter.state.zn[idx] = val
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        #self.cmdcenter.state.zn[idx] = val
 
     def val_re_zn(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
-        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))
 
         old = self.state.zn[idx]
         val = complex(data[0], old.imag)
-        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
-        self.cmdcenter.state.zn[idx] = val
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        #self.cmdcenter.state.zn[idx] = val
 
     def val_im_zn(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
-            return        
+            return
         idx = int(re.search("(\d+)$", addr).groups()[0])
-        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))        
+        #self.cmdcenter.cmd("state.zn[%d] = %f + %fj" % (idx, data[1], data[0]))
 
         old = self.state.zn[idx]
         val = complex(old.real, data[0])
-        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
-        self.cmdcenter.state.zn[idx] = val        
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed, r_to_p(old), r_to_p(val))
+        #self.cmdcenter.state.zn[idx] = val
 
     def val_r_zn(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
-        old = self.state.zn[idx]        
+        old = self.state.zn[idx]
         val = (data[0], r_to_p(old)[1])
-#        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
-#        self.cmdcenter.cmd("set_state_val('zn', %d, %s)" % (idx, str(p_to_r(val))))        
-        self.cmdcenter.state.zn[idx] = p_to_r(val)
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+#        self.cmdcenter.cmd("set_state_val('zn', %d, %s)" % (idx, str(p_to_r(val))))
+        #self.cmdcenter.state.zn[idx] = p_to_r(val)
 
 
     def val_th_zn(self, addr, tags, data, source):
@@ -84,8 +84,8 @@ class DefaultOSCHandler(OSCHandler):
         idx = int(re.search("(\d+)$", addr).groups()[0])
         old = self.state.zn[idx]
         val = (r_to_p(old)[0], data[0] / 360.0 * 2 * 3.14159)
-        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
-        self.cmdcenter.state.zn[idx] = p_to_r(val)
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        #self.cmdcenter.state.zn[idx] = p_to_r(val)
 
 
     def qnt_th_zn(self, addr, tags, data, source):
@@ -98,24 +98,24 @@ class DefaultOSCHandler(OSCHandler):
         th = pi4 * ((int)(r_to_p(old)[1] / pi4 + 0.0001))
         th += data[0] * pi4;
         val = (r_to_p(old)[0], th)
-        #self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
-        self.cmdcenter.state.zn[idx] = p_to_r(val)
+        self.cmdcenter.radial_2d('zn', idx, self.app.midi_speed / 8, r_to_p(old), val)
+        #self.cmdcenter.state.zn[idx] = p_to_r(val)
 
     def inc_tex_folder(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
-        cur = self.current_texture_folders[idx]        
+        cur = self.current_texture_folders[idx]
         cur_idx = [t['folder'] for t in self.texture_names].index(cur)
         cur_idx = (cur_idx + int(data[0])) % len(self.texture_names)
         new = self.texture_names[cur_idx]['folder']
         self.current_texture_folders[idx] = new
         self._send("/txt_tex_folder_%d" % idx, [new])
-        
+
         new = self.texture_names[cur_idx]['textures'][0]
         self.current_texture_names[idx] = new
-        self._send("/txt_tex_name_%d" % idx, [new])                                
+        self._send("/txt_tex_name_%d" % idx, [new])
 
     def inc_tex_name(self, addr, tags, data, source):
         self.log_event()
@@ -123,7 +123,7 @@ class DefaultOSCHandler(OSCHandler):
             return
         idx = int(re.search("(\d+)$", addr).groups()[0])
         cur_folder = self.current_texture_folders[idx]
-        cur_texture = self.current_texture_names[idx]        
+        cur_texture = self.current_texture_names[idx]
         textures = [t['textures'] for t in self.texture_names if t['folder'] == cur_folder][0]
         cur_idx = (textures.index(cur_texture) + int(data[0])) % len(textures)
 
@@ -131,16 +131,16 @@ class DefaultOSCHandler(OSCHandler):
         self.current_texture_names[idx] = new
         self._send("/txt_tex_name_%d" % idx, [new])
 
-        
+
     def tex_send(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
             return
         for i in xrange(self.state.par_dim):
             name = self.current_texture_folders[i] + '/' + self.current_texture_names[i] + ".png"
-            self.cmdcenter.switch_aux(i, name, 0)
-            
-        
+            self.cmdcenter.switch_aux(i, name, self.app.state_intrp_time / 2.0)
+
+
     def val_par(self, addr, tags, data, source):
         self.log_event()
         idx = re.search("(\d+)$", addr).groups()[0]
@@ -162,7 +162,7 @@ class DefaultOSCHandler(OSCHandler):
         new_par[int(idx)] = data[0]
         self.cmdcenter.state.par['_' + name] = new_par
 
-        
+
     def inc_cmp(self, addr, tags, data, source):
         self.log_event()
         if(data[0] == -1000):
@@ -172,7 +172,7 @@ class DefaultOSCHandler(OSCHandler):
 #            self.cmdcenter.cmd("inc_data('%s', %d)" % (name, data[0]))
         cur = self.current_components[name]
         parent_name = re.sub("(\d)+$", "", name)
-        
+
         components = self.cmdcenter.componentmanager.datamanager.components[parent_name]
         cur_idx = [c[0] for c in components].index(cur)
         cur_idx = (cur_idx + int(data[0])) % len(components)
@@ -186,33 +186,33 @@ class DefaultOSCHandler(OSCHandler):
             suffix = ""
         self._send("/txt_cmp_%s" % name, [new_component.replace(suffix, '')])
 
-        
+
     def cmp_send(self, addr, tags, data, source):
         self.log_event()
         self.cmdcenter.componentmanager.switch_components(self.updated_components)
         self.updated_components = {}
 
-        
+
     def cmd(self, addr, tags, data, source):
         self.log_event()
         if(data[0] != 1):
             return
         cmd=addr[5:]
-        self.cmdcenter.cmd("%s()" % cmd)        
+        self.cmdcenter.cmd("%s()" % cmd)
 
-        
+
     def log_event(self):
         self.cmdcenter.programInterrupt()
-        
 
-    # OSC address handers        
+
+    # OSC address handers
     def hnd_val_speed(self, addr, tags, data, source):
         v_new = data[0] + 0.00001
         v_old = self.state.t_speed
-        
+
         # set val
         self.cmdcenter.cmd("state.t_speed = %f" % v_new)
-        
+
         # adjust phase
         self.cmdcenter.cmd("state.t_phase = %f" % (v_old * (self.cmdcenter.abs_time() + self.state.t_phase) / v_new - self.cmdcenter.abs_time()))
 
@@ -247,14 +247,14 @@ class DefaultOSCHandler(OSCHandler):
             key /= 2
             name = self.cmdcenter.get_aux_name(key)
             if not name or name != val:
-                return            
+                return
             self._send("/txt_tex_folder_%d" % key, [name.split('/')[0]], bundle)
             self._send("/txt_tex_name_%d" % key, [name.split('/')[1].replace('.png', '')], bundle)
         elif(obj == self.state):
             if(key == "t_speed"):
                 self._send("/val_speed", [str(self.state.t_speed)], bundle)
                 self._send("/txt_speed", ["%0.2f" % self.state.t_speed], bundle)\
-#        elif(obj == self.state):                    
+#        elif(obj == self.state):
 
 
     def mirror_all(self):
@@ -270,19 +270,19 @@ class DefaultOSCHandler(OSCHandler):
         for i in xrange(self.state.par_dim):
             time.sleep(0.01)
             self.mirror(self.state.aux, i, self.state.aux[i], False)
-        time.sleep(0.01)            
+        time.sleep(0.01)
         self._send("/val_speed", [self.state.t_speed], False)
         time.sleep(0.01)
         self._send("/txt_speed", ["%0.2f" % self.state.t_speed], False)
 
 
-class DefaultInterferenceOSC(DefaultOSCHandler):    
+class DefaultInterferenceOSC(DefaultOSCHandler):
 
     def __init__(self):
         DefaultOSCHandler.__init__(self)
 
 
-class DefaultEpimorphismOSC(DefaultOSCHandler):    
+class DefaultEpimorphismOSC(DefaultOSCHandler):
 
     def __init__(self):
         DefaultOSCHandler.__init__(self)
@@ -313,11 +313,11 @@ def get_radius(z):    return r_to_p(z)[0]
 def set_radius(z, r): return p_to_r([r, r_to_p(z)[1]])
 def get_th(z):        return r_to_p(z)[1]
 def set_th(z, th):    return p_to_r([r_to_p(z)[0], th])
-        
+
 class EpimorphismRD1OSC(OSCHandler):
     def __init__(self):
         self.regex_callbacks = {"/midinote": self.midinote, "/midictrl": self.midictrl}
-                                
+
         OSCHandler.__init__(self)
 
 
@@ -326,14 +326,14 @@ class EpimorphismRD1OSC(OSCHandler):
         if(note == 0):
             pass
         elif(note == 1):
-            pass        
+            pass
         print "note", note
 
-        
+
     def midictrl(self, addr, tags, data, source):
         param = data[1]
         val = data[0]
-        
+
 #        print "ctrl", param, val
 
         bindings = {1: ["state.zn",  '0',  "radius", (1.0, 1.0)],
@@ -358,11 +358,8 @@ class EpimorphismRD1OSC(OSCHandler):
         val = eval("set_" + binding[2])(old, f)
         #print old, val, str(binding[1])
         # HACK to smoothen values
-        
+
         if(binding[2] == "radius" or binding[2] == "th"):
             self.cmdcenter.radial_2d('zn', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, r_to_p(old), r_to_p(val))
         else:
             self.cmdcenter.linear_1d('par', eval(binding[1]), self.cmdcenter.interface.app.midi_speed, old, val)
-
-
-        

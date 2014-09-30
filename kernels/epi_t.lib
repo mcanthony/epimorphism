@@ -2,7 +2,6 @@ z		                         :
 expz(z)                                  :
 sinz(z)                                  :
 cosz(z)                                  :
-tanz(z)                                  :
 $l - sqz(z)                              :
 sinhz(z)                                 :
 coshz(z)                                 :
@@ -18,4 +17,3 @@ sinhz(z) - sinz(z)												 :
 coshz(z) + expz(z)												 :
 M(z, cosz(z))															 :
 0.5f * (coshz(z) + sinhz(z))			 :
-

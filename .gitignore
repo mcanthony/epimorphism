@@ -8,6 +8,7 @@
 *.jpg
 media/image/*.png
 media/archive/*
+media/video/*
 *.bcl
 __*.cu
 __*.cl

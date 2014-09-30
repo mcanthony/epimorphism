@@ -165,8 +165,8 @@ class Renderer(object):
             return None
 
         info("Grabbing pixels")
-        self.have_image.clear()
-        self.have_image.wait()
+        #self.have_image.clear()
+        #self.have_image.wait()
         return self.image
 
 

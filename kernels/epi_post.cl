@@ -16,30 +16,30 @@ _EPI_ float4 post_id(float4 v, __constant float* par, float time){
 _EPI_ float4 post_gamma(float4 v, __constant float* par, float time){
   // gamma correction
   // FULL, LIVE, DEV
-  return _gamma3(v, _GAMMA(0) / 1.5);      
+  return _gamma3(v, _GAMMA(0) / 1.5);
 }
 
 
 _EPI_ float4 post_colors3(float4 v, __constant float* par, float time){
   // gamma correction
   // FULL, LIVE, DEV
-	v = _gamma3(v, _GAMMA(0) / 1.5);      
-	
+	v = _gamma3(v, _GAMMA(0) / 1.5);
+
   v = RGBtoHSV(v);
-	
+
 	float4 c0 = HSLtoRGB((float4)(_PC3_HUE(0), 1.0, 0.5, 0.0));
 	float4 c1 = HSLtoRGB((float4)(_PC3_HUE(0) + _PC3_SPREAD(0) / 2.0, 1.0, _PC3_LGV(0), 0.0));
 	float4 c2 = HSLtoRGB((float4)(_PC3_HUE(0) - _PC3_SPREAD(0) / 2.0, 1.0, -1.0 * _PC3_LGV(0), 0.0));
-	
+
 	/*
 	float4 c0 = (float4)(1.0, 0.0, 0.0, 0.0);
 	float4 c1 = (float4)(0.0, 1.0, 0.0, 0.0);
 	float4 c2 = (float4)(0.0, 0.0, 1.0, 0.0);
 	*/
-	
-	float4 res, r0, r1;	
+
+	float4 res, r0, r1;
 	float f;
-	
+
 	if(v.x < 1.0f / 3.0f){
 		f = 3.0f * v.x;
 		r0 = c0;
@@ -54,14 +54,14 @@ _EPI_ float4 post_colors3(float4 v, __constant float* par, float time){
 		r1 = c0;
 	}
 	res = (1.0f - f) * r0 + f * r1;
-		
+
 	//res = intrp(r0, r1, f);
 	/*if(f < 0.5)
 		res = (1.0 - f / 2.0) * r0 + f / 2.0 * r1;
 	else
 		res = (0.5 - f / 2.0) * r0 + (0.5 + f / 2.0) * r1;
 	*/
-	
+
 	res = RGBtoHSV(res);
 	v.x = res.x;
 
@@ -70,7 +70,7 @@ _EPI_ float4 post_colors3(float4 v, __constant float* par, float time){
 	return HSVtoRGB(v);
 }
 
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+__kernel __attribute__((reqd_work_group_size(16,16,1)))
 void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, __constant float *internal, float time){
 
   // get coords
@@ -86,7 +86,7 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
 }
 
 /*
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+__kernel __attribute__((reqd_work_group_size(16,16,1)))
 void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
 
   // get coords
@@ -108,7 +108,7 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
 }
 */
 
-//__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+//__kernel __attribute__((reqd_work_group_size(16,16,1)))
 //void post_process(read_only image2d_t fb, __global uchar4* pbo, float time, __constant float* par){
 
   // get coords
@@ -146,9 +146,9 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
   float4 frame21 = -1.0f * read_imagef(fb, image_sampler, p + (int2)(1,0));
   float4 frame22 =  0.0f * read_imagef(fb, image_sampler, p + (int2)(1,1));
 
-  float4 frame = 
-    frame00 + frame01 + frame02 + 
-    frame10 + frame11 + frame12 + 
+  float4 frame =
+    frame00 + frame01 + frame02 +
+    frame10 + frame11 + frame12 +
     frame20 + frame21 + frame22;
 
   */
@@ -158,7 +158,7 @@ void post_process(read_only image2d_t fb, __global uchar4* pbo, __constant float
 
 
 /*
-__kernel __attribute__((reqd_work_group_size(16,16,1))) 
+__kernel __attribute__((reqd_work_group_size(16,16,1)))
 void post_gamma(read_only image2d_t fb, __global uchar4* pbo, __constant float* par, float time){
   // get coords
   const int x = get_global_id(0);
@@ -167,13 +167,10 @@ void post_gamma(read_only image2d_t fb, __global uchar4* pbo, __constant float* 
 
   float4 v = read_imagef(fb, post_sampler, p);
 
-	v = _gamma3(v, _GAMMA(0) / 1.5);      
-	
+	v = _gamma3(v, _GAMMA(0) / 1.5);
+
   pbo[y * $KERNEL_DIM$ + x] = convert_uchar4(255.0 * v.zyxw);
 }
 */
 
 #endif
-
-
-

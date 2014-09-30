@@ -47,7 +47,7 @@
 
  'print_timing_info': False,
  'debug_freq': 10.0,
- 'kernel_dim': 1536,
+ 'kernel_dim': 2048,
 
  'kernel': 'julia',
  'sources': ['util', 'math', 'colorspace', 'julia'],

@@ -108,7 +108,8 @@ class ComponentManager(object):
             self.state.internal[idx_idx] = self.cmdcenter.time()
 
         # wait until interpolation is done
-        time.sleep(self.app.state_intrp_time)
+        #time.sleep(self.app.state_intrp_time)
+        self.cmdcenter.block_for(self.app.state_intrp_time)
         for k,v in data.items():
             self.state.components[k] = v
         

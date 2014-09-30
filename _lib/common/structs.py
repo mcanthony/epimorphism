@@ -1,4 +1,4 @@
-# This file defines the framework and implementation of the configuration objects for the application.  Configuration object classes descend from the DictObj class.  
+# This file defines the framework and implementation of the configuration objects for the application.  Configuration object classes descend from the DictObj class.
 # A DictObj is a dictionary like object only intended to store data - i.e. they are dictionaries, but access is not via obj['key'], but via obj.key for ease of use.
 # The two basic DictObj subclasses are:
 #    App - configuration parameters for the application - ex: screen resolution, keyboard configuation, midi configuration
@@ -19,30 +19,30 @@ def set_root(new_root):
 
 
 def save_obj(obj, type, extension, app_name, name=None):
-    ''' This method serializes any object into the appropriate directory.  
+    ''' This method serializes any object into the appropriate directory.
         If no name is provided, the next available one will be generated '''
 
-    path = root + "/" + type + "/" 
+    path = root + "/" + type + "/"
 
     # set name if necessary
     if(not name):
         # ex: dir contains "state_0.est, state_1.est, ..., state_n.est], this returns n + 1
-        idx = max([-1] + [int(file[(len(app_name) + 6):(-1 - len(extension))]) for file in os.listdir(path) if re.compile(app_name + '_save_(\d+)').match(file)]) + 1
+        idx = max([-1] + [int(float(file[(len(app_name) + 6):(-1 - len(extension))])) for file in os.listdir(path) if re.compile(app_name + '_save_(\d+)').match(file)]) + 1
         name = "save_" + str(idx)
-       
+
     try:
         obj["name"] = name
     except:
         debug("couldn't set object name for saving")
 
     # remove blacklisted data
-    if 'repr_blacklist' in obj:        
+    if 'repr_blacklist' in obj:
         for data in obj["repr_blacklist"]:
             del obj[data]
         del obj["repr_blacklist"]
         for data in [data for data in obj if data[:1] == "_"]:
             del obj[data]
-            
+
 
     # open file & dump repr(obj)
     loc = path + "%s_%s.%s" % (app_name, name, extension)
@@ -59,7 +59,7 @@ def save_obj(obj, type, extension, app_name, name=None):
 def load_obj(type, name, extension):
     ''' This method loads a serialized object from the filesystem. '''
 
-    # open file 
+    # open file
     try:
         global root
         file = root + "/" + type + "/" + name + "." + extension
@@ -139,19 +139,19 @@ class DictObj(object):
         self.app_name = self.app_name or config.app.app_name
 
         if(not self.__dict__.has_key("extension")):
-            self.extension = "obj" 
-            
+            self.extension = "obj"
+
         global root
         self.path = root + "/" + self.type + "/"
-            
+
         # load default objects & then update with actual object
         data = load_obj(self.type, "default", self.extension)
 
         try:
             data.update(load_obj(self.type, self.app_name + "_default", self.extension))
         except:
-            warning("failed to update object with %s", self.app_name + "_default." + self.extension) 
-        
+            warning("failed to update object with %s", self.app_name + "_default." + self.extension)
+
         if(self.name != None and self.name != "default"):
             data.update(load_obj(self.type, self.app_name + '_' + str(self.name), self.extension))
 
@@ -181,7 +181,7 @@ class DictObj(object):
 
 
     def save(self, name=None):
-        ''' Dumps a dict to a file.  Adds newlines after commas for legibility. 
+        ''' Dumps a dict to a file.  Adds newlines after commas for legibility.
             NOTE:  A new object is created by default.'''
 
         # copy object
@@ -200,9 +200,9 @@ class DictObj(object):
         loc = self.path + "%s.%s" % (self.name, self.extension)
 
         os.remove(loc)
-            
+
         info("Deleted " + loc)
-        
+
 
     def merge(self, dict_obj):
         self.__dict__.update(dict_obj.__dict__)
@@ -217,7 +217,7 @@ class App(DictObj):
 
     def __init__(self, app_name, name="default"):
         info("loading app: %s %s" % (app_name, name))
-        self.extension = "app"        
+        self.extension = "app"
         config.app = self
         self.migrations = {}
 
@@ -237,7 +237,7 @@ class App(DictObj):
     def get_substitutions(self):
         return {'POST_PROCESS': self.state.post_process and "#define POST_PROCESS" or ""}
 
-    
+
     state_name = property(get_state_name, set_state)
 
 
@@ -264,7 +264,7 @@ class State(DictObj):
 
         # perform migrations
         if(self.VERSION < getattr(self.__class__, "VERSION")):
-            
+
             # get necessary migrations
             versions = [version for version in migrations.keys() if version > old_version]
             versions.sort()
@@ -283,15 +283,15 @@ class State(DictObj):
                 program.save()
 
         return DictObj.save(self, name)
-    
+
 
 # TODO: increment through all states, migrate & save
 def migrate_all_states():
     pass
 
 # due to nonsense with dependancy ordering this has to go after the definition of load_obj
-from cmdcenter.script import * 
-from cmd.programs import * 
+from cmdcenter.script import *
+from cmd.programs import *
 from cmd.paths import *
 
 from common.log import *

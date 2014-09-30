@@ -22,7 +22,7 @@ class DefaultKeyboard(KeyboardHandler):
         # toggle echo
         elif(key == GLUT_KEY_F10):
             self.cmdcenter.cmd("state.paths=[]")
-            
+
         # toggle echo
         elif(key == GLUT_KEY_F11):
             self.cmdcenter.cmd("toggle_echo()")
@@ -30,7 +30,7 @@ class DefaultKeyboard(KeyboardHandler):
         # toggle fps
         elif(key == GLUT_KEY_F12):
             self.cmdcenter.cmd("toggle_fps()")
-     
+
         # save state
         elif(key == ' '): # space
             self.cmdcenter.cmd("save()")
@@ -53,8 +53,8 @@ class DefaultKeyboard(KeyboardHandler):
 
         # randomize archive
         elif(key == '+'):
-            self.cmdcenter.cmd("inc_archive(0)")   
-     
+            self.cmdcenter.cmd("inc_archive(0)")
+
         # reset fb
         elif(key == "\\"):
             self.cmdcenter.cmd("reset_fb()")
@@ -62,7 +62,7 @@ class DefaultKeyboard(KeyboardHandler):
         # reset zn
         elif(key == GLUT_KEY_HOME):
             self.cmdcenter.cmd("reset_zn")
-            
+
         # reset par
         elif(key == GLUT_KEY_END):
             self.cmdcenter.cmd("reset_par")
@@ -207,7 +207,8 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[0] += self.app.par_scale * 0.05
-                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+                #self.cmdcenter.cmd("linear_1d('par', %s, %s, %s, %s)" % (i, self.app.kbd_switch_spd, x0, x1))
+                self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (i, self.app.kbd_switch_spd, z0, z1))
 
             # decrement zn_r
             elif(key in ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]):
@@ -217,7 +218,8 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z1[0] -= self.app.par_scale * 0.05
                 if(z1[0] < 0.0):
                     z1[0] = 0
-                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+                self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (i, self.app.kbd_switch_spd, z0, z1))
+                #self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
 
             # increment zn_th
             elif(key in ["A", "S", "D", "F", "G", "H", "J", "K", "L", ":"]):
@@ -225,7 +227,7 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] += self.app.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0, z1)
+                self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (i, self.app.kbd_switch_spd, z0, z1))
 
             # decrement zn_th
             elif(key in ["Z", "X", "C", "V", "B", "N", "M", "<", ">", "?"]):
@@ -233,12 +235,13 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
                 z0 = r_to_p(self.state.zn[i])
                 z1 = [z0[0], z0[1]]
                 z1[1] -= self.app.par_scale * 2.0 * pi / 32.0
-                self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0,  z1)
+                #self.cmdcenter.radial_2d('zn', i, self.app.kbd_switch_spd, z0,  z1)
+                self.cmdcenter.cmd("radial_2d('zn', %s, %s, %s, %s)" % (i, self.app.kbd_switch_spd, z0, z1))
 
             # increase speed
             elif(key == GLUT_KEY_PAGE_UP):
                 #self.app.par_scale *= 2.0
-                self.state.t_speed += 0.05                
+                self.state.t_speed += 0.05
 
             # decrease speed
             elif(key == GLUT_KEY_PAGE_DOWN):
@@ -267,14 +270,11 @@ class DefaultEpimorphismKeyboard(DefaultKeyboard):
 
             # record events
             elif(key == GLUT_KEY_F6):
-                #self.cmdcenter.toggle_record()
-                prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
-                self.cmdcenter.state.programs.append(prg)
-                prg.run()
+                self.cmdcenter.toggle_record()
+                #prg = RandomAux({'idx': 0, 'folder': 'simplegeom'})
+                #self.cmdcenter.state.programs.append(prg)
+                #prg.run()
 
             # default
             else:
                 DefaultKeyboard.key_pressed(self, key, modifiers)
-
-
-

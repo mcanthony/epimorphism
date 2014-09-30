@@ -45,8 +45,13 @@ class Program(threading.Thread):
         
         while(not self.app.exit and not self.exit):  
             self._execute()
-            self.freeze_event.wait()
-            self.sleep_event.wait(self.next_event_in)
+            if(not self.next_event_in):
+                return
+
+            self.cmdcenter.block_for(self.next_event_in)
+            
+#            self.freeze_event.wait()
+#            self.sleep_event.wait(self.next_event_in)
 
             
     def _execute(self):

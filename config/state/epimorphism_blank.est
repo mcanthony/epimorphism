@@ -3,7 +3,7 @@
  'VERSION': 1.0,
  'time': 0.0,
  't_speed': 0.35,
- 'aux': [None],
+ 'aux': ['simplegeom/tile_grid3.png'],
  'post_process': None,
  'frame_cnt': 0,
  'bpm': 120,
@@ -24,7 +24,7 @@
  'COLOR': 'bgr_id(v, z_z, par, time)',
  'REDUCE': 'torus_reduce(z)',
  'RESET': 'reset_hsls(x, y, par)',
- 'POST': 'post_id(v, par, time)' 
+ 'POST': 'post_id(v, par, time)'
  },
  'zn': [(1.0+0.0j),
  (0.0+0.0j),
@@ -99,7 +99,7 @@
  '_SEED_TEX_IDX':
  [0.0],
  '_SEED_TEX_SC':
- [1.0], 
+ [1.0],
  '_COLOR_PHI1':
  [1.0],
  '_COLOR_PSI1':
@@ -145,9 +145,3 @@
  '_PC3_LGV':
  [0.5]
  }}
-
-
-
-
-
-

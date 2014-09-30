@@ -51,12 +51,12 @@ class Animator(object):
 
             # execute path
             t1 = (t - path.phase) / path.spd
-            (res, status) = path.do(t1) 
+            (res, status) = path.do(t1)
 
             # set result
             #getattr(config.state, path.obj)[path.idx] = res
             eval("config.state." + path.obj)[path.idx] = res
-#            print path.obj, t1, res, len(config.state.paths)                
+#            print path.obj, t1, res, len(config.state.paths)
 
             # if necessary, remove path
             if(not status):
@@ -67,5 +67,3 @@ class Animator(object):
             path.stop()
 
 #        print config.state.paths
-
-
