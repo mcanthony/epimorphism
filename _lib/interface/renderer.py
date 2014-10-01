@@ -152,11 +152,10 @@ class Renderer(object):
         glMatrixMode(GL_MODELVIEW)
 
         # create echo font
-        if config.PIL_available and not config.is_windows:
-            self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
-            self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
-            self.fps_font_size = 20
-            self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
+        self.echo_font_size = int(0.0123 * self.app.screen[0] + 2.666)
+        self.echo_font = common.glFreeType.font_data(FONT_PATH, self.echo_font_size)
+        self.fps_font_size = 20
+        self.fps_font = common.glFreeType.font_data(FONT_PATH, self.fps_font_size)
 
 
     def grab_image(self):

@@ -30,3 +30,7 @@ class Epimorphism(App):
 class Lissajousglitch(App):
     def __init__(self, name='default'):
         App.__init__(self, 'lissajousglitch', name)
+
+class Distancefield(App):
+    def __init__(self, name='default'):
+        App.__init__(self, 'distancefield', name)

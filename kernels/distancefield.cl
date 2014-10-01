@@ -26,7 +26,7 @@ float df(float3 p, float time) {
 
 float inter(float3 ro, float3 rd, float time) {
   float t = 0.0f;
-  for (float count=0.0f; count<200.0f; ++count) {
+  for (float count=0.0f; count<200.0f; count += 1) {
     float3 pos = ro + t * rd;
     float dist = df(pos, time);
     if (dist < 0.0001f){
