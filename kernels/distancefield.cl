@@ -1,18 +1,44 @@
 // distancefield
 
-const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
-const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
+#pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
-float df(float3 p, float time) {
-  return length(p) - 1.0f;
+const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
+const sampler_t image_sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_ADDRESS_CLAMP_TO_EDGE;
+
+void write_field(write_only image3d_t field_out) {
+	int field_dim = 256;
+
+	float p_ofs = 1.0f / field_dim - 1.0f;
+
+	for (int i = 0; i < field_dim; i += 1) {
+		for (int j = 0; j < field_dim; j += 1) {
+			for (int k = 0; k < field_dim; k += 1) {
+				float3 p = convert_float3((int3)(i, j, k));
+				float4 c = (float4)(p.x, p.y, p.z, 0);
+				
+				float3 pos = (float3)(2.0f / field_dim) * p + (float3)(p_ofs, p_ofs, p_ofs);
+				float4 v = (float4)(length(pos) - 1.0f, 0.0f, 0.0f, 0.0f);
+				write_imagef(field_out, c, v);
+			}
+		}
+	}
+
+}
+
+float df(float3 p, read_only image3d_t field_in) {
+	//	seed = convert_float4(read_imagei(aux, aux_sampler, c)) / 255.0f;
+  float4 c = (float4)(p.x, p.y, p.z, 0.0);
+	float4 v = read_imagef(field_in, image_sampler, c);
+  return 500;//v.x;
 }
 
 
-float inter(float3 ro, float3 rd, float time) {
+float inter(float3 ro, float3 rd, read_only image3d_t field_in) {
+	return -1;//
   float t = 0.0f;
-  for (float count=0.0f; count<200.0f; count += 1) {
+  for (float count=0.0f; count < 200.0f; count += 1) {
     float3 pos = ro + t * rd;
-    float dist = df(pos, time);
+    float dist = df(pos, field_in);
     if (dist < 0.0001f){
       return t;
     }
@@ -23,24 +49,29 @@ float inter(float3 ro, float3 rd, float time) {
   return -1.0f;
 }
 
-float3 calcNormal(float3 p, float time) {
+float3 calcNormal(float3 p, read_only image3d_t field_in) {
   float3 e = (float3)(0.001f, 0.0f, 0.0f);
   float3 n;
-  n.x = df(p+e.xyy, time) - df(p-e.xyy, time);
-  n.y = df(p+e.yxy, time) - df(p-e.yxy, time);
-  n.z = df(p+e.yyx, time) - df(p-e.yyx, time);
+  n.x = df(p+e.xyy, field_in) - df(p-e.xyy, field_in);
+  n.y = df(p+e.yxy, field_in) - df(p-e.yxy, field_in);
+  n.z = df(p+e.yyx, field_in) - df(p-e.yyx, field_in);
 
   return normalize(n);
 }
 
 __kernel __attribute__((reqd_work_group_size(16,16,1)))
-void distancefield(__global uchar4* pbo, write_only image2d_t out, read_only image3d_t aux,
+void distancefield(__global uchar4* pbo, write_only image2d_t out, read_only image3d_t field_in, write_only image3d_t field_out,
 	  __constant float *par, __constant float *internal, __constant float2 *zn, float time){
   time /= 4.0f;
   // get p in [0..$KERNEL_DIM]x[0..$KERNEL_DIM]
   const int x = get_global_id(0);
   const int y = get_global_id(1);
+
+	int arr[256][256][256];
+	
   int2 p = (int2)(x, y);
+
+	write_field(field_out);
 
   // get z in [-1..1]x[-1..1]
   float2 z = (float2)(2.0f / $KERNEL_DIM$) * convert_float2(p) + (float2)(1.0f / $KERNEL_DIM$ - 1.0f, 1.0f / $KERNEL_DIM$ - 1.0f);
@@ -48,7 +79,7 @@ void distancefield(__global uchar4* pbo, write_only image2d_t out, read_only ima
   float3 ro = (float3)(0.0f, 0.0f, 2.0f);//0.0f, 2.0*sin(time), 2.0f * cos(time));
   float3 rd = normalize((float3)(z.x, z.y, -1.0f));
 
-  float hit = inter(ro, rd, time);
+  float hit = inter(ro, rd, field_in);
 
   // generate color(z)
   float4 color;
@@ -56,7 +87,7 @@ void distancefield(__global uchar4* pbo, write_only image2d_t out, read_only ima
     float3 col = (float3)(0.0f, 0.0f, 0.0f);
 
     float3 pos = ro + hit * rd;
-    float3 nor = calcNormal(pos, time);
+    float3 nor = calcNormal(pos, field_in);
     float3 lig = normalize((float3)(1.0f, 0.8f, 0.6f));
 
     float amb = 0.5f + 0.5f * nor.y;

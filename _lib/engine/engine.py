@@ -47,6 +47,10 @@ class Engine(object):
     def initCL(self):
         debug("Setting up OpenCL")        
 
+        d = clGetDeviceIDs()[0]
+        clGetDeviceInfo(d, CL_DEVICE_EXTENSIONS)
+        print d.extensions
+        
         # create basic structs
         self.ctx = clCreateContextFromType(CL_DEVICE_TYPE_GPU, None, get_gl_sharing_context_properties())
         self.queue = clCreateCommandQueue(self.ctx)
@@ -62,8 +66,9 @@ class Engine(object):
             self.reset_fb()
 
         #auxilary buffer
-        if(self.state.aux):
-            self.aux = clCreateImage3D(self.ctx, self.app.kernel_dim, self.app.kernel_dim, len(self.state.aux), cl_image_format(CL_RGBA, CL_UNSIGNED_INT8))
+#        if(self.state.aux):
+#            self.field_in = clCreateImage3D(self.ctx, 256,256,256, cl_image_format(CL_RGBA, CL_FLOAT))
+#            self.field_out = clCreateImage3D(self.ctx, 256,256,256, cl_image_format(CL_RGBA, CL_FLOAT))
 
         # map pbo
         self.pbo_ptr = self.interface.renderer.generate_pbo(self.app.kernel_dim)
@@ -76,9 +81,9 @@ class Engine(object):
         self.compiler = Compiler(self.ctx, self.compiler_callback)
 
         # load aux image
-        if(self.state.aux):
-            for i in range(len(self.state.aux)):
-                if(self.state.aux[i]): self.cmdcenter.load_image(self.state.aux[i], i)
+        #if(self.state.aux):
+        #    for i in range(len(self.state.aux)):
+        #        if(self.state.aux[i]): self.cmdcenter.load_image(self.state.aux[i], i)
 
         self.cl_initialized = True
 
@@ -91,7 +96,7 @@ class Engine(object):
         if(self.app.feedback_buffer):
             self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
         else:
-            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
+            self.main_kernel.argtypes=(cl_mem, cl_mem, cl_mem, cl_mem, cl_mem, cl_float)
 
         # post processing kernel
         if(self.state.post_process):
@@ -121,8 +126,8 @@ class Engine(object):
         # create args
         args = [self.pbo, self.out]
         
-        if self.state.aux:
-            args += [self.aux]
+#        if self.state.aux:
+#            args += [self.field_in, self.field_out]
             
         if(self.app.feedback_buffer):
             args = [self.fb] + args
@@ -145,6 +150,7 @@ class Engine(object):
         self.main_kernel(*args).on(self.queue, (self.app.kernel_dim, self.app.kernel_dim), (block_size, block_size)).wait()
         self.timings.append(time.time())
 
+ #       clEnqueueCopyImage(self.queue, self.field_out, self.field_in).wait()
         # copy buffer if necessary
         if(self.app.feedback_buffer):
             clEnqueueCopyImage(self.queue, self.out, self.fb).wait()
