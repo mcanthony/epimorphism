@@ -4,22 +4,6 @@ const sampler_t sampler = CLK_NORMALIZED_COORDS_TRUE | CLK_FILTER_LINEAR | CLK_A
 const sampler_t image_sampler = CLK_NORMALIZED_COORDS_FALSE | CLK_FILTER_NEAREST | CLK_ADDRESS_CLAMP_TO_EDGE;
 
 float df(float3 p, float time) {
-  float2 z1 = (M(p.xy, (float2)(cos(time), sin(time))));
-  p = (float3)(z1.x, z1.y, p.z);
-
-  float2 z2 = (M(p.yz, 0.7f * (float2)(cos(time), sin(time))));
-  p = (float3)(p.x, z2.x, z2.y);
-
-  //float2 z1 = expz((float2)(p.x, p.y));
-  //float2 z2 = expz((float2)(p.y, p.z));
-  //p = (float3)(z1.x, z2.y, p.z);
-  //p.y += sin(2.0 * p.x) + cos(2.0 * p.z);
-  //p.x *= (1.5 + sin(time) / 2.0);
-  //p.y *= (1.5 + cos(time) / 2.0);
-  //p.z *= (0.9 + cos(time) / 2.0);
-  p.x += 0.07*sin(40.0 * p.x);
-  p.y += 0.07*sin(40.0 * p.y + time);
-  p.z += 0.07*cos(40.0 * p.z + time);
   return length(p) - 1.0f;
 }
 
