@@ -29,6 +29,7 @@ _EPI_ float4 tex_color(int idx, read_only image2d_t fb, read_only image3d_t aux,
   float4 c = (float4)(w.x, w.y, seed_c, 0);
 
   seed = convert_float4(read_imagei(aux, aux_sampler, c)) / 255.0f;
+	seed.xyz = seed.zyx;
 
   seed = RGBtoHSV(seed);
 

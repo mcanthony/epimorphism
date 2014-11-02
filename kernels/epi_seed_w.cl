@@ -50,7 +50,7 @@ _EPI_ float4 wave(int idx, float2 z, __constant float* par){
 
 _EPI_ float4 nothing(int idx, float2 z, __constant float* par){
   // empty
-  // DEV
+  // DEV, FULL
 
 	return (float4)(0.0f, 0.0f, 0.0f, 0.0f);	
 }

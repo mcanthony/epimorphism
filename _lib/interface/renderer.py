@@ -165,8 +165,10 @@ class Renderer(object):
 
         info("Grabbing pixels")
         if(not self.app.render_video):
+            print "asdf"
             self.have_image.clear()
             self.have_image.wait()
+            print "adasdfasdfasdfads"
         return self.image
 
 
